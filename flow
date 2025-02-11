@@ -1,0 +1,35 @@
+create account -> fill out the profile and take localisation -> FRONT_ACT
+
+login
+     |
+      -> password forgot -> send an email with link -> new password to fill -> FRONT_ACT
+      -> FRONT_ACT
+
+FRONT_ACT _
+          |
+           -> profile
+             |
+              -> update profile or localisation
+              -> see profile likes and views
+          |
+           -> view other profile (except for their email address and password :v)
+             |
+              -> add likes or remove them (for profiles)
+              -> send text (only under conditions)
+              -> report fake account
+              -> block / unblock
+          |
+           -> browsing
+             |
+              -> list of users (you get to chose to like them or not {Dating app styles})
+              -> research
+                |
+                 -> search based on one criteria or many
+
+
+BACK_ACTIONS  _
+               |
+                -> view other profile
+                  |
+                   -> When a user views a profile, it must be added to their visit history.
+                   -> “like” each other’s profiles = “connected” = can start chatting (only if he has a profile picture)

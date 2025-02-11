@@ -1,0 +1,20 @@
+- We will consider that a “micro-framework” includes a router and possibly templating, but does not include an ORM, validators, or a User Account Manager.
+
+-  If you need some inspiration, we suggest using the following languages as the main ones:
+    ◦ Sinatra for Ruby.
+    ◦ Express for Node (yes, we consider this to be micro-framwork).
+    ◦ Flask for Python.
+    ◦ Scalatra for Scala.
+    ◦ Slim for PHP (Silex is not authorized because of doctrine integration).
+    ◦ Nickel for Rust.
+    ◦ Goji for Golang.
+    ◦ Spark for Java.
+    ◦ Crow for C++.
+
+- The user must be located using GPS positioning, up to their neighborhood. If the user does not want to be positioned, you must find a way to locate them even without their knowledge The user must be able to modify their GPS position in their profile.
+
+- Man - women - (I perfer not to say==bisexual)
+
+- A user can clearly see if the profile they are viewing is connected or has “like” their profile and must be able to “unlike” or disconnected from that profile.
+
+- A user must be able to see, from any page, that a notification hasn’t been read.

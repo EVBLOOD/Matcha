@@ -1,0 +1,72 @@
+[ ] Mandatory
+    [ ] chose a lang.
+    [ ] Database Setup.
+    [ ] Registration :
+        [ ] Registration UI Page (form with -> email address, username, last name, first name, and a password).
+        [ ] Backend registration logic.
+        [ ] Email verification (send verification email with unique link).
+    [ ] Login :
+        [ ] Login UI Page (form with -> username and password + forgot the password).
+        [ ] Backend login logic.
+        [ ] Bonus: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
+    [ ] Password Reset :
+        [ ] "Reset Password" UI page (form with -> email address).
+        [ ] "Forgot Password" UI link redirect page (form with -> new password).
+        [ ] Password reset request logic (send the unique email link).
+    [ ] Logout :
+        [ ] Logout logic.
+    [ ] User Profile (Edit/Create) :
+        [ ] Profile first time UI Page (form for -> gender, sexual preferences, bio, interests with tags, 5 pictures as profile, location).
+        [ ] Bonus: Social Media Picture Import: Allow picture import from social platforms.
+        [ ] Profile Edit UI Page (form for -> all previuos feilds + first name, last name, email, LOCATION).
+        [ ] Backend profile add/update logic.
+        [ ] Image upload functionality.
+        [ ] Interest tags implementation (reusable tags).
+    [ ] User Profile (View) :
+        [ ] Display your own profile data on a UI page with (Viewers and Likers).
+        [ ] Display your own Profile visit History logging UI Page.
+        [ ] Display Other User Profile UI Page (show all profile info except email/password + status).
+        [ ] Online Status & Last Seen.
+        [ ] "Like"/"Unlike" button/action to profile picture.
+        [ ] "Like" Feature on profile picture (and "Unlike")
+        [ ] Track user online status (session management or similar).
+        [ ] Backend "like" logic.
+        [ ] Backend "unlike" logic.
+        [ ] "Profile Likers" tracking implementation.
+        [ ] "Profile Viewers" tracking implementation.
+        [ ] Fame Rating calculation and display (public).
+        [ ] Visit History logging when viewing profiles.
+        [ ] Report Fake Account Feature: Implement report functionality.
+        [ ] Block User Feature: Implement block/unblock functionality.
+    [ ] GPS Location :
+        [ ] Initial GPS location capture ("without knowledge" if they don't want to).
+        [ ] Location modification in profile editing.
+    [ ] Browsing :
+        [ ] Browse Profiles UI Page (display suggested profiles -> Sorting and Filtering included).
+        [ ] Bonus: Interactive Map: Develop user map interface.
+        [ ] Suggestions that match their profile.
+        [ ] Algorithm for generating "interesting" profile suggestions based on criteria (orientation, location, tags, fame).
+        [ ] Sorting for Browse Page (age, location, fame, tags).
+        [ ] Filtering for Browse Page (age, location, fame, tags).
+    [ ] Advanced Search :
+        [ ] Advanced Search UI Page (form for search criteria such as -> age gap, fame gap, location, tags).
+        [ ] Backend search query logic (using search criteria).
+        [ ] Sortable/Filterable Search Results Display (same as browsing).
+    [ ] Chat :
+        [ ] Chat UI Interface.
+        [ ] Bonus: Video/Audio Chat: Implement video/audio chat feature.
+        [ ] New message pop-up/notif UI.
+        [ ] Backend chat implementation.
+        [ ] New message notif implementation.
+    [ ] Notifications:
+        [ ] UI for Unread notification indicator.
+        [ ] Display UI Notifications Area or maybe Dropdown.
+        [ ] Notification system in database
+        [ ] Notification system (Real-time notification delivery)
+        [ ] On "Like" received.
+        [ ] On Profile viewed.
+        [ ] On Message received.
+        [ ] On "Like" back (connection).
+        [ ] On "Unlike" (disconnection).
+    [ ] Bonus:
+        [ ] Date/Event Scheduling: Implement event/date scheduling feature.
