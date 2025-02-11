@@ -1,35 +1,130 @@
 create account -> fill out the profile and take localisation -> FRONT_ACT
 
 login
-     |
-      -> password forgot -> send an email with link -> new password to fill -> FRONT_ACT
-      -> FRONT_ACT
+     |
+      -> password forgot -> send an email with link -> new password to fill -> FRONT_ACT
+      -> FRONT_ACT
 
-FRONT_ACT _
-          |
-           -> profile
-             |
-              -> update profile or localisation
-              -> see profile likes and views
-          |
-           -> view other profile (except for their email address and password :v)
-             |
-              -> add likes or remove them (for profiles)
-              -> send text (only under conditions)
-              -> report fake account
-              -> block / unblock
-          |
-           -> browsing
-             |
-              -> list of users (you get to chose to like them or not {Dating app styles})
-              -> research
-                |
-                 -> search based on one criteria or many
+FRONT_ACT _ (User Actions on the Frontend)
+          |
+           -> Profile
+             |
+              -> Edit Profile
+                |
+                 -> User modifies any profile fields (gender, sexual preferences, bio, interests with tags, pictures, location, first name, last name, email) through UI form elements.
+              -> View Own Profile
+                |
+                 -> User sees their profile information displayed on the UI.
+                 -> User sees counters for profile viewers and likers displayed on their profile.
+              -> View Profile Visit History
+                |
+                 -> User sees a list of profiles that have visited their profile, displayed on a UI page.
+          |
+           -> View Other User Profile (except for their email address and password)
+             |
+              -> User sees the other user's profile information displayed on the UI (gender, sexual preferences, bio, interests, pictures, location, first name, last name, fame rating, online status, last seen -  without email and password).
+              -> Like/Unlike Profile Picture
+              -> Send Text (Chat) (only under connection condition)
+              -> Report Fake Account
+              -> Block/Unblock User
+          |
+           -> Browsing
+             |
+              -> Browse Profiles List
+                 -> User sees a list of suggested user profile cards/previews displayed on the page.
+                 -> User uses sorting controls to sort profiles by age, location, fame, tags.
+                 -> User uses filter controls to filter profiles by age, location, fame, tags.
+                 -> User clicks a "Like" button (or similar UI element) on a profile card directly from the browse list.
+             |
+              -> Interactive Map (Bonus)
+                 -> User interacts with a map UI displaying user locations (pins, clusters).
+                 -> User clicks on map pins/clusters to view profiles in specific locations.
+             |
+              -> Advanced Search
+                 -> User fills out a search form with criteria fields (age gap, fame gap, location input, tag input).
+                 -> User sees search results displayed as sortable/filterable profile cards/previews (similar to browsing).
+          |
+           -> Chat
+             |
+              -> Chat
+          |
+           -> Notifications
+             |
+              -> View Notifications
+                 -> User sees a list of recent notifications displayed in the area/dropdown (e.g., "You received a like!", "X viewed your profile", "New message from Y").
+        -> Logout
+            -> User is redirected to the login page or homepage and session is ended.
 
 
-BACK_ACTIONS  _
-               |
-                -> view other profile
-                  |
-                   -> When a user views a profile, it must be added to their visit history.
-                   -> “like” each other’s profiles = “connected” = can start chatting (only if he has a profile picture)
+
+
+BACK_ACTIONS  _
+               |
+                -> View Other User Profile
+                  |
+                   -> Log Profile View
+                     |
+                      -> When a user views a profile, the visit is added to their visit history (and the viewed profile's viewer list).
+               |
+                -> Like/Unlike Profile
+                  |
+                   -> Process "Like"
+                     |
+                      -> Record "like" action in database.
+                      -> Check if it's a mutual "like".
+                      -> If mutual and both have profile pictures: Establish "connection" and enable chat.
+                      -> Send "Like" notification to the liked user.
+                      -> If becomes a connection (mutual like): Send "Like Back" (connection) notification to both users.
+                  |
+                   -> Process "Unlike"
+                     |
+                      -> Record "unlike" action in database.
+                      -> If users were connected, break the "connection" and disable chat.
+                      -> Send "Unlike" (disconnection) notification to both users (or just the unliked user, depending on desired notification logic).
+               |
+                -> Fame Rating Calculation
+                  |
+                   -> Calculate fame rating based on likes received, profile views, and potentially other factors (algorithm to be defined).
+                   -> Update fame rating in database periodically or on event basis (like received, profile view).
+               |
+                -> Track User Online Status
+                  |
+                   -> Update user online status (e.g., when login, logout, or periodically during session).
+                   -> Store last seen timestamp.
+               |
+                -> Handle Report Fake Account
+                  |
+                   -> Record report in database, associate it with the reported user and reporting user.
+                   -> Potentially trigger admin notification or moderation queue.
+               |
+                -> Handle Block/Unblock User
+                  |
+                   -> Record block/unblock action in database, establishing a block relationship between users.
+                   -> Implement logic to prevent blocked users from interacting (viewing profile, messaging, etc.).
+               |
+                -> Process Advanced Search Query
+                  |
+                   -> Receive search criteria from Advanced Search UI.
+                   -> Construct database query based on criteria (age gap, fame gap, location, tags).
+                   -> Retrieve and return sorted/filtered search results.
+               |
+                -> Chat Backend Implementation
+                  |
+                   -> Handle sending and receiving of chat messages via backend.
+                   -> Store chat messages in the database, associated with sender and receiver.
+                   -> Implement logic for message delivery and persistence.
+                   -> Implement new message notification system.
+               |
+                -> Notification System
+                  |
+                   -> Store notifications in database, associated with recipient user and notification type.
+                   -> Implement real-time notification delivery mechanism (e.g., WebSockets, Server-Sent Events) for:
+                     |
+                      -> "Like" received
+                      -> Profile viewed
+                      -> Message received
+                      -> "Like" back (connection)
+                      -> "Unlike" (disconnection)
+               |
+                -> Logout
+                    -> Invalidate user session.
