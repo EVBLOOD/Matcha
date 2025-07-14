@@ -1,0 +1,24 @@
+services:
+  front:
+    build: docker/front
+    container_name: matcha_front
+    image: matcha_front
+    networks:
+      - matcha
+    ports:
+      - 3000:3000
+    restart: on-failure
+    volumes:
+      - matcha_vol_front:/var/www/html
+    env_file: .env
+
+networks:
+  matcha:
+    driver: bridge
+
+volumes:
+  matcha_vol_front:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${PWD}/srcs/front
