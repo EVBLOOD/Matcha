@@ -12,6 +12,6 @@
 <style lang="scss" scoped>
   .container{
     margin: 0 auto;
-    max-width: $container-max-width;
+    max-width: $breakpoint-lg;
   }
 </style>
