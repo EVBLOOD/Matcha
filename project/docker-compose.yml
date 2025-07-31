@@ -13,6 +13,19 @@ services:
       # - matcha_vol_front:/var/www/html
     env_file: .env
 
+  back:
+    build: docker/back
+    container_name: matcha_back
+    image: matcha_back
+    networks:
+      - matcha
+    ports:
+      - 8080:8080
+    restart: on-failure
+    volumes:
+      - ${PWD}/srcs/back:/var/www/html
+    env_file: .env
+
 networks:
   matcha:
     driver: bridge
