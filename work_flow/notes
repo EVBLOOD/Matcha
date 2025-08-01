@@ -18,3 +18,10 @@
 - A user can clearly see if the profile they are viewing is connected or has “like” their profile and must be able to “unlike” or disconnected from that profile.
 
 - A user must be able to see, from any page, that a notification hasn’t been read.
+
+
+
+Data Access Layer
+connection pool database
+Connection Pooling
+
