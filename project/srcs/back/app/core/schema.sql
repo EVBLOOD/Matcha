@@ -24,6 +24,7 @@ CREATE TABLE users (
     fame_rating INT DEFAULT 0 NOT NULL,
     latitude DECIMAL(10, 8),
     longitude DECIMAL(11, 8),
+    verification_token VARCHAR(50) UNIQUE,
     is_verified BOOLEAN DEFAULT FALSE,
     last_online TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP

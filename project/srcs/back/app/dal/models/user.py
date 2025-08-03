@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import Optional
+import re
+import bcrypt
 
 class User:
     def __init__(
@@ -24,7 +25,7 @@ class User:
         if insertion_check \
               and not self.isvalid_username(username) \
               and not self.isvalid_fullname(first_name, last_name) \
-              and not self.isvalid_email(email):
+              and not self.isvalid_email(email) and not self.isvalid_password(password_hash):
             raise ValueError
         elif insertion_check is False :
             self.id = id
@@ -32,22 +33,39 @@ class User:
             self.fame_rating = fame_rating
             self.is_verified = is_verified
             self.last_online = last_online
+            self.password_hash = password_hash
+        elif insertion_check is True :
+            self.password_hash = self.hashing_password(password_hash)
 
         self.username = username
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        # self.password_hash = self.hash_password(password_hash)
-        self.password_hash = password_hash
         self.latitude = latitude
         self.longitude = longitude
 
     def isvalid_username(self, username: str) :
-        return username != ""
+        username_regex = r"^[a-zA-Z0-9_-]{3,16}$"
+        return re.match(username_regex, username) and len(username) < 16
     def isvalid_fullname(self, first_name: str, last_name: str) :
-        return first_name != "" and last_name != ""
+        name_regex = r"^[a-zA-Z' -]+$"
+        return re.match(name_regex, first_name) and re.match(name_regex, last_name) \
+             and len(first_name) <= 50 and len(last_name) <= 50
+
+
     def isvalid_email(self, email: str):
-        return email != ""
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return re.match(email_regex, email) and len(email) < 255
+    
+    def hashing_password(self, password) :
+        return bcrypt.hashpw(
+            password.encode('utf-8'),
+            bcrypt.gensalt()
+        ).decode('utf-8')
+
+    def isvalid_password(self, password) :
+        password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=])(?=\S+$).{8,64}$"
+        return re.match(password_regex, password)
     # def full_name(self) -> str:
     #     return f"{self.first_name} {self.last_name}"
 

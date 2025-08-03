@@ -14,8 +14,8 @@ class UserService:
         if UserRepository.find_by_username(username):
             raise ValueError("Username already taken")
         
-        if UserRepository.find_by_email(username):
-            raise ValueError("Username already taken")
+        if UserRepository.find_by_email(email):
+            raise ValueError("email already taken")
 
         return UserRepository.create_user(User(
             username=username, 

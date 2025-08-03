@@ -1,6 +1,6 @@
 [ ] Mandatory
-    [ ] chose a lang.
-    [ ] Database Setup.
+    [x] chose a lang. (choosen: Vue + Flask)
+    [x] Database Setup.
     [ ] Registration :
         [ ] Registration UI Page (form with -> email address, username, last name, first name, and a password).
         [ ] Backend registration logic.

@@ -1,6 +1,7 @@
 from app.dal.base_repository import BaseRepository
 from app.dal.models.user import User
 from typing import Optional
+import secrets
 
 class UserRepository(BaseRepository):
     _table_name = "users"
@@ -25,7 +26,28 @@ class UserRepository(BaseRepository):
             'email' : user_data.email
         }
         user_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion, data=norm_data)
+        token_verify  = cls.create_verify_token(user_id=user_id)
+        print (token_verify, flush=True)
+        # if user_id is not None :
+        #     cls.send_email(user_data.email, user_data.username, token_verify)
         return user_id
+    @classmethod
+    def create_verify_token(cls, user_id: int) :
+        trying = 0
+        query = """
+            UPDATE users 
+            SET verification_token = %s 
+            WHERE id = %s
+            RETURNING id
+        """
+        while trying < 15 :
+            try :
+                verification_token = secrets.token_urlsafe(32)
+                cls._execute(query, (verification_token, user_id))
+                return verification_token
+            except Exception as e :
+                trying += 1
+        return None
 
     @classmethod
     def find_by_email(cls, email: str) -> Optional[User]:
