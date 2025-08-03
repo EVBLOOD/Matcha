@@ -1,4 +1,4 @@
-from typing import Optional
+
 
 class Profile:
     def __init__(

@@ -1,5 +1,5 @@
-from data_access_layer.base_repository import BaseRepository
-from data_access_layer.models.profile import Profile
+from app.dal.base_repository import BaseRepository
+from app.dal.models.profile import Profile
 
 class ProfileRepository(BaseRepository):
     _table_name = "profiles"

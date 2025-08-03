@@ -5,4 +5,6 @@ RUN apt-get update -y \
 
 COPY script.sh .
 
+RUN export FLASK_RUN_PORT=8080
+
 CMD ["sh", "script.sh"]

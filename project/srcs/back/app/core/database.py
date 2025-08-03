@@ -70,7 +70,7 @@ class Database:
             self.pool.putconn(conn)
 
     @contextmanager
-    def get_cursor(self, commit: bool = False):
+    def get_cursor(self, commit: bool = False) :
         conn = None
         cursor = None
         try:
