@@ -1,0 +1,7 @@
+app - 
+        - core : stores Configs and handels database connections 
+        - data_access_layer
+                                - modules : classes containing the data presestance for objects in tables
+                                - Represotries : classees managing the database operations for each table
+        - services : services mannaging the logic before saving data to Represotries
+        - routes : routes mannaging the requests for the user and sending responses

@@ -1,4 +1,13 @@
 services:
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - matcha
+
   front:
     build: docker/front
     container_name: matcha_front
@@ -20,7 +29,8 @@ services:
     networks:
       - matcha
     ports:
-      - 8080:8080
+      - 8081:8080
+      - 5001:5000
     restart: on-failure
     volumes:
       - ${PWD}/srcs/back:/var/www/html
