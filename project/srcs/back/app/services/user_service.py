@@ -27,3 +27,9 @@ class UserService:
             # latitude=latitude 
             insertion_check=True
         ))
+    @staticmethod
+    def verify_account(token : str) :
+        user_id, is_verified = UserRepository.find_by_verification_token(token)
+        if is_verified :
+            raise ValueError("Account already verified")
+        UserRepository.verify_token(user_id)

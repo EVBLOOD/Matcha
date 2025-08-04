@@ -10,7 +10,6 @@ class UserRepository(BaseRepository):
         "password_hash", "email", "fame_rating",
         "latitude", "longitude", "is_verified"
     ]
-
     _columns_insertion = [
         "username", "first_name", "last_name", 
         "password_hash", "email"
@@ -31,6 +30,7 @@ class UserRepository(BaseRepository):
         # if user_id is not None :
         #     cls.send_email(user_data.email, user_data.username, token_verify)
         return user_id
+    
     @classmethod
     def create_verify_token(cls, user_id: int) :
         trying = 0
@@ -48,6 +48,22 @@ class UserRepository(BaseRepository):
             except Exception as e :
                 trying += 1
         return None
+    
+    
+    @classmethod
+    def find_by_verification_token(cls, token: str) :
+        query = "SELECT id, is_verified FROM users WHERE verification_token = %s"
+        user_infos = cls._fetch_one(query, (token))
+        return user_infos.id, user_infos.is_verified
+
+    @classmethod
+    def verify_token(cls, user_id: int):
+        query = """
+            UPDATE users 
+            SET is_verified = TRUE
+            WHERE id = %s
+        """
+        cls._execute(query, (user_id,))
 
     @classmethod
     def find_by_email(cls, email: str) -> Optional[User]:
@@ -60,7 +76,6 @@ class UserRepository(BaseRepository):
         query = "SELECT * FROM users WHERE username = %s"
         row = cls._fetch_one(query, (username,))
         return User(*row) if row else None
-
 
     @classmethod
     def update_last_online(cls, user_id: int):

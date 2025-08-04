@@ -25,3 +25,13 @@ def create_user() :
         return jsonify({"error": str(e)}), 400
 # latitude
 # longitude
+
+@user_bp.route('/verify_account', methods=['GET'])
+def verify_account() :
+    try :
+        token_id = request.form.get('token_id')
+        UserService.verify_account(token=token_id)
+        return jsonify({"result": "success"}), 201
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400
+
