@@ -26,10 +26,14 @@ def create_user() :
 # latitude
 # longitude
 
-@user_bp.route('/verify_account', methods=['GET'])
+@user_bp.route('/verify_account', methods=["GET", "POST"])
 def verify_account() :
     try :
-        token_id = request.form.get('token_id')
+        token_id = request.args.get('token_id')
+        if not isinstance(token_id, str) :
+            return jsonify({"error": "Missing required fields"}), 400
+
+        print (token_id, flush=True)
         UserService.verify_account(token=token_id)
         return jsonify({"result": "success"}), 201
     except ValueError as e :

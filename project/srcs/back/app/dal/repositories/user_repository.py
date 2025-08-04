@@ -53,8 +53,8 @@ class UserRepository(BaseRepository):
     @classmethod
     def find_by_verification_token(cls, token: str) :
         query = "SELECT id, is_verified FROM users WHERE verification_token = %s"
-        user_infos = cls._fetch_one(query, (token))
-        return user_infos.id, user_infos.is_verified
+        (user_infos_id, user_infos_is_verified) = cls._fetch_one(query, (token, ))
+        return user_infos_id, user_infos_is_verified
 
     @classmethod
     def verify_token(cls, user_id: int):
@@ -62,6 +62,7 @@ class UserRepository(BaseRepository):
             UPDATE users 
             SET is_verified = TRUE
             WHERE id = %s
+            RETURNING id
         """
         cls._execute(query, (user_id,))
 
