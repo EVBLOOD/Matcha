@@ -17,7 +17,7 @@ class Security :
                 try:
                     verify_jwt_in_request()
                 except Exception as e:
-                    return jsonify({"error": "Invalid or expired token"}), 401
+                    return jsonify({"error": str(e)}), 401
 
                 if required_roles:
                     claims = get_jwt()
@@ -28,3 +28,5 @@ class Security :
                 return fn(*args, **kwargs)
             return wrapper
         return decorator
+    
+    

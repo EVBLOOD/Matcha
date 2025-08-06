@@ -13,5 +13,9 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'secret_key')
     JWT_ACCESS_TOKEN_EXPIRES = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES', 3600))
-    JWT_TOKEN_LOCATION = ["headers", "cookies"]
-    JWT_ACCESS_COOKIE_NAME = "access_token"
+    JWT_TOKEN_LOCATION = ["headers"]
+    # JWT_TOKEN_LOCATION = ["headers", "cookies"]
+    # JWT_ACCESS_COOKIE_NAME = "access_token"
+
+
+

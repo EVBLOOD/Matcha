@@ -18,7 +18,8 @@ class AuthService :
         return None
     
     @staticmethod
-    def generate_token(id: int, username: str) :
-        access_token = create_access_token(identity=id, additional_claims={"username": username})
-        refresh_token = create_refresh_token(identity=id)
+    def generate_token(id: int, username: int) :
+        access_token = create_access_token(identity=str(id), 
+                                           additional_claims={"username": username})
+        refresh_token = create_refresh_token(identity=str(id))
         return access_token, refresh_token

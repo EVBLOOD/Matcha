@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services.user_service import UserService
-
+from app.core.security import Security
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
 
 
@@ -51,3 +51,12 @@ def init_infos() :
         
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
+
+@user_bp.route("/protected", methods=["GET", "POST"])
+@Security.auth_guard()
+def protected() :
+    return jsonify({"result": "protected"})
+
+@user_bp.route("/not_protected", methods=["GET", "POST"])
+def not_protected() :
+    return jsonify({"result": "not_protected"})
