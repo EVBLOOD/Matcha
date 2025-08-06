@@ -3,7 +3,7 @@
     [x] Database Setup.
     [ ] Registration :
         [ ] Registration UI Page (form with -> email address, username, last name, first name, and a password).
-        [ ] Backend registration logic.
+        [x] Backend registration logic.
         [ ] Email verification (send verification email with unique link).
     [ ] Login :
         [ ] Login UI Page (form with -> username and password + forgot the password).
