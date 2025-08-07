@@ -35,7 +35,6 @@ class Security :
                 request.session_id = get_jwt_identity()
                 print (request.session_id, flush=True)
                 request.user_id = claims["user_id"]
-                # request.user_id = claims["username"]
                 return fn(*args, **kwargs)
             return wrapper
         return decorator

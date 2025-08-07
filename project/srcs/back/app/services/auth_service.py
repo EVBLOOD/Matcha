@@ -3,7 +3,6 @@ import bcrypt
 from flask_jwt_extended import create_refresh_token, create_access_token
 from app.core.config import Config
 import uuid
-# from Exception import InvalidTokenError
 
 class AuthService :
     @staticmethod
@@ -52,10 +51,7 @@ class AuthService :
 
     @classmethod
     def validate_token(cls, user_id, session_id):
-        redis = Config.redis_instence
-        # current_version = redis.get(f"user:{user_id}:valid")
         expired, sessions = cls.find_user_sessions_nt_valid(user_id, session_id)
-        # print(current_version, flush=True)
         if len(sessions) == 0 :
             return ("Not authorized", 401)
         if expired :
@@ -85,9 +81,3 @@ class AuthService :
     def logout(cls, session_id):
         redis = Config.redis_instence
         redis.delete(f"session:{session_id}")
-        #     current_version = redis.get(f"user:{payload['sub']}:token_version") or 0
-        #     if int(payload['token_version']) < int(current_version):
-        #         abort(401, "Permissions changed - please re-login")
-        #    session_data = redis.hgetall(f"session:{session_id}")
-        #     if not session_data or session_data.get('valid') != '1':
-        #         abort(401, "Session terminated")
