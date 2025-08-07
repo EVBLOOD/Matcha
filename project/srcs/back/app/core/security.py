@@ -1,4 +1,4 @@
-from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt
+from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt, get_jwt_identity
 from functools import wraps
 from flask import jsonify
 from app.services.auth_service import AuthService
@@ -21,7 +21,7 @@ class Security :
                 try:
                     verify_jwt_in_request()
                     claims = get_jwt()
-                    message, status = AuthService.validate_token(claims["user_id"])
+                    message, status = AuthService.validate_token(claims["user_id"], get_jwt_identity())
                     if status != 200 :
                         raise Exception(message)
                 except Exception as e:
@@ -32,8 +32,10 @@ class Security :
                     user_roles = claims.get("roles", [])
                     if not set(required_roles).intersection(user_roles):
                         return jsonify({"error": "Insufficient permissions"}), 403
+                request.session_id = get_jwt_identity()
+                print (request.session_id, flush=True)
                 request.user_id = claims["user_id"]
-                request.user_id = claims["username"]
+                # request.user_id = claims["username"]
                 return fn(*args, **kwargs)
             return wrapper
         return decorator

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services.auth_service import AuthService
+from app.core.security import Security
 
 auth_bp = Blueprint('auth_api', __name__, url_prefix='/auth')
 
@@ -28,7 +29,18 @@ def login() :
         }), 200
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
-    
+
+@auth_bp.route('/logout', methods=['POST'])
+@Security.auth_guard()
+def logout() :
+    try :
+        session_id = request.session_id
+        
+        AuthService.logout(session_id)
+        return jsonify({"success": "logged out!"}), 200
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400
+ 
 # @auth_bp.route('/refresh', methods=['POST'])
 # @jwt_refresh_token_required()
 # def refresh():

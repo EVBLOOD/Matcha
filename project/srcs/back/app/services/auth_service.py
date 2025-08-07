@@ -51,34 +51,40 @@ class AuthService :
         redis.expire(f"session:{session_id}", (3600 / 60) * 5)
 
     @classmethod
-    def validate_token(cls, user_id):
+    def validate_token(cls, user_id, session_id):
         redis = Config.redis_instence
         # current_version = redis.get(f"user:{user_id}:valid")
-        expired, sessions = cls.find_user_sessions_nt_valid(user_id)
+        expired, sessions = cls.find_user_sessions_nt_valid(user_id, session_id)
         # print(current_version, flush=True)
         if len(sessions) == 0 :
-            return ("Not authorized", 403)
+            return ("Not authorized", 401)
         if expired :
-            return ("Stale token - roles changed", 401)
+            return ("unvalid token", 401)
 
         return ("Success", 200)
 
     @classmethod
-    def find_user_sessions_nt_valid(cls, user_id):
+    def find_user_sessions_nt_valid(cls, user_id, session_id):
         redis = Config.redis_instence
+        found_currect = True
         sessions = []
         
         for key in redis.scan_iter("session:*") :
-            print(str(key), flush=True)
-            print(str(redis.hget(key, "user_id")), flush=True)
+            if key.decode('utf-8') == str(session_id):
+                found_currect = True
             if redis.hget(key, "user_id").decode('utf-8') == str(user_id) :
                 print("found!", flush=True)
                 sessions.append(redis.hgetall(key))
                 if redis.hget(key, "valid").decode('utf-8') == str(0) :
                     return True, sessions
 
-        return False, sessions
+        return (False or found_currect), sessions
 
+
+    @classmethod
+    def logout(cls, session_id):
+        redis = Config.redis_instence
+        redis.delete(f"session:{session_id}")
         #     current_version = redis.get(f"user:{payload['sub']}:token_version") or 0
         #     if int(payload['token_version']) < int(current_version):
         #         abort(401, "Permissions changed - please re-login")
