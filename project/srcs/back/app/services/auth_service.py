@@ -6,8 +6,8 @@ from flask_jwt_extended import create_refresh_token, create_access_token
 class AuthService :
     @staticmethod
     def verify_user(username: str, password: str) :
-        try :
 
+        try :
             user = UserRepository.find_by_username(username=username)
             
             if bcrypt.checkpw(password.encode(), user.password_hash.encode()) :

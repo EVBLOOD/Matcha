@@ -9,7 +9,8 @@ class Security :
         self.jwt.init_app(app)
 
     @staticmethod
-    def auth_guard(required_roles=None):
+    # def auth_guard(refresh=True, required_roles=None):
+    def auth_guard(required_roles=None) :
         def decorator(fn):
             @wraps(fn)
             def wrapper(*args, **kwargs):

@@ -4,6 +4,8 @@ from app.routes.auth_route import auth_bp
 from app.core.database import Database
 from app.core.config import Config
 from app.core.security import Security
+from flask_redis import FlaskRedis
+
 
 
 
@@ -12,7 +14,7 @@ Config.DB_instence = Database(app=app)
 
 app.config.from_object(Config)
 Security().init_jwt(app)
-
+redis = FlaskRedis(app)
 app.register_blueprint(user_bp)
 app.register_blueprint(auth_bp)
 
