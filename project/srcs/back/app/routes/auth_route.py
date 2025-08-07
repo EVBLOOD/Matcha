@@ -19,14 +19,12 @@ def login() :
         user = AuthService.verify_user(username, password)    
         if user is None :
             return jsonify({"error": "Invalid credentials"}), 401
- 
-        access_token, refresh_token = AuthService.generate_token(user.id, user.password_hash)
-        
+  
+        access_token, refresh_token = AuthService.generate_token(id=user.id, username=user.id, request=request)
+
         return jsonify({
             "access_token": access_token,
-            "refresh_token": refresh_token,
-            "user_id": user.id,
-            "username": user.username
+            "refresh_token": refresh_token
         }), 200
     except ValueError as e :
         return jsonify({"error": str(e)}), 400

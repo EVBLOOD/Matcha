@@ -55,7 +55,7 @@ def init_infos() :
 @user_bp.route("/protected", methods=["GET", "POST"])
 @Security.auth_guard()
 def protected() :
-    return jsonify({"result": "protected"})
+    return jsonify({"result": f"protected {request.user_id}"})
 
 @user_bp.route("/not_protected", methods=["GET", "POST"])
 def not_protected() :

@@ -10,11 +10,11 @@ from flask_redis import FlaskRedis
 
 
 app = Flask(__name__)
-Config.DB_instence = Database(app=app)
-
 app.config.from_object(Config)
+Config.DB_instence = Database(app=app)
+Config.redis_instence = FlaskRedis(app=app)
 Security().init_jwt(app)
-redis = FlaskRedis(app)
+
 app.register_blueprint(user_bp)
 app.register_blueprint(auth_bp)
 
