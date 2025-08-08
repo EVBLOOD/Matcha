@@ -19,6 +19,12 @@ class Security :
             def wrapper(*args, **kwargs):
 
                 try:
+                    # if refresh :
+                    #     claims = get_jwt()
+                    #     message, status = AuthService.validate_token(claims["user_id"], get_jwt_identity())
+                    #     if status != 401 :
+                    #         raise Exception(message)
+                        
                     verify_jwt_in_request()
                     claims = get_jwt()
                     message, status = AuthService.validate_token(claims["user_id"], get_jwt_identity())

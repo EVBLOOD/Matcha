@@ -53,7 +53,7 @@ class AuthService :
     def validate_token(cls, user_id, session_id):
         expired, sessions = cls.find_user_sessions_nt_valid(user_id, session_id)
         if len(sessions) == 0 :
-            return ("Not authorized", 401)
+            return ("Not authorized", 403)
         if expired :
             return ("unvalid token", 401)
 

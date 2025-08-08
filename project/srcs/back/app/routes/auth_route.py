@@ -42,7 +42,7 @@ def logout() :
         return jsonify({"error": str(e)}), 400
  
 # @auth_bp.route('/refresh', methods=['POST'])
-# @jwt_refresh_token_required()
+# @Security.auth_guard(refresh=True)
 # def refresh():
 #     current_user = get_jwt_identity()
 #     new_token = create_access_token(identity=current_user)
