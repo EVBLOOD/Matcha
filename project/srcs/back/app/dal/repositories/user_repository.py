@@ -100,3 +100,15 @@ class UserRepository(BaseRepository):
             WHERE id = %s
         """
         return cls._execute(query, (latitude, longitude, user_id)) > 0
+
+    @classmethod
+    def update_password(cls, user_id: int, new_password: str) :
+        trying = 0
+        query = """
+            UPDATE users 
+            SET password_hash = %s 
+            WHERE id = %s
+            RETURNING id
+        """
+        password_hash = User.hashing_password(password=new_password)
+        return cls._execute(query, (password_hash, user_id))

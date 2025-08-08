@@ -39,18 +39,13 @@ def verify_account() :
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
 
-@user_bp.route('/init_infos', methods=["POST"])
-def init_infos() :
-    try :
-        # get the user id or token from front cache or header
-        token = request.headers.get('Authorization')
-        if token == None or not isinstance(token, str) :
-            return jsonify({"error": "Non Authorized!"}), 403
-        token_spliter = stoken.split()
-        # decrypt the token
+# @user_bp.route('/init_infos', methods=["POST"])
+# def init_infos() :
+#     try :
+#         # request.user_id : here is the user
         
-    except ValueError as e :
-        return jsonify({"error": str(e)}), 400
+#     except ValueError as e :
+#         return jsonify({"error": str(e)}), 400
 
 @user_bp.route("/protected", methods=["GET", "POST"])
 @Security.auth_guard()

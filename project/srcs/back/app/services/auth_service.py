@@ -3,6 +3,7 @@ import bcrypt
 from flask_jwt_extended import create_refresh_token, create_access_token
 from app.core.config import Config
 import uuid
+import secrets
 
 class AuthService :
     @staticmethod
@@ -30,28 +31,37 @@ class AuthService :
         return access_token, refresh_token
 
 
-
     @classmethod
     def create_session(cls, session_id, user_id, username, request):
         redis = Config.redis_instence
-
+        user_version = redis.get(f"user:{user_id}:auth_version") or uuid.uuid4().hex
+        print(user_version, flush=True)
+        redis.set(f"user:{user_id}:auth_version", user_version)
         redis.hset(f"session:{session_id}", mapping={
             "user_id": user_id,
             "username": username,
             "ip": request.remote_addr,
-            "valid": 1
+            "auth_version": user_version
+
         })
         redis.expire(f"session:{session_id}", 3600*24*7)
+        redis.sadd(f"user:{user_id}:sessions", session_id)
         return session_id
 
-    def user_session_changed_role(session_id):
+    def user_session_changed_role(user_id, session_id = None):
         redis = Config.redis_instence
-        redis.hset(f"session:{session_id}", "valid", 0)
-        redis.expire(f"session:{session_id}", (3600 / 60) * 5)
+        user_version = uuid.uuid4().hex
+        redis.set(f"user:{user_id}:auth_version", user_version)
+
+        if session_id:
+            redis.hset(f"session:{session_id}", "auth_version", user_version)
+
+
 
     @classmethod
     def validate_token(cls, user_id, session_id):
-        expired, sessions = cls.find_user_sessions_nt_valid(user_id, session_id)
+        expired, sessions = cls.find_user_session_nt_valid(user_id, session_id)
+        print (expired, sessions, flush=True)
         if len(sessions) == 0 :
             return ("Not authorized", 403)
         if expired :
@@ -60,24 +70,81 @@ class AuthService :
         return ("Success", 200)
 
     @classmethod
-    def find_user_sessions_nt_valid(cls, user_id, session_id):
+    def find_user_session_nt_valid(cls, user_id, session_id):
         redis = Config.redis_instence
-        found_currect = True
-        sessions = []
-        
-        for key in redis.scan_iter("session:*") :
-            if key.decode('utf-8') == str(session_id):
-                found_currect = True
-            if redis.hget(key, "user_id").decode('utf-8') == str(user_id) :
-                print("found!", flush=True)
-                sessions.append(redis.hgetall(key))
-                if redis.hget(key, "valid").decode('utf-8') == str(0) :
-                    return True, sessions
 
-        return (False or found_currect), sessions
+        current_auth_version = redis.get(f"user:{user_id}:auth_version")
+
+        if current_auth_version:
+            current_auth_version = current_auth_version.decode()
+
+        session_key = f"session:{session_id}"
+        session_data = redis.hgetall(session_key)
+        if not session_data:
+            return False, []
+        
+        session_user_id = session_data.get(b"user_id")
+        session_auth_version = session_data.get(b"auth_version")
+        print(session_user_id.decode(), session_auth_version.decode(), current_auth_version, flush=True)
+
+        if not session_user_id or session_user_id.decode() != str(user_id):
+            return False, []
+
+        if session_auth_version is None or session_auth_version.decode() != current_auth_version:
+            return True, []
+
+        return False, [1]
 
 
     @classmethod
-    def logout(cls, session_id):
+    def logout(cls, session_id, user_id):
         redis = Config.redis_instence
         redis.delete(f"session:{session_id}")
+        redis.srem(f"user:{user_id}:sessions", session_id)
+
+    @classmethod
+    def reset_password(cls, user_input) :
+        user = None
+        if "@" not in user_input :
+            user = UserRepository.find_by_username(username=user_input)
+        else :
+            user = UserRepository.find_by_email(email=user_input)
+        if user is None :
+            raise ValueError("Email or username is incorrect")
+        AuthService.add_reset_token(user_id=user.id)
+
+    
+    @staticmethod
+    def add_reset_token(user_id: str):
+        redis = Config.redis_instence
+        token = secrets.token_urlsafe(32)
+        print (token, flush=True)
+        redis.setex(f"pwd_reset:{token}", 3600, user_id)
+
+    @staticmethod
+    def check_token(token):
+        redis = Config.redis_instence
+        user_id = redis.get(f"pwd_reset:{token}")
+        return user_id
+
+    @staticmethod
+    def check_and_reset_token(token, new_password):
+        redis = Config.redis_instence
+        user_id = redis.getdel(f"pwd_reset:{token}")
+
+        if user_id is None :
+            raise ValueError("Invalid/used token")
+
+        if not UserRepository.update_password(int(user_id), new_password):
+            raise ValueError("Password update failed")
+
+        user_version = uuid.uuid4().hex
+        redis.set(f"user:{user_id}:auth_version", user_version)
+        print(user_version, flush=True)
+        return user_id
+
+
+
+
+
+

@@ -13,7 +13,7 @@ class Config:
     redis_instence = None
     # SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'secret_key')
-    JWT_ACCESS_TOKEN_EXPIRES = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES', 1))
+    JWT_ACCESS_TOKEN_EXPIRES = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES', 3600))
     JWT_TOKEN_LOCATION = ["headers"]
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 

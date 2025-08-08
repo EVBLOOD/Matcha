@@ -55,7 +55,8 @@ class User:
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return re.match(email_regex, email) and len(email) < 255
     
-    def hashing_password(self, password) :
+    @staticmethod
+    def hashing_password(password) :
         return bcrypt.hashpw(
             password.encode('utf-8'),
             bcrypt.gensalt()

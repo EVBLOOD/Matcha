@@ -35,8 +35,9 @@ def login() :
 def logout() :
     try :
         session_id = request.session_id
+        user_id = request.user_id
         
-        AuthService.logout(session_id)
+        AuthService.logout(session_id, user_id)
         return jsonify({"success": "logged out!"}), 200
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
@@ -47,3 +48,47 @@ def logout() :
 #     current_user = get_jwt_identity()
 #     new_token = create_access_token(identity=current_user)
 #     return jsonify(access_token=new_token), 200
+
+@auth_bp.route('/forgot_pass', methods=['POST'])
+def forgot_pass() :
+    try :
+        body = request.get_json()
+        user_input = body.get('user_input')
+        if not isinstance(user_input, str) :
+            raise ("Missing required fields")
+
+        AuthService.reset_password(user_input)
+
+        return jsonify({"success": "check your email"}), 200
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400
+
+@auth_bp.route('/verify-reset-token', methods=['GET'])
+def verify_reset_token():
+    try :
+        token = request.args.get('token')
+        if not token:
+            raise ValueError("Token required")
+        if AuthService.check_token(token=token) is None :
+            return jsonify({"valid": False, "error": "Invalid/expired token"}), 401
+        return jsonify({"valid": True}), 200
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400
+
+# 8H0VBHSrNxWHbSAVThdkZXCuxU6nPfFSjGJB-n_0gik
+@auth_bp.route('/confirm-reset', methods=['POST'])
+def confirm_reset():
+    try :
+    
+        body = request.get_json()
+        token = body.get('token')
+        new_password = body.get('new_password')
+
+        if not all([token, new_password]):
+            raise ValueError("Token and password required")
+
+        AuthService.check_and_reset_token(token=token, new_password=new_password)
+
+        return jsonify({"message": "Password updated successfully"}), 200
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400
