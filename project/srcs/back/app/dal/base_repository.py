@@ -80,6 +80,7 @@ class BaseRepository:
             sql.Identifier(cls._table_name)
         )
         return Config.DB_instence.execute(query, (id,))
+    
     @classmethod
     def find_by_something(cls, id, something = "id", what="*"):
         query = sql.SQL("SELECT {} FROM {} WHERE {} = %s").format(
@@ -87,4 +88,6 @@ class BaseRepository:
             sql.Identifier(cls._table_name),
             sql.Identifier(something)
         )
-        return Config.DB_instence.execute(query, (id,), fetch_one=True)
+        with Config.DB_instence.get_cursor() as cursor:
+            cursor.execute(query, (id,))
+            return cursor.fetchone()

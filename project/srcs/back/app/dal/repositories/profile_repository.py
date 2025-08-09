@@ -32,5 +32,5 @@ class ProfileRepository(BaseRepository):
 
     @classmethod
     def find_profile_exists(cls, user_id: str) -> bool :
-        return cls.find_by_something(id=user_id, something="user_id", what="id") != None
+        return cls.find_by_something(id=user_id, something="user_id", what="user_id") != None
         
