@@ -33,7 +33,7 @@ class PictureService:
             img.verify()
             if img.width > Config.max_width or img.height > Config.max_height:
                 raise ValueError("Invalid image size")
-            img.close()
+            # img.close()
         except Exception as e:
             raise ValueError("Invalid image content")
         

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services.profile_service import ProfileService
+# from app.services.picture_service import PictureService
 from app.core.security import Security
 from PIL import Image
 
@@ -13,16 +14,17 @@ def create_profile() :
     try :
 
         user_id = request.user_id
-        body = request.get_json()
+        body = request.form
+        files = request.files
 
-        if not body or not all(key in body for key in ['gender', 'sexual_preference', 'biography', 'location_set_by_user', 'latitude', 'longitude']):
+        if not files or not body or not all(key in body for key in ['gender', 'sexual_preference', 'biography', 'location_set_by_user', 'latitude', 'longitude']):
             raise ValueError("Missing required fields")
 
         was_added = ProfileService.create_profile(user_id=user_id, gender=body['gender'],\
                                                    sexual_preference=body['sexual_preference'], \
                                                     biography=body['biography'], \
                                                         location_set_by_user=body['location_set_by_user'], \
-                                                            latitude=body['latitude'], longitude=body['longitude'])
+                                                            latitude=body['latitude'], longitude=body['longitude'], files_list=files)
         print (was_added)
         if was_added :
             return jsonify({"success": "profile created for user"}), 201

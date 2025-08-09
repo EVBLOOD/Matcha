@@ -9,6 +9,6 @@ app - The root module containing all application code.
                                 - modules : classes containing the data presestance for objects in tables (a represention of tables as classes - no database logic)
                                 - Represotries : classees managing the database operations for each table (trying to keep with ORM style to organize things even we using only SQL and No ORM)
         - services : services mannaging the logic before saving data to Represotries [Contains business logic (validation, workflows).]
-        - routes : routes mannaging the requests for the user and sending responses
+        - controllers : routes mannaging the requests for the user and sending responses
 
 __init__.py   -> Makes the folders a Python package
