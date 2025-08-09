@@ -4,6 +4,7 @@ from flask_jwt_extended import create_refresh_token, create_access_token
 from app.core.config import Config
 import uuid
 import secrets
+from app.services.profile_service import ProfileService
 
 class AuthService :
     @staticmethod
@@ -35,17 +36,22 @@ class AuthService :
     def create_session(cls, session_id, user_id, username, request):
         redis = Config.redis_instence
         user_version = redis.get(f"user:{user_id}:auth_version") or uuid.uuid4().hex
-        print(user_version, flush=True)
         redis.set(f"user:{user_id}:auth_version", user_version)
         redis.hset(f"session:{session_id}", mapping={
             "user_id": user_id,
             "username": username,
             "ip": request.remote_addr,
-            "auth_version": user_version
+            "auth_version": user_version,
 
         })
         redis.expire(f"session:{session_id}", 3600*24*7)
         redis.sadd(f"user:{user_id}:sessions", session_id)
+
+        if ProfileService.check_profile_filled(user_id) :
+            redis.set(f"user:{user_id}:profile_complete", "1")
+        else :
+            redis.set(f"user:{user_id}:profile_complete", "0")
+
         return session_id
 
     def user_session_changed_role(user_id, session_id = None):
@@ -143,8 +149,18 @@ class AuthService :
         print(user_version, flush=True)
         return user_id
 
+    @staticmethod
+    def update_profile_profile_completion(user_id: str) :
+        redis = Config.redis_instence
+        redis.set(f"user:{user_id}:profile_complete", "1")
 
+    @staticmethod
+    def check_profile_completion(user_id: str) :
+        redis = Config.redis_instence
 
-
-
+        profile_complete = redis.get(f"user:{user_id}:profile_complete")
+        if profile_complete and profile_complete.decode() == "1":
+            return True
+        else :
+            return False
 

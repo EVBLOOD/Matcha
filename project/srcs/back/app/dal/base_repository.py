@@ -17,6 +17,12 @@ class BaseRepository:
             return cursor.fetchone()
 
     @classmethod
+    def _fetch(cls, query: str, params=None):
+        with Config.DB_instence.get_cursor() as cursor:
+            cursor.execute(query, params)
+            return cursor.fetchall()
+
+    @classmethod
     def _build_insert_query(
         cls,
         *,

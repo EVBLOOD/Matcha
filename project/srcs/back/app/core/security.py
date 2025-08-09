@@ -13,7 +13,7 @@ class Security :
 
     @staticmethod
     # def auth_guard(refresh=True, required_roles=None):
-    def auth_guard(required_roles=None) :
+    def auth_guard(required_roles=None, check_profile=True) :
         def decorator(fn):
             @wraps(fn)
             def wrapper(*args, **kwargs):
@@ -25,7 +25,9 @@ class Security :
                     message, status = AuthService.validate_token(claims["user_id"], get_jwt_identity())
                     if status != 200 :
                         raise Exception(message)
-                    
+                    # This maybe will be moved down when working with the admin role
+                    if check_profile and not AuthService.check_profile_completion(claims["user_id"]) :
+                        return jsonify({"error": "profile completion required"}), 301
                 except Exception as e:
                     return jsonify({"error": str(e)}), 401
 

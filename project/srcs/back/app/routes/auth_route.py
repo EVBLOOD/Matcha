@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from app.services.auth_service import AuthService
-from app.services.profile_service import AuthService
 from app.core.security import Security
 
 auth_bp = Blueprint('auth_api', __name__, url_prefix='/auth')
