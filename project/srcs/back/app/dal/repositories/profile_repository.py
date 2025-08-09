@@ -20,6 +20,7 @@ class ProfileRepository(BaseRepository):
                 sexual_preference = EXCLUDED.sexual_preference,
                 biography = EXCLUDED.biography,
                 location_set_by_user = EXCLUDED.location_set_by_user
+            RETURNING user_id
         """
         params = (
             profile.user_id,
@@ -28,7 +29,7 @@ class ProfileRepository(BaseRepository):
             profile.biography,
             profile.location_set_by_user
         )
-        return cls._execute(query, params) > 0
+        return cls._execute(query, params)
 
     @classmethod
     def find_profile_exists(cls, user_id: str) -> bool :

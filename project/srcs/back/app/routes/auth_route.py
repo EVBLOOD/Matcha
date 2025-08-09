@@ -31,7 +31,7 @@ def login() :
         return jsonify({"error": str(e)}), 400
 
 @auth_bp.route('/logout', methods=['POST'])
-@Security.auth_guard()
+@Security.auth_guard(check_profile=False)
 def logout() :
     try :
         session_id = request.session_id
