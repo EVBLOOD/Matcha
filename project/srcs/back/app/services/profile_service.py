@@ -6,6 +6,7 @@ import imghdr  # Built-in module for checking image types
 from io import BytesIO
 from PIL import Image
 
+
 class ProfileService:
     @staticmethod
     def create_profile(user_id: int, gender: str, sexual_preference: str,\
