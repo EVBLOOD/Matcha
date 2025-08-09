@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services.auth_service import AuthService
+from app.services.profile_service import AuthService
 from app.core.security import Security
 
 auth_bp = Blueprint('auth_api', __name__, url_prefix='/auth')
@@ -42,7 +43,7 @@ def logout() :
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
  
-# @auth_bp.route('/refresh', methods=['POST'])
+# @auth_bp.route('/refresh', methods=['POST']) # this will be implemented for the refresh token
 # @Security.auth_guard(refresh=True)
 # def refresh():
 #     current_user = get_jwt_identity()
@@ -75,7 +76,6 @@ def verify_reset_token():
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
 
-# 8H0VBHSrNxWHbSAVThdkZXCuxU6nPfFSjGJB-n_0gik
 @auth_bp.route('/confirm-reset', methods=['POST'])
 def confirm_reset():
     try :

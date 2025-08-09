@@ -62,10 +62,11 @@ class BaseRepository:
 
     @classmethod
     def find_by_id(cls, id):
-        query = sql.SQL("SELECT * FROM {} WHERE id = %s").format(
-            sql.Identifier(cls._table_name)
-        )
-        return Config.DB_instence.execute(query, (id,), fetch_one=True)
+        return cls.find_by_something(id=id)
+        # query = sql.SQL("SELECT * FROM {} WHERE id = %s").format(
+        #     sql.Identifier(cls._table_name)
+        # )
+        # return Config.DB_instence.execute(query, (id,), fetch_one=True)
 
     @classmethod
     def delete(cls, id):
@@ -73,3 +74,11 @@ class BaseRepository:
             sql.Identifier(cls._table_name)
         )
         return Config.DB_instence.execute(query, (id,))
+    @classmethod
+    def find_by_something(cls, id, something = "id", what="*"):
+        query = sql.SQL("SELECT {} FROM {} WHERE {} = %s").format(
+            sql.Identifier(what),
+            sql.Identifier(cls._table_name),
+            sql.Identifier(something)
+        )
+        return Config.DB_instence.execute(query, (id,), fetch_one=True)
