@@ -22,4 +22,10 @@ class UserInterestsRepository(BaseRepository):
         rows = cls._fetch(query, (user_id,))
         return rows
     
+    @classmethod
+    def get_user_tag_existance(cls, user_id: str, tag_id: str) :
+        query = "SELECT tag_id FROM user_interests WHERE user_id = %s AND tag_id = %s"
+        row = cls._fetch_one(query, (user_id, tag_id,))
+        return (row is not None)
+    
         
