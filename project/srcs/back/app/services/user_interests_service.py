@@ -1,5 +1,5 @@
-from app.dal.repositories.user_interests_repository import UserInterestsRepository, UserInterests
-from app.dal.repositories.user_interests_repository import UserInterests, UserInterestsRepository
+from app.dal.repositories.user_interests_repository \
+    import UserInterests,UserInterestsRepository
 
 class UserInterestsService:
     @staticmethod

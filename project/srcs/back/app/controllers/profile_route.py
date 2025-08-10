@@ -16,15 +16,15 @@ def create_profile() :
         user_id = request.user_id
         body = request.form
         files = request.files
-
-        if not files or not body or not all(key in body for key in ['gender', 'sexual_preference', 'biography', 'location_set_by_user', 'latitude', 'longitude']):
+        if not files or not body or not all(key in body for key in ['gender', 'sexual_preference', 'biography', 'location_set_by_user', 'latitude', 'longitude', 'tags']):
             raise ValueError("Missing required fields")
-
+        if not isinstance(body['tags'], str) :
+            raise ValueError("Missing required fields")
         was_added = ProfileService.create_profile(user_id=user_id, gender=body['gender'],\
                                                    sexual_preference=body['sexual_preference'], \
                                                     biography=body['biography'], \
                                                         location_set_by_user=body['location_set_by_user'], \
-                                                            latitude=body['latitude'], longitude=body['longitude'], files_list=files)
+                                                            latitude=body['latitude'], longitude=body['longitude'], files_list=files, tags=set(body['tags'].split(';')))
         print (was_added)
         if was_added :
             return jsonify({"success": "profile created for user"}), 201

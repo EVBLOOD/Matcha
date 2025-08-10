@@ -7,21 +7,22 @@
         [ ] Email verification (send verification email with unique link).
     [ ] Login :
         [ ] Login UI Page (form with -> username and password + forgot the password).
-        [ ] Backend login logic.
+        [x] Backend login logic.
         [ ] Bonus: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
     [ ] Password Reset :
         [ ] "Reset Password" UI page (form with -> email address).
         [ ] "Forgot Password" UI link redirect page (form with -> new password).
-        [ ] Password reset request logic (send the unique email link).
+        [x] Password reset request logic (send the unique email link).
     [ ] Logout :
-        [ ] Logout logic.
+        [x] Logout logic.
     [ ] User Profile (Edit/Create) :
-        [ ] Profile first time UI Page (form for -> gender, sexual preferences, bio, interests with tags, 5 pictures as profile, location).
+        [x] Profile first time UI Page (form for -> gender, sexual preferences, bio
+        [] interests with tags, 5 pictures as profile, location).
         [ ] Bonus: Social Media Picture Import: Allow picture import from social platforms.
         [ ] Profile Edit UI Page (form for -> all previuos feilds + first name, last name, email, LOCATION).
         [ ] Backend profile add/update logic.
-        [ ] Image upload functionality.
-        [ ] Interest tags implementation (reusable tags).
+        [x] Image upload functionality.
+        [x] Interest tags implementation (reusable tags).
     [ ] User Profile (View) :
         [ ] Display your own profile data on a UI page with (Viewers and Likers).
         [ ] Display your own Profile visit History logging UI Page.
