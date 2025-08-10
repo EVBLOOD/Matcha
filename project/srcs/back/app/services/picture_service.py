@@ -8,6 +8,7 @@ from app.core.config import Config
 import uuid
 import os
 # import magic
+from werkzeug.utils  import secure_filename
 
 class PictureService:
 
@@ -18,7 +19,7 @@ class PictureService:
 
     @classmethod
     def validate_image(cls, file_stream, filename):
-
+        filename = secure_filename(filename)
         if not cls.allowed_file(filename):
             raise ValueError("File extension not allowed")
         
@@ -40,6 +41,7 @@ class PictureService:
         return True
 
     def save_file(file) :
+        file.stream.seek(0)
         ext = imghdr.what(file.stream)
         file.stream.seek(0)
         filename = f"{uuid.uuid4().hex}.{ext}"
