@@ -8,7 +8,7 @@ class UserInterestsRepository(BaseRepository):
     ]
 
     @classmethod
-    def create_tags(cls, user_interest: UserInterests) :
+    def create_user_interests(cls, user_interest: UserInterests) :
         norm_data = {
             'user_id' : user_interest.user_id,
             'tag_id' : user_interest.tag_id,

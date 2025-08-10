@@ -1,5 +1,6 @@
 from app.dal.models.profile import Profile
 from app.dal.repositories.profile_repository import ProfileRepository
+# from app.dal.repositories.user_interests_repository import ProfileRepository
 from app.services.picture_service import PictureService
 from app.services.auth_service import AuthService
 from typing import Optional
