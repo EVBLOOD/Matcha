@@ -1,7 +1,9 @@
 from app.dal.models.user import User
 from app.dal.repositories.user_repository import UserRepository
+from app.services.auth_service import AuthService
 from typing import Optional
-import re
+import secrets
+from app.core.config import Config
 
 class UserService:
     @staticmethod
@@ -34,3 +36,49 @@ class UserService:
         if is_verified :
             raise ValueError("Account already verified")
         UserRepository.verify_token(user_id)
+    
+    @staticmethod
+    def change_password(user_id: int, password: str, session_id: str) :
+        # TODO: check password 
+        UserRepository.update_password(user_id=user_id, new_password=password)
+        AuthService.user_session_changed_role(user_id=user_id, session_id=session_id)
+    
+    @staticmethod
+    def update_user_infos(user_id: int, username: str, first_name: str, last_name: str) :
+        try :
+            UserRepository.update_user_infos(user_id, first_name, last_name , username)
+        except Exception as e :
+            raise ValueError(str(e)) # unique username
+    
+    @staticmethod
+    def update_user_email_request(user_id: int, email: str) :
+        redis = Config.redis_instence
+
+        user = UserRepository.find_by_email(email)
+        if user.id != int(user_id) or email == user.email:
+            raise ValueError("Email can't be used!")
+        
+        token = secrets.token_urlsafe(32)
+        
+        key = f"email_change:{email}"
+        redis.hset(key, mapping={
+            "token": token,
+            "user_id": user_id
+        })
+        redis.expire(key, 3600)
+        redis.sadd(f"user_email_change:{user_id}:emails", email)
+        # TODO: send email with link and email as param
+
+    @staticmethod
+    def confirm_change(self, user_id: int, token: str, email: str, session_id: str ) -> bool:
+        redis = Config.redis_instence
+        key = f"email_change:{email}"
+        data = redis.hgetall(key)
+        
+        if not data or data.get("token") != token or data.get("user_id") != user_id:
+            return False
+        UserRepository.update_email(user_id, email)
+        
+        redis.delete(key) # TODO: delete the emails request from redis
+        AuthService.user_session_changed_role(user_id=user_id, session_id=session_id)
+        return True

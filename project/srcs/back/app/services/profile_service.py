@@ -34,11 +34,9 @@ class ProfileService:
             or sexual_preference not in ('straight', 'gay', 'bisexual') \
                 or not isinstance(location_set_by_user, bool):
             raise ValueError("Form error inputs!")
-        if not ProfileRepository.find_profile_exists(user_id) :
-            raise ValueError("Profile not even filled yet!")
 
-        return ProfileRepository.upsert_profile(
-            Profile(user_id, gender, sexual_preference, biography, location_set_by_user)
+        return ProfileRepository.update_profile(
+            Profile(user_id, gender, sexual_preference, biography)
         )
 
     @staticmethod

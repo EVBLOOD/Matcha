@@ -16,8 +16,8 @@
     [ ] Logout :
         [x] Logout logic.
     [ ] User Profile (Edit/Create) :
-        [x] Profile first time UI Page (form for -> gender, sexual preferences, bio
-        [] interests with tags, 5 pictures as profile, location).
+        [ ] Profile first time UI Page (form for -> gender, sexual preferences, bio
+        [ ] interests with tags, 5 pictures as profile, location).
         [ ] Bonus: Social Media Picture Import: Allow picture import from social platforms.
         [ ] Profile Edit UI Page (form for -> all previuos feilds + first name, last name, email, LOCATION).
         [ ] Backend profile add/update logic.

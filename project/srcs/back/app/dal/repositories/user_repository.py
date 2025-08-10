@@ -103,7 +103,6 @@ class UserRepository(BaseRepository):
 
     @classmethod
     def update_password(cls, user_id: int, new_password: str) :
-        trying = 0
         query = """
             UPDATE users 
             SET password_hash = %s 
@@ -112,3 +111,20 @@ class UserRepository(BaseRepository):
         """
         password_hash = User.hashing_password(password=new_password)
         return cls._execute(query, (password_hash, user_id))
+    #     _columns = [
+    #     "id", "username", "first_name", "last_name", 
+    #     "password_hash", "email", "fame_rating",
+    #     "latitude", "longitude", "is_verified"
+    # ]
+    @classmethod
+    def update_user_infos(cls, user_id: int, first_name: str, last_name : str, username: str) :
+        query = """
+            UPDATE users 
+            SET
+                first_name = %s 
+                last_name = %s 
+                username = %s 
+            WHERE id = %s
+            RETURNING id
+        """
+        return cls._execute(query, (first_name, last_name ,username, user_id))

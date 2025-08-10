@@ -8,7 +8,12 @@ class ProfileRepository(BaseRepository):
         "sexual_preference", "biography",
         "location_set_by_user"
     ]
-
+        # query = """
+        #     UPDATE users 
+        #     SET verification_token = %s 
+        #     WHERE id = %s
+        #     RETURNING id
+        # """
     @classmethod
     def upsert_profile(cls, profile: Profile) -> bool:
         query = """
@@ -30,6 +35,26 @@ class ProfileRepository(BaseRepository):
             profile.location_set_by_user
         )
         return cls._execute(query, params)
+
+    @classmethod
+    def update_profile(cls, profile: Profile) -> bool:
+        query = """
+            UPDATE profiles 
+            SET
+                gender = %s,
+                sexual_preference = %s,
+                biography = %s
+            WHERE user_id = %s
+            RETURNING user_id
+        """
+        params = (
+            profile.user_id,
+            profile.gender,
+            profile.sexual_preference,
+            profile.biography
+        )
+        return cls._execute(query, params)
+
 
     @classmethod
     def find_profile_exists(cls, user_id: str) -> bool :
