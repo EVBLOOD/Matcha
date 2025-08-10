@@ -4,7 +4,7 @@ from flask_jwt_extended import create_refresh_token, create_access_token
 from app.core.config import Config
 import uuid
 import secrets
-from app.services.profile_service import ProfileService
+from app.dal.repositories.profile_repository import ProfileRepository
 
 class AuthService :
     @staticmethod
@@ -47,7 +47,8 @@ class AuthService :
         redis.expire(f"session:{session_id}", 3600*24*7)
         redis.sadd(f"user:{user_id}:sessions", session_id)
 
-        if ProfileService.check_profile_filled(user_id) :
+
+        if ProfileRepository.find_profile_exists(user_id) :
             redis.set(f"user:{user_id}:profile_complete", "1")
         else :
             redis.set(f"user:{user_id}:profile_complete", "0")

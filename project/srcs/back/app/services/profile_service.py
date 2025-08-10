@@ -1,6 +1,7 @@
 from app.dal.models.profile import Profile
 from app.dal.repositories.profile_repository import ProfileRepository
 from app.services.picture_service import PictureService
+from app.services.auth_service import AuthService
 from typing import Optional
 
 class ProfileService:
@@ -16,9 +17,11 @@ class ProfileService:
         if not files_list or len(files_list) > 5:
             raise ValueError("Must provide 1-5 pictures")
         PictureService.proccess_images(files_list, user_id)
-        return ProfileRepository.upsert_profile(
+        was_done = ProfileRepository.upsert_profile(
             Profile(user_id, gender, sexual_preference, biography, location_set_by_user)
         )
+        AuthService.update_profile_profile_completion(user_id)
+        return was_done
     
     @staticmethod
     def update_profile(user_id: int, gender: str, sexual_preference: str,\
