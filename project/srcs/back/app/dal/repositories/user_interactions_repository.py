@@ -1,14 +1,5 @@
 from app.dal.base_repository import BaseRepository
 from app.dal.models.user_interactions import UserInteractions
-# CREATE TABLE user_interactions (
-#     id SERIAL PRIMARY KEY,
-#     liker_id INT REFERENCES users(id) ON DELETE CASCADE,
-#     liked_id INT REFERENCES users(id) ON DELETE CASCADE,
-#     status VARCHAR(10) NOT NULL CHECK (status IN ('liked', 'disliked')),
-#     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-#     UNIQUE (liker_id, liked_id)
-# );
-
 
 class UserInteractionsRepository(BaseRepository):
     _table_name = "user_interactions"
@@ -45,6 +36,11 @@ class UserInteractionsRepository(BaseRepository):
     def get_user_interaction_existance(cls, liker_id: str, liked_id: str) :
         query = "SELECT id FROM user_interactions WHERE liker_id = %s AND liked_id = %s"
         row = cls._fetch_one(query, (liker_id, liked_id,))
-        return (row is not None)
+        return row
     
-        
+    @classmethod
+    def remove_user_interaction_existance(cls, liker_id: str, liked_id: str) :
+        id = cls.get_user_interaction_existance(liker_id, liked_id)
+        if not id :
+            return None
+        return cls.delete(id)
