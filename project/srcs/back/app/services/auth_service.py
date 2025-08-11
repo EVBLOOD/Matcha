@@ -42,10 +42,9 @@ class AuthService :
             "username": username,
             "ip": request.remote_addr,
             "auth_version": user_version,
-
         })
         redis.expire(f"session:{session_id}", 3600*24*7)
-        redis.sadd(f"user:{user_id}:sessions", session_id)
+        redis.sadd(f"user:{user_id}:sessions", session_id) # set of sessions for a user
 
 
         if ProfileRepository.find_profile_exists(user_id) :

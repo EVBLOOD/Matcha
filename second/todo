@@ -1,10 +1,11 @@
 [ ] Mandatory
     [x] chose a lang. (choosen: Vue + Flask)
     [x] Database Setup.
+    [x] redis setup
     [ ] Registration :
         [ ] Registration UI Page (form with -> email address, username, last name, first name, and a password).
         [x] Backend registration logic.
-->        [ ] Email verification (send verification email with unique link).
+        [x] Email verification (send verification email with unique link).
     [ ] Login :
         [ ] Login UI Page (form with -> username and password + forgot the password).
         [x] Backend login logic.
@@ -13,16 +14,17 @@
         [ ] "Reset Password" UI page (form with -> email address).
         [ ] "Forgot Password" UI link redirect page (form with -> new password).
         [x] Password reset request logic (send the unique email link).
-->        [ ] send the unique email link
+        [x] send the unique email link
     [ ] Logout :
         [x] Logout logic.
     [ ] User Profile (Edit/Create) :
-        [x] Profile first time UI Page (form for -> gender, sexual preferences, bio interests with tags, 5 pictures as profile, location).
+        [] Profile first time UI Page (form for -> gender, sexual preferences, bio interests with tags, 5 pictures as profile, location).
 ->      [ ] location should be added
         [ ] Bonus: Social Media Picture Import: Allow picture import from social platforms.
         [ ] Profile Edit UI Page (form for -> all previuos feilds + first name, last name, email, LOCATION).
-        [ ] Backend profile add/update logic.
+        [x] Backend profile add/update logic.
         [x] Image upload functionality.
+        [ ] Image updating functionalities (profile pic \ pictures)
         [x] Interest tags implementation (reusable tags).
     [ ] User Profile (View) :
         [ ] Display your own profile data on a UI page with (Viewers and Likers).
@@ -32,8 +34,8 @@
         [ ] "Like"/"Unlike" button/action to profile picture.
         [ ] "Like" Feature on profile picture (and "Unlike")
         [ ] Track user online status (session management or similar).
-        [ ] Backend "like" logic.
-        [ ] Backend "unlike" logic.
+        [x] Backend "like" logic.
+        [x] Backend "unlike" logic.
         [ ] "Profile Likers" tracking implementation.
         [ ] "Profile Viewers" tracking implementation.
         [ ] Fame Rating calculation and display (public).

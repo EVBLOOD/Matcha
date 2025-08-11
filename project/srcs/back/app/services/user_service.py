@@ -98,7 +98,7 @@ class UserService:
         
         redis.delete(key)
         user_emails_key = f"user_email_change:{user_id}:emails"
-        redis.delete(user_emails_key) # TODO: check if this is valid
+        redis.delete(user_emails_key)
 
         AuthService.user_session_changed_role(user_id=user_id, session_id=session_id)
         return True
