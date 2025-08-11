@@ -8,6 +8,7 @@ class EmailingService :
             recipients=[email],
         )
         link = Config.FRONT_LINK + "user/verify_account?token_id=" + token 
+
         msg.body = f"""
         Hello { username },
 
@@ -33,7 +34,17 @@ class EmailingService :
             subject="Email from Matcha",
             recipients=[email],
         )
-        link = Config.FRONT + "/change?token=" + token + "&email=" + email
+        link = Config.FRONT + "/user/verify_change_email?token=" + token + "&email=" + email
+
+        msg.body = f"""
+        Hello { username },
+
+        To change your email account, please click the link below :
+        { link }
+
+        If you didn’t request this, please ignore this email. Feel free to contact support if you need help!
+        """
+        
         msg.html = f"""
           <body>
             <p>Hello { username },</p>
