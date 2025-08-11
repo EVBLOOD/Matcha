@@ -59,7 +59,7 @@ class UserService:
             raise ValueError("Email can't be used!")
         
         token = secrets.token_urlsafe(32)
-        
+        print ("email token", email,  token, flush=True)
         key = f"email_change:{email}"
         redis.hset(key, mapping={
             "token": token,
