@@ -4,6 +4,7 @@ from app.services.auth_service import AuthService
 from typing import Optional
 import secrets
 from app.core.config import Config
+from app.services.emailing_service import EmailingService
 
 class UserService:
     @staticmethod
@@ -19,7 +20,7 @@ class UserService:
         if UserRepository.find_by_email(email):
             raise ValueError("email already taken")
 
-        return UserRepository.create_user(User(
+        user_data, token_verify, user_id = UserRepository.create_user(User(
             username=username, 
             email=email,
             password_hash=password,
@@ -29,6 +30,15 @@ class UserService:
             # latitude=latitude 
             insertion_check=True
         ))
+        if user_id is not None :
+            try :
+                EmailingService.send_email_welcoming(user_data.email, user_data.username, token_verify)
+            except Exception as e :
+                UserRepository.delete(user_id)
+                # TODO: remove from redis record
+                raise ValueError ("Email Not VALID!")
+                raise ValueError (str(e))
+        return user_id
 
     @staticmethod
     def verify_account(token : str) :
@@ -67,7 +77,14 @@ class UserService:
         })
         redis.expire(key, 3600)
         redis.sadd(f"user_email_change:{user_id}:emails", email)
-        # TODO: send email with link and email as param
+        # TODO: here we should check if the email is valid or reject it
+        try :
+            EmailingService.send_email_change_confirming(email, user.username, email)
+        except Exception as e :
+            # TODO: delete the email change from redis
+            raise ValueError ("Email Not VALID!")
+            raise ValueError(str(e))
+
 
     @staticmethod
     def confirm_change(self, user_id: int, token: str, email: str, session_id: str ) -> bool:

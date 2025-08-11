@@ -3,6 +3,7 @@ from app.dal.models.user import User
 from typing import Optional
 import secrets
 
+
 class UserRepository(BaseRepository):
     _table_name = "users"
     _columns = [
@@ -27,9 +28,7 @@ class UserRepository(BaseRepository):
         user_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion, data=norm_data)
         token_verify  = cls.create_verify_token(user_id=user_id)
         print (token_verify, flush=True)
-        # if user_id is not None :
-        #     cls.send_email(user_data.email, user_data.username, token_verify)
-        return user_id
+        return user_data, token_verify, user_id
     
     @classmethod
     def create_verify_token(cls, user_id: int) :

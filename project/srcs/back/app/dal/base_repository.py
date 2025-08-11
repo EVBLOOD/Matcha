@@ -76,10 +76,13 @@ class BaseRepository:
 
     @classmethod
     def delete(cls, id):
-        query = sql.SQL("DELETE FROM {} WHERE id = %s").format(
+        query = sql.SQL("DELETE FROM {} WHERE id = %s RETURNING id").format(
             sql.Identifier(cls._table_name)
         )
-        return Config.DB_instence.execute(query, (id,))
+        with Config.DB_instence.get_cursor(commit=True) as cursor:
+            cursor.execute(query, (id,))
+            return cursor.fetchone()
+    
     
     @classmethod
     def find_by_something(cls, id, something = "id", what="*"):

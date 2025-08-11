@@ -21,3 +21,14 @@ class Config:
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     max_width=5000
     max_height=5000
+
+    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT =  int(os.getenv('MAIL_PORT', '587'))
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = False
+    MAIL_USERNAME =  os.getenv('MAIL_USERNAME', 'noreplay@matcha.com')
+    MAIL_PASSWORD =  os.getenv('MAIL_PASSWORD', '')
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', '')
+    FRONT_LINK = os.getenv('FRONT_LINK', 'localhost:300')
+
+    mail = None

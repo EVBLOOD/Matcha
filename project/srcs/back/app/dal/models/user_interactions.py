@@ -14,14 +14,3 @@ class UserInteractions:
         self.liker_id = liker_id
         self.liked_id = liked_id
         self.status = status
-
-
-# CREATE TABLE user_interactions (
-#     id SERIAL PRIMARY KEY,
-#     liker_id INT REFERENCES users(id) ON DELETE CASCADE,
-#     liked_id INT REFERENCES users(id) ON DELETE CASCADE,
-#     status VARCHAR(10) NOT NULL CHECK (status IN ('liked', 'disliked')),
-#     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-#     UNIQUE (liker_id, liked_id)
-# );
-
