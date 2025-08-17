@@ -8,12 +8,6 @@ class ProfileRepository(BaseRepository):
         "sexual_preference", "biography",
         "location_set_by_user"
     ]
-        # query = """
-        #     UPDATE users 
-        #     SET verification_token = %s 
-        #     WHERE id = %s
-        #     RETURNING id
-        # """
     @classmethod
     def upsert_profile(cls, profile: Profile) -> bool:
         query = """
@@ -59,4 +53,76 @@ class ProfileRepository(BaseRepository):
     @classmethod
     def find_profile_exists(cls, user_id: str) -> bool :
         return cls.find_by_something(id=user_id, something="user_id", what="user_id") != None
-        
+    
+    @classmethod
+    def get_user_profile(cls, user_id: str, my_acount = None) -> bool :
+        if my_acount :
+            query = """
+                SELECT
+                    u.id,
+                    u.username,
+                    u.first_name,
+                    u.last_name,
+                    u.email,
+                    u.fame_rating,
+                    u.latitude,
+                    u.longitude,
+                    p.gender,
+                    p.sexual_preference,
+                    p.biography,
+                    p.location_set_by_user,
+                    up.url AS profile_picture_url,
+                    (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND status = 'liked') AS likes_count,
+                    (SELECT COUNT(*) FROM profile_views WHERE viewed_id = u.id) AS views_count
+                FROM
+                    users AS u
+                JOIN
+                    profiles AS p ON u.id = p.user_id
+                LEFT JOIN
+                    user_pictures AS up ON u.id = up.user_id AND up.is_profile_picture = TRUE
+                WHERE
+                    u.id = %s;
+            """
+            params = (user_id, )
+
+        else : # TODO: I think I should add -> LOCATION too in this case
+            query = """
+                SELECT
+                    u.id,
+                    u.username,
+                    u.first_name,
+                    u.fame_rating,
+                    p.gender,
+                    p.sexual_preference,
+                    p.biography,
+                    up.url AS profile_picture_url,
+                    (
+                        SELECT array_agg(t.name)
+                        FROM user_interests AS ui
+                        JOIN tags AS t ON ui.tag_id = t.id
+                        WHERE ui.user_id = u.id
+                    ) AS interests,
+                    (
+                        SELECT status
+                        FROM user_interactions
+                        WHERE liker_id = %s AND liked_id = u.id
+                    ) AS interaction_status,
+                    (
+                        SELECT count(*)
+                        FROM user_interactions
+                        WHERE (liker_id = %s AND liked_id = u.id) OR (liker_id = u.id AND liked_id = %s)
+                    ) AS is_connected,
+                    (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND status = 'liked') AS likes_count
+                FROM
+                    users AS u
+                JOIN
+                    profiles AS p ON u.id = p.user_id
+                JOIN
+                    user_pictures AS up ON u.id = up.user_id AND up.is_profile_picture = TRUE
+                WHERE
+                    u.id = %s;
+            """
+            params = (my_acount, my_acount, user_id, )
+        return cls._execute(query, params)
+    
+

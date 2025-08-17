@@ -54,3 +54,29 @@ class EmailingService :
           </body>
         """
         Config.mail.send(msg)
+
+    def send_email_forgoten_pass(email: str, username : str, token: str) :
+        msg = Message(
+            subject="Email from Matcha",
+            recipients=[email],
+        )
+        link = Config.FRONT + "/user/verify-reset-token?token=" + token
+
+        msg.body = f"""
+        Hello { username },
+
+        To reset your email account, please click the link below :
+        { link }
+
+        If you didn’t request this, please ignore this email. Feel free to contact support if you need help!
+        """
+        
+        msg.html = f"""
+          <body>
+            <p>Hello { username },</p>
+            <p>To reset your email account, please click the link below:</p>
+            <p><a href="{ link }">Change email</a></p>
+            <p>If you didn’t request this, please ignore this email. Feel free to contact support if you need help!</p>
+          </body>
+        """
+        Config.mail.send(msg)

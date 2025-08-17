@@ -2,6 +2,7 @@
     [x] chose a lang. (choosen: Vue + Flask)
     [x] Database Setup.
     [x] redis setup
+    [ ] add activate account to the Guard
     [ ] Registration :
         [ ] Registration UI Page (form with -> email address, username, last name, first name, and a password).
         [x] Backend registration logic.

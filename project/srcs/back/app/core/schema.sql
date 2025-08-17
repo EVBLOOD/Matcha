@@ -66,6 +66,13 @@ CREATE TABLE user_interactions (
     UNIQUE (liker_id, liked_id)
 );
 
+CREATE TABLE profile_views (
+    id SERIAL PRIMARY KEY,
+    viewer_id INT REFERENCES users(id) ON DELETE CASCADE,
+    viewed_id INT REFERENCES users(id) ON DELETE CASCADE,
+    viewed_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE conversations (
     id SERIAL PRIMARY KEY,
     user1_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -82,12 +89,6 @@ CREATE TABLE messages (
     is_read BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE profile_views (
-    id SERIAL PRIMARY KEY,
-    viewer_id INT REFERENCES users(id) ON DELETE CASCADE,
-    viewed_id INT REFERENCES users(id) ON DELETE CASCADE,
-    viewed_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,

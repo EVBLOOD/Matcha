@@ -5,6 +5,8 @@ from app.core.config import Config
 import uuid
 import secrets
 from app.dal.repositories.profile_repository import ProfileRepository
+from app.services.emailing_service import EmailingService
+
 
 class AuthService :
     @staticmethod
@@ -117,15 +119,19 @@ class AuthService :
             user = UserRepository.find_by_email(email=user_input)
         if user is None :
             raise ValueError("Email or username is incorrect")
-        AuthService.add_reset_token(user_id=user.id)
+        AuthService.add_reset_token(email=user.email, user_id=user.id, username=user.username, )
 
     
     @staticmethod
-    def add_reset_token(user_id: str):
+    def add_reset_token(user_id: str, email: str, username: str, ):
         redis = Config.redis_instence
         token = secrets.token_urlsafe(32)
-        print (token, flush=True)
-        redis.setex(f"pwd_reset:{token}", 3600, user_id)
+
+        try :
+            EmailingService.send_email_forgoten_pass(email, username, token)
+            redis.setex(f"pwd_reset:{token}", 3600, user_id)
+        except Exception as e :
+            raise ValueError ("Email Not VALID!")
 
     @staticmethod
     def check_token(token):
