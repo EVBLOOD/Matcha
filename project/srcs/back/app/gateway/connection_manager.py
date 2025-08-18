@@ -5,7 +5,7 @@ from flask import request
 from flask_socketio import disconnect
 
 from flask_jwt_extended import decode_token
-from app.core.security import AuthService
+from app.core.security import AuthService, Security
 
 
 class ConnectionManager:
@@ -76,7 +76,8 @@ class ConnectionManager:
                                     request.headers.get('Authorization').split(' ')[1])
                     if not token:
                         raise Exception("Missing authentication token")
-                    decoded_token = decode_token(token)
+                    # decoded_token = decode_token(token)
+                    decoded_token = Security.jwt._decode_jwt_from_config(token)
                     print (decoded_token, flush=True)
                     message, status = AuthService.validate_token(decoded_token["user_id"], decoded_token["sub"])
                     if status != 200 :
@@ -87,6 +88,7 @@ class ConnectionManager:
                 except Exception as e:
                     print(f"Socket authentication failed: {str(e)}", flush=True)
                     disconnect()
-                    return
+                    return 
+                return f(*args, **kwargs)
             return wrapped
         return decorator

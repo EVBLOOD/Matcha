@@ -3,7 +3,7 @@ from flask import request
 from app.gateway.connection_manager import ConnectionManager
 
 class PresenceGateway(Namespace):
-    @ConnectionManager.socket_guard()
+    @ConnectionManager.socket_guard(check_profile=False)
     def on_connect(self):
         print ("Hello World", flush=True)
     
