@@ -32,3 +32,4 @@ class Config:
     FRONT_LINK = os.getenv('FRONT_LINK', 'localhost:300')
 
     mail = None
+    socket_instence = None

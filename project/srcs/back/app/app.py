@@ -7,10 +7,8 @@ from app.core.config import Config
 from app.core.security import Security
 from flask_redis import FlaskRedis
 from flask_mail import Mail
-
-
-
-
+from flask_socketio import SocketIO
+from app.gateway.presence_gateway import PresenceGateway
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -19,9 +17,14 @@ Config.redis_instence = FlaskRedis(app=app)
 Security().init_jwt(app)
 Config.mail = Mail(app)
 
+Config.socket_instence = SocketIO(app, cors_allowed_origins="*")
+Config.socket_instence.on_namespace(PresenceGateway('/status'))
+
+
+
 app.register_blueprint(user_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
 
-app.run(host="0.0.0.0", port="8080")
+Config.socket_instence.run(app, host="0.0.0.0", port=8080)
 
