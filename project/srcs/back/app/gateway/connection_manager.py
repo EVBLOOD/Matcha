@@ -85,6 +85,7 @@ class ConnectionManager:
                     # # This maybe will be moved down when working with the admin role
                     if check_profile and not AuthService.check_profile_completion(decoded_token["user_id"]) :
                         raise Exception("profile completion required")
+                    request.user_id = decoded_token["user_id"]
                 except Exception as e:
                     print(f"Socket authentication failed: {str(e)}", flush=True)
                     disconnect()
