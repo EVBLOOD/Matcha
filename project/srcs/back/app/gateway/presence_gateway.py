@@ -1,7 +1,9 @@
 from flask_socketio import Namespace
 from flask import request
+from app.gateway.connection_manager import ConnectionManager
 
 class PresenceGateway(Namespace):
+    @ConnectionManager.socket_guard()
     def on_connect(self):
         print ("Hello World", flush=True)
     

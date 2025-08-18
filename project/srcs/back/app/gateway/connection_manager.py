@@ -1,5 +1,12 @@
 from app.core.config import Config
 from flask import jsonify
+from functools import wraps
+from flask import request
+from flask_socketio import disconnect
+
+from flask_jwt_extended import decode_token
+from app.core.security import AuthService
+
 
 class ConnectionManager:
 
@@ -58,3 +65,28 @@ class ConnectionManager:
         return bool(
             redis.exists(f"ws:user:{user_id}:online")
         )
+    
+    @staticmethod
+    def socket_guard(required_roles=None, check_profile=True):
+        def decorator(f):
+            @wraps(f)
+            def wrapped(*args, **kwargs):
+                try :
+                    token = (request.headers.get('Authorization') and 
+                                    request.headers.get('Authorization').split(' ')[1])
+                    if not token:
+                        raise Exception("Missing authentication token")
+                    decoded_token = decode_token(token)
+                    print (decoded_token, flush=True)
+                    message, status = AuthService.validate_token(decoded_token["user_id"], decoded_token["sub"])
+                    if status != 200 :
+                        raise Exception(message)
+                    # # This maybe will be moved down when working with the admin role
+                    if check_profile and not AuthService.check_profile_completion(decoded_token["user_id"]) :
+                        raise Exception("profile completion required")
+                except Exception as e:
+                    print(f"Socket authentication failed: {str(e)}", flush=True)
+                    disconnect()
+                    return
+            return wrapped
+        return decorator
