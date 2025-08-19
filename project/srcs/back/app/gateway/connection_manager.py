@@ -3,7 +3,7 @@ from flask import jsonify
 from functools import wraps
 from flask import request
 from flask_socketio import disconnect
-
+import json
 from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
 
@@ -28,13 +28,13 @@ class ConnectionManager:
             "1"
         )
         
-        redis.publish(
-            "ws:presence", 
-            jsonify({
-                "user_id": user_id,
-                "status": "online"
-            })
-        )
+        # redis.publish(
+        #     "ws:presence", 
+        #     json.dumps(({
+        #         "user_id": user_id,
+        #         "status": "online"
+        #     }))
+        # )
     
     @staticmethod
     def disconnect_user(sid: str):
