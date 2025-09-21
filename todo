@@ -4,7 +4,7 @@
     [ ] Registration :
         [ ] Registration UI Page (form with -> email address, username, last name, first name, and a password).
         [x] Backend registration logic.
-        [ ] Email verification (send verification email with unique link).
+        [x] Email verification (send verification email with unique link).
     [ ] Login :
         [ ] Login UI Page (form with -> username and password + forgot the password).
         [x] Backend login logic.
@@ -19,7 +19,7 @@
         [x] Profile first time UI Page (form for -> gender, sexual preferences, bio interests with tags, 5 pictures as profile, location).
         [ ] Bonus: Social Media Picture Import: Allow picture import from social platforms.
         [ ] Profile Edit UI Page (form for -> all previuos feilds + first name, last name, email, LOCATION).
-        [ ] Backend profile add/update logic.
+        [x] Backend profile add/update logic.
         [x] Image upload functionality.
         [x] Interest tags implementation (reusable tags).
     [ ] User Profile (View) :

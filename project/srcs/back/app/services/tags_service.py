@@ -11,10 +11,11 @@ class TagsService:
     def insert_tags(tags: Set[str], user_id: str) :
 
         for tag in tags :
-            id_tag = TagsRepository.find_tags_exists(
+            print(tag, flush=True)
+            tag_id = TagsRepository.find_tags_exists(
                 tag_name=tag
             )
-            if id_tag is None :
+            if tag_id is None :
                 tag_id = TagsRepository.create_tags(
                     Tags(id=0, name=tag)
                 )

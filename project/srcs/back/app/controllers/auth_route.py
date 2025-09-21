@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.services.auth_service import AuthService
 from app.core.security import Security
+from app.core.schemas import UserLoginSchema, ValidationError
 
 auth_bp = Blueprint('auth_api', __name__, url_prefix='/auth')
 
@@ -12,12 +13,14 @@ def login() :
         if not data:
             raise ValueError("No input data provided")
 
-        username = data.get('username')
-        password = data.get('password')
-        if not username or not password:
-            raise ValueError("Username and password required")
+        schema = UserLoginSchema()
 
-        user = AuthService.verify_user(username, password)    
+        try:
+            validated_data = schema.load(data)
+        except ValidationError as err:
+            return jsonify({"errors": err.messages}), 400
+
+        user = AuthService.verify_user(**validated_data)    
         if user is None :
             return jsonify({"error": "Invalid credentials"}), 401
   
@@ -31,7 +34,7 @@ def login() :
         return jsonify({"error": str(e)}), 400
 
 @auth_bp.route('/logout', methods=['POST'])
-@Security.auth_guard(check_profile=False)
+@Security.auth_guard(check_profile=False, require_verify_mail=False)
 def logout() :
     try :
         session_id = request.session_id

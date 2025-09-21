@@ -3,10 +3,11 @@ from app.services.profile_service import ProfileService
 # from app.services.picture_service import PictureService
 from app.core.security import Security
 from PIL import Image
+from app.core.schemas import ProfileSchema, UpdateProfileSchema
+
 
 
 profile_bp = Blueprint('profile_api', __name__, url_prefix='/profile')
-
 
 @profile_bp.route('/create_profile', methods=['POST'])
 @Security.auth_guard(check_profile=False)
@@ -16,16 +17,20 @@ def create_profile() :
         user_id = request.user_id
         body = request.form
         files = request.files
-        if not files or not body or not all(key in body for key in ['gender', 'sexual_preference', 'biography', 'location_set_by_user', 'latitude', 'longitude', 'tags']):
-            raise ValueError("Missing required fields")
-        if not isinstance(body['tags'], str) :
-            raise ValueError("Missing required fields")
-        was_added = ProfileService.create_profile(user_id=user_id, gender=body['gender'],\
-                                                   sexual_preference=body['sexual_preference'], \
-                                                    biography=body['biography'], \
-                                                        location_set_by_user=body['location_set_by_user'], \
-                                                            latitude=body['latitude'], longitude=body['longitude'], files_list=files, tags=set(body['tags'].split(';')))
-        print (was_added)
+        schema = ProfileSchema()
+
+        try:
+            validated_data = schema.load(body)
+            if not files :
+                raise ValueError("Missing required files")
+        except Exception as err:
+            return jsonify({"errors": err.messages}), 400
+
+        try :
+            was_added = ProfileService.create_profile(user_id=user_id, **validated_data, files_list=files)
+        except Exception as e :
+            return jsonify({"error": str(e)}), 500
+
         if was_added :
             return jsonify({"success": "profile created for user"}), 201
         else :
@@ -40,16 +45,16 @@ def update_profile() :
     try :
         body = request.get_json()
         user_id = request.user_id
-        if not body or not all(key in body for key in ['gender', 'sexual_preference', 'biography', 'location_set_by_user', 'latitude', 'longitude']):
-            return jsonify({"error": "Missing required fields"}), 400
 
-        was_added = ProfileService.update_profile(user_id=user_id, gender=body['gender'],\
-                                                   sexual_preference=body['sexual_preference'], \
-                                                    biography=body['biography'], \
-                                                        location_set_by_user=body['location_set_by_user'], \
-                                                            latitude=body['latitude'], longitude=body['longitude'])
+        schema = UpdateProfileSchema()
+        try:
+            validated_data = schema.load(body)
+        except Exception as err:
+            return jsonify({"errors": err.messages}), 400
+
+        was_added = ProfileService.update_profile(user_id=user_id, **validated_data)
         if was_added :
-            return jsonify({"profile created for user"}), 201
+            return jsonify({"profile updated for user"}), 201
         else :
             return jsonify({"server error"}), 500
     except ValueError as e :

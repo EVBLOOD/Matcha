@@ -1,4 +1,4 @@
-from app.dal.repositories.user_repository import UserRepository
+from app.dal.repositories.user_repository import UserRepository, User
 import bcrypt
 from flask_jwt_extended import create_refresh_token, create_access_token
 from app.core.config import Config
@@ -9,6 +9,16 @@ from app.services.emailing_service import EmailingService
 
 
 class AuthService :
+    @staticmethod
+    def verify_is_verified(user_id: int) :
+
+        try :
+            is_verified = UserRepository.find_by_id(id=user_id, what="is_verified")
+            print (is_verified, flush=True)
+            return is_verified[0]
+        except Exception as e :
+            print(e, flush=True)
+            return False
     @staticmethod
     def verify_user(username: str, password: str) :
 

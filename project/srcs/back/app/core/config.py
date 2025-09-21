@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from flask_marshmallow import Marshmallow
 
 load_dotenv ()
 
@@ -30,6 +31,6 @@ class Config:
     MAIL_PASSWORD =  os.getenv('MAIL_PASSWORD', '')
     MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', '')
     FRONT_LINK = os.getenv('FRONT_LINK', 'localhost:300')
-
+    ma_instence = None
     mail = None
     socket_instence = None

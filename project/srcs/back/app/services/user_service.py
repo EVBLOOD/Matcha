@@ -19,7 +19,8 @@ class UserService:
         
         if UserRepository.find_by_email(email):
             raise ValueError("email already taken")
-
+        # TODO: 
+        # The user IP should be shared with the state of him accepting that or not - important
         user_data, token_verify, user_id = UserRepository.create_user(User(
             username=username, 
             email=email,
@@ -35,9 +36,8 @@ class UserService:
                 EmailingService.send_email_welcoming(user_data.email, user_data.username, token_verify)
             except Exception as e :
                 UserRepository.delete(user_id)
-                # TODO: remove from redis record
+                # TODO: remove email from redis record
                 raise ValueError ("Email Not VALID!")
-                raise ValueError (str(e))
         return user_id
 
     @staticmethod

@@ -2,13 +2,15 @@ from app.core.config import Config
 from flask import jsonify
 from functools import wraps
 from flask import request
-from flask_socketio import disconnect
+from flask_socketio import disconnect, join_room
 import json
 from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
+# from app.services.user_service import get_user_contacts
+from flask_socketio import emit
 
 
-class ConnectionManager:
+class ConnectionManager :
 
     @staticmethod
     def connect_user(user_id: int, sid: str):
@@ -27,14 +29,7 @@ class ConnectionManager:
             f"ws:user:{user_id}:online", 
             "1"
         )
-        
-        # redis.publish(
-        #     "ws:presence", 
-        #     json.dumps(({
-        #         "user_id": user_id,
-        #         "status": "online"
-        #     }))
-        # )
+        join_room(f"user_{user_id}")
     
     @staticmethod
     def disconnect_user(sid: str):
@@ -51,13 +46,6 @@ class ConnectionManager:
         if redis.scard(f"ws:user:{user_id}:sockets") == 0:
             redis.delete(f"ws:user:{user_id}:online")
             
-            redis.publish(
-                "ws:presence",
-                jsonify({
-                    "user_id": user_id,
-                    "status": "offline"
-                })
-            )
 
     @staticmethod
     def is_user_online(user_id: int) -> bool:
@@ -65,7 +53,18 @@ class ConnectionManager:
         return bool(
             redis.exists(f"ws:user:{user_id}:online")
         )
-    
+
+    # @staticmethod
+    # def _notify_contacts(user_id: int, status: str):
+    #     contacts = get_user_contacts(user_id)
+    #     for contact_id in contacts:
+    #         if ConnectionManager.is_user_online(contact_id):
+    #             emit('presence_update', {
+    #                 "user_id": user_id,
+    #                 "status": status
+    #             }, room=f"user_{contact_id}")
+
+
     @staticmethod
     def socket_guard(required_roles=None, check_profile=True):
         def decorator(f):

@@ -67,8 +67,8 @@ class BaseRepository:
             return cursor.fetchone()[0] if returning else None
 
     @classmethod
-    def find_by_id(cls, id):
-        return cls.find_by_something(id=id)
+    def find_by_id(cls, id, what: str = "*"):
+        return cls.find_by_something(id=id, what=what)
         # query = sql.SQL("SELECT * FROM {} WHERE id = %s").format(
         #     sql.Identifier(cls._table_name)
         # )
@@ -85,9 +85,14 @@ class BaseRepository:
     
     
     @classmethod
-    def find_by_something(cls, id, something = "id", what="*"):
+    def find_by_something(cls, id, something="id", what="*"):
+        if what == "*":
+            what_sql = sql.SQL(what)
+        else:
+            what_sql = sql.Identifier(what)
+
         query = sql.SQL("SELECT {} FROM {} WHERE {} = %s").format(
-            sql.Identifier(what),
+            what_sql,
             sql.Identifier(cls._table_name),
             sql.Identifier(something)
         )

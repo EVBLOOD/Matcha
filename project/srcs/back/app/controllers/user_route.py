@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
 from app.services.user_service import UserService
 from app.core.security import Security
+from app.core.schemas import UserRegisterSchema, ValidationError
+
+
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
 
 
@@ -11,20 +14,20 @@ def create_usergeg() :
 @user_bp.route('/create_user', methods=['POST'])
 def create_user() :
     data = request.get_json()
-    if not data or not all(key in data for key in ['username', 'email', 'password', 'first_name', 'last_name']):
-        return jsonify({"error": "Missing required fields"}), 400
+
+    schema = UserRegisterSchema()
+
+    try:
+        validated_data = schema.load(data)
+    except ValidationError as err:
+        return jsonify({"errors": err.messages}), 400
+
     try :
-        user = UserService.create_user(username=data['username'], 
-                                       email=data['email'],
-                                       password=data['password'],
-                                       first_name=data['first_name'],
-                                       last_name=data['last_name']
-                                       )
+        user = UserService.create_user(**validated_data)
         return jsonify({"id": user}), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
-# latitude
-# longitude
+
 
 @user_bp.route('/verify_account', methods=["GET", "POST"])
 def verify_account() :
