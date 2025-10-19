@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from app.services.profile_service import ProfileService
-# from app.services.picture_service import PictureService
 from app.core.security import Security
 from PIL import Image
 from app.core.schemas import ProfileSchema, UpdateProfileSchema
@@ -8,6 +7,15 @@ from app.core.schemas import ProfileSchema, UpdateProfileSchema
 
 
 profile_bp = Blueprint('profile_api', __name__, url_prefix='/profile')
+
+@profile_bp.route('/<int:user_id>', methods=['GET'])
+@Security.auth_guard()
+def get_profile(user_id) :
+    try :
+        return ProfileService.get_profile(request.user_id, user_id)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
+
 
 @profile_bp.route('/create_profile', methods=['POST'])
 @Security.auth_guard(check_profile=False)
@@ -59,6 +67,3 @@ def update_profile() :
             return jsonify({"server error"}), 500
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
-
-
-

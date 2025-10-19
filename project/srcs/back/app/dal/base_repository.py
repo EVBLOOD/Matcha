@@ -14,7 +14,14 @@ class BaseRepository:
     def _execute(cls, query: str, params=None):
         with Config.DB_instence.get_cursor(commit=True) as cursor:
             cursor.execute(query, params)
-            return cursor.fetchone()
+
+            keys = [col[0] for col in cursor.description]
+
+            values = cursor.fetchone()
+            if not values :
+                return None
+
+            return dict(zip(keys, values))
 
     @classmethod
     def _fetch(cls, query: str, params=None):
@@ -61,7 +68,7 @@ class BaseRepository:
         print (query, flush=True)
         if returning :
             query += sql.SQL(" RETURNING {}").format(sql.Identifier(returning))
-        
+
         with Config.DB_instence.get_cursor(commit=True) as cursor:
             cursor.execute(query, tuple(_values))
             return cursor.fetchone()[0] if returning else None

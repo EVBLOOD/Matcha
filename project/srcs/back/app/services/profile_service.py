@@ -1,14 +1,13 @@
 from app.dal.models.profile import Profile
 from app.dal.repositories.profile_repository import ProfileRepository
-from app.dal.repositories.user_repository import UserRepository
-from app.services.user_interactions_service import UserInteractionsService
-from app.services.user_interests_service import UserInterestsService
+
 
 from app.services.tags_service import TagsService
 # from app.dal.repositories.tags_repository import TagsRepository
+from app.dal.repositories.user_repository import UserRepository
 from app.services.picture_service import PictureService
 from app.services.auth_service import AuthService
-from typing import Set
+# from typing import Set
 
 class ProfileService:
     # TODO:
@@ -49,43 +48,48 @@ class ProfileService:
     def check_profile_filled(user_id: int) :
         return ProfileRepository.find_profile_exists(user_id)
     
+    
     @staticmethod
-    def get_profile(searcher_id: int, to_find_user_name: str) :
+    def get_profile(searcher_id: int, to_find_user_id: int) :
         try :
-            user = UserRepository.find_by_username(to_find_user_name)
-            if user.id == searcher_id :
+            same = False
+            if to_find_user_id== searcher_id :
                 same = True
-            profile = ProfileRepository.get_user_profile(user_id=user.id)
-            
-            iteraction_him = UserInteractionsService.get_all_likes_got(user_id = searcher_id, liked_user = user.id)
-            iteraction_other = UserInteractionsService.get_all_ot_likes_given(user_id = user.id, liked_user = searcher_id)
-
-            if iteraction_him and iteraction_other :
-                relation = "match"
-            elif iteraction_him :
-                relation = "searcher liked him"
-            elif iteraction_other :
-                relation = "liked the searcher"
-            else :
-                relation = "NAN"
-            tags = [(1, "#tags"), (2, "#tags")]
-            # tags = UserInterestsService.get_user_interests(user_id = user.id)
-            pictures = [("path1", True), ("path2", False), ("path3", False), ("path4", False)]
+            profile = ProfileRepository.get_user_profile(user_id=to_find_user_id, my_acount=searcher_id, same=same)
+            if profile is None : 
+                raise ValueError("No such a profile")
+            print(profile, flush=True)
             if same :
-                personal = {
-                    "email": user.email
+                interactions = {
+                    "is_same": True,
+                    "likes_count": profile["likes_count"],
+                    "views_count": profile["views_count"]
                 }
             else :
-                personal = None
+                interactions = {
+                    "is_same": False,
+                    "interaction_status": profile["interaction_status"],
+                    "is_connected": profile["is_connected"],
+                    "likes_count": profile["likes_count"],
+                    "views_count": profile["views_count"]
+                }
             return {
-                "user_id": 1,
-                "relation": relation,
-                "user_name": user.username,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "tags": tags,
-                "pictures": pictures,
-                "same": personal
-            }
+                    "user": {
+                        "user_id": profile["user_id"],
+                        "username": profile["username"],
+                        "first_name": profile["first_name"],
+                        "last_name": profile["last_name"],
+                        "sexual_preference": profile["sexual_preference"],
+                        "gender": profile["gender"]
+                    },
+                    "profile": {
+                        "biography": profile["biography"],
+                        "fame_rating": profile["fame_rating"],
+                    },
+                    "pictures": profile["profile_picture_url"],
+                    "interactions": interactions,
+                    "interests": profile["interests"]
+                }
+
         except Exception as e :
             raise Exception(e)

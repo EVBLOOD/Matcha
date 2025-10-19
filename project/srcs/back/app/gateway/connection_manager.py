@@ -2,7 +2,7 @@ from app.core.config import Config
 from flask import jsonify
 from functools import wraps
 from flask import request
-from flask_socketio import disconnect, join_room
+from flask_socketio import disconnect, join_room, ConnectionRefusedError
 import json
 from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
@@ -87,8 +87,14 @@ class ConnectionManager :
                     request.user_id = decoded_token["user_id"]
                 except Exception as e:
                     print(f"Socket authentication failed: {str(e)}", flush=True)
-                    disconnect()
-                    return 
+                    if f.__name__ == 'on_connect' :
+                        raise ConnectionRefusedError(str(e))
+                    elif f.__name__ == 'on_disconnect' :
+                        return
+                    else :
+                        emit('auth_error', {'message': str(e)})
+                        disconnect()
+                    return
                 return f(*args, **kwargs)
             return wrapped
         return decorator

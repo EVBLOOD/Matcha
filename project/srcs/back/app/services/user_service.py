@@ -6,6 +6,10 @@ import secrets
 from app.core.config import Config
 from app.services.emailing_service import EmailingService
 
+from app.dal.repositories.user_repository import UserRepository
+from app.services.user_interactions_service import UserInteractionsService
+from app.services.user_interests_service import UserInterestsService
+
 class UserService:
     @staticmethod
     def create_user(username: str, email: str,

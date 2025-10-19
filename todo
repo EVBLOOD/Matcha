@@ -24,6 +24,7 @@
         [x] Interest tags implementation (reusable tags).
     [ ] User Profile (View) :
         [ ] Display your own profile data on a UI page with (Viewers and Likers).
+        [x. ] Display your own profile data on backend.
         [ ] Display your own Profile visit History logging UI Page.
         [ ] Display Other User Profile UI Page (show all profile info except email/password + status).
         [ ] Online Status & Last Seen.
@@ -32,8 +33,8 @@
         [ ] Track user online status (session management or similar).
         [ ] Backend "like" logic.
         [ ] Backend "unlike" logic.
-        [ ] "Profile Likers" tracking implementation.
-        [ ] "Profile Viewers" tracking implementation.
+        [x] "Profile Likers" tracking implementation.
+        [x] "Profile Viewers" tracking implementation.
         [ ] Fame Rating calculation and display (public).
         [ ] Visit History logging when viewing profiles.
         [ ] Report Fake Account Feature: Implement report functionality.

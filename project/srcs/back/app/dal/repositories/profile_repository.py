@@ -55,47 +55,56 @@ class ProfileRepository(BaseRepository):
         return cls.find_by_something(id=user_id, something="user_id", what="user_id") != None
     
     @classmethod
-    def get_user_profile(cls, user_id: str, my_acount = None) -> bool :
-        if my_acount :
+    def get_user_profile(cls, user_id: str, same: bool, my_acount: str = "") -> bool :
+        if same :
             query = """
                 SELECT
-                    u.id,
+                    u.id AS user_id,
                     u.username,
                     u.first_name,
                     u.last_name,
-                    u.email,
                     u.fame_rating,
-                    u.latitude,
-                    u.longitude,
+                    u.last_online,
                     p.gender,
                     p.sexual_preference,
                     p.biography,
-                    p.location_set_by_user,
-                    up.url AS profile_picture_url,
+                    (
+                        SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                        FROM user_pictures up
+                        WHERE up.user_id = u.id
+                    ) AS profile_picture_url,
+                    (
+                        SELECT json_agg(t.name)
+                        FROM user_interests ui
+                        JOIN tags t ON ui.tag_id = t.id
+                        WHERE ui.user_id = u.id
+                    ) AS interests,
                     (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND status = 'liked') AS likes_count,
                     (SELECT COUNT(*) FROM profile_views WHERE viewed_id = u.id) AS views_count
-                FROM
-                    users AS u
-                JOIN
-                    profiles AS p ON u.id = p.user_id
-                LEFT JOIN
-                    user_pictures AS up ON u.id = up.user_id AND up.is_profile_picture = TRUE
+
+                FROM users u
+                LEFT JOIN profiles p ON u.id = p.user_id
                 WHERE
                     u.id = %s;
             """
             params = (user_id, )
 
-        else : # TODO: I think I should add -> LOCATION too in this case
+        else :
             query = """
                 SELECT
-                    u.id,
+                    u.id as user_id,
                     u.username,
                     u.first_name,
                     u.fame_rating,
+                    u.last_name,
                     p.gender,
                     p.sexual_preference,
                     p.biography,
-                    up.url AS profile_picture_url,
+                    (
+                        SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                        FROM user_pictures up
+                        WHERE up.user_id = u.id
+                    ) AS profile_picture_url,
                     (
                         SELECT array_agg(t.name)
                         FROM user_interests AS ui
@@ -112,17 +121,17 @@ class ProfileRepository(BaseRepository):
                         FROM user_interactions
                         WHERE (liker_id = %s AND liked_id = u.id) OR (liker_id = u.id AND liked_id = %s)
                     ) AS is_connected,
-                    (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND status = 'liked') AS likes_count
+                    (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND status = 'liked') AS likes_count,
+                    (SELECT COUNT(*) FROM profile_views WHERE viewed_id = u.id) AS views_count
                 FROM
                     users AS u
                 JOIN
                     profiles AS p ON u.id = p.user_id
                 JOIN
-                    user_pictures AS up ON u.id = up.user_id AND up.is_profile_picture = TRUE
+                    user_pictures AS up ON u.id = up.user_id
                 WHERE
                     u.id = %s;
             """
-            params = (my_acount, my_acount, user_id, )
-        return cls._execute(query, params)
-    
+            params = (my_acount, my_acount, user_id, user_id)
 
+        return cls._execute(query, params)

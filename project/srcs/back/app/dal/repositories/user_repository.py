@@ -90,7 +90,7 @@ class UserRepository(BaseRepository):
     def update_location(
         cls, 
         user_id: int, 
-        latitude: float, 
+        latitude: float,
         longitude: float
     ) -> bool:
         query = """

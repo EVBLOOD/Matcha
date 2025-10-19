@@ -25,3 +25,26 @@ Data Access Layer
 connection pool database
 Connection Pooling
 
+
+Your own :
+    User Profile (Get) :
+        [ ] Display your own profile data on a UI page with (Viewers and Likers).
+        [ ] Display your own Profile visit History logging UI Page.
+        [ ] Track user online status (session management or similar).
+        [ ] "Profile Likers" tracking implementation.
+        [ ] "Profile Viewers" tracking implementation.
+        [ ] Visit History logging when viewing profiles.
+
+
+Others :
+    User Profile (Get) :
+        [ ] Display Other User Profile UI Page (show all profile info except email/password + status).
+        [ ] Online Status & Last Seen.
+        [ ] "Like"/"Unlike" button/action to profile picture.
+        [ ] "Like" Feature on profile picture (and "Unlike")
+        [ ] Fame Rating calculation and display (public).
+        [ ] Report Fake Account Feature: Implement report functionality.
+        [ ] Block User Feature: Implement block/unblock functionality.
+        
+
+I didn't understand this => [ ] Visit History logging when viewing profiles.
