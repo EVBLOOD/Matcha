@@ -29,7 +29,9 @@ class ConnectionManager :
             f"ws:user:{user_id}:online", 
             "1"
         )
-        join_room(f"user_{user_id}")
+        join_room(f"Notifs_user_{user_id}")
+        emit('connected', {user_id: "online"}, room=f"online_user_{user_id}")
+
     
     @staticmethod
     def disconnect_user(sid: str):
@@ -43,26 +45,18 @@ class ConnectionManager :
         redis.hdel("ws:connections", f"sid:{sid}")
         redis.srem(f"ws:user:{user_id}:sockets", sid)
         
-        if redis.scard(f"ws:user:{user_id}:sockets") == 0:
+        if redis.scard(f"ws:user:{user_id}:sockets") == 0 :
             redis.delete(f"ws:user:{user_id}:online")
-            
+        emit('connected', {user_id: "Disconnected"}, room=f"online_user_{user_id}")
+        # I should remove all prevouisly joined room
 
     @staticmethod
     def is_user_online(user_id: int) -> bool:
         redis = Config.redis_instence
+        join_room(f"online_user_{user_id}")
         return bool(
             redis.exists(f"ws:user:{user_id}:online")
         )
-
-    # @staticmethod
-    # def _notify_contacts(user_id: int, status: str):
-    #     contacts = get_user_contacts(user_id)
-    #     for contact_id in contacts:
-    #         if ConnectionManager.is_user_online(contact_id):
-    #             emit('presence_update', {
-    #                 "user_id": user_id,
-    #                 "status": status
-    #             }, room=f"user_{contact_id}")
 
 
     @staticmethod
@@ -75,15 +69,14 @@ class ConnectionManager :
                                     request.headers.get('Authorization').split(' ')[1])
                     if not token:
                         raise Exception("Missing authentication token")
-                    # decoded_token = decode_token(token)
                     decoded_token = Security.jwt._decode_jwt_from_config(token)
                     print (decoded_token, flush=True)
                     message, status = AuthService.validate_token(decoded_token["user_id"], decoded_token["sub"])
                     if status != 200 :
                         raise Exception(message)
-                    # # This maybe will be moved down when working with the admin role
-                    if check_profile and not AuthService.check_profile_completion(decoded_token["user_id"]) :
-                        raise Exception("profile completion required")
+                    # This maybe will be moved down when working with the admin role
+                    # if check_profile and not AuthService.check_profile_completion(decoded_token["user_id"]) :
+                    #     raise Exception("profile completion required")
                     request.user_id = decoded_token["user_id"]
                 except Exception as e:
                     print(f"Socket authentication failed: {str(e)}", flush=True)

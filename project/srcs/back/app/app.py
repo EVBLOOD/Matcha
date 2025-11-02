@@ -7,6 +7,7 @@ from flask_redis import FlaskRedis
 from flask_mail import Mail
 from flask_socketio import SocketIO
 from app.gateway.presence_gateway import PresenceGateway
+from app.gateway.chat_gateway import ChatGateway
 
 from flask_marshmallow import Marshmallow
 
@@ -24,6 +25,7 @@ Config.ma_instence = Marshmallow(app=app)
 
 Config.socket_instence = SocketIO(app, cors_allowed_origins="*")
 Config.socket_instence.on_namespace(PresenceGateway('/status'))
+Config.socket_instence.on_namespace(ChatGateway('/chat'))
 
 from app.controllers.user_route import user_bp
 from app.controllers.auth_route import auth_bp
