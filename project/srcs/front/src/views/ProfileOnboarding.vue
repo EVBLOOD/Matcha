@@ -1,13 +1,17 @@
 <script setup>
+import Card from '@/components/Card.vue';
     import Button from '@/components/Button.vue';
+    import Input from '@/components/Input.vue';
 </script>
 
 <template>
     <div class="page">
-        <div class="content">
-            <h2>Complete Your Profile</h2>
-
+        <!-- <div class="content"> -->
+            <Card title="Complete Your Profile">
             <div>
+            <Input name="unameoremail" label="" id="unameoremail" v-model="firstName" type="image" src="/"/>
+            <Input name="unameoremail" label="First name" id="unameoremail" v-model="firstName" />
+
                 <input type="image" src="/" alt="idno why">
                 <input type="file" name="profile" id="profile">
                 <p>Saad AKLLAM</p>
@@ -60,36 +64,18 @@
                 </div>
             </div>
             <Button to="home" text="Save and Continue"></Button>
-        </div>
+            </Card>
+        <!-- </div> -->
     </div>
 </template>
 
 <style lang="scss" scoped>
-    .page{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 40px 20px;
-        .content {
-            overflow: hidden;
-            p {
-                margin-bottom: 30px;
-            }
-        }
-        .title{
-            font-weight: 700;
-            font-size: 40px;
-        }
-        .description{
-            font-size: 30px;
-        }
-        .image img{
-            height: auto;
-            width: 100%;
-        }
-    }
+.page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
     @media (max-width: $breakpoint-md) {
         .page{
             display: flex;
