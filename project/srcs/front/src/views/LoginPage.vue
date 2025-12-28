@@ -16,8 +16,8 @@
 
 <style lang="scss" scoped>
     .page{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        display: flex;
+        // grid-template-columns: 1fr 1fr;    
         align-items: center;
         justify-content: center;
         height: 100vh;

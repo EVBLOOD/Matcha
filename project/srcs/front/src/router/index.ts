@@ -3,12 +3,12 @@ import LandingPage from '@/views/LandingPage.vue';
 import RegisterPage from '@/views/RegisterPage.vue';
 import EmailConfirmationPage from '@/views/EmailConfirmationPage.vue';
 import LoginPage from '@/views/LoginPage.vue';
-import HomePage from '@/views/HomePage.vue';
 import ProfileOnboarding from '@/views/ProfileOnboarding.vue';
-import ExplorePage from '@/views/ExplorePage.vue';
-import MessagesPage from '@/views/MessagesPage.vue';
-import NotificationsPage from '@/views/NotificationsPage.vue';
-import ProfilePage from '@/views/ProfilePage.vue';
+import HomePage from '@/views/Protected/HomePage.vue';
+import ExplorePage from '@/views/Protected/ExplorePage.vue';
+import MessagesPage from '@/views/Protected/MessagesPage.vue';
+import NotificationsPage from '@/views/Protected/NotificationsPage.vue';
+import ProfilePage from '@/views/Protected/ProfilePage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
