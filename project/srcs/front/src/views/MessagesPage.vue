@@ -1,16 +1,13 @@
 <script setup>
-    import Button from '@/components/Button.vue';
+    // import Button from '@/components/Button.vue';
+    // import { RouterLink, RouterView } from 'vue-router';
+
 </script>
 
 <template>
     <div class="page">
         <div class="content">
-            <p class="title">Welcome to Web Matcha Find Your Perfect Match.</p>
-            <p class="description">Discover, connect, and chat with singles near you. Join our community today!</p>
-            <Button class="button" to="/register" text="Get Started" />
-        </div>
-        <div class="image">
-            <img src="/img/landing.png" alt="landing page" />
+            Messages Page is this
         </div>
     </div>
 </template>

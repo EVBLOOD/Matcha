@@ -5,12 +5,9 @@
 <template>
     <div class="page">
         <div class="content">
-            <p class="title">Welcome to Web Matcha Find Your Perfect Match.</p>
-            <p class="description">Discover, connect, and chat with singles near you. Join our community today!</p>
-            <Button class="button" to="/register" text="Get Started" />
-        </div>
-        <div class="image">
-            <img src="/img/landing.png" alt="landing page" />
+            <h2>An email has been sent to your address.</h2>
+            <Button to="nothing" text="Resend Email"></Button> <!-- to nothing means just a backend operation and a front text update -->
+            <div>Went to the wrong place?  <Button to="login" text="Back to Log In"></Button></div>
         </div>
     </div>
 </template>

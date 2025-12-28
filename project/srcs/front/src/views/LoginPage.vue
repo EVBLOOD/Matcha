@@ -5,12 +5,11 @@
 <template>
     <div class="page">
         <div class="content">
-            <p class="title">Welcome to Web Matcha Find Your Perfect Match.</p>
-            <p class="description">Discover, connect, and chat with singles near you. Join our community today!</p>
-            <Button class="button" to="/register" text="Get Started" />
-        </div>
-        <div class="image">
-            <img src="/img/landing.png" alt="landing page" />
+            <h2>Create Your Account</h2>
+            <label for="unameoremail"> Username / Email</label> <input name="unameoremail" type="text">
+            <label for="pword"> PassWord</label> <input name="pword" type="password">
+            <Button to="home" text="Register"></Button>
+            <div>Forgot password? <Button to="Reset" text="Reset Password"></Button></div>
         </div>
     </div>
 </template>

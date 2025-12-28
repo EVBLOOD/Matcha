@@ -1,11 +1,11 @@
 <script setup lang="ts">
-// import { RouterLink, RouterView } from 'vue-router';
-  import LandingPage from './views/LandingPage.vue';
+import { RouterLink, RouterView } from 'vue-router';
+  // import LandingPage from './views/LandingPage.vue';
 </script>
 
 <template>
   <div class="container">
-    <LandingPage />
+     <RouterView />
   </div>
 </template>
 
