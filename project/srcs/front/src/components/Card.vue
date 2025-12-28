@@ -19,6 +19,8 @@ const props = defineProps({
         flex-direction: column;
         padding: 4%;
         min-height: 50%;
+        // max-height: 55%;
+        max-width: 55%;
         min-width: 50%;
 
         .title {
