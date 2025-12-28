@@ -1,6 +1,6 @@
 <script setup>
-import { useRouter } from 'vue-router'
-const router = useRouter()
+// import { useRouter } from 'vue-router'
+// const router = useRouter()
 
 const props = defineProps({
     id: String,
@@ -32,11 +32,12 @@ input {
     background: rgba(255, 255,255, 0.08);
     color: rgba(255, 255,255, 0.50);
     border-radius: 12px;
-    margin-bottom: 5%;
 }
 div {
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin-bottom: 3%;
+
 }
 </style>

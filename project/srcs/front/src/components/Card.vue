@@ -1,0 +1,38 @@
+<script setup>
+const props = defineProps({
+    title: String
+})
+</script>
+
+<template>
+        <div class="content">
+            <h2 class="title">{{ title }}</h2>
+             <slot />
+        </div>
+</template>
+
+<style lang="scss" scoped>
+    .content {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        padding: 4%;
+        min-height: 50%;
+        min-width: 50%;
+
+        .title {
+            align-self: center;
+            font-weight: 700;
+            font-size: 32px;
+            margin-bottom: 10%;
+        }
+    }
+
+@media (max-width: $breakpoint-md) {
+    .page {
+        display: flex;
+        flex-direction: column;
+    }
+}
+</style>
