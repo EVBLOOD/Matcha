@@ -2,14 +2,54 @@
 import Button from '@/components/Button.vue';
 import Input from '@/components/Input.vue';
 import Card from '@/components/Card.vue';
-import { ref } from 'vue';
 
+import AuthService from '@/api/services/AuthService'
+
+import { ref } from 'vue';
+import { useRouter } from 'vue-router'
+
+
+const router = useRouter()
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
 const userName = ref('');
 const passWord = ref('');
 const confPassWord = ref('');
+
+
+const isLoading = ref(false);
+const error = ref(null);
+
+
+
+const handleRegister = async () => {
+    console.log("DFDFD")
+  isLoading.value = true;
+  error.value = null;
+
+  try {
+    const payload = { 
+        username: userName.value,
+        email: email.value,
+        password: passWord.value,
+        first_name: firstName.value,
+        last_name: lastName.value,
+    };
+    
+    const response = await AuthService.register(payload);
+
+    console.log(response);
+    router.push('confirm-email')
+  } catch (err) {
+    console.log(err)
+    error.value = err.response?.data?.errors || 'Registration failed for unknown reason';
+  } finally {
+    isLoading.value = false;
+  }
+  console.log(error.value)
+};
+
 </script>
 
 
@@ -26,7 +66,7 @@ const confPassWord = ref('');
                 <Input name="pword" label="Password" id="pword" v-model="passWord" type="password" />
                 <Input name="cpword" label="Confirm Password" id="cpword" v-model="confPassWord" type="password" />
             </div>
-            <Button class="btn" to="confirm-email" text="Register"></Button>
+            <Button class="btn" text="Register" @click="handleRegister"></Button>
             <div class="div_center">Already have an account? <Button class="just_btn" to="signin" backgroundColor="rgba(255, 255, 255, 0)"
                     text="Sign in"></Button></div>
         </Card>

@@ -10,13 +10,14 @@ from app.gateway.presence_gateway import PresenceGateway
 from app.gateway.chat_gateway import ChatGateway
 
 from flask_marshmallow import Marshmallow
+from flask_cors import CORS
 
 
 app = Flask(__name__)
 app.config.from_object(Config)
 Config.DB_instence = Database(app=app)
 Config.redis_instence = FlaskRedis(app=app)
-
+CORS(app)
 Security().init_jwt(app)
 Config.mail = Mail(app)
 

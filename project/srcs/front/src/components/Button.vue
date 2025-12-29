@@ -6,15 +6,16 @@
         text: String,
         color: { type: String, default: '#FFF' },
         backgroundColor: { type: String, default: '#9566B0' },
-        to: { type: String, default: '' },
-        onClick: Function
+        to: { type: String, default: '' }
     })
 
-    function handleClick() {
+    const emit = defineEmits(['click'])
+
+    const handleClick = () => {
         if (props.to) {
             router.push(props.to)
-        } else if (props.onClick) {
-            props.onClick()
+        } else {
+            emit('click')
         }
     }
 </script>
