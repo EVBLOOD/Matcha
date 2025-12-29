@@ -1,6 +1,8 @@
 <script setup>
+// import { useRouter } from 'vue-router'
+// const router = useRouter()
 
-defineProps({
+const props = defineProps({
     id: String,
     label: String,
     modelValue: String,
@@ -8,17 +10,17 @@ defineProps({
     type: {
         type: String,
         default: 'text'
-    }})
+    }
+})
 defineEmits(['update:modelValue']);
 </script>
 
 <template>
     <div>
-        <input :id="value" :name="name" :type="type"
-       
-        :checked="modelValue === id"
-        @input="$emit('update:modelValue', $event.target.value)">
         <label :for="id"> {{ label }}</label>
+        <input :value="modelValue" 
+        @change="$emit('update:modelValue', $event.target.value)" :name="name" :type="type"
+            @input="$emit('update:modelValue', $event.target.value)">
     </div>
 </template>
 
@@ -34,9 +36,9 @@ input {
 }
 div {
     display: flex;
+    flex-direction: column;
+    width: 100%;
     margin-bottom: 3%;
-    align-items: center;
-    gap: 2px;
 
 }
 </style>
