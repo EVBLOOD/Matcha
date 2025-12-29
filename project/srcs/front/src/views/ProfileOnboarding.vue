@@ -8,12 +8,14 @@ import Card from '@/components/Card.vue';
     <div class="page">
         <!-- <div class="content"> -->
             <Card title="Complete Your Profile">
-            <div>
-            <Input name="unameoremail" label="" id="unameoremail" v-model="firstName" type="image" src="/"/>
-            <Input name="unameoremail" label="First name" id="unameoremail" v-model="firstName" />
-
-                <input type="image" src="/" alt="idno why">
-                <input type="file" name="profile" id="profile">
+            <div class="avatar_upload">
+                 <div class="avatar_upload">
+                    <div class="avatar"></div>
+                    <div class="add_avatar">
+                        <input type="file" id="files" class="hidden"/>
+                        <label style="display: flex; justify-content: center; align-items: center;" for="files"><img src="/img/vector.svg" alt=""></label>
+                    </div>
+                 </div>
                 <p>Saad AKLLAM</p>
             </div>
 
@@ -75,6 +77,38 @@ import Card from '@/components/Card.vue';
     align-items: center;
     justify-content: center;
     height: 100vh;
+}
+.avatar_upload {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-direction: column;
+}
+.avatar {
+    width: 100px;
+    height: 100px;
+    background-image: url("/img/avatar.svg");
+    border-radius: 50%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.hidden {
+    display: none;
+}
+.add_avatar {
+    position: absolute;
+    top: 70%;
+    left:56%;
+    background-color: #DEB0F5;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
     @media (max-width: $breakpoint-md) {
         .page{
