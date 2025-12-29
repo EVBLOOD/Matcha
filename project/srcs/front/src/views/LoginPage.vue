@@ -1,15 +1,49 @@
 <script setup>
 import Card from '@/components/Card.vue';
-    import Input from '@/components/Input.vue';
-    import Button from '@/components/Button.vue';
+import Input from '@/components/Input.vue';
+import Button from '@/components/Button.vue';
+
+import AuthService from '@/api/services/AuthService'
+
+import { ref } from 'vue';
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const userName = ref('');
+const passWord = ref('');
+
+const isLoading = ref(false);
+const error = ref(null);
+
+const handleLogin = async () => {
+  isLoading.value = true;
+  error.value = null;
+
+  try {
+    const payload = { 
+           username: userName.value,
+           password: passWord.value
+       };
+       const response = await AuthService.login(payload);
+       localStorage.setItem('auth_token', response.data.access_token);
+       router.push('/')
+     } catch (err) {
+       console.log(err)
+       error.value = err.response?.data?.errors || err.response?.data?.error || 'Registration failed for unknown reason';
+     } finally {
+       isLoading.value = false;
+     }
+};
+// TODO: we should integrate the Loading and error displaying
+
 </script>
 
 <template>
     <div class="page">
         <Card title="Create Your Account">
-            <Input name="unameoremail" label="First name" id="unameoremail" v-model="firstName" />
-            <Input name="pword" label="First name" id="pword" v-model="firstName" />
-        <Button class="btn" to="home" text="Register"></Button>
+            <Input name="unameoremail" label="Username" id="unameoremail" v-model="userName" />
+            <Input name="pword" label="Password" id="pword" v-model="passWord" type="password"/>
+        <Button class="btn" text="Login" @click="handleLogin"></Button>
         <div class="extra">Forgot password? <Button class="just_btn" to="Reset" text="Reset Password" backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
         </Card>
     </div>

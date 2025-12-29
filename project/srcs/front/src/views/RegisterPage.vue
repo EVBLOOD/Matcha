@@ -24,7 +24,6 @@ const error = ref(null);
 
 
 const handleRegister = async () => {
-    console.log("DFDFD")
   isLoading.value = true;
   error.value = null;
 
@@ -43,14 +42,16 @@ const handleRegister = async () => {
     router.push('confirm-email')
   } catch (err) {
     console.log(err)
-    error.value = err.response?.data?.errors || 'Registration failed for unknown reason';
+    error.value = err.response?.data?.errors || err.response?.data?.error || 'Registration failed for unknown reason';
   } finally {
     isLoading.value = false;
   }
-  console.log(error.value)
 };
 
+
+// TODO: we should integrate the Loading and error displaying
 </script>
+
 
 
 <template>
