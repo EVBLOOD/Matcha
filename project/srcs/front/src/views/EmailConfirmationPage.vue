@@ -6,8 +6,8 @@ import Card from '@/components/Card.vue';
 <template>
     <div class="page">
         <Card title="An email has been sent to your address.">
-            <Button to="nothing" text="Resend Email"></Button> <!-- to nothing means just a backend operation and a front text update -->
-            <div>Went to the wrong place?  <Button to="login" text="Back to Log In"></Button></div>
+            <Button class="btn" to="nothing" text="Resend Email"></Button>
+            <div class="extra">Went to the wrong place?  <Button class="just_btn" to="login" text="Back to Sign In" backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
         </Card>
     </div>
 </template>
@@ -19,6 +19,22 @@ import Card from '@/components/Card.vue';
         align-items: center;
         justify-content: center;
         height: 100vh;
+    }
+    .btn {
+        margin-bottom: 5%;
+    }
+    .extra {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .just_btn {
+    margin-top: 0%;
+    padding: 0px;
+    border-style: none;
     }
     @media (max-width: $breakpoint-md) {
         .page{

@@ -10,7 +10,7 @@ import Card from '@/components/Card.vue';
             <Input name="unameoremail" label="First name" id="unameoremail" v-model="firstName" />
             <Input name="pword" label="First name" id="pword" v-model="firstName" />
         <Button class="btn" to="home" text="Register"></Button>
-        <div>Forgot password? <Button to="Reset" text="Reset Password"></Button></div>
+        <div class="extra">Forgot password? <Button class="just_btn" to="Reset" text="Reset Password" backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
         </Card>
     </div>
 </template>
@@ -24,8 +24,22 @@ import Card from '@/components/Card.vue';
         margin: 40px 20px;
     }
     .btn {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-top:  5%;
+        margin-bottom:  5%;
+    }
+
+    .extra {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .just_btn {
+    margin-top: 0%;
+    padding: 0px;
+    border-style: none;
     }
     @media (max-width: $breakpoint-md) {
         .page{

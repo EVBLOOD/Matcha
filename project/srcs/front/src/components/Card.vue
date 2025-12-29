@@ -18,13 +18,13 @@ const props = defineProps({
         display: flex;
         flex-direction: column;
         padding: 4%;
-        min-height: 50%;
-        // max-height: 55%;
+        // min-height: 50%;
         max-width: 55%;
         min-width: 50%;
 
         .title {
             align-self: center;
+            text-align: center;
             font-weight: 700;
             font-size: 32px;
             margin-bottom: 10%;
