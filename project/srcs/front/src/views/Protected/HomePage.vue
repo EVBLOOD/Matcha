@@ -3,6 +3,7 @@
     const route = useRoute();
     const clickLogOut = () => {
         console.log("Logout")
+        
     }
 </script>
 
@@ -20,7 +21,7 @@
         </div>
         <div class="main_div_parent">
             <div class="main_title">
-                <h2>{{ route.meta.title || 'Default Title' }}</h2>
+                <h2>{{ route.meta.title || 'EVBLOOD is the Title' }}</h2>
             </div>
             <div class="main_div">
                 <RouterView />
@@ -36,15 +37,10 @@
         height: 100vh;
     }
 
-    .side_bar {
-        display: flex;
-        flex-direction: column;
-        gap: 33px;
-
-        height: 100%;
-        width: 20%;
-        margin-right: 1%;
+    .main_div {
+        width: 100%;
     }
+    
     .main_title {
         width: 100%;
         border-style: solid;
@@ -53,22 +49,23 @@
         padding: 3%;
         color: #E6E6E6;
     }
-    .main_div {
-        width: 100%;
-        height: 100%;
-        // display: flex;
-        // flex-direction: column;
-    }
 
     .main_div_parent {
         width: 100%;
-        height: 100%;
         border-style: solid;
         border-color: rgba(255, 255, 255, 0.25);;
         border-width: 0px 1px 0px 1px;
-        // display: flex;
-        // flex-direction: column;
     }
+
+    .side_bar {
+        display: flex;
+        flex-direction: column;
+        gap: 33px;
+        height: 100%;
+        width: 20%;
+        margin-right: 1%;
+    }
+    
 
     .nav {
         display: flex;
