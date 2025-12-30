@@ -23,22 +23,22 @@ const router = createRouter({
           path: '',
           name: 'home',
           component: ExplorePage,
-          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Explore' },
         },
         {
           path: 'messages',
           component: MessagesPage,
-          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Chat' }
         },
         {
           path: 'notifications',
           component: NotificationsPage,
-          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Notifications' }
         },
         {
           path: 'profile',
           component: ProfilePage,
-          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' }
         },
       ]
     },
