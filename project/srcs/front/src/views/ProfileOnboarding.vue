@@ -4,9 +4,11 @@ import Button from '@/components/Button.vue';
 import InputLabel from '@/components/InputLabel.vue';
 import Select from '@/components/Select.vue';
 import { ref, computed } from 'vue';
+import useUserStore from '@/stores/user';
 
 
 import AuthService from '@/api/services/AuthService'
+import { useRouter } from 'vue-router'
 
 
 const orientation = [{ value: 'straight', label: 'Straight' }, { value: 'gay', label: 'Gay' }, { value: 'bisexual', label: 'Bisexual' }]
@@ -21,6 +23,8 @@ const previewProfile = ref(null);
 const selectedIntersts = ref([]);
 const insertedBio = ref('');
 const insertedPictures = ref([]);
+
+const router = useRouter()
 
 const onProfileChange = (e) => {
     const file = e.target.files[0];
@@ -83,22 +87,24 @@ const handleSubmit = async () => {
     formData.append('tags', selectedIntersts.value.join(';'));
     if (selectedProfile.value) {
         formData.append('profile', selectedProfile.value);
-    } else {
-        console.log("DSfsdfsd")
     }
 
     insertedPictures.value.forEach((img) => {
         if (img.file) {
-            formData.append('files', img.file); 
+            formData.append(img.id, img.file); 
         }
     });
 
     formData.append('location_set_by_user', false);
     //   formData.append('latitude', bio.value);
     //   formData.append('longitude', bio.value);
+    
     try {
-        const response = await AuthService.completeProfile(formData);
-        console.log(response)
+        await AuthService.completeProfile(formData);
+        const user = useUserStore();
+        await user.fetchUser();
+
+        router.push('/')
     } catch (error) {
         console.error("Upload failed", error);
     }

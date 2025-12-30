@@ -17,26 +17,28 @@ const router = createRouter({
     {
       path: '/',
       component: HomePage,
+      meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true },
       children: [
         {
           path: '',
+          name: 'home',
           component: ExplorePage,
-          meta: { requiresAuth: true, requiresCompleteProfile: true }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true }
         },
         {
           path: 'messages',
           component: MessagesPage,
-          meta: { requiresAuth: true, requiresCompleteProfile: true }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true }
         },
         {
           path: 'notifications',
           component: NotificationsPage,
-          meta: { requiresAuth: true, requiresCompleteProfile: true }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true }
         },
         {
           path: 'profile',
           component: ProfilePage,
-          meta: { requiresAuth: true, requiresCompleteProfile: true }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true }
         },
       ]
     },
@@ -56,8 +58,8 @@ const router = createRouter({
       path: '/confirm-email', // TODO: I should find a solution to integrate this later
       name: 'email confirmation',
       component: EmailConfirmationPage,
-      meta: { requiresAuth: true, requiresCompleteProfile: false }
-    }, 
+      meta: { requiresVerification: false, requiresAuth: true, requiresCompleteProfile: false }
+    },
     {
       path: '/login',
       name: 'login',
@@ -68,7 +70,7 @@ const router = createRouter({
       path: '/profile-onboarding',
       name: 'profile onboarding',
       component: ProfileOnboarding,
-      meta: { requiresAuth: true, requiresCompleteProfile: false }
+      meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: false }
     }
     // {
     //   path: '/about',
@@ -85,27 +87,30 @@ router.beforeEach(async (to, from, next) => {
   const user = useUserStore();
   const token = localStorage.getItem('auth_token');
 
-
-  if (to.meta.requiresAuth && (!token || !(user.isAuthenticated))) {
-    return next({ name: 'login' });
-  }
-
-  if (token && !user.isLoaded) {
-    await user.fetchUser();
-  }
-
-  if (user.isAuthenticated && !(user?.status === 'completed')) {
-    if (to.meta.requiresCompleteProfile || !to.meta.requiresAuth) {
-      return next({ name: 'profile onboarding' });
+    if (token && !user.isLoaded) {
+      await user.fetchUser();
     }
-  }
 
-  if (user.isAuthenticated && (user?.status === 'completed')) {
-    if (to.meta.onboarding || !to.meta.requiresAuth) {
-      return next({ name: '/' });
+    if (user.isAuthenticated) {
+      if (!user.isVerified && to.meta.requiresVerification) {
+        return next({ name: 'email confirmation' });
+      } else if (!user.isProfileComplete && to.meta.requiresCompleteProfile) {
+        return next({ name: 'profile onboarding' });
+      } else {
+        if (to.meta.public) {
+          return next({ name: 'home' });
+        } else if (user.isVerified && !to.meta.requiresVerification) {
+          return next({ name: 'profile onboarding' });
+        } else if (user.isProfileComplete && !to.meta.requiresCompleteProfile) {
+          return next({ name: 'home' });
+        }
+      }
+
+    } else {
+      if (!to.meta.public) {
+          return next({ name: 'login' });
+      }
     }
-  }
-
-  next(); 
+    next();
 });
 export default router

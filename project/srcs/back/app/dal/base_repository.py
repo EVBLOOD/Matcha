@@ -15,11 +15,14 @@ class BaseRepository:
         with Config.DB_instence.get_cursor(commit=True) as cursor:
             cursor.execute(query, params)
 
-            keys = [col[0] for col in cursor.description]
-
+            description = cursor.description
             values = cursor.fetchone()
+            
             if not values :
                 return None
+
+            keys = [col[0] for col in description]
+
 
             return dict(zip(keys, values))
 

@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, redirect
 from app.services.user_service import UserService
 from app.core.security import Security
 from app.core.schemas import UserRegisterSchema, ValidationError
+import time
 
 
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
@@ -38,7 +39,8 @@ def verify_account() :
 
         print (token_id, flush=True)
         UserService.verify_account(token=token_id)
-        return redirect("http://localhost:3000/login", code=302) # TODO: maybe to login with success prompt -> profile fill
+        time.sleep(2)
+        return redirect("http://localhost:3000/confirm-email", code=302) # TODO: maybe to login with success prompt -> profile fill
     except ValueError as e :
         return jsonify({"error": str(e)}), 400 # TODO: this should be updated somehow, maybe to login with issue prompt -> resend email
 
