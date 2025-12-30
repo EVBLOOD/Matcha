@@ -1,9 +1,21 @@
 <script setup>
-    import { RouterLink, RouterView, useRoute } from 'vue-router';
+    import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
+    import AuthService from '@/api/services/AuthService'
+
     const route = useRoute();
-    const clickLogOut = () => {
+    const router = useRouter()
+
+    const clickLogOut = async () => {
         console.log("Logout")
-        
+        try {
+            const response = await AuthService.logout();
+            console.log(response)
+            localStorage.removeItem('auth_token');
+            router.push('login')
+        } catch (err) {
+            console.log(err);
+            localStorage.removeItem('auth_token');
+        }
     }
 </script>
 

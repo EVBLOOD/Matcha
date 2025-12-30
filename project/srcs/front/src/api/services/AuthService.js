@@ -7,6 +7,9 @@ export default {
   login(userData) {
     return apiClient.post('/auth/login', userData);
   },
+  logout() {
+    return apiClient.post('/auth/logout');
+  },
   getProfile() {
     return apiClient.get('/user/protected')
   },
