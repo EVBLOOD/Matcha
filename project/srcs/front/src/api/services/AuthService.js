@@ -9,5 +9,13 @@ export default {
   },
   getProfile() {
     return apiClient.get('/user/protected')
-  }
+  },
+  completeProfile(userData) {
+    return apiClient.post('/user/profile', formData, {
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        console.log(`Upload progress: ${percentCompleted}%`);
+      }
+    });
+  },
 };
