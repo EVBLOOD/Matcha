@@ -55,6 +55,11 @@ def verify_account() :
 def protected() :
     return jsonify({"result": f"protected {request.user_id}"})
 
+# @user_bp.route("/my_status", methods=["GET", "POST"])
+# @Security.auth_guard()
+# def my_status() :
+#     return jsonify({"result": f"protected {request.user_id}"})
+
 @user_bp.route("/not_protected", methods=["GET", "POST"])
 def not_protected() :
     return jsonify({"result": "not_protected"})

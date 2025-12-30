@@ -9,6 +9,7 @@ import ExplorePage from '@/views/Protected/ExplorePage.vue';
 import MessagesPage from '@/views/Protected/MessagesPage.vue';
 import NotificationsPage from '@/views/Protected/NotificationsPage.vue';
 import ProfilePage from '@/views/Protected/ProfilePage.vue';
+import useUserStore from '@/stores/user';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,19 +20,23 @@ const router = createRouter({
       children: [
         {
           path: '',
-          component: ExplorePage
+          component: ExplorePage,
+          meta: { requiresAuth: true, requiresCompleteProfile: true }
         },
         {
           path: 'messages',
-          component: MessagesPage
+          component: MessagesPage,
+          meta: { requiresAuth: true, requiresCompleteProfile: true }
         },
         {
           path: 'notifications',
-          component: NotificationsPage
+          component: NotificationsPage,
+          meta: { requiresAuth: true, requiresCompleteProfile: true }
         },
         {
           path: 'profile',
-          component: ProfilePage
+          component: ProfilePage,
+          meta: { requiresAuth: true, requiresCompleteProfile: true }
         },
       ]
     },
@@ -39,26 +44,31 @@ const router = createRouter({
       path: '/landing',
       name: 'landing',
       component: LandingPage,
+      meta: { public: true }
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterPage,
+      meta: { public: true }
     },
     {
-      path: '/confirm-email',
+      path: '/confirm-email', // TODO: I should find a solution to integrate this later
       name: 'email confirmation',
       component: EmailConfirmationPage,
-    },
+      meta: { requiresAuth: true, requiresCompleteProfile: false }
+    }, 
     {
       path: '/login',
       name: 'login',
       component: LoginPage,
+      meta: { public: true }
     },
     {
       path: '/profile-onboarding',
       name: 'profile onboarding',
-      component: ProfileOnboarding
+      component: ProfileOnboarding,
+      meta: { requiresAuth: true, requiresCompleteProfile: false }
     }
     // {
     //   path: '/about',
@@ -71,4 +81,31 @@ const router = createRouter({
   ],
 })
 
+router.beforeEach(async (to, from, next) => {
+  const user = useUserStore();
+  const token = localStorage.getItem('auth_token');
+
+
+  if (to.meta.requiresAuth && (!token || !(user.isAuthenticated))) {
+    return next({ name: 'login' });
+  }
+
+  if (token && !user.isLoaded) {
+    await user.fetchUser();
+  }
+
+  if (user.isAuthenticated && !(user?.status === 'completed')) {
+    if (to.meta.requiresCompleteProfile || !to.meta.requiresAuth) {
+      return next({ name: 'profile onboarding' });
+    }
+  }
+
+  if (user.isAuthenticated && (user?.status === 'completed')) {
+    if (to.meta.onboarding || !to.meta.requiresAuth) {
+      return next({ name: '/' });
+    }
+  }
+
+  next(); 
+});
 export default router
