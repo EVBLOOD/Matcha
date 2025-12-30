@@ -6,12 +6,15 @@ import Select from '@/components/Select.vue';
 import { ref, computed } from 'vue';
 
 
-const orientation = [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }, { value: 'c', label: 'C' }]
-const availableTags = ref(['vegan', 'geek', 'sport', 'art', 'music', 'coding']);
+import AuthService from '@/api/services/AuthService'
 
 
-const selectedOrientation = ref('a');
-const selectedGender = ref('Male');
+const orientation = [{ value: 'straight', label: 'Straight' }, { value: 'gay', label: 'Gay' }, { value: 'bisexual', label: 'Bisexual' }]
+const availableTags = ref(['art', 'music', 'coding']);
+
+
+const selectedOrientation = ref('straight');
+const selectedGender = ref('male');
 
 const selectedProfile = ref(null);
 const previewProfile = ref(null);
@@ -74,18 +77,27 @@ const handleSubmit = async () => {
     formData.append('biography', insertedBio.value);
     formData.append('gender', selectedGender.value);
     formData.append('sexual_preference', selectedOrientation.value);
+    
 
 
-    formData.append('profile', selectedProfile.value);
-    formData.append('tags', bio.value);
+    formData.append('tags', selectedIntersts.value.join(';'));
+    if (selectedProfile.value) {
+        formData.append('profile', selectedProfile.value);
+    } else {
+        console.log("DSfsdfsd")
+    }
 
+    insertedPictures.value.forEach((img) => {
+        if (img.file) {
+            formData.append('files', img.file); 
+        }
+    });
 
-    //   formData.append('location_set_by_user', bio.value);
+    formData.append('location_set_by_user', false);
     //   formData.append('latitude', bio.value);
     //   formData.append('longitude', bio.value);
-
     try {
-        const response = await UserService.completeProfile(formData);
+        const response = await AuthService.completeProfile(formData);
         console.log(response)
     } catch (error) {
         console.error("Upload failed", error);
@@ -119,9 +131,9 @@ const avatarStyle = computed(() => {
             <div class="gender_div">
                 <p>Gender</p>
                 <div class="labels_list">
-                    <InputLabel name="gender" label="Male" type="radio" id="Male" v-model="selectedGender" />
-                    <InputLabel name="gender" label="Female" type="radio" id="Female" v-model="selectedGender" />
-                    <InputLabel name="gender" label="Other" type="radio" id="Other" v-model="selectedGender" />
+                    <InputLabel name="gender" label="Male" type="radio" id="male" value="male" v-model="selectedGender" />
+                    <InputLabel name="gender" label="Female" type="radio" id="female" value="female" v-model="selectedGender" />
+                    <InputLabel name="gender" label="Other" type="radio" id="other" value="other" v-model="selectedGender" />
                 </div>
             </div>
 
@@ -164,7 +176,7 @@ const avatarStyle = computed(() => {
                     </div>
                 </div>
             </div>
-            <Button to="home" text="Save and Continue"></Button>
+            <Button @click="handleSubmit" text="Save and Continue"></Button>
         </Card>
         <!-- </div> -->
     </div>

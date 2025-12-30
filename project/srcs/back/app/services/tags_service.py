@@ -26,5 +26,5 @@ class TagsService:
         if not isinstance(tags, Set):
             raise ValueError("Form error inputs!")
         for tag in tags :
-            if not re.fullmatch(r'^#[\wÀ-ÿ\- ]{1,29}$', tag, re.UNICODE) :
+            if not re.fullmatch(r'[\wÀ-ÿ\- ]{1,29}$', tag, re.UNICODE) :
                 raise ValueError("Tag isn't valid")

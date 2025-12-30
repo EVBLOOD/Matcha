@@ -4,6 +4,7 @@ defineProps({
     id: String,
     label: String,
     modelValue: String,
+    value: String,
     name: String,
     type: {
         type: String,
@@ -14,7 +15,7 @@ defineEmits(['update:modelValue']);
 
 <template>
     <div>
-        <input :id="value" :name="name" :type="type"
+        <input :id="value" :name="name" :type="type" :value="value"
        
         :checked="modelValue === id"
         @input="$emit('update:modelValue', $event.target.value)">
