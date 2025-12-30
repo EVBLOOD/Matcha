@@ -63,7 +63,7 @@ class UserRepository(BaseRepository):
             WHERE id = %s
             RETURNING id
         """
-        cls._execute(query, (user_id,))
+        return cls._execute(query, (user_id,))
 
     @classmethod
     def find_by_email(cls, email: str) -> Optional[User]:

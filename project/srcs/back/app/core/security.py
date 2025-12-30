@@ -26,10 +26,10 @@ class Security :
                     if status != 200 :
                         raise Exception(message)
                     if require_verify_mail and not AuthService.verify_is_verified(claims["user_id"]) :
-                        return jsonify({"error": "account isn't verified!"}), 301
+                        return jsonify({"error": "account isn't verified!"}), 401
                     # This maybe will be moved down when working with the admin role
                     if check_profile and not AuthService.check_profile_completion(claims["user_id"]) :
-                        return jsonify({"error": "profile completion required"}), 301
+                        return jsonify({"error": "profile completion required"}), 401
                 except Exception as e:
                     return jsonify({"error": str(e)}), 401
 

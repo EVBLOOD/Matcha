@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
 
@@ -40,7 +40,43 @@ onMounted(() => {
 onUnmounted(() => {
     stopPolling();
 });
+</script> -->
+
+
+<script setup>
+import Card from '@/components/Card.vue';
+import Button from '@/components/Button.vue';
+
+
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import useUserStore from '@/stores/user';
+
+const router = useRouter();
+
+
+// const checkVerification = async () => {
+//     try {
+//         userStore.fetchUser()
+        
+//         if (userStore.isVerified) {
+//             router.push('/');
+//         }
+//     } catch (error) {
+//         router.push('/login');
+//     }
+
+// }
+
+
+onMounted(() => {
+    const userStore = useUserStore();
+    userStore.setIsLoaded(false)
+    router.push('/profile-onboarding');
+});
+
 </script>
+
 
 <template>
     <div class="page">

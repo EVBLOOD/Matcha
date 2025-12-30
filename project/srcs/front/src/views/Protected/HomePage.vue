@@ -1,7 +1,8 @@
 <script setup>
     import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
     import AuthService from '@/api/services/AuthService'
-
+import useUserStore from '@/stores/user';
+const userStore = useUserStore();
     const route = useRoute();
     const router = useRouter()
 
@@ -11,6 +12,8 @@
             const response = await AuthService.logout();
             console.log(response)
             localStorage.removeItem('auth_token');
+            userStore.fetchUser()
+            // userStore.setIsLoaded(false)
             router.push('login')
         } catch (err) {
             console.log(err);

@@ -72,14 +72,6 @@ const router = createRouter({
       component: ProfileOnboarding,
       meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: false }
     }
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue'),
-    // },
   ],
 })
 
@@ -87,8 +79,14 @@ router.beforeEach(async (to, from, next) => {
   const user = useUserStore();
   const token = localStorage.getItem('auth_token');
 
+  console.log(user.isLoaded)
+  console.log(token)
     if (token && !user.isLoaded) {
       await user.fetchUser();
+    }
+    if (!token) {
+      await user.fetchUser();
+      user.setIsLoaded(false)
     }
 
     if (user.isAuthenticated) {

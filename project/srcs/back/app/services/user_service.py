@@ -49,7 +49,7 @@ class UserService:
         (user_id, is_verified) = UserRepository.find_by_verification_token(token)
         if is_verified :
             raise ValueError("Account already verified")
-        UserRepository.verify_token(user_id)
+        return UserRepository.verify_token(user_id)
     
     @staticmethod
     def change_password(user_id: int, password: str, session_id: str) :
