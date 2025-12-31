@@ -119,7 +119,7 @@ const avatarStyle = computed(() => {
 </script>
 
 <template>
-    <div class="page">
+    <!-- <div class="page"> -->
         <!-- <div class="content"> -->
         <Card title="Complete Your Profile">
             <div class="avatar_upload">
@@ -185,16 +185,16 @@ const avatarStyle = computed(() => {
             <Button @click="handleSubmit" text="Save and Continue"></Button>
         </Card>
         <!-- </div> -->
-    </div>
+    <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
-.page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
+// .page {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     height: 100vh;
+// }
 
 .image-box {
     width: 100px;

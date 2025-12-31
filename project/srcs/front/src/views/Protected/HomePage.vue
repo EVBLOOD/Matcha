@@ -39,7 +39,7 @@ const userStore = useUserStore();
                 <h2>{{ route.meta.title || 'EVBLOOD is the Title' }}</h2>
             </div>
             <div class="main_div">
-                <RouterView />
+                <RouterView class="main_div"/>
             </div>
         </div>
     </div>
@@ -49,14 +49,18 @@ const userStore = useUserStore();
     .content{
         display: flex;
         flex-direction: row;
-        height: 100vh;
+        height: 100%;
+        width: 100%;
     }
 
     .main_div {
         width: 100%;
+        height: 90%;
+
     }
     
     .main_title {
+        height: 10%;
         width: 100%;
         border-style: solid;
         border-color: rgba(255, 255, 255, 0.25);;
@@ -67,6 +71,8 @@ const userStore = useUserStore();
 
     .main_div_parent {
         width: 100%;
+        height: 100%;
+
         border-style: solid;
         border-color: rgba(255, 255, 255, 0.25);;
         border-width: 0px 1px 0px 1px;

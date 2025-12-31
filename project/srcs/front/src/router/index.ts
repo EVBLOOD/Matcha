@@ -9,6 +9,8 @@ import ExplorePage from '@/views/Protected/ExplorePage.vue';
 import MessagesPage from '@/views/Protected/MessagesPage.vue';
 import NotificationsPage from '@/views/Protected/NotificationsPage.vue';
 import ProfilePage from '@/views/Protected/ProfilePage.vue';
+import Vue from '@/views/Protected//profile/View.vue';
+import ViewSettings from '@/views/Protected//profile/ViewSettings.vue';
 import useUserStore from '@/stores/user';
 
 const router = createRouter({
@@ -36,9 +38,20 @@ const router = createRouter({
           meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Notifications' }
         },
         {
-          path: 'profile',
+          path: 'profile/:id',
           component: ProfilePage,
-          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' }
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' },
+          children: [
+            {
+              path: '',
+              component: Vue
+            },
+            {
+              path: 'settings',
+              component: ViewSettings
+            }
+
+          ]
         },
       ]
     },

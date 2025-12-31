@@ -39,7 +39,7 @@ const handleLogin = async () => {
 </script>
 
 <template>
-    <div class="page">
+    <!-- <div class="page"> -->
         <Card title="Create Your Account">
             <Input name="unameoremail" label="Username" id="unameoremail" v-model="userName" />
             <Input name="pword" label="Password" id="pword" v-model="passWord" type="password"/>
@@ -51,17 +51,17 @@ const handleLogin = async () => {
             </div>
         <div class="extra">Forgot password? <Button class="just_btn" to="Reset" text="Reset Password" backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
         </Card>
-    </div>
+    <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
-    .page{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 40px 20px;
-    }
+    // .page{
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+    //     height: 100vh;
+    //     margin: 40px 20px;
+    // }
     .btn {
         margin-top:  5%;
         margin-bottom:  5%;

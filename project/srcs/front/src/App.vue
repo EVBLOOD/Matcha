@@ -13,5 +13,9 @@ import { RouterLink, RouterView } from 'vue-router';
   .container{
     margin: 0 auto;
     max-width: $breakpoint-lg;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

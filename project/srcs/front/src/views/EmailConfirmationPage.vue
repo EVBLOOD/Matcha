@@ -1,48 +1,3 @@
-<!-- <script setup>
-import Card from '@/components/Card.vue';
-import Button from '@/components/Button.vue';
-
-
-import { onMounted, onUnmounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import useUserStore from '@/stores/user';
-
-const router = useRouter();
-const pollingInterval = ref(null);
-const userStore = useUserStore();
-
-const checkVerification = async () => {
-    try {
-        userStore.fetchUser()
-        
-        if (userStore.isVerified) {
-            router.push('/');
-        }
-    } catch (error) {
-        router.push('/login');
-    }
-
-}
-
-const stopPolling = () => {
-    if (pollingInterval.value) {
-        clearInterval(pollingInterval.value);
-        pollingInterval.value = null;
-    }
-};
-
-onMounted(() => {
-    checkVerification();
-
-    pollingInterval.value = setInterval(checkVerification, 2000);
-});
-
-onUnmounted(() => {
-    stopPolling();
-});
-</script> -->
-
-
 <script setup>
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
@@ -54,21 +9,6 @@ import useUserStore from '@/stores/user';
 
 const router = useRouter();
 
-
-// const checkVerification = async () => {
-//     try {
-//         userStore.fetchUser()
-        
-//         if (userStore.isVerified) {
-//             router.push('/');
-//         }
-//     } catch (error) {
-//         router.push('/login');
-//     }
-
-// }
-
-
 onMounted(() => {
     const userStore = useUserStore();
     userStore.setIsLoaded(false)
@@ -79,22 +19,22 @@ onMounted(() => {
 
 
 <template>
-    <div class="page">
+    <!-- <div class="page"> -->
         <Card title="An email has been sent to your address.">
             <Button class="btn" to="nothing" text="Resend Email"></Button>
             <div class="extra">Went to the wrong place? <Button class="just_btn" to="login" text="Back to Sign In"
                     backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
         </Card>
-    </div>
+    <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
-.page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
+// .page {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     height: 100vh;
+// }
 
 .btn {
     margin-bottom: 5%;
