@@ -43,7 +43,12 @@ const handleLogin = async () => {
         <Card title="Create Your Account">
             <Input name="unameoremail" label="Username" id="unameoremail" v-model="userName" />
             <Input name="pword" label="Password" id="pword" v-model="passWord" type="password"/>
-        <Button class="btn" text="Login" @click="handleLogin"></Button>
+            <!-- <Button  class="btn" text="Login" @click="handleLogin"></Button> -->
+
+            <div class="btn" style="display: flex;flex-direction: column; gap: 2px;padding: 6px;">
+                <Button text="Login" @click="handleLogin"  style="background-color: #DEB0F5;"></Button>
+                <Button text="Register" to="register"></Button>
+            </div>
         <div class="extra">Forgot password? <Button class="just_btn" to="Reset" text="Reset Password" backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
         </Card>
     </div>
