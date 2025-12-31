@@ -57,17 +57,17 @@ const router = createRouter({
                 {
                   path: '',
                   component: ViewSettingsDefault,
-                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' }
+                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'Personal details' }
                 },
                 {
                   path: 'password',
                   component: ViewSettingsPassword,
-                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' }
+                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'Change password' }
                 },
                 {
                   path: 'details',
                   component: ViewSettingsMore,
-                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' }
+                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'More details' }
                 }
               ]
             }

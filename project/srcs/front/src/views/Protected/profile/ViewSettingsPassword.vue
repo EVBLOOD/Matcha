@@ -1,37 +1,46 @@
 <script setup>
-    import { RouterLink, RouterView } from 'vue-router';
+    import Input from '@/components/Input.vue';
+import Button from '@/components/Button.vue';
+    import { ref } from 'vue'
+    const passWord = ref('');
+    const passWordConf = ref('');
+const clickSave = (e) => {
+    console.log("SAAAAAAAVE ME")
+}
 </script>
 
 <template>
-    Password
+    <div class="wraper">
+        <div class="two_inputs">
+    
+            <Input name="pass" label="Password" id="pass" v-model="passWord" type="text"/>
+            <Input name="confpass" label="Confirm Password" id="confpass" v-model="passWordConf" type="text"/>
+        </div>
+    
+        <Button class="btn" text="Save" @click="clickSave"></Button>
+    </div>
+
 </template>
 
 <style lang="scss" scoped>
-    nav {
-        display: flex;
-        gap: 3%
+    .btn {
+        width: 100%;
     }
-    
-    .link {
-        text-decoration: none;
-        color: $text-color;
-        cursor: pointer;
-        &:hover {
-            border-style: solid;
-            border-width: 0px 0px 5px 0px;
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-        &:active {
-            border-style: solid;
-            border-width: 0px 0px 5px 0px;
-            border-color: rgba(255, 255, 255, 1);
-        }
+    .wraper {
+        height: 100%;
+        width: 100%;
+        padding-top: 5%;
+    }
+    .two_inputs {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        gap: 2%;
     }
     @media (max-width: $breakpoint-md) {
         .page{
             display: flex;
             flex-direction: column;
-            // margin: 0;
         }
     }
 </style>
