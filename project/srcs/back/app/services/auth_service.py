@@ -15,7 +15,7 @@ class AuthService :
         try :
             is_verified = UserRepository.find_by_id(id=user_id, what="is_verified")
             print (is_verified, flush=True)
-            return is_verified[0]
+            return is_verified and is_verified[0]
         except Exception as e :
             print(e, flush=True)
             return False
