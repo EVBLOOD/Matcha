@@ -30,7 +30,7 @@ const userStore = useUserStore();
                 <RouterLink class="link" to="/"><img src="/img/homeIcon.svg" alt=""/> <span>Home</span></RouterLink>
                 <RouterLink class="link" to="/messages"><img src="/img/messagesIcon.svg" alt=""/> <span>Messages</span></RouterLink>
                 <RouterLink class="link" to="/notifications"><img src="/img/notificationsIcon.svg" alt=""/> <span>Notifications</span></RouterLink>
-                <RouterLink class="link" to="/profile"><img src="/img/profileIcon.svg" alt=""/> <span>Profile</span></RouterLink>
+                <RouterLink class="link" to="/profile/id"><img src="/img/profileIcon.svg" alt=""/> <span>Profile</span></RouterLink>
                 <a class="link log_a" v-on:click="clickLogOut"><img src="/img/logOut.svg" alt=""/> <span>Log out</span></a>
             </nav>
         </div>

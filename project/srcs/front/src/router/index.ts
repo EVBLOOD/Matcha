@@ -11,6 +11,9 @@ import NotificationsPage from '@/views/Protected/NotificationsPage.vue';
 import ProfilePage from '@/views/Protected/ProfilePage.vue';
 import Vue from '@/views/Protected//profile/View.vue';
 import ViewSettings from '@/views/Protected//profile/ViewSettings.vue';
+import ViewSettingsMore from '@/views/Protected//profile/ViewSettingsMore.vue';
+import ViewSettingsDefault from '@/views/Protected//profile/ViewSettingsDefault.vue';
+import ViewSettingsPassword from '@/views/Protected//profile/ViewSettingsPassword.vue';
 import useUserStore from '@/stores/user';
 
 const router = createRouter({
@@ -44,11 +47,29 @@ const router = createRouter({
           children: [
             {
               path: '',
-              component: Vue
+              component: Vue,
+              meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' },
             },
             {
               path: 'settings',
-              component: ViewSettings
+              component: ViewSettings,
+              children : [
+                {
+                  path: '',
+                  component: ViewSettingsDefault,
+                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' }
+                },
+                {
+                  path: 'password',
+                  component: ViewSettingsPassword,
+                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' }
+                },
+                {
+                  path: 'details',
+                  component: ViewSettingsMore,
+                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile' }
+                }
+              ]
             }
 
           ]

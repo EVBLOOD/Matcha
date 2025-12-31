@@ -3,12 +3,7 @@
 </script>
 
 <template>
-        <nav>
-            <RouterLink class="link" to="/profile/:id/settings">Personal details</RouterLink>
-            <RouterLink class="link" to="/profile/:id/settings/password">Change password</RouterLink>
-            <RouterLink class="link" to="/profile/:id/settings/details">More details</RouterLink>
-        </nav>
-        <RouterView />
+        Default
 </template>
 
 <style lang="scss" scoped>
@@ -16,7 +11,7 @@
         display: flex;
         gap: 3%
     }
-
+    
     .link {
         text-decoration: none;
         color: $text-color;
