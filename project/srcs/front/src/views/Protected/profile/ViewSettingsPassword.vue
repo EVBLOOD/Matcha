@@ -13,8 +13,8 @@ const clickSave = (e) => {
     <div class="wraper">
         <div class="two_inputs">
     
-            <Input name="pass" label="Password" id="pass" v-model="passWord" type="text"/>
-            <Input name="confpass" label="Confirm Password" id="confpass" v-model="passWordConf" type="text"/>
+            <Input name="pass" label="Password" id="pass" v-model="passWord" type="password"/>
+            <Input name="confpass" label="Confirm Password" id="confpass" v-model="passWordConf" type="password"/>
         </div>
     
         <Button class="btn" text="Save" @click="clickSave"></Button>

@@ -65,7 +65,8 @@ const userStore = useUserStore();
         border-style: solid;
         border-color: rgba(255, 255, 255, 0.25);;
         border-width: 0px 0px 1px 0px;
-        padding: 3%;
+        padding-left: 3%;
+        align-content: center;
         color: #E6E6E6;
     }
 
@@ -92,7 +93,7 @@ const userStore = useUserStore();
         display: flex;
         flex-direction: column;
         position: relative;
-        
+        // gap: 1px;
         height: 100%;
     }
     .log_a {
@@ -108,9 +109,11 @@ const userStore = useUserStore();
         justify-content: flex-start;
         align-items: center;
         width: 100%;
-        height: 44px;
-        padding-left: 5%;
+        // height: 6%;
+        padding: 6%;
+        align-content: center;
         cursor: pointer;
+        flex-wrap: wrap;
     }
     .link:hover {
         background: rgba(255, 255, 255, 0.12);

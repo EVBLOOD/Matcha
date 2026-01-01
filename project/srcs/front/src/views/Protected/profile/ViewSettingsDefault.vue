@@ -45,6 +45,7 @@ const clickSave = (e) => {
         flex-wrap: nowrap;
         gap: 2%;
     }
+
     @media (max-width: $breakpoint-md) {
         .page{
             display: flex;
