@@ -6,6 +6,7 @@ import Select from '@/components/Select.vue';
 import { ref, computed } from 'vue';
 import useUserStore from '@/stores/user';
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
+import RenderPictures from '@/components/RenderPictures.vue';
 
 
 import AuthService from '@/api/services/AuthService'
@@ -25,32 +26,6 @@ const insertedBio = ref('');
 const insertedPictures = ref([]);
 
 const router = useRouter()
-
-
-const onFileChange = (event) => {
-    const recent_pictures = Array.from(event.target.files);
-
-    const remainingSlots = 4 - insertedPictures.value.length;
-
-    const newPics = recent_pictures.slice(0, remainingSlots).map(file => ({
-        file,
-        id: crypto.randomUUID(),
-        url: URL.createObjectURL(file)
-    }));
-
-    insertedPictures.value = [...insertedPictures.value, ...newPics];
-
-    event.target.value = '';
-};
-
-const removeImage = (id) => {
-    const index = insertedPictures.value.findIndex(f => f.id === id);
-    if (index !== -1) {
-        URL.revokeObjectURL(insertedPictures.value[index].url);
-        insertedPictures.value.splice(index, 1);
-    }
-};
-
 
 const tagClick = (tag) => {
     if (selectedIntersts.value.includes(tag)) {
@@ -108,13 +83,17 @@ const handleSubmit = async () => {
 const handleAvatar = (file) => {
     selectedProfile.value = file;
 };
+
+const handlePicures = (files) => {
+    insertedPictures.value = [...files];
+};
 </script>
 
 <template>
     <!-- <div class="page"> -->
         <!-- <div class="content"> -->
         <Card title="Complete Your Profile">
-            <div class="avatar_upload">
+            <div class="avatar_section">
                 <div>
                     <PictureNdIcon :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
                 </div>
@@ -151,23 +130,7 @@ const handleAvatar = (file) => {
 
             <div class="bio_div">
                 <p>Photos</p>
-                <div class="interest_div_spans">
-                    <div v-for="img in insertedPictures" :key="img.id" class="preview-card">
-                        <div class="image-box" :style="{ backgroundImage: `url(${img.url})` }">
-                            <button class="remove-btn" @click="removeImage(img.id)">×</button>
-                        </div>
-                    </div>
-
-
-                    <div>
-                        <div v-if="insertedPictures.length < 4" class="add_pictures">
-                            <input type="file" id="extra_files" class="hidden" multiple accept="image/*"
-                                @change="onFileChange" />
-                            <label style="display: flex; justify-content: center; align-items: center; cursor: pointer;"
-                                for="extra_files"><img src="/img/add_picture.svg" alt=""></label>
-                        </div>
-                    </div>
-                </div>
+                <RenderPictures @files-selected="handlePicures"/>
             </div>
             <Button @click="handleSubmit" text="Save and Continue"></Button>
         </Card>
@@ -289,7 +252,7 @@ const handleAvatar = (file) => {
     font-size: 18px;
 }
 
-.avatar_upload {
+.avatar_section {
     position: relative;
     width: 100%;
     display: flex;
@@ -298,33 +261,9 @@ const handleAvatar = (file) => {
     flex-direction: column;
     margin-bottom: 2%;
 }
-
-// .avatar {
-//     width: 100px;
-//     height: 100px;
-//     // background-image: url("/img/avatar.svg");
-//     border-radius: 50%;
-//     background-position: center center;
-//     background-repeat: no-repeat;
-//     background-size: cover;
-// }
-
 .hidden {
     display: none;
 }
-
-// .add_avatar {
-//     position: absolute;
-//     top: 70%;
-//     left: 56%;
-//     background-color: #DEB0F5;
-//     border-radius: 50%;
-//     width: 30px;
-//     height: 30px;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-// }
 
 @media (max-width: $breakpoint-md) {
     .page {
