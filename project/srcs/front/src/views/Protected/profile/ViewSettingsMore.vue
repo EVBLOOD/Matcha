@@ -98,7 +98,7 @@ const handleTags = (tags) => {
 
         <div class="orientation_div">
             <p>Orientation</p>
-            <Select :options="orientation" v-model="selectedOrientation" />
+            <Select :options="orientation" v-model="selectedOrientation" ></Select>
         </div>
 
         <div class="interest_div">
@@ -121,7 +121,6 @@ const handleTags = (tags) => {
 </template>
 
 <style lang="scss" scoped>
-
 .bio_div {
     display: flex;
     flex-direction: column;
