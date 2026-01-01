@@ -5,6 +5,7 @@ import InputLabel from '@/components/InputLabel.vue';
 import Select from '@/components/Select.vue';
 import { ref, computed } from 'vue';
 import useUserStore from '@/stores/user';
+import PictureNdIcon from '@/components/PictureNdIcon.vue';
 
 
 import AuthService from '@/api/services/AuthService'
@@ -19,18 +20,12 @@ const selectedOrientation = ref('straight');
 const selectedGender = ref('male');
 
 const selectedProfile = ref(null);
-const previewProfile = ref(null);
 const selectedIntersts = ref([]);
 const insertedBio = ref('');
 const insertedPictures = ref([]);
 
 const router = useRouter()
 
-const onProfileChange = (e) => {
-    const file = e.target.files[0];
-    selectedProfile.value = file;
-    previewProfile.value = URL.createObjectURL(file);
-};
 
 const onFileChange = (event) => {
     const recent_pictures = Array.from(event.target.files);
@@ -110,12 +105,9 @@ const handleSubmit = async () => {
     }
 };
 
-const avatarStyle = computed(() => {
-    const image = previewProfile.value || "/img/avatar.svg";
-    return {
-        backgroundImage: `url(${image})`
-    };
-});
+const handleAvatar = (file) => {
+    selectedProfile.value = file;
+};
 </script>
 
 <template>
@@ -123,13 +115,8 @@ const avatarStyle = computed(() => {
         <!-- <div class="content"> -->
         <Card title="Complete Your Profile">
             <div class="avatar_upload">
-                <div class="avatar_upload">
-                    <div class="avatar" :style="avatarStyle"></div>
-                    <div class="add_avatar">
-                        <input type="file" id="files" class="hidden" @change="onProfileChange" accept="image/*" />
-                        <label style="display: flex; justify-content: center; align-items: center; cursor: pointer;"
-                            for="files"><img src="/img/vector.svg" alt=""></label>
-                    </div>
+                <div>
+                    <PictureNdIcon :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
                 </div>
                 <p class="full_name">Saad AKLLAM</p>
             </div>
@@ -312,32 +299,32 @@ const avatarStyle = computed(() => {
     margin-bottom: 2%;
 }
 
-.avatar {
-    width: 100px;
-    height: 100px;
-    // background-image: url("/img/avatar.svg");
-    border-radius: 50%;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
+// .avatar {
+//     width: 100px;
+//     height: 100px;
+//     // background-image: url("/img/avatar.svg");
+//     border-radius: 50%;
+//     background-position: center center;
+//     background-repeat: no-repeat;
+//     background-size: cover;
+// }
 
 .hidden {
     display: none;
 }
 
-.add_avatar {
-    position: absolute;
-    top: 70%;
-    left: 56%;
-    background-color: #DEB0F5;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+// .add_avatar {
+//     position: absolute;
+//     top: 70%;
+//     left: 56%;
+//     background-color: #DEB0F5;
+//     border-radius: 50%;
+//     width: 30px;
+//     height: 30px;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// }
 
 @media (max-width: $breakpoint-md) {
     .page {

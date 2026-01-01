@@ -75,6 +75,9 @@ const onFileChange = (e) => {
 </template>
 
 <style lang="scss" scoped>
+label {
+    cursor: pointer;
+}
 .avatar_upload {
     position: relative;
     display: flex;

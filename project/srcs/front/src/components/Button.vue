@@ -36,7 +36,7 @@
         font-size: 1rem;
         transition: transform 0.2s ease;
     &:hover {
-        transform: scale(1.03);
+        transform: scale(0.95);
     }
     &:active {
         transform: scale(0.97);
