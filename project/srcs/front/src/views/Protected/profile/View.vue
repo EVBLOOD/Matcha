@@ -1,10 +1,11 @@
 <script setup>
-    // import Button from '@/components/Button.vue';
-    // import { RouterLink, RouterView } from 'vue-router';
+    import { ref } from 'vue';
+import RenderPictures from '@/components/RenderPictures.vue';
+import TagsList from '@/components/TagsList.vue';
     import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 
-    const insertedPictures = [{id: '1', url: '/img/profilePictureDemo.png'}, 
-    {id: '2', url: '/img/profilePictureDemo.png'}, {id: '3', url: '/img/profilePictureDemo.png'}, {id: '4', url: '/img/profilePictureDemo.png'}]
+    const insertedPictures = ref([{id: '1', url: '/img/profilePictureDemo.png'}, 
+    {id: '2', url: '/img/profilePictureDemo.png'}, {id: '3', url: '/img/profilePictureDemo.png'}, {id: '4', url: '/img/profilePictureDemo.png'}])
     const availableTags = ['art', 'music', 'coding'];
 
 </script>
@@ -12,24 +13,18 @@
 <template>
     <div class="wraper">
         <div style="width: 100%;display: flex; justify-content: flex-end;height: 5%;">
-            <!-- TODO: change to user ID -->
             <RouterLink class="link" to=":id/settings"><img src="/img/editProfileIcon.svg" alt=""/> <span>Edit Profile</span></RouterLink>
         </div>
         <div class="user_infos">
-            <div class="pictures_list">
-                <div v-for="img in insertedPictures" :key="img.id" class="preview-card">
-                    <div class="image-box" :style="{ backgroundImage: `url(${img.url})` }">
-                    </div>
-                </div>
-            </div>
+            <RenderPictures :readonly="true" :initialpictures="insertedPictures"/>
+
             <div><img src="/img/maleIcon.svg" alt=""> Male</div>
             <div><img src="/img/locationIcon.svg" alt=""> California - USA</div>
             <div>
                 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
             </div>
-            <div class="interest_div_spans">
-                    <div class="interest_span" v-for="tag in availableTags" :key="tag"> #{{ tag }} </div>
-                </div>
+            <TagsList :readonly="true" :initialtags="availableTags"/>
+
         </div>
         <div>
         </div>

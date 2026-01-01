@@ -79,7 +79,7 @@ const onFileChange = (event) => {
 .pictures_view {
     display: flex;
     flex-wrap: wrap;
-    gap: 3px;
+    gap: 4%;
 }
 
 .image-box {

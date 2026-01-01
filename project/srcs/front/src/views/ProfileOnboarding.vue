@@ -3,7 +3,7 @@ import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
 import InputLabel from '@/components/InputLabel.vue';
 import Select from '@/components/Select.vue';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import useUserStore from '@/stores/user';
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
 import RenderPictures from '@/components/RenderPictures.vue';
