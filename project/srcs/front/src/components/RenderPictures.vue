@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 
 const props = defineProps({
     initialpictures: {
-        type: String,
+        type: Array,
         default: []
     },
     readonly: {

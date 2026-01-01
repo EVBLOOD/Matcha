@@ -7,6 +7,7 @@ import { ref, computed } from 'vue';
 import useUserStore from '@/stores/user';
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
 import RenderPictures from '@/components/RenderPictures.vue';
+import TagsList from '@/components/TagsList.vue';
 
 
 import AuthService from '@/api/services/AuthService'
@@ -26,23 +27,6 @@ const insertedBio = ref('');
 const insertedPictures = ref([]);
 
 const router = useRouter()
-
-const tagClick = (tag) => {
-    if (selectedIntersts.value.includes(tag)) {
-        selectedIntersts.value = selectedIntersts.value.filter(t => t !== tag);
-    } else {
-        selectedIntersts.value.push(tag);
-    }
-};
-
-const clickNewTag = () => {
-    const newTag = prompt("Enter new interest:");
-    if (newTag && !availableTags.value.includes(newTag)) {
-        ;
-        availableTags.value.push(newTag);
-        selectedIntersts.value.push(newTag);
-    }
-};
 
 const handleSubmit = async () => {
     // add protections
@@ -87,11 +71,13 @@ const handleAvatar = (file) => {
 const handlePicures = (files) => {
     insertedPictures.value = [...files];
 };
+
+const handleTags = (tags) => {
+    selectedIntersts.value = [...tags];
+};
 </script>
 
 <template>
-    <!-- <div class="page"> -->
-        <!-- <div class="content"> -->
         <Card title="Complete Your Profile">
             <div class="avatar_section">
                 <div>
@@ -111,16 +97,12 @@ const handlePicures = (files) => {
 
             <div class="orientation_div">
                 <p>Orientation</p>
-                <Select :options="orientation" v-model="selectedOrientation" />
+                <Select :options="orientation" v-model="selectedOrientation"/>
             </div>
 
             <div class="interest_div">
                 <p>Interest</p>
-                <div class="interest_div_spans">
-                    <div class="interest_span" v-for="tag in availableTags" :key="tag" @click="tagClick(tag)"
-                        :class="{ active: selectedIntersts.includes(tag) }"> #{{ tag }} </div>
-                    <div class="interest_span" @click="clickNewTag">+ Add tag</div>
-                </div>
+                <TagsList @tags-selected="handleTags" :initialtags="availableTags"/>
             </div>
 
             <div class="bio_div">
@@ -134,46 +116,39 @@ const handlePicures = (files) => {
             </div>
             <Button @click="handleSubmit" text="Save and Continue"></Button>
         </Card>
-        <!-- </div> -->
-    <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
-// .page {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     height: 100vh;
+
+
+// .image-box {
+//     width: 100px;
+//     height: 100px;
+//     border-radius: 8px;
+//     background-size: cover;
+//     background-position: center;
+//     position: relative;
 // }
 
-.image-box {
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
+// .remove-btn {
+//     position: absolute;
+//     top: 35px;
+//     left: 35px;
+//     background: #BD82DD;
+//     color: white;
+//     border: none;
+//     border-radius: 50%;
+//     cursor: pointer;
+//     width: 30px;
+//     height: 30px;
+// }
 
-.remove-btn {
-    position: absolute;
-    top: 35px;
-    left: 35px;
-    background: #BD82DD;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-}
-
-.add_pictures {
-    width: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+// .add_pictures {
+//     width: 100px;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// }
 
 
 
@@ -196,25 +171,25 @@ const handlePicures = (files) => {
     width: 100%;
 }
 
-.interest_span {
-    padding: 3px;
-    border-color: #BD82DD;
-    border-style: solid;
-    border-radius: 8px;
-    cursor: pointer;
+// .interest_span {
+//     padding: 3px;
+//     border-color: #BD82DD;
+//     border-style: solid;
+//     border-radius: 8px;
+//     cursor: pointer;
 
-    &.active {
-        background: #9566B0;
-        border-color: #9566B0;
-        color: white;
-    }
-}
+//     &.active {
+//         background: #9566B0;
+//         border-color: #9566B0;
+//         color: white;
+//     }
+// }
 
-.interest_div_spans {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3px;
-}
+// .interest_div_spans {
+//     display: flex;
+//     flex-wrap: wrap;
+//     gap: 3px;
+// }
 
 .interest_div {
     display: flex;
@@ -261,9 +236,9 @@ const handlePicures = (files) => {
     flex-direction: column;
     margin-bottom: 2%;
 }
-.hidden {
-    display: none;
-}
+// .hidden {
+//     display: none;
+// }
 
 @media (max-width: $breakpoint-md) {
     .page {
