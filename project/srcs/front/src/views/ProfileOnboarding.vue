@@ -120,38 +120,6 @@ const handleTags = (tags) => {
 
 <style lang="scss" scoped>
 
-
-// .image-box {
-//     width: 100px;
-//     height: 100px;
-//     border-radius: 8px;
-//     background-size: cover;
-//     background-position: center;
-//     position: relative;
-// }
-
-// .remove-btn {
-//     position: absolute;
-//     top: 35px;
-//     left: 35px;
-//     background: #BD82DD;
-//     color: white;
-//     border: none;
-//     border-radius: 50%;
-//     cursor: pointer;
-//     width: 30px;
-//     height: 30px;
-// }
-
-// .add_pictures {
-//     width: 100px;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-// }
-
-
-
 .bio_div {
     display: flex;
     flex-direction: column;
@@ -170,26 +138,6 @@ const handleTags = (tags) => {
     resize: vertical;
     width: 100%;
 }
-
-// .interest_span {
-//     padding: 3px;
-//     border-color: #BD82DD;
-//     border-style: solid;
-//     border-radius: 8px;
-//     cursor: pointer;
-
-//     &.active {
-//         background: #9566B0;
-//         border-color: #9566B0;
-//         color: white;
-//     }
-// }
-
-// .interest_div_spans {
-//     display: flex;
-//     flex-wrap: wrap;
-//     gap: 3px;
-// }
 
 .interest_div {
     display: flex;
@@ -236,9 +184,6 @@ const handleTags = (tags) => {
     flex-direction: column;
     margin-bottom: 2%;
 }
-// .hidden {
-//     display: none;
-// }
 
 @media (max-width: $breakpoint-md) {
     .page {
