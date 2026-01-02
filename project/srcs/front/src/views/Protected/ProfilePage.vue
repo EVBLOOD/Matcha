@@ -2,6 +2,7 @@
 // import Button from '@/components/Button.vue';
 // import { RouterLink, RouterView } from 'vue-router';
     import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
+import Fame from '@/components/Fame.vue';
 
 </script>
 
@@ -23,13 +24,7 @@
             </div>
             <div>
                 <p>Fame Rating 🔥</p>
-                <div>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star partial"></span>
-                    <span class="fa fa-star"></span>
-                </div>
+                <Fame />
             </div>
         </div>
         <div class="profile_vue">
@@ -39,19 +34,19 @@
 </template>
 
 <style lang="scss" scoped>
-.fa {
-    font-size: 25px;
-}
+// .fa {
+//     font-size: 25px;
+// }
 
-.partial {
-    background: linear-gradient(90deg, orange 90%, #FFFFFF 0%);
-    background-clip: text;
-    color: transparent;
-}
+// .partial {
+//     background: linear-gradient(90deg, orange 90%, #FFFFFF 0%);
+//     background-clip: text;
+//     color: transparent;
+// }
 
-.checked {
-    color: orange;
-}
+// .checked {
+//     color: orange;
+// }
 
 
 .content {

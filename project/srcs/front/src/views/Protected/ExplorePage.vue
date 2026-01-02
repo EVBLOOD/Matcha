@@ -174,6 +174,7 @@ const handleClick = () => {
 }
 
 .inner_search_bar {
+    padding: 3%;
     display: flex;
     align-items: center;
     justify-content: center;
