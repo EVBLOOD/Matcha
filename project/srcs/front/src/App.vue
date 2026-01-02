@@ -12,7 +12,9 @@ import { RouterLink, RouterView } from 'vue-router';
 <style lang="scss" scoped>
   .container{
     margin: 0 auto;
-    max-width: $breakpoint-lg;
+    max-width: 1920px;
+    // max-width: $breakpoint-lg;
+    padding: 0 1%;
     height: 100%;
     display: flex;
     align-items: center;

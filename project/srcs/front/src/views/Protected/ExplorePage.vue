@@ -96,7 +96,7 @@ const handleClick = () => {
                             <h3>Tags</h3>
                             <input type="image" src="/img/arrowDownIcon.svg" />
                         </div>
-                        <div>18 - 25</div>
+                        <div style="display: flex; gap: 2px;"><span>#Sport,</span> <span>#Football...</span></div>
 
                     </div>
                 </div>
