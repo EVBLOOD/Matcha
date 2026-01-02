@@ -130,17 +130,44 @@ const handleClick = () => {
         </div>
         <div class="body">
 
-            <div>
-                <img src="" alt="">
-                <span>Age - Location</span>
-                <button></button>
-                <button></button>
+            <div class="user_card">
+                <img src="/img/avatar.svg" alt="">
+                <span>Saad</span>
+                <div>
+                    <span>Age</span>
+                    -
+                    <span>Location</span>
+                </div>
+                <Fame />
+                <Button style="background-color: #BC80DC;color: #592F6F;" class="user_card_btn" text="Like"></Button>
+                <Button class="user_card_btn" text="View Profile"></Button>
+
             </div>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
+
+.user_card {
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 260px;
+
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    gap:5px;
+}
+
+.user_card_btn {
+    width: 100%;
+    max-width: 200px;
+
+}
+
 .wraper {
     padding: 3%;
 
@@ -149,6 +176,7 @@ const handleClick = () => {
 .search_holder {
     width: 100%;
     overflow: visible;
+    margin-bottom: 2%;
     // align-content: center;
 }
 
