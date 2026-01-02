@@ -12,15 +12,15 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['famescore-selected']);
+// const emit = defineEmits(['famescore-selected']);
 
 const fameIntersts = ref([]);
 
-const tagClick = (fameValue) => {
-    fameIntersts.value.push(tag);
+// const tagClick = (fameValue) => {
+//     fameIntersts.value.push(tag);
 
-    emit('tags-selected', fameValue);
-};
+//     emit('famescore-selected', fameValue);
+// };
 
 const integerPart = computed(() => Math.floor(props.initialFameScore));
 

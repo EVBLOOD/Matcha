@@ -83,11 +83,11 @@ const handleClick = () => {
                         </div>
                         <Fame />
                     </div>
-                        <div class="search_menu">
+                    <!-- <div class="search_menu">
                         <div>
                             <input type="image"src="/img/lessIcon.svg"> 5.00 <input type="image" src="/img/plusIcon.svg">
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="div_breaker">
                     <div class="break_line"></div>
@@ -97,8 +97,33 @@ const handleClick = () => {
                             <input type="image" src="/img/arrowDownIcon.svg" />
                         </div>
                         <div style="display: flex; gap: 2px;"><span>#Sport,</span> <span>#Football...</span></div>
-
                     </div>
+                    <!-- <div class="search_menu" style="flex-direction: column;">
+                        <div>
+                            Code
+                        </div>
+                        <div>
+                            Code
+                        </div>
+                        <div>
+                            Code
+                        </div>
+                        <div>
+                            Code
+                        </div>
+                        <div>
+                            Code
+                        </div>
+                        <div>
+                            Code
+                        </div>
+                        <div>
+                            Code
+                        </div>
+                        <div>
+                            Code
+                        </div>
+                    </div> -->
                 </div>
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
@@ -172,29 +197,47 @@ const handleClick = () => {
 // }
 
 // for Fame
+// .search_menu {
+//     position: absolute;
+//     background-color: #E6E6E6;
+//     top: calc(100% + 4px);
+//     left: 0;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     width: 200px;
+//     height: 80px;
+//     border-radius: 8px;
+//     padding: 3%;
+//     color: #75478D;
+//     font-weight: bolder;
+//     div {
+//         display: flex;
+//         justify-content: center;
+//         align-content: center;
+//         gap: 30px;
+//     }
+// }
+
+// for Tags
 .search_menu {
     position: absolute;
     background-color: #E6E6E6;
     top: calc(100% + 4px);
     left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 200px;
-    height: 80px;
+    justify-items: center;
+    width: 300px;
+    max-height: 300px;
     border-radius: 8px;
     padding: 3%;
     color: #75478D;
     font-weight: bolder;
+    // overflow:visible;
     div {
-        display: flex;
-        justify-content: center;
-        align-content: center;
-        gap: 30px;
+        padding-top: 4px;
+        padding-bottom: 4px;
     }
 }
-
-
 
 .btn {
     width: 20%;
