@@ -1,7 +1,7 @@
 <script setup>
 // import Button from '@/components/Button.vue';
 // import { RouterLink, RouterView } from 'vue-router';
-    import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
+    import { RouterView } from 'vue-router';
 import Fame from '@/components/Fame.vue';
 
 </script>

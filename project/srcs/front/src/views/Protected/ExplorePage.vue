@@ -1,6 +1,7 @@
 <script setup>
 import Button from '@/components/Button.vue';
 // import { RouterLink, RouterView } from 'vue-router';
+import Fame from '@/components/Fame.vue';
 
 
 const handleSubmit = () => {
@@ -80,7 +81,7 @@ const handleClick = () => {
                             <h3>Fame</h3>
                             <input type="image" src="/img/arrowDownIcon.svg" />
                         </div>
-                        <div>18 - 25</div>
+                        <Fame />
 
                     </div>
                 </div>
