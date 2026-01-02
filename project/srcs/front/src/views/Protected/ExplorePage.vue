@@ -82,7 +82,11 @@ const handleClick = () => {
                             <input type="image" src="/img/arrowDownIcon.svg" />
                         </div>
                         <Fame />
-
+                    </div>
+                        <div class="search_menu">
+                        <div>
+                            <input type="image"src="/img/lessIcon.svg"> 5.00 <input type="image" src="/img/plusIcon.svg">
+                        </div>
                     </div>
                 </div>
                 <div class="div_breaker">
@@ -148,22 +152,45 @@ const handleClick = () => {
 // }
 
 // for Location
+// .search_menu {
+//     position: absolute;
+//     background-color: #E6E6E6;
+//     top: calc(100% + 4px);
+//     left: 0;
+//     justify-items: center;
+//     width: 300px;
+//     max-height: 300px;
+//     border-radius: 8px;
+//     padding: 3%;
+//     color: #75478D;
+//     font-weight: bolder;
+//     // overflow:visible;
+//     div {
+//         padding-top: 4px;
+//         padding-bottom: 4px;
+//     }
+// }
+
+// for Fame
 .search_menu {
     position: absolute;
     background-color: #E6E6E6;
     top: calc(100% + 4px);
     left: 0;
-    justify-items: center;
-    width: 300px;
-    max-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 80px;
     border-radius: 8px;
     padding: 3%;
     color: #75478D;
     font-weight: bolder;
-    // overflow:visible;
     div {
-        padding-top: 4px;
-        padding-bottom: 4px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        gap: 30px;
     }
 }
 
@@ -175,7 +202,8 @@ const handleClick = () => {
 }
 
 .inner_search_bar {
-    padding: 3%;
+    padding-left: 3%;
+    padding-right: 3%;
     display: flex;
     align-items: center;
     justify-content: center;
