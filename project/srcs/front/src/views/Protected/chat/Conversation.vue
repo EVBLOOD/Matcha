@@ -1,102 +1,279 @@
 <script setup>
-    // import Button from '@/components/Button.vue';
-    // import { RouterLink, RouterView } from 'vue-router';
-    import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
+    import { ref, onMounted, watch } from 'vue';
+    import { useRoute } from 'vue-router';
+    const route = useRoute();
+    
+    const users = [
+        { id: 1, name: 'Karim Id Bouhouch', date: 'Apr 15, 2025', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
+        { id: 2, name: 'Saad Akllam', date: 'May 01, 2025', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '2 hours ago' },
+        { id: 3, name: 'Sadio Mané', date: 'Jan 01, 2026', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
+        { id: 4, name: 'Mohamed Salah', date: 'Apr 23, 2024', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '1 day ago' }
+    ];
+    const selectedUser = ref(users[0])
+    
+    watch(
+        () => route.params.id,
+        (newId) => { selectedUser.value = users.find(user => user.id === parseInt(newId)) },
+    );
+    
+    const messages = ref([
+        { id: 1, text: 'Salam', fromMe: false },
+        { id: 2, text: 'Wa salam! Kidayr ?', fromMe: true },
+        { id: 3, text: 'Labas hamdullah, nta ?', fromMe: false },
+        { id: 4, text: 'Kolchi mzyan', fromMe: true }
+    ])
+    const newMessage = ref('')
 
-    const insertedPictures = [{id: '1', url: '/img/profilePictureDemo.png'}, 
-    {id: '2', url: '/img/profilePictureDemo.png'}, {id: '3', url: '/img/profilePictureDemo.png'}, {id: '4', url: '/img/profilePictureDemo.png'}]
-    const availableTags = ['art', 'music', 'coding'];
+    function sendMessage() {
+        if (!newMessage.value.trim()) return
+        messages.value.push({ id: Date.now(), text: newMessage.value, fromMe: true })
+        newMessage.value = ''
+    }
 
 </script>
 
 <template>
-    <div class="wraper">
-        <div style="width: 100%;display: flex; justify-content: flex-end;height: 5%;">
-            <!-- TODO: change to user ID -->
-            <RouterLink class="link" to=":id/settings"><img src="/img/editProfileIcon.svg" alt=""/> <span>Edit Profile</span></RouterLink>
-        </div>
-        <div class="user_infos">
-            <div class="pictures_list">
-                <div v-for="img in insertedPictures" :key="img.id" class="preview-card">
-                    <div class="image-box" :style="{ backgroundImage: `url(${img.url})` }">
+    <div class="chat">
+        <div class="header">
+            <div class="user">
+                <div class="avatar">
+                    <img :src="selectedUser.avatar" alt="avatar" />
+                </div>
+                <div class="infos">
+                    <p class="name">{{ selectedUser.name }}</p>
+                    <div class="status">
+                        <span :class="['dot', selectedUser.online ? 'online' : 'offline']"></span>
+                        <span class="text">
+                            {{ selectedUser.online ? 'Online' : `Last seen ${selectedUser.lastSeen}` }}
+                        </span>
                     </div>
                 </div>
             </div>
-            <div><img src="/img/maleIcon.svg" alt=""> Male</div>
-            <div><img src="/img/locationIcon.svg" alt=""> California - USA</div>
-            <div>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-            </div>
-            <div class="interest_div_spans">
-                    <div class="interest_span" v-for="tag in availableTags" :key="tag"> #{{ tag }} </div>
-                </div>
         </div>
-        <div>
+        <div class="messages">
+            <div v-for="msg in messages" :key="msg.id" :class="['message', msg.fromMe ? 'sent' : 'received']">
+                {{ msg.text }}
+            </div>
+        </div>
+        <div class="inputBar">
+            <textarea v-model="newMessage" placeholder="Type a message..." rows="1"
+                @keydown.enter.exact.prevent="sendMessage" @keydown.enter.shift.exact.stop></textarea>
+            <button @click="sendMessage"><img src="/img/send.svg" alt="Send"></button>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
-    .wraper {
-        display: flex;
-        flex-direction: column;
-        gap: 5%;
-        height: 100%;
-    }
-.interest_span {
-    padding: 3px;
-    border-color: #9566B0;
-    background: rgba(150, 104, 177, 1 - 0.24);
-    border-style: solid;
-    border-radius: 8px;
-    padding: 0.5% 2% 0.5% 2%;
-    flex-wrap: nowrap;
+
+.fa {
+    font-size: 25px;
 }
-.interest_div_spans {
+
+.partial {
+    background: linear-gradient(90deg, orange 90%, #FFFFFF 0%);
+    background-clip: text;
+    color: transparent;
+}
+
+.checked {
+    color: orange;
+}
+
+.content {
+    color: #FFFFFF;
     display: flex;
-    flex-wrap: wrap;
-    gap: 2%;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 }
-    .user_infos {
-        display: flex;
-        flex-direction: column;
-        gap: 2%;
-        height: 100%;
-    }
-    .pictures_list {
-        display: flex;
-        gap: 4%;
-        flex-wrap: wrap;
-    }
 
-    .image-box {
-        width: 100px;
-        height: 100px;
-        border-radius: 8px;
-        background-size: cover;
-        background-position: center;
-        position: relative;
-    }
+.sideBar {
+    padding: 1%;
+    height: 100%;
+    width: 30%;
+    gap: 2px;
+    border-color: rgba(255, 255, 255, 0.25);
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-width: 0px 1px 0px 0px;
+}
 
-        .link {
-        display: flex;
-        gap: 10px;
-        text-decoration: none;
-        color: $text-color;
-        justify-content: flex-end;
-        align-items: center;
-        // width: 20%;
-        // height: 20px;
-        padding:  1% 2% 1% 2%;
-        cursor: pointer;
-        background: rgba(255, 255, 255, 0.14);
-        border-radius: 4px;
-    }
-    .link:hover {
-        background: rgba(255, 255, 255, 0.12);
+.chat{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
 
-    }
-    @media (max-width: $breakpoint-md) {
+.chat .header{
+    border-bottom: 1px solid $border-color;
+    padding: 5px;
+    flex-shrink: 0;
+}
+
+.user {
+    display: flex;
+    transition: 0.3s;
+    align-items: center;
+    padding: 4px;
+    gap: 7px;
+    user-select: none;
+}
+
+.sideBar .user:hover {
+    cursor: pointer;
+    background-color: #ffffff1c;
+    transition: 0.3s;
+    border-radius: 6px;
+}
+
+.user .avatar {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user .avatar img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.user .infos {
+
+}
+
+.user .infos .name {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.user .infos .date {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.messages {
+    flex: 1;
+    overflow-y: scroll;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    height: 100%;
+    width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+
+.message {
+    max-width: 60%;
+    // overflow: hidden;
+    // display: flex;
+    // align-items: center;
+    padding: 12px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    flex-shrink: 0;
+    white-space: pre-wrap;
+    // word-wrap: break-word;
+    // overflow-wrap: break-word;
+}
+
+.message.received {
+    align-self: flex-start;
+    background: #807785;
+    border-bottom-left-radius: 0;
+}
+
+.message.sent {
+    align-self: flex-end;
+    background: #785D86;
+    border-bottom-right-radius: 0;
+}
+
+.inputBar {
+    position: relative;
+    padding: 10px;
+    border-top: 1px solid $border-color;
+    flex-shrink: 0;
+}
+
+.inputBar textarea {
+    min-height: 40px;
+    max-height: 120px;
+    resize: none;
+    width: 100%;
+    padding: 10px 45px 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #BD82DD;
+    background-color: transparent;
+    color: #FFFFFF;
+    outline: none;
+    line-height: 1.4;
+}
+
+.inputBar textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.inputBar button {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    padding: 6px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.45);
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot.online {
+    background-color: #22c55e;
+}
+
+.dot.offline {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+
+@media (max-width: $breakpoint-md) {
         .page{
             display: flex;
             flex-direction: column;
