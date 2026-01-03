@@ -22,10 +22,11 @@ const fameIntersts = ref([]);
 //     emit('famescore-selected', fameValue);
 // };
 
-const integerPart = computed(() => Math.floor(props.initialFameScore));
+const integerPart = computed(() => {console.log(props.initialFameScore); return Math.floor(props.initialFameScore)});
 
 const decimalPart = computed(() => {
   const rest = props.initialFameScore % 1;
+  console.log(rest);
   return rest > 0 ? rest : null;
 });
 
@@ -42,9 +43,11 @@ const stylePercent = computed(() => {
 <template>
     <div>
         
-        <span v-for="n in integerPart - 1" class="fa fa-star checked" ></span>
+        <span v-for="n in integerPart" class="fa fa-star checked" ></span>
         <span v-if="decimalPart" class="fa fa-star partial" :style="stylePercent"></span>
-        <span class="fa fa-star"></span>
+        <span v-if="!decimalPart" v-for="n in 5 - Math.ceil(integerPart)" class="fa fa-star" ></span>
+        <span v-if="decimalPart" v-for="n in 5 - Math.ceil(integerPart) - 1" class="fa fa-star" ></span>
+        <!-- <span class="fa fa-star"></span> -->
     </div>
 </template>
 

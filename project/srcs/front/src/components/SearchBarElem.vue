@@ -62,14 +62,16 @@ const selectedFame = ref(4.0)
 
 const add_fame = (fame) => {
     if (selectedFame.value < 5) {
-        selectedFame.value = selectedFame.value + 0.1;
+        selectedFame.value = parseFloat((selectedFame.value + 0.1).toFixed(1));
+        // selectedFame.value = selectedFame.value + 0.1;
         emit('fame-selected', selectedFame.value);
     }
 };
 
 const minus_fame = () => {
     if (selectedFame.value > 0) {
-        selectedFame.value = selectedFame.value - 0.1;
+        // selectedFame.value = selectedFame.value - 0.1;
+        selectedFame.value = parseFloat((selectedFame.value - 0.1).toFixed(1));
         emit('fame-selected', selectedFame.value);
     }
 };
@@ -106,7 +108,7 @@ const valueDisplay = computed(
             return ["-"]
 
         } else if (props.elemName === 'Fame') {
-            return selectedFame.value
+            return selectedFame.value.toFixed(1);
         } else if (props.elemName === 'Tags') {
 
             if (selectedIntersts.value.length >= 3) {
@@ -143,7 +145,7 @@ const handleClick = (type) => {
             <div v-if="elemName === 'Tags' || elemName === 'Location'" style="display: flex; gap: 2px;">
                 <span v-for="val in valueDisplay">{{ elemName === 'Tags' ? `#${val}` : val }}</span>
             </div>
-            <Fame v-if="elemName === 'Fame'"/>
+            <Fame v-if="elemName === 'Fame'" :initialFameScore="selectedFame"/>
         </div>
 
 
