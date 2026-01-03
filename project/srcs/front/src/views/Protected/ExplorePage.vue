@@ -43,6 +43,8 @@ const handleSubmit = () => {
 <style lang="scss" scoped>
 
 .body {
+    padding-bottom: 0px;
+
     display: flex;
     justify-content: center;
     width: 100%;

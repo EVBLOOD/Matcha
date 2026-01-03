@@ -140,38 +140,50 @@ const clickLogOut = async () => {
         position: static;
         justify-content: center;
         align-items: center;
+        background-color: #592F6F;
     }
 
 
     .link {
+    padding: 6%;
+
+        border-style: solid;
+        border-width: 0px 1px 0px 0px;
+        border-color: rgb(255, 255, 255, 0.25);
         flex-direction: row;
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
+
+
         span {
             // overflow: hidden; // OR
             display: none;
         }
     }
 
-    // .link:hover {
-    //     background: rgba(255, 255, 255, 0.12);
-    //     border-radius: 8px;
+    .link:hover {
+        border-radius: 0px;
 
-    // }
+    }
 
     .nav {
         width: 100%;
+        height: fit-content;
     }
 
     .log_a {
         position: static;
+        border-width: 0px 0px 0px 0px;
+
     }
 
     .side_bar {
-        display: flex;
+        flex-shrink: 0;
         flex-direction: row;
-        height: 15%;
+        height: fit-content;
+        gap: 0px;
+
         width: 100%;
         margin-right: 0%;
         .logo {
