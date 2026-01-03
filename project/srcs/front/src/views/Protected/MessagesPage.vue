@@ -30,7 +30,7 @@
 </script>
 
 <template>
-    <div class="content">
+    <div class="contentx">
         <div class="sideBar">
             <div class="user" v-for="user in users" :key="user.id" @click="() => router.push(`/messages/${user.id}`)">
                 <div class="avatar">
@@ -61,7 +61,7 @@
     color: orange;
 }
 
-.content {
+.contentx {
     color: #FFFFFF;
     display: flex;
     align-items: center;

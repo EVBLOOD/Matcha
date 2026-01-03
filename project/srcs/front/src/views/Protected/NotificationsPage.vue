@@ -15,7 +15,7 @@ const avatarStyle = computed(() => {
 </script>
 
 <template>
-    <div class="content">
+    <div class="contenty">
         <div class="notif">
             <PictureNdIcon :height="59" :width="59" :readonly="true" initialImage='/img/avatar.svg' initialIcon="/img/viewProfileNotifIcon.svg" />
             <div>
@@ -33,7 +33,7 @@ const avatarStyle = computed(() => {
 
 <style lang="scss" scoped>
 
-    .content{
+    .contenty{
         padding: 2%;
         display: flex;
         flex-direction: column;

@@ -7,7 +7,7 @@ import Fame from '@/components/Fame.vue';
 </script>
 
 <template>
-    <div class="content">
+    <div class="contentz">
         <div class="sideBar">
             <div>
                 <img width="90%" style="margin-bottom: 22px;" src="/img/profilePictureDemo.png" alt="">
@@ -49,7 +49,7 @@ import Fame from '@/components/Fame.vue';
 // }
 
 
-.content {
+.contentz {
     color: #FFFFFF;
     display: flex;
     align-items: center;
