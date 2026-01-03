@@ -22,10 +22,10 @@ const handleClick = () => {
             <div class="inner_search_bar">
                 <SearchBarElem :firstElem="true" elemName="Age" />
                 <SearchBarElem elemName="Location" 
-                    :locationList="['Agadir', 'Agadir', 'Agadir', 'Agadir','Agadir', 'Agadir']" />
+                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga','Oujda', 'Casablaca']" />
                 <SearchBarElem elemName="Fame" />
                 <SearchBarElem elemName="Tags" 
-                    :tagsList="['Sport', 'Sport', 'Sport', 'Sport','Sport', 'Sport']" />
+                    :tagsList="['Sport', 'Coding', 'Cars', 'Sience','IT', 'Art']" />
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>

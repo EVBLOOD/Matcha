@@ -91,6 +91,14 @@ const tagClick = (tag) => {
 };
 
 
+const listClick = (lt, elemName) => {
+    if (elemName == "Tags") {
+        tagClick(lt);
+    } else {
+        selection_location(lt);
+    }
+}
+
 
 const valueDisplay = computed(
     () => {
@@ -126,10 +134,17 @@ const valueDisplay = computed(
     }
 );
 
-const handleClick = (type) => { 
+const handleClick = () => { 
     isMenuOpen.value = !isMenuOpen.value;
 };
 
+const checkListExists = (lt, elemName) => {
+    if (elemName == "Tags") {
+        return selectedIntersts.value.includes(lt)
+    }
+    return selectedLocation.value.includes(lt)
+}
+// selectedIntersts.includes(tag)
 </script>
 
 <template>
@@ -150,7 +165,7 @@ const handleClick = (type) => {
 
 
 
-        <div v-if="elemName === 'Age'" class="search_menu_age"  v-show="isMenuOpen">
+        <div v-if="elemName === 'Age'" class="search_menu_age" v-show="isMenuOpen">
             <div>
                 <input @click="minus_age('AgeMin-selected')" type="image" src="/img/lessIcon.svg"> {{ AgeMin }}
                 <input @click="add_age('AgeMin-selected')" type="image" src="/img/plusIcon.svg">
@@ -169,18 +184,12 @@ const handleClick = (type) => {
             </div>
         </div>
 
-
         <div  v-show="isMenuOpen"  v-if="elemName === 'Location' || elemName === 'Tags'" class="search_menu_location" style="flex-direction: column;">
-            <div v-for="lt in (locationList || tagsList)">
+            <div @click="listClick(lt, elemName)" v-for="lt in (locationList || tagsList)" :class="{ active: checkListExists(lt, elemName)}">
                 {{ lt }}
             </div>
         </div>
 
-        <div  v-show="isMenuOpen"  v-if="elemName === 'Tags'" class="search_menu_tags" style="flex-direction: column;">
-            <div v-for="fl in tagsList">
-                {{ fl }}
-            </div>
-        </div>
     </div>
 
 </template>
@@ -251,6 +260,7 @@ const handleClick = (type) => {
 
 // for Location
 .search_menu_location {
+    cursor: pointer;
     position: absolute;
     background-color: #E6E6E6;
     top: calc(100% + 4px);
@@ -265,9 +275,24 @@ const handleClick = (type) => {
 
     // overflow:visible;
     div {
+        width: 100%;
+        margin-top: 4px;
+        margin-bottom: 4px;
         padding-top: 4px;
         padding-bottom: 4px;
+        text-align: center;
+        &.active {
+            background-color: #BD82DD;
+            color: white;
+            border-radius: 4px;
+        }
+        &:hover {
+            color: white;
+            background-color: #75478D;
+
+        }
     }
+
 }
 
 // for Fame
