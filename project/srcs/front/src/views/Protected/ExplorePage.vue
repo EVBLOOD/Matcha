@@ -1,5 +1,6 @@
 <script setup>
 import Button from '@/components/Button.vue';
+import SearchBarElem from '@/components/SearchBarElem.vue';
 // import { RouterLink, RouterView } from 'vue-router';
 import Fame from '@/components/Fame.vue';
 
@@ -19,24 +20,10 @@ const handleClick = () => {
                 Filters
             </h2>
             <div class="inner_search_bar">
-                <div class="div_breaker">
-                    <div class="search_type">
-                        <div class="label_input">
-                            <h3>Age</h3>
-                            <input type="image" src="/img/arrowDownIcon.svg" @click="handleClick" />
-                        </div>
-                        <div>18 - 25</div>
-                    </div>
-                    <!-- <div class="search_menu">
-                        <div>
-                            <input type="image"src="/img/lessIcon.svg"> 18 <input type="image" src="/img/plusIcon.svg">
-                        </div>
-                         to 
-                         <div>
-                             <input type="image"src="/img/lessIcon.svg"> 25 <input type="image" src="/img/plusIcon.svg">
-                         </div>
-                    </div> -->
-                </div>
+                <SearchBarElem :firstElem="true" elemName="Age" />
+                <SearchBarElem :firstElem="true" elemName="Location" 
+                    :locationList="['Agadir', 'Agadir', 'Agadir', 'Agadir','Agadir', 'Agadir']" />
+
                 <div class="div_breaker">
                     <div class="break_line"></div>
                     <div class="search_type">
