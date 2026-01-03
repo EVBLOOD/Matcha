@@ -1,5 +1,4 @@
 <script setup>
-import { ref, computed } from 'vue';
 import Fame from '@/components/Fame.vue';
 import Button from '@/components/Button.vue';
 
@@ -29,9 +28,6 @@ const clickLike = () => {
     console.log("clickLike")
 }
 
-const clickView = () => {
-    
-}
 </script>
 
 <template>
@@ -59,16 +55,17 @@ const clickView = () => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 260px;
+    min-width: 260px;
 
     background-color: rgba(255, 255, 255, 0.06);
     border-radius: 12px;
     gap: 5px;
+    margin-bottom: 2%;
 }
 
 .user_card_btn {
     width: 100%;
-    max-width: 200px;
+    min-width: 200px;
 
 }
 </style>

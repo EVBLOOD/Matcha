@@ -141,7 +141,6 @@ const checkListExists = (lt, elemName) => {
     }
     return selectedLocation.value.includes(lt)
 }
-// selectedIntersts.includes(tag)
 </script>
 
 <template>
@@ -198,17 +197,12 @@ const checkListExists = (lt, elemName) => {
     overflow: visible;
     gap: 20px;
     height: 100%;
-    // width: 20%;
-    // height: 20%;
     justify-content: center;
     align-items: center;
-    // flex-direction: column;
-
 }
 
 .search_type {
     display: flex;
-    // width: 100%;
     flex-direction: column;
 
 }
@@ -228,9 +222,6 @@ const checkListExists = (lt, elemName) => {
 }
 
 
-
-
-// for Age
 .search_menu_age {
     position: absolute;
     background-color: #E6E6E6;
@@ -255,7 +246,6 @@ const checkListExists = (lt, elemName) => {
     }
 }
 
-// for Location
 .search_menu_location {
     cursor: pointer;
     position: absolute;
@@ -270,7 +260,6 @@ const checkListExists = (lt, elemName) => {
     color: #75478D;
     font-weight: bolder;
 
-    // overflow:visible;
     div {
         width: 100%;
         margin-top: 4px;
@@ -292,7 +281,6 @@ const checkListExists = (lt, elemName) => {
 
 }
 
-// for Fame
 .search_menu_fame {
     position: absolute;
     background-color: #E6E6E6;
@@ -316,7 +304,6 @@ const checkListExists = (lt, elemName) => {
     }
 }
 
-// for Tags
 .search_menu_tags {
     position: absolute;
     background-color: #E6E6E6;
@@ -330,7 +317,6 @@ const checkListExists = (lt, elemName) => {
     color: #75478D;
     font-weight: bolder;
 
-    // overflow:visible;
     div {
         padding-top: 4px;
         padding-bottom: 4px;

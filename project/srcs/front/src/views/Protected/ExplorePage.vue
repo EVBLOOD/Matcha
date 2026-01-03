@@ -1,10 +1,7 @@
 <script setup>
 import Button from '@/components/Button.vue';
 import SearchBarElem from '@/components/SearchBarElem.vue';
-// import { RouterLink, RouterView } from 'vue-router';
 import UserExploreCard from '@/components/UserExploreCard.vue';
-import Fame from '@/components/Fame.vue';
-
 
 const handleSubmit = () => {
     console.log("SEARCH!")
@@ -30,23 +27,39 @@ const handleSubmit = () => {
         </div>
         <div class="body">
             <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
+            <UserExploreCard userID="1"/>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
 
+.body {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 2%;
+    flex-wrap: wrap;
+}
 .wraper {
     padding: 3%;
 
 }
 
 .search_holder {
+    position: relative;
     width: 100%;
     overflow: visible;
     margin-bottom: 2%;
 }
-
 
 .btn {
     width: 20%;
@@ -54,18 +67,23 @@ const handleSubmit = () => {
 }
 
 .inner_search_bar {
-    padding-left: 3%;
-    padding-right: 3%;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+
+    padding: 6px;
+
     gap: 10px;
-    height: 83px;
+    min-height: 83px;
+
     background-color: rgba(255, 255, 255, 0.06);
+
     border-radius: 12px;
     border-color: #BD82DD;
     border-style: solid;
     border-width: 1px;
+
     overflow: visible;
 }
 
