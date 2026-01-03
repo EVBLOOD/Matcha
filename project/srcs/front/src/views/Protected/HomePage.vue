@@ -44,7 +44,7 @@ const clickLogOut = async () => {
                 <h2>{{ route.meta.title || 'EVBLOOD is the Title' }}</h2>
             </div>
             <div class="main_div">
-                <RouterView class="main_div" />
+                <RouterView />
             </div>
         </div>
     </div>
@@ -63,6 +63,7 @@ const clickLogOut = async () => {
     height: 90%;
     color: #FFFFFF;
 }
+
 
 .main_title {
     height: 10%;
