@@ -132,56 +132,36 @@ const clickLogOut = async () => {
 
 @media (max-width: $breakpoint-md) {
     .content {
-        display: flex;
         flex-direction: column-reverse;
-        height: 100%;
-        width: 100%;
     }
 
     .nav {
-        display: flex;
         flex-direction: row;
-        position: relative;
+        position: static;
         justify-content: center;
         align-items: center;
-        // gap: 1px;
-        height: 100%;
     }
 
 
     .link {
-        display: flex;
-        gap: 10px;
-        text-decoration: none;
-        color: $text-color;
+        flex-direction: row;
         justify-content: center;
         align-items: center;
-        width: 100%;
-        // height: 6%;
-        padding: 6%;
-        align-content: center;
-        cursor: pointer;
         flex-wrap: wrap;
-
         span {
+            // overflow: hidden; // OR
             display: none;
         }
     }
 
-    .link:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 8px;
+    // .link:hover {
+    //     background: rgba(255, 255, 255, 0.12);
+    //     border-radius: 8px;
 
-    }
+    // }
 
     .nav {
-        display: flex;
-        flex-direction: row;
-        // position: relative;
-        // gap: 1px;
-        height: 100%;
         width: 100%;
-
     }
 
     .log_a {
@@ -191,13 +171,9 @@ const clickLogOut = async () => {
     .side_bar {
         display: flex;
         flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        gap: 33px;
-        height: 20%;
+        height: 15%;
         width: 100%;
-        margin-right: 1%;
-
+        margin-right: 0%;
         .logo {
             display: none;
         }
