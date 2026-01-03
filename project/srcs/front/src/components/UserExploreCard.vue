@@ -1,0 +1,74 @@
+<script setup>
+import { ref, computed } from 'vue';
+import Fame from '@/components/Fame.vue';
+import Button from '@/components/Button.vue';
+
+const props = defineProps({
+    fullName: {
+        type: String,
+        default: "Saad AKLLAM"
+    },
+    age: {
+        type: Number,
+        default: 18
+    },
+    location: {
+        type: String,
+        default: "somewhere"
+    },
+    fameScore: {
+        type: Number,
+        default: 2
+    },
+    userID: Number
+});
+
+const emit = defineEmits(['AgeMin-selected', 'AgeMax-selected', 'location-selected', 'fame-selected', 'tags-selected']);
+
+const clickLike = () => {
+    console.log("clickLike")
+}
+
+const clickView = () => {
+    
+}
+</script>
+
+<template>
+
+    <div class="user_card">
+        <img src="/img/avatar.svg" alt="">
+        <span>{{fullName}}</span>
+        <div>
+            <span>{{ age }}</span>
+            -
+            <span>{{ location }}</span>
+        </div>
+        <Fame :initialFameScore="fameScore"/>
+        <Button style="background-color: #BC80DC;color: #592F6F;" class="user_card_btn" text="Like" @click="clickLike"></Button>
+        <Button class="user_card_btn" text="View Profile" :to="`/profile/${userID}`"></Button>
+
+    </div>
+
+</template>
+
+<style lang="scss" scoped>
+.user_card {
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 260px;
+
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    gap: 5px;
+}
+
+.user_card_btn {
+    width: 100%;
+    max-width: 200px;
+
+}
+</style>

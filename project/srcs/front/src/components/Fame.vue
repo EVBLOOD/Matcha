@@ -5,10 +5,6 @@ const props = defineProps({
     initialFameScore: {
         type: Number,
         default: 4.5
-    },
-    readonly: {
-        type: Boolean,
-        default: false
     }
 });
 

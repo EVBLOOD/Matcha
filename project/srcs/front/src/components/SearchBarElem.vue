@@ -43,7 +43,6 @@ const minus_age = (type) => {
 };
 
 // else if (props.elemName === 'Location') 
-
 const selectedLocation = ref([])
 
 const selection_location = (city) => {
@@ -57,7 +56,6 @@ const selection_location = (city) => {
 };
 
 // else if (props.elemName === 'Fame') 
-
 const selectedFame = ref(4.0)
 
 const add_fame = (fame) => {
@@ -77,7 +75,6 @@ const minus_fame = () => {
 };
 
 //  else if (props.elemName === 'Tags') 
-
 const selectedIntersts = ref([]);
 
 const tagClick = (tag) => {
@@ -120,11 +117,11 @@ const valueDisplay = computed(
         } else if (props.elemName === 'Tags') {
 
             if (selectedIntersts.value.length >= 3) {
-                return [`${selectedIntersts.value[0]},`, `${selectedIntersts.value[1]}...`]
+                return [`#${selectedIntersts.value[0]},`, `#${selectedIntersts.value[1]}...`]
             } else if (selectedIntersts.value.length >= 2) {
-                return [`${selectedIntersts.value[0]},`, selectedIntersts.value[1]]
+                return [`#${selectedIntersts.value[0]},`, `#${selectedIntersts.value[1]}`]
             } else if (selectedIntersts.value.length == 1) {
-                return [selectedIntersts.value[0]]
+                return [`#${selectedIntersts.value[0]}`]
             }
             return ["-"]
 
@@ -158,7 +155,7 @@ const checkListExists = (lt, elemName) => {
             </div>
             <div v-if="elemName !== 'Tags' && elemName !== 'Location' && elemName !== 'Fame'">{{ valueDisplay }}</div>
             <div v-if="elemName === 'Tags' || elemName === 'Location'" style="display: flex; gap: 2px;">
-                <span v-for="val in valueDisplay">{{ elemName === 'Tags' ? `#${val}` : val }}</span>
+                <span v-for="val in valueDisplay">{{ elemName === 'Tags' ? `${val}` : val }}</span>
             </div>
             <Fame v-if="elemName === 'Fame'" :initialFameScore="selectedFame"/>
         </div>
