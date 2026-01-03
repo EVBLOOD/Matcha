@@ -21,97 +21,11 @@ const handleClick = () => {
             </h2>
             <div class="inner_search_bar">
                 <SearchBarElem :firstElem="true" elemName="Age" />
-                <SearchBarElem :firstElem="true" elemName="Location" 
+                <SearchBarElem elemName="Location" 
                     :locationList="['Agadir', 'Agadir', 'Agadir', 'Agadir','Agadir', 'Agadir']" />
-
-                <div class="div_breaker">
-                    <div class="break_line"></div>
-                    <div class="search_type">
-                        <div class="label_input">
-                            <h3>Location</h3>
-                            <input type="image" src="/img/arrowDownIcon.svg" />
-                        </div>
-                        <div>Agadir</div>
-
-                    </div>
-                    <!-- <div class="search_menu" style="flex-direction: column;">
-                        <div>
-                            Agadir
-                        </div>
-                        <div>
-                            Agadir
-                        </div>
-                        <div>
-                            Agadir
-                        </div>
-                        <div>
-                            Agadir
-                        </div>
-                        <div>
-                            Agadir
-                        </div>
-                        <div>
-                            Agadir
-                        </div>
-                        <div>
-                            Agadir
-                        </div>
-                        <div>
-                            Agadir
-                        </div>
-                    </div> -->
-                </div>
-                <div class="div_breaker">
-                    <div class="break_line"></div>
-                    <div class="search_type">
-                        <div class="label_input">
-                            <h3>Fame</h3>
-                            <input type="image" src="/img/arrowDownIcon.svg" />
-                        </div>
-                        <Fame />
-                    </div>
-                    <!-- <div class="search_menu">
-                        <div>
-                            <input type="image"src="/img/lessIcon.svg"> 5.00 <input type="image" src="/img/plusIcon.svg">
-                        </div>
-                    </div> -->
-                </div>
-                <div class="div_breaker">
-                    <div class="break_line"></div>
-                    <div class="search_type">
-                        <div class="label_input">
-                            <h3>Tags</h3>
-                            <input type="image" src="/img/arrowDownIcon.svg" />
-                        </div>
-                        <div style="display: flex; gap: 2px;"><span>#Sport,</span> <span>#Football...</span></div>
-                    </div>
-                    <!-- <div class="search_menu" style="flex-direction: column;">
-                        <div>
-                            Code
-                        </div>
-                        <div>
-                            Code
-                        </div>
-                        <div>
-                            Code
-                        </div>
-                        <div>
-                            Code
-                        </div>
-                        <div>
-                            Code
-                        </div>
-                        <div>
-                            Code
-                        </div>
-                        <div>
-                            Code
-                        </div>
-                        <div>
-                            Code
-                        </div>
-                    </div> -->
-                </div>
+                <SearchBarElem elemName="Fame" />
+                <SearchBarElem elemName="Tags" 
+                    :tagsList="['Sport', 'Sport', 'Sport', 'Sport','Sport', 'Sport']" />
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>

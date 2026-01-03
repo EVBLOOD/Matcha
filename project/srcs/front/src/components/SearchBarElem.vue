@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import Fame from '@/components/Fame.vue';
 
 const props = defineProps({
     firstElem: {
@@ -13,6 +14,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['AgeMin-selected', 'AgeMax-selected', 'location-selected', 'fame-selected', 'tags-selected']);
+
+const isMenuOpen = ref(false)
 
 
 // if (props.elemName === 'Age') 
@@ -100,7 +103,7 @@ const valueDisplay = computed(
             } else if (selectedLocation.value.length == 1) {
                 return [selectedLocation.value[0]]
             }
-            return []
+            return ["-"]
 
         } else if (props.elemName === 'Fame') {
             return selectedFame.value
@@ -113,7 +116,7 @@ const valueDisplay = computed(
             } else if (selectedIntersts.value.length == 1) {
                 return [selectedIntersts.value[0]]
             }
-            return []
+            return ["-"]
 
         } else {
             return null
@@ -121,8 +124,8 @@ const valueDisplay = computed(
     }
 );
 
-const handleClick = () => { 
-    console.log("FSGDFGDF")
+const handleClick = (type) => { 
+    isMenuOpen.value = !isMenuOpen.value;
 };
 
 </script>
@@ -134,17 +137,18 @@ const handleClick = () => {
         <div class="search_type">
             <div class="label_input">
                 <h3>{{ elemName || "evblood" }}</h3>
-                <input type="image" src="/img/arrowDownIcon.svg" @click="handleClick" />
+                <input type="image" src="/img/arrowDownIcon.svg" @click="handleClick(elemName)" />
             </div>
-            <div v-if="elemName !== 'Tags'">{{ valueDisplay }}</div>
-            <div v-if="elemName === 'Tags'" style="display: flex; gap: 2px;">
-                <span v-for="val in valueDisplay">#{{ val }}</span>
+            <div v-if="elemName !== 'Tags' && elemName !== 'Location' && elemName !== 'Fame'">{{ valueDisplay }}</div>
+            <div v-if="elemName === 'Tags' || elemName === 'Location'" style="display: flex; gap: 2px;">
+                <span v-for="val in valueDisplay">{{ elemName === 'Tags' ? `#${val}` : val }}</span>
             </div>
+            <Fame v-if="elemName === 'Fame'"/>
         </div>
 
 
 
-        <div v-if="elemName === 'Age'" class="search_menu_age">
+        <div v-if="elemName === 'Age'" class="search_menu_age"  v-show="isMenuOpen">
             <div>
                 <input @click="minus_age('AgeMin-selected')" type="image" src="/img/lessIcon.svg"> {{ AgeMin }}
                 <input @click="add_age('AgeMin-selected')" type="image" src="/img/plusIcon.svg">
@@ -156,7 +160,7 @@ const handleClick = () => {
             </div>
         </div>
 
-        <div v-if="elemName === 'Fame'" class="search_menu_fame">
+        <div  v-if="elemName === 'Fame'" class="search_menu_fame"  v-show="isMenuOpen">
             <div>
                 <input @click="minus_fame(selectedFame)" type="image" src="/img/lessIcon.svg"> {{ selectedFame }} <input
                     @click="add_fame(selectedFame)" type="image" src="/img/plusIcon.svg">
@@ -164,13 +168,13 @@ const handleClick = () => {
         </div>
 
 
-        <div v-if="elemName === 'Location'" class="search_menu_location" style="flex-direction: column;">
-            <div v-for="lt in locationList">
+        <div  v-show="isMenuOpen"  v-if="elemName === 'Location' || elemName === 'Tags'" class="search_menu_location" style="flex-direction: column;">
+            <div v-for="lt in (locationList || tagsList)">
                 {{ lt }}
             </div>
         </div>
 
-        <div v-if="elemName === 'Tags'" class="search_menu_tags" style="flex-direction: column;">
+        <div  v-show="isMenuOpen"  v-if="elemName === 'Tags'" class="search_menu_tags" style="flex-direction: column;">
             <div v-for="fl in tagsList">
                 {{ fl }}
             </div>
