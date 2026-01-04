@@ -41,7 +41,6 @@ watch(() => route.params.id, fetchProfile);
 onMounted(fetchProfile);
 
 provide('profileData', profileData);
-// provide('isLoading', isLoading);
 </script>
 
 <template>
