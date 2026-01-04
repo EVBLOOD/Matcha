@@ -3,6 +3,7 @@ import AuthService from '@/api/services/AuthService';
 import axios, { AxiosError } from 'axios';
 
 interface UserStore {
+  id?: number
   profile_status: string;
   verified_email: boolean;
 }
@@ -19,13 +20,15 @@ const useUserStore = defineStore('user', {
   getters: {
     isAuthenticated: (state) => !!state.user,
     isVerified: (state) => state.user?.verified_email,
-    isProfileComplete: (state) => state.user?.profile_status === 'completed'
+    isProfileComplete: (state) => state.user?.profile_status === 'completed',
+    getUserID: (state) => (state.user?.id || "unknown")
   },
   actions: {
     async fetchUser() {
       try {
         const { data } = await AuthService.getProfileStatus();
         this.user = {
+          id: data.user_id,
           verified_email: true,
           profile_status: 'completed'
         };

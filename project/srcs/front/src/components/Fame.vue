@@ -18,11 +18,10 @@ const fameIntersts = ref([]);
 //     emit('famescore-selected', fameValue);
 // };
 
-const integerPart = computed(() => {console.log(props.initialFameScore); return Math.floor(props.initialFameScore)});
+const integerPart = computed(() => {return Math.floor(props.initialFameScore)});
 
 const decimalPart = computed(() => {
   const rest = props.initialFameScore % 1;
-  console.log(rest);
   return rest > 0 ? rest : null;
 });
 

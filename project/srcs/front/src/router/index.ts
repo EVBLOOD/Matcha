@@ -121,8 +121,6 @@ router.beforeEach(async (to, from, next) => {
   const user = useUserStore();
   const token = localStorage.getItem('auth_token');
 
-  console.log(user.isLoaded)
-  console.log(token)
     if (token && !user.isLoaded) {
       await user.fetchUser();
     }

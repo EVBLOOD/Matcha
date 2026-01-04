@@ -2,6 +2,7 @@
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import AuthService from '@/api/services/AuthService'
 import useUserStore from '@/stores/user';
+
 const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter()
@@ -20,6 +21,9 @@ const clickLogOut = async () => {
         localStorage.removeItem('auth_token');
     }
 }
+
+
+
 </script>
 
 <template>
@@ -33,7 +37,7 @@ const clickLogOut = async () => {
                 <RouterLink class="link" to="/notifications"><img src="/img/notificationsIcon.svg" alt="" />
                     <span>Notifications</span>
                 </RouterLink>
-                <RouterLink class="link" to="/profile/id"><img src="/img/profileIcon.svg" alt="" /> <span>Profile</span>
+                <RouterLink class="link" :to="`/profile/${userStore.getUserID}`"><img src="/img/profileIcon.svg" alt="" /> <span>Profile</span>
                 </RouterLink>
                 <a class="link log_a" v-on:click="clickLogOut"><img src="/img/logOut.svg" alt="" /> <span>Log
                         out</span></a>

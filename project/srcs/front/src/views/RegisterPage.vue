@@ -37,12 +37,10 @@ const handleRegister = async () => {
         last_name: lastName.value,
     };
     
-    const response = await UserService.register(payload);
+    await UserService.register(payload);
 
-    console.log(response);
     router.push('confirm-email')
   } catch (err: any) {
-    console.log(err)
     error.value = err.response?.data?.errors || err.response?.data?.error || 'Registration failed for unknown reason';
   } finally {
     isLoading.value = false;

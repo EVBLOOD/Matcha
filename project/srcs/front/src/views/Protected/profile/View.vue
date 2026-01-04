@@ -1,9 +1,18 @@
 <script setup lang="ts">
-    import { ref } from 'vue';
 import RenderPictures from '@/components/RenderPictures.vue';
 import TagsList from '@/components/TagsList.vue';
     import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
+import { ref, watch } from 'vue';
+import useUserStore from '@/stores/user';
+const route = useRoute();
+const userStore = useUserStore();
+const current_user = ref(userStore.getUserID)
 
+console.log(`View Page Out: ${route.params.id}`)
+// watch(
+//         () => route.params.id,
+//         (newId) => {  console.log(`View Page: ${newId}`)},
+//     );
     const insertedPictures = ref([{id: '1', url: '/img/profilePictureDemo.png'}, 
     {id: '2', url: '/img/profilePictureDemo.png'}, {id: '3', url: '/img/profilePictureDemo.png'}, {id: '4', url: '/img/profilePictureDemo.png'}])
     const availableTags = ['art', 'music', 'coding'];
@@ -12,8 +21,11 @@ import TagsList from '@/components/TagsList.vue';
 
 <template>
     <div class="wraper">
-        <div style="width: 100%;display: flex; justify-content: flex-end;height: 5%;">
-            <RouterLink class="link" to=":id/settings"><img src="/img/editProfileIcon.svg" alt=""/> <span>Edit Profile</span></RouterLink>
+        <div  style="width: 100%;display: flex; justify-content: flex-end; flex-shrink: 0; gap: 2%;">
+            <RouterLink v-if="route.params.id === userStore.getUserID.toString()" class="link" :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt=""/> <span>Edit Profile</span></RouterLink>
+            <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" :to="`/messages`">Message</RouterLink>
+            <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" to="`/more`"><img src="/img/moreIcon.svg" alt=""/></RouterLink>
+
         </div>
         <div class="user_infos">
             <RenderPictures :readonly="true" :initialpictures="insertedPictures"/>

@@ -1,9 +1,19 @@
 <script setup lang="ts">
-// import Button from '@/components/Button.vue';
-// import { RouterLink, RouterView } from 'vue-router';
-    import { RouterView } from 'vue-router';
+import { ref, watch } from 'vue';
+import { RouterView, useRoute } from 'vue-router';
+import useUserStore from '@/stores/user';
 import Fame from '@/components/Fame.vue';
 
+
+const route = useRoute();
+const userStore = useUserStore();
+
+// const current_user = ref(userStore.getUserID)
+
+watch(
+        () => route.params.id,
+        (newId) => { console.error(`Profile Page: ${newId}`) },
+    );
 </script>
 
 <template>
