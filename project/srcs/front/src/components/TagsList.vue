@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 
 const props = defineProps({
     initialtags: {
-        type: Array,
+        type: Array<String>,
         default: []
     },
     readonly: {
@@ -15,10 +15,10 @@ const props = defineProps({
 const emit = defineEmits(['tags-selected']);
 
 
-const availableTags = ref(props.initialtags);
-const selectedIntersts = ref([]);
+const availableTags = ref<Array<string>>(props.initialtags as Array<string>);
+const selectedIntersts = ref<Array<string>>([]);
 
-const tagClick = (tag) => {
+const tagClick = (tag: string) => {
     if (selectedIntersts.value.includes(tag)) {
         selectedIntersts.value = selectedIntersts.value.filter(t => t !== tag);
     } else {

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Card from '@/components/Card.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
@@ -8,28 +8,40 @@ import AuthService from '@/api/services/AuthService'
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 
+import type { Login } from '@/types/auth'
+import axios, { AxiosError } from 'axios';
+
+interface BackendError {
+  error?: string;
+  errors?: any[];
+}
+
+
 const router = useRouter()
 const userName = ref('');
 const passWord = ref('');
 
 const isLoading = ref(false);
-const error = ref(null);
+const error = ref<null | string | any[]>(null);
 
 const handleLogin = async () => {
   isLoading.value = true;
   error.value = null;
 
   try {
-    const payload = { 
+    const payload : Login = { 
            username: userName.value,
            password: passWord.value
        };
        const response = await AuthService.login(payload);
        localStorage.setItem('auth_token', response.data.access_token);
        router.push('/')
-     } catch (err) {
-       console.log(err)
-       error.value = err.response?.data?.errors || err.response?.data?.error || 'Registration failed for unknown reason';
+     } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Registration failed for unknown reason';
+        } else {
+            error.value = 'Registration failed for unknown reason'
+        }
      } finally {
        isLoading.value = false;
      }

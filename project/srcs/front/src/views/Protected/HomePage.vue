@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import AuthService from '@/api/services/AuthService'
 import useUserStore from '@/stores/user';

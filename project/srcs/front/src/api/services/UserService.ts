@@ -1,19 +1,11 @@
 import apiClient from '@/api/client';
+import type { UserRegister } from '@/types/user';
 
 export default {
-  register(userData) {
+  register(userData: UserRegister) {
     return apiClient.post('/user/create_user', userData);
   },
-  login(userData) {
-    return apiClient.post('/auth/login', userData);
-  },
-  logout() {
-    return apiClient.post('/auth/logout');
-  },
-  getProfile() {
-    return apiClient.get('/user/protected')
-  },
-  completeProfile(formData) {
+  completeProfile(formData: FormData) {
 
         return apiClient.post('/profile/create_profile', formData, {
             headers: {

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // import Button from '@/components/Button.vue';
 // import { RouterLink, RouterView } from 'vue-router';
     import { RouterView } from 'vue-router';

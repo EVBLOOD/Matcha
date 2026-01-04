@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 
 const props = defineProps({
@@ -28,7 +28,7 @@ const decimalPart = computed(() => {
 
 const stylePercent = computed(() => {
     return {
-        background: `linear-gradient(90deg, orange ${decimalPart.value * 100}%, #FFFFFF 0%)`,
+        background: `linear-gradient(90deg, orange ${(decimalPart.value || 0) * 100}%, #FFFFFF 0%)`,
         backgroundClip: 'text',
         color: 'transparent',
     };

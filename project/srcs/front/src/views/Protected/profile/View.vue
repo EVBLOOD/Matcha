@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     import { ref } from 'vue';
 import RenderPictures from '@/components/RenderPictures.vue';
 import TagsList from '@/components/TagsList.vue';

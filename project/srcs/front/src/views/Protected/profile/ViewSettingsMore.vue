@@ -9,7 +9,7 @@ import RenderPictures from '@/components/RenderPictures.vue';
 import TagsList from '@/components/TagsList.vue';
 
 
-import AuthService from '@/api/services/AuthService'
+import UserService from '@/api/services/UserService'
 import { useRouter } from 'vue-router'
 
 
@@ -53,7 +53,7 @@ const handleSubmit = async () => {
     //   formData.append('longitude', bio.value);
 
     try {
-        await AuthService.completeProfile(formData);
+        await UserService.completeProfile(formData);
         const user = useUserStore();
         await user.fetchUser();
 

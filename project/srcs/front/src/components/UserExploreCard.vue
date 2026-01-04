@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Fame from '@/components/Fame.vue';
 import Button from '@/components/Button.vue';
 

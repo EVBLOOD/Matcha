@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 defineProps({
     id: String,
@@ -18,7 +18,7 @@ defineEmits(['update:modelValue']);
         <input :id="value" :name="name" :type="type" :value="value"
        
         :checked="modelValue === id"
-        @input="$emit('update:modelValue', $event.target.value)">
+        @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)">
         <label :for="id"> {{ label }}</label>
     </div>
 </template>

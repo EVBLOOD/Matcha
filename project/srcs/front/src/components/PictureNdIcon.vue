@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 
 const props = defineProps({
@@ -25,7 +25,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['file-selected']);
 const inputId = `avatar-input-${Math.random().toString(36).slice(2, 9)}`;
-const previewUrl = ref(null);
+const previewUrl  = ref<null | string>(null);
 
 const avatarStyle = computed(() => {
     const image = previewUrl.value || props.initialImage;
@@ -37,10 +37,9 @@ const avatarStyle = computed(() => {
 });
 
 
+const onFileChange = (e: Event) => {
+    const file = ((e.target as HTMLInputElement).files || [])[0];
 
-
-const onFileChange = (e) => {
-    const file = e.target.files[0];
     if (!file) return;
 
     if (previewUrl.value) URL.revokeObjectURL(previewUrl.value);
@@ -48,6 +47,7 @@ const onFileChange = (e) => {
 
     emit('file-selected', file);
 };
+
 </script>
 
 <template>

@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
     import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
     import { ref } from 'vue'
     const passWord = ref('');
     const passWordConf = ref('');
-const clickSave = (e) => {
+const clickSave = (e: Event) => {
     console.log("SAAAAAAAVE ME")
 }
 </script>

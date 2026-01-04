@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 import Fame from '@/components/Fame.vue';
 
@@ -8,9 +8,9 @@ const props = defineProps({
         default: false
     },
     elemName: String, // Age | Location | Fame | Tags
-    tagsList: Array,
-    locationList: Array,
-    fameList: Array
+    tagsList: Array<String>,
+    locationList: Array<String>,
+    fame: Array
 });
 
 const emit = defineEmits(['AgeMin-selected', 'AgeMax-selected', 'location-selected', 'fame-selected', 'tags-selected']);
@@ -22,7 +22,7 @@ const isMenuOpen = ref(false)
 const AgeMin = ref(18)
 const AgeMax = ref(24)
 
-const add_age = (type) => {
+const add_age = (type: string) => {
     if (type === 'AgeMin-selected') {
         if (AgeMin.value < AgeMax.value) AgeMin.value++;
         emit('AgeMin-selected', AgeMin.value);
@@ -32,7 +32,7 @@ const add_age = (type) => {
     }
 };
 
-const minus_age = (type) => {
+const minus_age = (type: string) => {
     if (type === 'AgeMin-selected') {
         if (AgeMin.value > 18) AgeMin.value--;
         emit('AgeMin-selected', AgeMin.value);
@@ -43,9 +43,9 @@ const minus_age = (type) => {
 };
 
 // else if (props.elemName === 'Location') 
-const selectedLocation = ref([])
+const selectedLocation = ref<Array<string>>([])
 
-const selection_location = (city) => {
+const selection_location = (city: string) => {
     const index = selectedLocation.value.indexOf(city);
     if (index > -1) {
         selectedLocation.value.splice(index, 1);
@@ -56,9 +56,9 @@ const selection_location = (city) => {
 };
 
 // else if (props.elemName === 'Fame') 
-const selectedFame = ref(4.0)
+const selectedFame = ref<number>(4.0)
 
-const add_fame = (fame) => {
+const add_fame = () => {
     if (selectedFame.value < 5) {
         selectedFame.value = parseFloat((selectedFame.value + 0.1).toFixed(1));
         // selectedFame.value = selectedFame.value + 0.1;
@@ -75,9 +75,9 @@ const minus_fame = () => {
 };
 
 //  else if (props.elemName === 'Tags') 
-const selectedIntersts = ref([]);
+const selectedIntersts = ref<Array<string>>([]);
 
-const tagClick = (tag) => {
+const tagClick = (tag: string) => {
     const index = selectedIntersts.value.indexOf(tag);
     if (index > -1) {
         selectedIntersts.value.splice(index, 1);
@@ -88,11 +88,11 @@ const tagClick = (tag) => {
 };
 
 
-const listClick = (lt, elemName) => {
+const listClick = (lt: String, elemName: string) => {
     if (elemName == "Tags") {
-        tagClick(lt);
+        tagClick(lt as string);
     } else {
-        selection_location(lt);
+        selection_location(lt as string);
     }
 }
 
@@ -135,11 +135,11 @@ const handleClick = () => {
     isMenuOpen.value = !isMenuOpen.value;
 };
 
-const checkListExists = (lt, elemName) => {
+const checkListExists = (lt: String, elemName: string) => {
     if (elemName == "Tags") {
-        return selectedIntersts.value.includes(lt)
+        return selectedIntersts.value.includes(lt as string)
     }
-    return selectedLocation.value.includes(lt)
+    return selectedLocation.value.includes(lt as string)
 }
 </script>
 
@@ -150,7 +150,7 @@ const checkListExists = (lt, elemName) => {
         <div class="search_type">
             <div class="label_input">
                 <h3>{{ elemName || "evblood" }}</h3>
-                <input type="image" src="/img/arrowDownIcon.svg" @click="handleClick(elemName)" />
+                <input type="image" src="/img/arrowDownIcon.svg" @click="handleClick()" />
             </div>
             <div v-if="elemName !== 'Tags' && elemName !== 'Location' && elemName !== 'Fame'">{{ valueDisplay }}</div>
             <div v-if="elemName === 'Tags' || elemName === 'Location'" style="display: flex; gap: 2px;">
@@ -175,8 +175,8 @@ const checkListExists = (lt, elemName) => {
 
         <div  v-if="elemName === 'Fame'" class="search_menu_fame"  v-show="isMenuOpen">
             <div>
-                <input @click="minus_fame(selectedFame)" type="image" src="/img/lessIcon.svg"> {{ selectedFame }} <input
-                    @click="add_fame(selectedFame)" type="image" src="/img/plusIcon.svg">
+                <input @click="minus_fame()" type="image" src="/img/lessIcon.svg"> {{ selectedFame }} <input
+                    @click="add_fame()" type="image" src="/img/plusIcon.svg">
             </div>
         </div>
 

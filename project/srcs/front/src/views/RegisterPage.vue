@@ -1,9 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import Button from '@/components/Button.vue';
 import Input from '@/components/Input.vue';
 import Card from '@/components/Card.vue';
 
-import AuthService from '@/api/services/AuthService'
+import UserService from '@/api/services/UserService'
+import type { UserRegister } from '@/types/user';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
@@ -28,7 +29,7 @@ const handleRegister = async () => {
   error.value = null;
 
   try {
-    const payload = { 
+    const payload : UserRegister = { 
         username: userName.value,
         email: email.value,
         password: passWord.value,
@@ -36,11 +37,11 @@ const handleRegister = async () => {
         last_name: lastName.value,
     };
     
-    const response = await AuthService.register(payload);
+    const response = await UserService.register(payload);
 
     console.log(response);
     router.push('confirm-email')
-  } catch (err) {
+  } catch (err: any) {
     console.log(err)
     error.value = err.response?.data?.errors || err.response?.data?.error || 'Registration failed for unknown reason';
   } finally {

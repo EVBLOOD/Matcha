@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
 import InputLabel from '@/components/InputLabel.vue';
@@ -10,8 +10,10 @@ import RenderPictures from '@/components/RenderPictures.vue';
 import TagsList from '@/components/TagsList.vue';
 
 
-import AuthService from '@/api/services/AuthService'
+import UserService from '@/api/services/UserService'
 import { useRouter } from 'vue-router'
+
+import type { PicturesDisplying } from '@/types/helpers'
 
 
 const orientation = [{ value: 'straight', label: 'Straight' }, { value: 'gay', label: 'Gay' }, { value: 'bisexual', label: 'Bisexual' }]
@@ -21,10 +23,10 @@ const availableTags = ref(['art', 'music', 'coding']);
 const selectedOrientation = ref('straight');
 const selectedGender = ref('male');
 
-const selectedProfile = ref(null);
-const selectedIntersts = ref([]);
+const selectedProfile = ref<File | null>(null);
+const selectedIntersts = ref<string[]>([]);
 const insertedBio = ref('');
-const insertedPictures = ref([]);
+const insertedPictures = ref<PicturesDisplying[]>([]);
 
 const router = useRouter()
 
@@ -49,12 +51,12 @@ const handleSubmit = async () => {
         }
     });
 
-    formData.append('location_set_by_user', false);
+    formData.append('location_set_by_user', String(false));
     //   formData.append('latitude', bio.value);
     //   formData.append('longitude', bio.value);
     
     try {
-        await AuthService.completeProfile(formData);
+        await UserService.completeProfile(formData);
         const user = useUserStore();
         await user.fetchUser();
 
@@ -64,15 +66,15 @@ const handleSubmit = async () => {
     }
 };
 
-const handleAvatar = (file) => {
+const handleAvatar = (file: File) => {
     selectedProfile.value = file;
 };
 
-const handlePicures = (files) => {
+const handlePicures = (files: PicturesDisplying[]) => {
     insertedPictures.value = [...files];
 };
 
-const handleTags = (tags) => {
+const handleTags = (tags: string[]) => {
     selectedIntersts.value = [...tags];
 };
 </script>

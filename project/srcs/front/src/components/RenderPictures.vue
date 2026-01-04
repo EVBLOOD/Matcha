@@ -1,9 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
+import type { PicturesDisplying, insertedPictures } from '@/types/helpers'
 
 const props = defineProps({
     initialpictures: {
-        type: Array,
+        type: Array<insertedPictures>,
         default: []
     },
     readonly: {
@@ -27,10 +28,10 @@ const emit = defineEmits(['files-selected']);
 
 const inputId = `pictures-input-${Math.random().toString(36).slice(2, 9)}`;
 
-const insertedPictures = ref(props.initialpictures);
+const insertedPictures = ref<Array<insertedPictures>>(props.initialpictures);
 
 
-const removeImage = (id) => {
+const removeImage = (id: string) => {
     const index = insertedPictures.value.findIndex(f => f.id === id);
     if (index !== -1) {
         URL.revokeObjectURL(insertedPictures.value[index].url);
@@ -38,12 +39,12 @@ const removeImage = (id) => {
     }
 };
 
-const onFileChange = (event) => {
-    const recent_pictures = Array.from(event.target.files);
+const onFileChange = (event: Event) => {
+    const recent_pictures = Array.from((event.target as HTMLInputElement).files || []);
 
     const remainingSlots = 4 - insertedPictures.value.length;
 
-    const newPics = recent_pictures.slice(0, remainingSlots).map(file => ({
+    const newPics : Array<PicturesDisplying> = recent_pictures.slice(0, remainingSlots).map(file => ({
         file,
         id: crypto.randomUUID(),
         url: URL.createObjectURL(file)
@@ -52,7 +53,7 @@ const onFileChange = (event) => {
     insertedPictures.value = [...insertedPictures.value, ...newPics];
 
     emit('files-selected', insertedPictures.value);
-    event.target.value = '';
+    (event.target as HTMLInputElement).value = '';
 };
 
 </script>
