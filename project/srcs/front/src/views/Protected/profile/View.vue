@@ -7,6 +7,7 @@ import useUserStore from '@/stores/user';
 const route = useRoute();
 const userStore = useUserStore();
 const current_user = ref(userStore.getUserID)
+import type {UserProfileResponse} from '@/types/apiResponses'
 
 console.log(`View Page Out: ${route.params.id}`)
 // watch(
@@ -15,12 +16,14 @@ console.log(`View Page Out: ${route.params.id}`)
 //     );
     const insertedPictures = ref([{id: '1', url: '/img/profilePictureDemo.png'}, 
     {id: '2', url: '/img/profilePictureDemo.png'}, {id: '3', url: '/img/profilePictureDemo.png'}, {id: '4', url: '/img/profilePictureDemo.png'}])
-    const availableTags = ['art', 'music', 'coding'];
+import { inject, type Ref } from 'vue';
 
+// Access the data provided by the parent
+const profileData = inject<Ref<UserProfileResponse>>('profileData');
 </script>
 
 <template>
-    <div class="wraper">
+    <div v-if="profileData" class="wraper">
         <div  style="width: 100%;display: flex; justify-content: flex-end; flex-shrink: 0; gap: 2%;">
             <RouterLink v-if="route.params.id === userStore.getUserID.toString()" class="link" :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt=""/> <span>Edit Profile</span></RouterLink>
             <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" :to="`/messages`">Message</RouterLink>
@@ -28,14 +31,14 @@ console.log(`View Page Out: ${route.params.id}`)
 
         </div>
         <div class="user_infos">
-            <RenderPictures :readonly="true" :initialpictures="insertedPictures"/>
+            <RenderPictures :readonly="true" :initialpictures="profileData.pictures.filter(obj => !obj.is_profile_picture).map(obj => {return {id: obj.url, url: `http://localhost:8081/profile/pictures/${obj.url}`}})"/>
 
-            <div><img src="/img/maleIcon.svg" alt=""> Male</div>
-            <div><img src="/img/locationIcon.svg" alt=""> California - USA</div>
+            <div><img src="/img/maleIcon.svg" alt=""> {{profileData.user.gender}}</div>
+            <div><img src="/img/locationIcon.svg" alt=""> California - USA </div>
             <div>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                {{profileData.profile.biography}}
             </div>
-            <TagsList :readonly="true" :initialtags="availableTags"/>
+            <TagsList :readonly="true" :initialtags="profileData.interests"/>
 
         </div>
         <div>

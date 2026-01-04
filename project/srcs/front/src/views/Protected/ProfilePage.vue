@@ -1,36 +1,64 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, provide, onMounted, watch } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
-import useUserStore from '@/stores/user';
+
 import Fame from '@/components/Fame.vue';
 
+import useUserStore from '@/stores/user';
+import ProfileService from '@/api/services/ProfileService'
+import type {UserProfileResponse} from '@/types/apiResponses'
+import axios, { AxiosError } from 'axios';
 
 const route = useRoute();
 const userStore = useUserStore();
+const profileData = ref<UserProfileResponse | null>(null);
+const isLoading = ref(true);
+const isError = ref<string | null>(null);
 
-// const current_user = ref(userStore.getUserID)
+interface BackendError {
+  error: string;
+}
 
-watch(
-        () => route.params.id,
-        (newId) => { console.error(`Profile Page: ${newId}`) },
-    );
+const fetchProfile = async () => {
+  isLoading.value = true;
+  try {
+    const { data } = await ProfileService.getProfile(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
+    profileData.value = data;
+  } catch(err : unknown) {
+    if (axios.isAxiosError(err)) {
+        isError.value = (err.response?.data as BackendError)?.error;
+    }
+    else {
+        isError.value = "Registration failed for unknown reason'";
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+watch(() => route.params.id, fetchProfile);
+
+onMounted(fetchProfile);
+
+provide('profileData', profileData);
+// provide('isLoading', isLoading);
 </script>
 
 <template>
-    <div class="contentz">
+    <div v-if="!isLoading && !isError && profileData" class="contentz">
         <div class="sideBar">
             <div>
-                <img width="90%" style="margin-bottom: 22px;" src="/img/profilePictureDemo.png" alt="">
-                <div style="font-weight:500; font-size: 26px;">Saad Akllam</div>
+                <img width="90%" style="margin-bottom: 22px;" :src="`http://localhost:8081/profile/pictures/${profileData.pictures.find(obj => obj.is_profile_picture == true)?.url}`" alt="">
+                <div style="font-weight:500; font-size: 26px;">{{profileData.user.first_name + " " + profileData.user.last_name}}</div>
                 <div class="status_bar">
                     <div class="status"></div> Online
                 </div>
             </div>
             <div class="stats_holder">
                 <div class="stats_count"> <img src="/img/viewIcon.svg" alt=""> Profile Views : <span
-                        style="font-weight: bold;">324</span></div>
+                        style="font-weight: bold;">{{profileData.interactions.views_count}}</span></div>
                 <div class="stats_count"> <img src="/img/likesIcon.svg" alt=""> Likes Received : <span
-                        style="font-weight: bold;">323</span></div>
+                        style="font-weight: bold;">{{profileData.interactions.likes_count}}</span></div>
             </div>
             <div>
                 <p>Fame Rating 🔥</p>
