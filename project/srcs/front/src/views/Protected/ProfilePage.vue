@@ -61,7 +61,7 @@ provide('profileData', profileData);
             </div>
             <div>
                 <p>Fame Rating 🔥</p>
-                <Fame />
+                <Fame :initialFameScore="profileData.profile.fame_rating"/>
             </div>
         </div>
         <div class="profile_vue">
@@ -71,21 +71,6 @@ provide('profileData', profileData);
 </template>
 
 <style lang="scss" scoped>
-// .fa {
-//     font-size: 25px;
-// }
-
-// .partial {
-//     background: linear-gradient(90deg, orange 90%, #FFFFFF 0%);
-//     background-clip: text;
-//     color: transparent;
-// }
-
-// .checked {
-//     color: orange;
-// }
-
-
 .contentz {
     color: #FFFFFF;
     display: flex;

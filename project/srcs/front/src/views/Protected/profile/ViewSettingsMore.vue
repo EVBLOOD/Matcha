@@ -1,29 +1,43 @@
-<script setup>
+<script setup lang="ts">
+import { ref } from 'vue';
 import Button from '@/components/Button.vue';
 import InputLabel from '@/components/InputLabel.vue';
 import Select from '@/components/Select.vue';
-import { ref } from 'vue';
-import useUserStore from '@/stores/user';
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
 import RenderPictures from '@/components/RenderPictures.vue';
 import TagsList from '@/components/TagsList.vue';
 
 
-import UserService from '@/api/services/UserService'
 import { useRouter } from 'vue-router'
+import { inject, type Ref } from 'vue';
 
+import UserService from '@/api/services/UserService'
+import useUserStore from '@/stores/user';
+import type { UserProfileResponse } from '@/types/apiResponses'
+import type { PicturesDisplying } from '@/types/helpers'
+
+const profileData = inject<Ref<UserProfileResponse>>('profileData');
 
 const orientation = [{ value: 'straight', label: 'Straight' }, { value: 'gay', label: 'Gay' }, { value: 'bisexual', label: 'Bisexual' }]
-const availableTags = ref(['art', 'music', 'coding']);
+
+const availableTags = ref(profileData?.value.interests);
 
 
-const selectedOrientation = ref('straight');
-const selectedGender = ref('male');
+const selectedOrientation = ref(profileData?.value.user.sexual_preference);
+const selectedGender = ref(profileData?.value.user.gender);
 
-const selectedProfile = ref(null);
-const selectedIntersts = ref([]);
-const insertedBio = ref('');
-const insertedPictures = ref([]);
+const initialImage =  `http://localhost:8081/profile/pictures/${profileData?.value.pictures.filter(pic => pic.is_profile_picture)[0].url}`;
+const initialpictures = profileData?.value.pictures.filter(img => !img.is_profile_picture).map(img => {
+    return {
+    id: img.url,
+    url: `http://localhost:8081/profile/pictures/${img.url}`
+}})
+
+const selectedProfile = ref<File | null>(null);
+const selectedIntersts = ref<string[]>(profileData?.value.interests || []);
+const insertedBio = ref(profileData?.value.profile.biography);
+const insertedPictures = ref<PicturesDisplying[]>([]);
+
 
 const router = useRouter()
 
@@ -31,9 +45,9 @@ const handleSubmit = async () => {
     // add protections
     const formData = new FormData();
 
-    formData.append('biography', insertedBio.value);
-    formData.append('gender', selectedGender.value);
-    formData.append('sexual_preference', selectedOrientation.value);
+    formData.append('biography', insertedBio.value || "");
+    formData.append('gender', selectedGender.value || "");
+    formData.append('sexual_preference', selectedOrientation.value || "");
 
 
 
@@ -48,7 +62,7 @@ const handleSubmit = async () => {
         }
     });
 
-    formData.append('location_set_by_user', false);
+    formData.append('location_set_by_user', `${false}`);
     //   formData.append('latitude', bio.value);
     //   formData.append('longitude', bio.value);
 
@@ -63,15 +77,15 @@ const handleSubmit = async () => {
     }
 };
 
-const handleAvatar = (file) => {
+const handleAvatar = (file: File) => {
     selectedProfile.value = file;
 };
 
-const handlePicures = (files) => {
+const handlePicures = (files: PicturesDisplying[]) => {
     insertedPictures.value = [...files];
 };
 
-const handleTags = (tags) => {
+const handleTags = (tags: string[]) => {
     selectedIntersts.value = [...tags];
 };
 </script>
@@ -80,9 +94,9 @@ const handleTags = (tags) => {
     <div class="wraper">
         <div class="avatar_section">
             <div>
-                <PictureNdIcon :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
+                <PictureNdIcon :initialImage="initialImage" :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
             </div>
-            <p class="full_name">Saad AKLLAM</p>
+            <p class="full_name">{{profileData?.user.first_name + " " + profileData?.user.last_name}}</p>
         </div>
 
         <div class="gender_div">
@@ -113,7 +127,7 @@ const handleTags = (tags) => {
 
         <div class="bio_div">
             <p>Photos</p>
-            <RenderPictures @files-selected="handlePicures" />
+            <RenderPictures :initialpictures="initialpictures" @files-selected="handlePicures" />
         </div>
         <Button @click="handleSubmit" text="Save and Continue"></Button>
     </div>

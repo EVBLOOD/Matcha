@@ -29,7 +29,8 @@ export interface UserProfileAttrsResponse {
     last_name: string;
     sexual_preference: string;
     user_id: number;
-    username: string
+    username: string;
+    email?: string
 }
 
 
