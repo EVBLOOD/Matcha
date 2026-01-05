@@ -45,7 +45,7 @@ class PictureService:
         ext = imghdr.what(file.stream)
         file.stream.seek(0)
         filename = f"{uuid.uuid4().hex}.{ext}"
-        file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
+        file_path = os.path.join("app/"+Config.UPLOAD_FOLDER, filename)
         file.save(file_path)
         return filename
 
