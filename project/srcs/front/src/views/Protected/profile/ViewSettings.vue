@@ -9,12 +9,12 @@ const userStore = useUserStore();
 </script>
 
 <template>
-    <nav style="height: 5%;">
+    <nav>
         <RouterLink class="link" :to="`/profile/${userStore.getUserID}/settings`" :class="{ active: route.meta.subtitle == 'Personal details' }">Personal details</RouterLink>
         <RouterLink class="link" :to="`/profile/${userStore.getUserID}/settings/password`" :class="{ active: route.meta.subtitle == 'Change password' }">Change password</RouterLink>
         <RouterLink class="link" :to="`/profile/${userStore.getUserID}/settings/details`" :class="{ active: route.meta.subtitle == 'More details' }">More details</RouterLink>
     </nav>
-    <div style="height: 95%;">
+    <div>
         <RouterView />
     </div>
 </template>
@@ -22,14 +22,15 @@ const userStore = useUserStore();
 <style lang="scss" scoped>
     nav {
         display: flex;
-        gap: 3%
+        gap: 3%;
+        margin-bottom: 10px;
     }
-
     .link {
         text-decoration: none;
         color: $text-color;
         cursor: pointer;
         height: 80%;
+        padding-bottom: 5px;
         &:hover {
             border-style: solid;
             border-width: 0px 0px 5px 0px;

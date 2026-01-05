@@ -152,6 +152,9 @@ const handleTags = (tags: string[]) => {
     border-radius: 12px;
     resize: vertical;
     width: 100%;
+    border: 1px solid $border-color;
+    outline: none;
+    resize: none;
 }
 
 .interest_div {

@@ -32,11 +32,12 @@
         border: none;
         border-radius: 6px;
         cursor: pointer;
-        font-weight: 600;
+        font-weight: 500;
         font-size: 1rem;
         transition: transform 0.2s ease;
     &:hover {
         transform: scale(0.95);
+        opacity: 0.9;
     }
     &:active {
         transform: scale(0.97);

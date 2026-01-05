@@ -208,22 +208,22 @@
     justify-content: center;
 }
 
-.messages::-webkit-scrollbar {
-    width: 6px;
-}
+// .messages::-webkit-scrollbar {
+//     width: 6px;
+// }
 
-.messages::-webkit-scrollbar-track {
-    background: transparent;
-}
+// .messages::-webkit-scrollbar-track {
+//     background: transparent;
+// }
 
-.messages::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
-}
+// .messages::-webkit-scrollbar-thumb {
+//     background-color: rgba(255, 255, 255, 0.25);
+//     border-radius: 10px;
+// }
 
-.messages::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.45);
-}
+// .messages::-webkit-scrollbar-thumb:hover {
+//     background-color: rgba(255, 255, 255, 0.45);
+// }
 
 .status {
     display: flex;

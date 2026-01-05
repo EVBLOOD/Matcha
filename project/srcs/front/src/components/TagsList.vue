@@ -53,7 +53,7 @@ const clickNewTag = () => {
 }
 
 .interest_span {
-    padding: 3px;
+    padding: 4px 10px;
     border-color: $border-color;
     border-style: solid;
     border-radius: 8px;

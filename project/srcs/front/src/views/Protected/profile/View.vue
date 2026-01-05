@@ -19,8 +19,9 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
     <div v-if="profileData" class="wraper">
         <div style="width: 100%;display: flex; justify-content: flex-end; flex-shrink: 0; gap: 2%;">
             <RouterLink v-if="route.params.id === userStore.getUserID.toString()" class="link"
-                :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt="" /> <span>Edit
-                    Profile</span></RouterLink>
+                :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt="" /> 
+                <span>Edit Profile</span>
+            </RouterLink>
             <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" :to="`/messages`">Message
             </RouterLink>
             <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" to="`/more`"><img
@@ -72,7 +73,7 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
     padding: 1% 2% 1% 2%;
     cursor: pointer;
     background: $components-background-color;
-    border-radius: 4px;
+    border-radius: 10px;
 }
 
 .link:hover {

@@ -28,6 +28,10 @@ select {
     background: $components-background-color;
     color: $text-color;
     border-radius: 12px;
+    // border: none;
+    border: 1px solid $border-color;
+    outline: none;
+    font-family: $font-main;
 }
 
 option {
