@@ -68,4 +68,16 @@ const clickLike = () => {
     min-width: 200px;
 
 }
+
+@media (max-width: $breakpoint-md) {
+    .user_card {
+        min-width: 185px;
+    }
+}
+
+.user_card_btn {
+    width: 100%;
+    min-width: fit-content;
+
+}
 </style>
