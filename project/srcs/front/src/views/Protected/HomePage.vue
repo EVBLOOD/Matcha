@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
+
 import AuthService from '@/api/services/AuthService'
 import useUserStore from '@/stores/user';
 
@@ -21,9 +22,6 @@ const clickLogOut = async () => {
         localStorage.removeItem('auth_token');
     }
 }
-
-
-
 </script>
 
 <template>

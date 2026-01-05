@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { socket } from '@/socket/socket';
+import { socketChat, socketStatus } from '@/socket/socket';
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
@@ -8,17 +8,24 @@ export const useSocketStore = defineStore('socket', {
     notifs: [] as string[],
   }),
   actions: {
-    bindEvents() {
-      socket.on('connect', () => { this.isConnected = true; });
-      socket.on('disconnect', () => { this.isConnected = false; });
-      socket.on('online', (users) => { this.onlineUsers = users; });
-      socket.on('notifs', (notif) => { this.notifs = [notif, ...this.notifs]; });
+    bindStatusEvents() {
+      socketStatus.on('connect', () => { this.isConnected = true; });
+      socketStatus.on('disconnect', () => { this.isConnected = false; });
     },
-    connect() {
-      if (!socket.connected) socket.connect();
+    bindChatEvents() {
+      socketChat.on('connect', () => { this.isConnected = true; });
+      socketChat.on('disconnect', () => { this.isConnected = false; });
     },
-    disconnect() {
-      if (socket.connected) socket.disconnect();
+    connectAll() {
+      if (!socketChat.connected) socketChat.connect();
+      if (!socketStatus.connected) socketStatus.connect();
+
+    //   this.bindStatusEvents();
+    //   this.bindChatEvents();
+    },
+    disconnectAll() {
+      if (socketChat.connected) socketChat.disconnect();
+      if (socketStatus.connected) socketStatus.disconnect();
     }
   }
 });

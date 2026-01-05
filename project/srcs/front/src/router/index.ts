@@ -15,7 +15,9 @@ import ViewSettingsMore from '@/views/Protected//profile/ViewSettingsMore.vue';
 import ViewSettingsDefault from '@/views/Protected//profile/ViewSettingsDefault.vue';
 import ViewSettingsPassword from '@/views/Protected//profile/ViewSettingsPassword.vue';
 import Conversation from '@/views/Protected//chat/Conversation.vue';
+
 import useUserStore from '@/stores/user';
+import { useSocketStore } from '@/stores/socket';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -119,6 +121,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const user = useUserStore();
+  const socketStore = useSocketStore();
   const token = localStorage.getItem('auth_token');
 
     if (token && !user.isLoaded) {
@@ -143,7 +146,7 @@ router.beforeEach(async (to, from, next) => {
           return next({ name: 'home' });
         }
       }
-
+      socketStore.connectAll()
     } else {
       if (!to.meta.public) {
           return next({ name: 'login' });
