@@ -130,7 +130,6 @@ provide('profileData', profileData);
     .contentz {
         flex-direction: column;
         height: fit-content;
-        // align-items: center;
     }
     .sideBar {
         padding: 5%;

@@ -237,6 +237,7 @@ const checkListExists = (lt: String, elemName: string) => {
     padding: 3%;
     color: $menu-text-color;
     font-weight: bolder;
+    z-index: 1;
 
     div {
         display: flex;
@@ -259,6 +260,7 @@ const checkListExists = (lt: String, elemName: string) => {
     padding: 3%;
     color: $menu-text-color;
     font-weight: bolder;
+    z-index: 1;
 
     div {
         width: 100%;
@@ -295,6 +297,7 @@ const checkListExists = (lt: String, elemName: string) => {
     padding: 3%;
     color: $menu-text-color;
     font-weight: bolder;
+    z-index: 1;
 
     div {
         display: flex;
@@ -316,10 +319,29 @@ const checkListExists = (lt: String, elemName: string) => {
     padding: 3%;
     color: $menu-text-color;
     font-weight: bolder;
+    z-index: 1;
 
     div {
         padding-top: 4px;
         padding-bottom: 4px;
+    }
+}
+
+@media (max-width: $breakpoint-md) {
+    .div_breaker {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items: flex-start;
+    }
+    .break_line {
+    width: 100%;
+    border-style: solid;
+    height: 2px;
+    border-width: 2px 0px 0px 0px;
+    }
+    .search_menu_fame .search_menu_tags .search_menu_location .search_menu_age {
+        z-index: 1;
     }
 }
 </style>

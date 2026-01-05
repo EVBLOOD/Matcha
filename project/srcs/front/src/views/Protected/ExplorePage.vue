@@ -91,10 +91,17 @@ const handleSubmit = () => {
 }
 
 @media (max-width: $breakpoint-md) {
-    .page {
+    .inner_search_bar {
         display: flex;
         flex-direction: column;
-        // margin: 0;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: center;
+        width: 100%;
+    }
+    .btn {
+        width: 100%;
+        margin-left: 0%;
     }
 }
 </style>
