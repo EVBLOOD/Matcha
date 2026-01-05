@@ -8,14 +8,24 @@ const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter()
 
+
+import { useSocketStore } from '@/stores/socket';
+
+const socket = useSocketStore();
+
 const clickLogOut = async () => {
     console.log("Logout")
     try {
+        const token = localStorage.getItem('auth_token');
+        if (token) socket.disconnectAll(token)
         const response = await AuthService.logout();
+        
         console.log(response)
-        localStorage.removeItem('auth_token');
         userStore.fetchUser()
-        // userStore.setIsLoaded(false)
+        localStorage.removeItem('auth_token');
+
+        userStore.setIsLoaded(false)
+
         router.push('login')
     } catch (err) {
         console.log(err);

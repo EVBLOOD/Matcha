@@ -12,6 +12,7 @@ const route = useRoute();
 const userStore = useUserStore();
 
 const profileData = inject<Ref<UserProfileResponse>>('profileData');
+
 </script>
 
 <template>
@@ -92,6 +93,7 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
         align-items: center;
 
     }
+
     .gender_location {
         width: 100%;
         display: flex;

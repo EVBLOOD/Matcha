@@ -63,21 +63,22 @@ const router = createRouter({
             {
               path: 'settings',
               component: ViewSettings,
+              meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'Personal details' },
               children : [
                 {
                   path: '',
                   component: ViewSettingsDefault,
-                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'Personal details' }
+                  meta: { requiresSameUser: true, requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'Personal details' }
                 },
                 {
                   path: 'password',
                   component: ViewSettingsPassword,
-                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'Change password' }
+                  meta: { requiresSameUser: true, requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'Change password' }
                 },
                 {
                   path: 'details',
                   component: ViewSettingsMore,
-                  meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'More details' }
+                  meta: { requiresSameUser: true, requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'More details' }
                 }
               ]
             }
@@ -143,6 +144,9 @@ router.beforeEach(async (to, from, next) => {
         } else if (user.isVerified && !to.meta.requiresVerification) {
           return next({ name: 'profile onboarding' });
         } else if (user.isProfileComplete && !to.meta.requiresCompleteProfile) {
+          return next({ name: 'home' });
+        }
+        if (to.meta.requiresSameUser && to.params.id != user.getUserID) {
           return next({ name: 'home' });
         }
       }

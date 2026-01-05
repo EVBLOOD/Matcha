@@ -30,7 +30,7 @@ class ConnectionManager :
             "1"
         )
         join_room(f"Notifs_user_{user_id}")
-        emit('connected', {user_id: "online"}, room=f"online_user_{user_id}")
+        emit('connected', {user_id: "Online"}, room=f"online_user_{user_id}")
 
     
     @staticmethod

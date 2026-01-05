@@ -116,4 +116,15 @@ const onFileChange = (event: Event) => {
 .hidden {
     display: none;
 }
+
+@media (max-width: $breakpoint-md) {
+    .pictures_view {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4%;
+    }
+
+}
 </style>

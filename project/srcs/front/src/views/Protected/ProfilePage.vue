@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, provide, onMounted, watch } from 'vue';
+import { ref, provide, onMounted, watch, computed } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 
 import Fame from '@/components/Fame.vue';
@@ -8,6 +8,9 @@ import useUserStore from '@/stores/user';
 import ProfileService from '@/api/services/ProfileService'
 import type {UserProfileResponse} from '@/types/apiResponses'
 import axios, { AxiosError } from 'axios';
+
+import { useSocketStore } from '@/stores/socket';
+
 
 const route = useRoute();
 const userStore = useUserStore();
@@ -19,11 +22,15 @@ interface BackendError {
   error: string;
 }
 
+const socket = useSocketStore();
+
 const fetchProfile = async () => {
   isLoading.value = true;
   try {
     const { data } = await ProfileService.getProfile(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
     profileData.value = data;
+    if (profileData.value?.user)
+        socket.reachStausOneUser(profileData.value.user.user_id.toString())
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -41,6 +48,15 @@ watch(() => route.params.id, fetchProfile);
 onMounted(fetchProfile);
 
 provide('profileData', profileData);
+
+const statusColor = computed(() => {
+    if (profileData.value)
+        return {
+            background: socket.UserStatus(profileData.value.user.user_id.toString()) == "Online" ? "rgb(6, 201, 6)" : "red"
+        };
+});
+
+
 </script>
 
 <template>
@@ -50,7 +66,7 @@ provide('profileData', profileData);
                 <img width="250px" height="250px" style="margin-bottom: 22px;" :src="`http://localhost:8081/profile/pictures/${profileData.pictures.find(obj => obj.is_profile_picture == true)?.url}`" alt="">
                 <div style="font-weight:500; font-size: 26px;">{{profileData.user.first_name + " " + profileData.user.last_name}}</div>
                 <div class="status_bar">
-                    <div class="status"></div> Online
+                    <div class="status" :style="statusColor"></div> {{socket.UserStatus(profileData.user.user_id.toString())}}
                 </div>
             </div>
             <div class="stats_holder">
@@ -145,6 +161,11 @@ provide('profileData', profileData);
         align-items: center;
         justify-content: center;
 
+    }
+    .status_bar {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
     }
 
 }
