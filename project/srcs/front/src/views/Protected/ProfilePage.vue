@@ -138,6 +138,7 @@ provide('profileData', profileData);
         height: fit-content;
         border-style: none;
         align-items: center;
+        gap: 25px;
     }
     .sideBar_personal_info {
         display: flex;

@@ -86,7 +86,9 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
     }
     .user_infos {
         // width: 100%;
-        gap: 10px;
+        // gap: 10px;
+        gap: 25px;
+
         align-items: center;
 
     }
