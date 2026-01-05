@@ -96,8 +96,8 @@ const onFileChange = (event: Event) => {
     position: absolute;
     top: 35px;
     left: 35px;
-    background: #BD82DD;
-    color: white;
+    background: $secondary-color;
+    color: $text-color;
     border: none;
     border-radius: 50%;
     cursor: pointer;

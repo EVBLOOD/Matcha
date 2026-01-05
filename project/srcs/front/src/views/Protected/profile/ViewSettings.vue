@@ -31,12 +31,12 @@
         &:hover {
             border-style: solid;
             border-width: 0px 0px 5px 0px;
-            border-color: rgba(255, 255, 255, 0.12);
+            border-color: $border-color-hover;
         }
         &.active {
             border-style: solid;
             border-width: 0px 0px 5px 0px;
-            border-color: rgba(255, 255, 255, 1);
+            border-color: $border-color-active;
         }
     }
     @media (max-width: $breakpoint-md) {

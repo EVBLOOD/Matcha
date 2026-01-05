@@ -218,13 +218,13 @@ const checkListExists = (lt: String, elemName: string) => {
     border-style: solid;
     border-width: 0px 0px 0px 2px;
     border-radius: 10%;
-    border-color: #BD82DD;
+    border-color: $border-color;
 }
 
 
 .search_menu_age {
     position: absolute;
-    background-color: #E6E6E6;
+    background-color: $primary-color;
     top: calc(100% + 4px);
     left: 0;
     display: flex;
@@ -235,7 +235,7 @@ const checkListExists = (lt: String, elemName: string) => {
     height: 80px;
     border-radius: 8px;
     padding: 3%;
-    color: #75478D;
+    color: $menu-text-color;
     font-weight: bolder;
 
     div {
@@ -249,7 +249,7 @@ const checkListExists = (lt: String, elemName: string) => {
 .search_menu_location {
     cursor: pointer;
     position: absolute;
-    background-color: #E6E6E6;
+    background-color: $primary-color;
     top: calc(100% + 4px);
     left: 0;
     justify-items: center;
@@ -257,7 +257,7 @@ const checkListExists = (lt: String, elemName: string) => {
     max-height: 300px;
     border-radius: 8px;
     padding: 3%;
-    color: #75478D;
+    color: $menu-text-color;
     font-weight: bolder;
 
     div {
@@ -268,13 +268,13 @@ const checkListExists = (lt: String, elemName: string) => {
         padding-bottom: 4px;
         text-align: center;
         &.active {
-            background-color: #BD82DD;
-            color: white;
+            background-color: $menu-background-color-active;
+            color: $text-color;
             border-radius: 4px;
         }
         &:hover {
-            color: white;
-            background-color: #75478D;
+            color: $text-color;
+            background-color: $menu-background-color-hover;
 
         }
     }
@@ -283,7 +283,7 @@ const checkListExists = (lt: String, elemName: string) => {
 
 .search_menu_fame {
     position: absolute;
-    background-color: #E6E6E6;
+    background-color: $primary-color;
     top: calc(100% + 4px);
     left: 0;
     display: flex;
@@ -293,7 +293,7 @@ const checkListExists = (lt: String, elemName: string) => {
     height: 80px;
     border-radius: 8px;
     padding: 3%;
-    color: #75478D;
+    color: $menu-text-color;
     font-weight: bolder;
 
     div {
@@ -306,7 +306,7 @@ const checkListExists = (lt: String, elemName: string) => {
 
 .search_menu_tags {
     position: absolute;
-    background-color: #E6E6E6;
+    background-color: $primary-color;
     top: calc(100% + 4px);
     left: 0;
     justify-items: center;
@@ -314,7 +314,7 @@ const checkListExists = (lt: String, elemName: string) => {
     max-height: 300px;
     border-radius: 8px;
     padding: 3%;
-    color: #75478D;
+    color: $menu-text-color;
     font-weight: bolder;
 
     div {

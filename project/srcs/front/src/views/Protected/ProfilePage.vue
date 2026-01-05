@@ -72,7 +72,7 @@ provide('profileData', profileData);
 
 <style lang="scss" scoped>
 .contentz {
-    color: #FFFFFF;
+    color: $text-color;
     display: flex;
     align-items: center;
 
@@ -85,7 +85,7 @@ provide('profileData', profileData);
     height: 100%;
     gap: 10%;
 
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: $border-color;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -104,7 +104,7 @@ provide('profileData', profileData);
     height: 8px;
     width: 8px;
     border-radius: 50%;
-    background-color: green;
+    background-color: rgb(6, 201, 6);
 }
 
 .stats_count {

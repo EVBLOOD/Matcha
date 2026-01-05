@@ -81,10 +81,10 @@ const handleSubmit = () => {
     gap: 10px;
     min-height: 83px;
 
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $components-background-color;
 
     border-radius: 12px;
-    border-color: #BD82DD;
+    border-color: $border-color;
     border-style: solid;
     border-width: 1px;
 

@@ -102,7 +102,7 @@ label {
     position: absolute;
     bottom: 5%;
     right: 5%;
-    background-color: #DEB0F5;
+    background-color: $secondary-color;
     border-radius: 50%;
     display: flex;
     justify-content: center;

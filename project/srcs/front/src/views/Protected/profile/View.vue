@@ -51,16 +51,6 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
     height: 100%;
 }
 
-.interest_span {
-    padding: 3px;
-    border-color: #9566B0;
-    background: rgba(150, 104, 177, 1 - 0.24);
-    border-style: solid;
-    border-radius: 8px;
-    padding: 0.5% 2% 0.5% 2%;
-    flex-wrap: nowrap;
-}
-
 .interest_div_spans {
     display: flex;
     flex-wrap: wrap;
@@ -100,12 +90,12 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
     // height: 20px;
     padding: 1% 2% 1% 2%;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.14);
+    background: $components-background-color;
     border-radius: 4px;
 }
 
 .link:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: $menu-background-color-hover;
 
 }
 

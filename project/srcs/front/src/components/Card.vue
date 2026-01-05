@@ -13,7 +13,7 @@ const props = defineProps({
 
 <style lang="scss" scoped>
     .content {
-        background-color: rgba(255, 255, 255, 0.08);
+        background-color: $components-background-color;
         border-radius: 8px;
         display: flex;
         flex-direction: column;

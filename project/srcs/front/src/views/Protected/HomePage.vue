@@ -65,7 +65,7 @@ const clickLogOut = async () => {
 .main_div {
     width: 100%;
     height: 90%;
-    color: #FFFFFF;
+    color: $text-color;
 }
 
 
@@ -73,12 +73,12 @@ const clickLogOut = async () => {
     height: 10%;
     width: 100%;
     border-style: solid;
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: $border-color;
     ;
     border-width: 0px 0px 1px 0px;
     padding-left: 3%;
     align-content: center;
-    color: #E6E6E6;
+    color: $text-color;
 }
 
 .main_div_parent {
@@ -86,8 +86,7 @@ const clickLogOut = async () => {
     height: 100%;
 
     border-style: solid;
-    border-color: rgba(255, 255, 255, 0.25);
-    ;
+    border-color: $border-color;
     border-width: 0px 1px 0px 1px;
 }
 
@@ -130,7 +129,7 @@ const clickLogOut = async () => {
 }
 
 .link:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: $components-hover-color;
     border-radius: 8px;
 
 }
@@ -145,7 +144,7 @@ const clickLogOut = async () => {
         position: static;
         justify-content: center;
         align-items: center;
-        background-color: #592F6F;
+        background-color: $components-background-color;
     }
 
 
@@ -154,7 +153,7 @@ const clickLogOut = async () => {
 
         border-style: solid;
         border-width: 0px 1px 0px 0px;
-        border-color: rgb(255, 255, 255, 0.25);
+        border-color: $border-color;
         flex-direction: row;
         justify-content: center;
         align-items: center;

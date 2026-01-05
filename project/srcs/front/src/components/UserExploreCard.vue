@@ -57,7 +57,7 @@ const clickLike = () => {
     align-items: center;
     min-width: 260px;
 
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $components-background-color;
     border-radius: 12px;
     gap: 5px;
     margin-bottom: 2%;

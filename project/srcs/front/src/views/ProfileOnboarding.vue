@@ -131,11 +131,11 @@ const handleTags = (tags: string[]) => {
 
 .bio_erea {
     padding: 10px;
-    border-color: #BD82DD;
+    border-color: $border-color;
     border-width: 1px;
     min-height: 36px;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.50);
+    background: $components-background-color;
+    color: $text-color;
     border-radius: 12px;
     resize: vertical;
     width: 100%;

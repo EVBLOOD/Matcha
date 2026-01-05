@@ -54,15 +54,15 @@ const clickNewTag = () => {
 
 .interest_span {
     padding: 3px;
-    border-color: #BD82DD;
+    border-color: $border-color;
     border-style: solid;
     border-radius: 8px;
     cursor: pointer;
 
     &.active {
-        background: #9566B0;
-        border-color: #9566B0;
-        color: white;
+        background: $menu-background-color-active;
+        border-color: $border-color-active;
+        color: $text-color;
     }
 }
 </style>

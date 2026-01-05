@@ -3,6 +3,22 @@ $secondary-color: #DEB0F5;
 $text-color: #E6E6E6;
 $border-color: #FFFFFF25;
 
+$components-background-color: #ffffff14;
+$components-hover-color: #ffffff1f;
+
+$border-color-active: #9566B0;
+$border-color-hover: #ffffff1f;
+
+
+$menu-text-color: #75478D;
+
+$menu-background-color-active: #BD82DD;
+$menu-background-color-hover: #75478D;
+
+$border-color-active: #9566B0;
+
+$select-option-background-color: $menu-text-color;
+
 $landing-gradient: linear-gradient(
   135deg,
   #9B38D0 0%,
@@ -16,3 +32,6 @@ $font-main: 'Montserrat', sans-serif;
 
 $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
+
+
+// search for rgba or # to find any other values to change
