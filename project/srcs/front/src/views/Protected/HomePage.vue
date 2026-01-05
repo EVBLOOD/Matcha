@@ -194,5 +194,12 @@ const clickLogOut = async () => {
             display: none;
         }
     }
+
+    .main_title {
+        height: 6%;
+    }
+    .main_div {
+        height: 94%;
+    }
 }
 </style>
