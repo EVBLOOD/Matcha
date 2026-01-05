@@ -14,7 +14,6 @@ import { RouterLink, RouterView } from 'vue-router';
     margin: 0 auto;
     max-width: 1920px;
     // max-width: $breakpoint-lg;
-    padding: 0 1%;
     height: 100%;
     display: flex;
     align-items: center;

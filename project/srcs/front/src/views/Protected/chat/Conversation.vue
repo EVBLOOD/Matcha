@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, watch } from 'vue';
+    import { ref, onMounted, watch, nextTick } from 'vue';
     import { useRoute } from 'vue-router';
     const route = useRoute();
     
@@ -9,25 +9,43 @@
         { id: 3, name: 'Sadio Mané', date: 'Jan 01, 2026', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
         { id: 4, name: 'Mohamed Salah', date: 'Apr 23, 2024', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '1 day ago' }
     ];
-    const selectedUser = ref(users[0])
-    
+    const selectedUser = ref(users.find(user => user.id === parseInt(route.params.id)));
+    const messagesContainer = ref(null);
+
     watch(
         () => route.params.id,
-        (newId) => { selectedUser.value = users.find(user => user.id === parseInt(newId)) },
+        (newId) => { 
+            selectedUser.value = users.find(user => user.id === parseInt(newId)) 
+        },
     );
-    
+
     const messages = ref([
         { id: 1, text: 'Salam', fromMe: false },
         { id: 2, text: 'Wa salam! Kidayr ?', fromMe: true },
         { id: 3, text: 'Labas hamdullah, nta ?', fromMe: false },
         { id: 4, text: 'Kolchi mzyan', fromMe: true }
     ])
+
+    watch(
+        messages,
+        async () => {
+            await nextTick();
+            scrollToBottom();
+        },
+        { deep: true }
+    );
+    
     const newMessage = ref('')
 
     function sendMessage() {
-        if (!newMessage.value.trim()) return
+        if (!newMessage.value.trim()) return;
         messages.value.push({ id: Date.now(), text: newMessage.value, fromMe: true })
         newMessage.value = ''
+    }
+
+    function scrollToBottom() {
+        if (!messagesContainer.value) return;
+        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
     }
 
 </script>
@@ -35,6 +53,7 @@
 <template>
     <div class="chat">
         <div class="header">
+            <button class="back-btn" @click="$router.push('/messages')">←</button>
             <div class="user">
                 <div class="avatar">
                     <img :src="selectedUser.avatar" alt="avatar" />
@@ -49,8 +68,9 @@
                     </div>
                 </div>
             </div>
+            <button class="btn">View Profile</button>
         </div>
-        <div class="messages">
+        <div class="messages" ref="messagesContainer">
             <div v-for="msg in messages" :key="msg.id" :class="['message', msg.fromMe ? 'sent' : 'received']">
                 {{ msg.text }}
             </div>
@@ -65,40 +85,6 @@
 
 <style lang="scss" scoped>
 
-.fa {
-    font-size: 25px;
-}
-
-.partial {
-    background: linear-gradient(90deg, orange 90%, #FFFFFF 0%);
-    background-clip: text;
-    color: transparent;
-}
-
-.checked {
-    color: orange;
-}
-
-.content {
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-}
-
-.sideBar {
-    padding: 1%;
-    height: 100%;
-    width: 30%;
-    gap: 2px;
-    border-color: rgba(255, 255, 255, 0.25);
-    display: flex;
-    flex-direction: column;
-    border-style: solid;
-    border-width: 0px 1px 0px 0px;
-}
-
 .chat{
     display: flex;
     flex-direction: column;
@@ -108,8 +94,10 @@
 
 .chat .header{
     border-bottom: 1px solid $border-color;
-    padding: 5px;
+    padding: 8px 20px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
 }
 
 .user {
@@ -119,13 +107,7 @@
     padding: 4px;
     gap: 7px;
     user-select: none;
-}
-
-.sideBar .user:hover {
-    cursor: pointer;
-    background-color: #ffffff1c;
-    transition: 0.3s;
-    border-radius: 6px;
+    width: 100%;
 }
 
 .user .avatar {
@@ -139,10 +121,6 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
-}
-
-.user .infos {
-
 }
 
 .user .infos .name {
@@ -170,9 +148,6 @@
 
 .message {
     max-width: 60%;
-    // overflow: hidden;
-    // display: flex;
-    // align-items: center;
     padding: 12px 12px;
     border-radius: 10px;
     font-size: 14px;
@@ -272,12 +247,46 @@
     background-color: rgba(255, 255, 255, 0.4);
 }
 
+.back-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.btn{
+    cursor: pointer;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    height: fit-content;
+    background-color: #785D86;
+    transition: 0.3s;
+}
+
+.btn:hover{
+    transition: 0.3s;
+    opacity: 0.8;
+}
 
 @media (max-width: $breakpoint-md) {
-        .page{
+        .back-btn {
+            display: block;
+        }
+        .chat .header{
             display: flex;
-            flex-direction: column;
-            // margin: 0;
+            align-items: center;
         }
     }
 </style>
