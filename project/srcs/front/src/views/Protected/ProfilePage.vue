@@ -47,7 +47,7 @@ provide('profileData', profileData);
     <div v-if="!isLoading && !isError && profileData" class="contentz">
         <div class="sideBar">
             <div>
-                <img width="90%" style="margin-bottom: 22px;" :src="`http://localhost:8081/profile/pictures/${profileData.pictures.find(obj => obj.is_profile_picture == true)?.url}`" alt="">
+                <img width="250px" height="250px" style="margin-bottom: 22px;" :src="`http://localhost:8081/profile/pictures/${profileData.pictures.find(obj => obj.is_profile_picture == true)?.url}`" alt="">
                 <div style="font-weight:500; font-size: 26px;">{{profileData.user.first_name + " " + profileData.user.last_name}}</div>
                 <div class="status_bar">
                     <div class="status"></div> Online
@@ -86,7 +86,7 @@ provide('profileData', profileData);
     gap: 10%;
 
     border-color: rgba(255, 255, 255, 0.25);
-    ;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     border-style: solid;
