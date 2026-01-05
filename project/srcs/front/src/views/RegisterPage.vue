@@ -54,7 +54,6 @@ const handleRegister = async () => {
 
 
 <template>
-    <!-- <div class="page"> -->
         <Card title="Create Your Account">
             <div class="two-inputs">
                 <Input name="fname" label="First name" id="fname" v-model="firstName" />
@@ -70,16 +69,10 @@ const handleRegister = async () => {
             <div class="div_center">Already have an account? <Button class="just_btn" to="signin" backgroundColor="rgba(255, 255, 255, 0)"
                     text="Sign in"></Button></div>
         </Card>
-    <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
-// .page {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     height: 100%;
-// }
+
 .two-inputs {
     display: flex;
     flex-direction: row;

@@ -51,32 +51,11 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
     height: 100%;
 }
 
-.interest_div_spans {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2%;
-}
-
 .user_infos {
     display: flex;
     flex-direction: column;
     gap: 2%;
     height: 100%;
-}
-
-.pictures_list {
-    display: flex;
-    gap: 4%;
-    flex-wrap: wrap;
-}
-
-.image-box {
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
 }
 
 .link {

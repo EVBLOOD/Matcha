@@ -41,13 +41,10 @@ const avatarStyle = computed(() => {
 
     }
     .notif {
-        // position: relative;
         width: 100%;
         display: flex;
-        // justify-content: space-between;
         gap: 2%;
         align-items: center;
-        // height: 15%;
     }
     @media (max-width: $breakpoint-md) {
         .page{

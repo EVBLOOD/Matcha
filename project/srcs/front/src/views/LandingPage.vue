@@ -3,7 +3,6 @@
 </script>
 
 <template>
-    <!-- <div class="page"> -->
         <div class="content">
             <p class="title">Welcome to Web Matcha Find Your Perfect Match.</p>
             <p class="description">Discover, connect, and chat with singles near you. Join our community today!</p>
@@ -12,18 +11,9 @@
         <div class="image">
             <img src="/img/landing.png" alt="landing page" />
         </div>
-    <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
-    // .page{
-    //     display: grid;
-    //     grid-template-columns: 1fr 1fr;
-    //     align-items: center;
-    //     justify-content: center;
-    //     height: 100vh;
-    //     margin: 40px 20px;
-    // }
     .content {
         overflow: hidden;
         p {

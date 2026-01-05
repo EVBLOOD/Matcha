@@ -19,22 +19,14 @@ onMounted(() => {
 
 
 <template>
-    <!-- <div class="page"> -->
         <Card title="An email has been sent to your address.">
             <Button class="btn" to="nothing" text="Resend Email"></Button>
             <div class="extra">Went to the wrong place? <Button class="just_btn" to="login" text="Back to Sign In"
                     backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
         </Card>
-    <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
-// .page {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     height: 100vh;
-// }
 
 .btn {
     margin-bottom: 5%;

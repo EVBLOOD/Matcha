@@ -53,7 +53,6 @@ const handleSubmit = () => {
 }
 .wraper {
     padding: 3%;
-    // padding-bottom: 0px;
     width: 100%;
 
 }
