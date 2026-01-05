@@ -46,7 +46,7 @@ provide('profileData', profileData);
 <template>
     <div v-if="!isLoading && !isError && profileData" class="contentz">
         <div class="sideBar">
-            <div>
+            <div class="sideBar_personal_info">
                 <img width="250px" height="250px" style="margin-bottom: 22px;" :src="`http://localhost:8081/profile/pictures/${profileData.pictures.find(obj => obj.is_profile_picture == true)?.url}`" alt="">
                 <div style="font-weight:500; font-size: 26px;">{{profileData.user.first_name + " " + profileData.user.last_name}}</div>
                 <div class="status_bar">
@@ -127,11 +127,25 @@ provide('profileData', profileData);
 }
 
 @media (max-width: $breakpoint-md) {
-    .page {
+    .contentz {
+        flex-direction: column;
+        height: fit-content;
+        // align-items: center;
+    }
+    .sideBar {
+        padding: 5%;
+        width: 100%;
+        height: fit-content;
+        border-style: none;
+        align-items: center;
+    }
+    .sideBar_personal_info {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
 
-        // margin: 0;
     }
+
 }
 </style>

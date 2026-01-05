@@ -29,9 +29,10 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
         <div class="user_infos">
             <RenderPictures :readonly="true"
                 :initialpictures="profileData.pictures.filter(obj => !obj.is_profile_picture).map(obj => { return { id: obj.url, url: `http://localhost:8081/profile/pictures/${obj.url}` } })" />
-
-            <div><img src="/img/maleIcon.svg" alt=""> {{ profileData.user.gender }}</div>
-            <div><img src="/img/locationIcon.svg" alt=""> California - USA </div>
+            <div class="gender_location">
+                <div><img src="/img/maleIcon.svg" alt=""> {{ profileData.user.gender }}</div>
+                <div><img src="/img/locationIcon.svg" alt=""> California - USA </div>
+            </div>
             <div>
                 {{ profileData.profile.biography }}
             </div>
@@ -79,10 +80,26 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
 }
 
 @media (max-width: $breakpoint-md) {
-    .page {
+    .wraper {
+        height: fit-content;
+        gap: 15px;
+    }
+    .user_infos {
+        // width: 100%;
+        gap: 10px;
+        align-items: center;
+
+    }
+    .gender_location {
+        width: 100%;
         display: flex;
-        flex-direction: column;
-        // margin: 0;
+        justify-content: center;
+        align-items: center;
+        gap: 3%;
+        div {
+            display: flex;
+            gap: 2px;
+        }
     }
 }
 </style>
