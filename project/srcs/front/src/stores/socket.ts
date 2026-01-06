@@ -19,7 +19,8 @@ export const useSocketStore = defineStore('socket', {
         this.onlineUsers.set(id, value);
       });
 
-        socketStatus.on('notifications', (msg: string) => {
+        socketStatus.on('notify', (msg: string) => {
+          console.log(msg)
          this.notifications.push(msg); // this is just a current example to use in future | I should fix backend
         });
 

@@ -132,6 +132,6 @@ class ProfileRepository(BaseRepository):
                 WHERE
                     u.id = %s;
             """
-            params = (my_acount, my_acount, user_id, user_id)
+            params = (my_acount, my_acount, my_acount, user_id)
 
         return cls._execute(query, params)
