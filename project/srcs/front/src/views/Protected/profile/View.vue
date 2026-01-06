@@ -37,7 +37,7 @@ const dislikeHandler = () => {
             <Button v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.is_connected == 2" class="link" :to="`/messages`" text="Message">
             </Button>
 
-            <Button v-if="route.params.id !== userStore.getUserID.toString() && !profileData.interactions.is_connected && profileData.interactions.interaction_status !== 'liked'" class="link" @click="likeHandler" text="Like">
+            <Button v-if="route.params.id !== userStore.getUserID.toString() && (!profileData.interactions.is_connected || profileData.interactions.is_connected <= 1) && profileData.interactions.interaction_status !== 'liked'" class="link" @click="likeHandler" text="Like">
             </Button>
             <Button v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.interaction_status === 'liked'" class="link" @click="dislikeHandler" text="Dislike">
             </Button>

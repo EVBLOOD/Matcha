@@ -61,20 +61,27 @@ class ConnectionManager :
 
     @staticmethod
     def interact_with_user(user_id: int, dst_id: int, type: str) -> bool:
+        is_connection = UserInteractionsService.get_user_interactions(user_id, dst_id)
+        print(is_connection, flush=True)
+        type_response = None
         if (type == "Like") :
-            print(f"{type}: on_like", flush=True)
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
+            type_response = "Connection On Water"
+            if is_connection :
+                type_response = "Connection On FIRE"
         elif type == "Dislike" :
-            UserInteractionsService.remove_user_interactions(dst_id, user_id)
+            done = UserInteractionsService.remove_user_interactions(dst_id, user_id)
+            if done and is_connection :
+                type_response = "Connection Killed"
+        elif type == "Block" :
+            UserInteractionsService.insert_user_interactions(dst_id, user_id)
         else :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
-
-        emit('notify', {type: dst_id, "type": "Follow Back"}, room=f"Notifs_user_{dst_id}") # TODO: I should review this
-    #   [ ] On "Like" received.
-    #     [ ] On Profile viewed.
+            type_response = "Viewed Your AC"
+        # here I should save to DB
+        if type_response :
+            emit('notify', {type: dst_id, "type": type_response}, room=f"Notifs_user_{dst_id}") # TODO: I should review this
     #     [ ] On Message received.
-    #     [ ] On "Like" back (connection).
-    #     [ ] On "Unlike" (disconnection).
 
 
 

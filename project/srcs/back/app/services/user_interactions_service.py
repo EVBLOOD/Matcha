@@ -17,10 +17,18 @@ class UserInteractionsService:
         UserInteractionsRepository.create_user_interactions(interact)
 
     @staticmethod
+    def get_user_interactions(liked_user: int, user_id: int) :
+        if not UserRepository.find_by_id(liked_user) :
+            raise ValueError("User doesn't exist!")
+        row = UserInteractionsRepository.get_user_interaction_existance(user_id, liked_user)
+        return row
+
+
+    @staticmethod
     def remove_user_interactions(liked_user: int, user_id: int) :
         if not UserRepository.find_by_id(liked_user) :
             raise ValueError("User doesn't exist!")
-        UserInteractionsRepository.remove_user_interaction_existance(liked_id=liked_user, 
+        return UserInteractionsRepository.remove_user_interaction_existance(liked_id=liked_user, 
                                                                      liker_id=user_id)
     
     def get_all_likes_got(user_id: int = None, liked_user: int = None) :
@@ -42,3 +50,4 @@ class UserInteractionsService:
                 raise ValueError("User doesn't exist!")
             get_likes = liked_user
         return UserInteractionsRepository.get_user_liked_list(get_likes)
+    
