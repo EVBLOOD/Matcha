@@ -7,14 +7,18 @@ backend = add resend email feature
 
 
 design :
-login: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
 
-forgot the password form with -> email address
-Display your own Profile visit History logging UI Page.
+Urgent to fix:
+- Suggestions page where you'll be able to see suggestion and be able to filter it by one of those options, age, location, “fame rating”, common tags, and being able to sort them by one of them too
 
-Interactive Map: Develop user map interface.
+- Sorting, Filtering in Explore page (Sortable/Filterable Search) user will be able to filter by one or many options and able to sort.
+Uregent to add :
+- forgot the password form with -> email address
+- new password view for ppl who forgot the password
+- pop-up/notif UI one for Notifs and another for chat
 
 
-Sorting in Explore page (Sortable/Filterable Search)
 
-pop-up/notif UI one for Notifs and another for chat
+Bonus to prepare :
+- login: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
+- Map: Develop user map interface.
