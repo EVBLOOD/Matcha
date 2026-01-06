@@ -9,8 +9,12 @@ class UserInteractionsService:
     def insert_user_interactions(liked_user: int, user_id: int) :
         if not UserRepository.find_by_id(liked_user) :
             raise ValueError("User doesn't exist!")
-        UserInteractionsRepository.create_user_interactions(
-            UserInteractions(liked_id=liked_user, liker_id=user_id)  )
+        print(f"insert_user_interactions", flush=True)
+
+        interact = UserInteractions(liked_id=liked_user, liker_id=user_id, status="liked")
+        print(f"insert_user_interactions = interact =", flush=True)
+
+        UserInteractionsRepository.create_user_interactions(interact)
 
     @staticmethod
     def remove_user_interactions(liked_user: int, user_id: int) :

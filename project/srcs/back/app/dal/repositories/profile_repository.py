@@ -119,7 +119,7 @@ class ProfileRepository(BaseRepository):
                     (
                         SELECT count(*)
                         FROM user_interactions
-                        WHERE (liker_id = %s AND liked_id = u.id) OR (liker_id = u.id AND liked_id = %s)
+                        WHERE (liker_id = %s AND liked_id = u.id) OR (liker_id = u.id AND liked_id = %s) AND status = 'liked'
                     ) AS is_connected,
                     (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND status = 'liked') AS likes_count,
                     (SELECT COUNT(*) FROM profile_views WHERE viewed_id = u.id) AS views_count

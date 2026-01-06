@@ -1,18 +1,30 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
-import { inject, type Ref } from 'vue';
+import { inject, onMounted, type Ref } from 'vue';
 
 import RenderPictures from '@/components/RenderPictures.vue';
+import Button from '@/components/Button.vue';
 import TagsList from '@/components/TagsList.vue';
 
 import useUserStore from '@/stores/user';
 import type { UserProfileResponse } from '@/types/apiResponses'
+import { useSocketStore } from '@/stores/socket';
 
 const route = useRoute();
 const userStore = useUserStore();
 
 const profileData = inject<Ref<UserProfileResponse>>('profileData');
+    console.log(profileData?.value)
+const socketStore = useSocketStore()
+const likeHandler = () => {
+    if (!profileData) return
+    socketStore.interactWithUser(profileData.value.user.user_id, 'like')
+}
 
+const dislikeHandler = () => {
+    if (!profileData) return
+    socketStore.interactWithUser(profileData.value.user.user_id, 'dislike')
+}
 </script>
 
 <template>
@@ -22,8 +34,14 @@ const profileData = inject<Ref<UserProfileResponse>>('profileData');
                 :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt="" /> 
                 <span>Edit Profile</span>
             </RouterLink>
-            <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" :to="`/messages`">Message
-            </RouterLink>
+            <Button v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.is_connected == 2" class="link" :to="`/messages`" text="Message">
+            </Button>
+
+            <Button v-if="route.params.id !== userStore.getUserID.toString() && !profileData.interactions.is_connected && profileData.interactions.interaction_status !== 'liked'" class="link" @click="likeHandler" text="Like">
+            </Button>
+            <Button v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.interaction_status === 'liked'" class="link" @click="dislikeHandler" text="Dislike">
+            </Button>
+            
             <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" to="`/more`"><img
                     src="/img/moreIcon.svg" alt="" /></RouterLink>
 

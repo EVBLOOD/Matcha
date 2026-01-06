@@ -37,7 +37,9 @@ export interface UserProfileAttrsResponse {
 export interface UserProfileInteractionsResponse {
     is_same: boolean;
     likes_count: number;
-    views_count: number
+    views_count: number;
+    is_connected?: number;
+    interaction_status?: string;
 }
 
 export interface UserProfileResponse {

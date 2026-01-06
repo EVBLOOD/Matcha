@@ -86,6 +86,13 @@ export const useSocketStore = defineStore('socket', {
       socketStatus.off();
 
       this.isBound = false;
+    },
+    interactWithUser(user_id: number, type: string) {
+      const token = localStorage.getItem('auth_token');
+        socketStatus.io.opts.extraHeaders = {
+        Authorization: `Bearer ${token}`
+      };
+      socketStatus.emit(type, user_id)
     }
   }
 });

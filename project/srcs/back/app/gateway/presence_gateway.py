@@ -40,12 +40,19 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_like(self, id):
-        print(id, flush=True)
+        print(f"{id}: on_like", flush=True)
         try :
-            online = ConnectionManager.is_user_online(int(id))
+            ConnectionManager.interact_with_user(request.user_id, int(id), "Like")
         except Exception as _:
             return False
 
+    @ConnectionManager.socket_guard()
+    def on_dislike(self, id):
+        print(id, flush=True)
+        try :
+            ConnectionManager.interact_with_user(request.user_id, int(id), "Dislike")
+        except Exception as _:
+            return False
 
     def error_handler(e):
         print ("Hello error", flush=True)

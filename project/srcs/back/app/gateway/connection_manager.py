@@ -62,6 +62,7 @@ class ConnectionManager :
     @staticmethod
     def interact_with_user(user_id: int, dst_id: int, type: str) -> bool:
         if (type == "Like") :
+            print(f"{type}: on_like", flush=True)
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
         elif type == "Dislike" :
             UserInteractionsService.remove_user_interactions(dst_id, user_id)
