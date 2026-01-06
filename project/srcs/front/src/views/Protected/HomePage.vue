@@ -13,6 +13,8 @@ import { useSocketStore } from '@/stores/socket';
 
 const socket = useSocketStore();
 
+
+
 const clickLogOut = async () => {
     console.log("Logout")
     try {

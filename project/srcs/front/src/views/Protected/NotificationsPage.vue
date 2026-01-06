@@ -2,9 +2,46 @@
     // import Button from '@/components/Button.vue';
     // import { RouterLink, RouterView } from 'vue-router';
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
+import NotificationsService from '@/api/services/NotificationsService'
+// import type {notificationsResponse} from '@/types/apiResponses'
 
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+
+import { useSocketStore } from '@/stores/socket';
+import axios, { AxiosError } from 'axios';
+
+interface BackendError {
+  error: string;
+}
+
 const previewProfile = ref(null);
+
+const isLoading = ref(true);
+const isError = ref<string | null>(null);
+
+// const NotificationsData = ref<notificationsResponse | null>(null);
+
+
+
+const fetchNotifications = async () => {
+  isLoading.value = true;
+  try {
+    const { data } = await NotificationsService.getNotifications();
+    console.log(`data ${data}`)
+  } catch(err : unknown) {
+    if (axios.isAxiosError(err)) {
+        isError.value = (err.response?.data as BackendError)?.error;
+    }
+    else {
+        isError.value = "Registration failed for unknown reason'";
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+
+onMounted(fetchNotifications);
 
 const avatarStyle = computed(() => {
     const image = previewProfile.value || "/img/avatar.svg";

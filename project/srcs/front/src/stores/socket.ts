@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
 import { socketChat, socketStatus } from '@/socket/socket';
+import { ref } from 'vue';
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
     onlineUsers: new Map<string, string>(),
-    notifs: [] as string[],
+    notifications: ref<string[]>([]),
+    new_chats_notifs: ref<string[]>([]),
     isBound: false,
   }),
   actions: {
@@ -16,6 +18,14 @@ export const useSocketStore = defineStore('socket', {
         const value: string = Object.values(response)[0] as string;
         this.onlineUsers.set(id, value);
       });
+
+        socketStatus.on('notifications', (msg: string) => {
+         this.notifications.push(msg); // this is just a current example to use in future | I should fix backend
+        });
+
+        socketChat.on('recieved_message', (msg: string) => {
+         this.new_chats_notifs.push(msg); // this is just a current example to use in future | I should fix backend
+        });
     },
     bindChatEvents() {
       if (this.isBound) return;
@@ -40,9 +50,7 @@ export const useSocketStore = defineStore('socket', {
     reachStausOneUser(id: string) {
       socketStatus.emit("check_user_connect", id, (response: any) => {
         if (response) {
-          const id: string = Object.keys(response)[0];
-          const value: string = Object.values(response)[0] as string;
-          this.onlineUsers.set(id, value);
+          this.onlineUsers.set(id, response.status ? "Online" : "Offline"); // TODO: update Offline to last view time.
         }
       })
     },
