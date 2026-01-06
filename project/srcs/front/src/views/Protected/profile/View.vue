@@ -14,7 +14,9 @@ const route = useRoute();
 const userStore = useUserStore();
 
 const profileData = inject<Ref<UserProfileResponse>>('profileData');
-    console.log(profileData?.value)
+
+console.log(profileData?.value)
+
 const socketStore = useSocketStore()
 const likeHandler = () => {
     if (!profileData) return
@@ -31,17 +33,23 @@ const dislikeHandler = () => {
     <div v-if="profileData" class="wraper">
         <div style="width: 100%;display: flex; justify-content: flex-end; flex-shrink: 0; gap: 2%;">
             <RouterLink v-if="route.params.id === userStore.getUserID.toString()" class="link"
-                :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt="" /> 
+                :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt="" />
                 <span>Edit Profile</span>
             </RouterLink>
-            <Button v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.is_connected == 2" class="link" :to="`/messages`" text="Message">
+            <Button
+                v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.is_connected == 2"
+                class="link" :to="`/messages`" text="Message">
             </Button>
 
-            <Button v-if="route.params.id !== userStore.getUserID.toString() && (!profileData.interactions.is_connected || profileData.interactions.is_connected <= 1) && profileData.interactions.interaction_status !== 'liked'" class="link" @click="likeHandler" text="Like">
+            <Button
+                v-if="route.params.id !== userStore.getUserID.toString() && (!profileData.interactions.is_connected || profileData.interactions.is_connected <= 1) && profileData.interactions.interaction_status !== 'liked'"
+                class="link" @click="likeHandler" text="Like">
             </Button>
-            <Button v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.interaction_status === 'liked'" class="link" @click="dislikeHandler" text="Dislike">
+            <Button
+                v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.interaction_status === 'liked'"
+                class="link" @click="dislikeHandler" text="Dislike">
             </Button>
-            
+
             <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" to="`/more`"><img
                     src="/img/moreIcon.svg" alt="" /></RouterLink>
 
@@ -104,6 +112,7 @@ const dislikeHandler = () => {
         height: fit-content;
         gap: 15px;
     }
+
     .user_infos {
         // width: 100%;
         // gap: 10px;
@@ -119,6 +128,7 @@ const dislikeHandler = () => {
         justify-content: center;
         align-items: center;
         gap: 3%;
+
         div {
             display: flex;
             gap: 2px;

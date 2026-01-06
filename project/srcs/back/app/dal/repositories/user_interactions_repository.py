@@ -11,17 +11,12 @@ class UserInteractionsRepository(BaseRepository):
     ]
     @classmethod
     def create_user_interactions(cls, user_interaction: UserInteractions) :
-        print(f"create_user_interactions 1 : ", flush=True)
-
         norm_data = {
             'liker_id' : user_interaction.liker_id,
             'liked_id' : user_interaction.liked_id,
             'status' : user_interaction.status
         }
-        print(f"create_user_interactions 1 : {norm_data}", flush=True)
-
         id = cls.insert(table_name=cls._table_name, columns=cls._insert_columns, data=norm_data, returning="id")
-        print(f"create_user_interactions : {id}", flush=True)
         return id
 
     @classmethod

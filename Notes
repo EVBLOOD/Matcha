@@ -22,3 +22,18 @@ Uregent to add :
 Bonus to prepare :
 - login: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
 - Map: Develop user map interface.
+
+
+- tommorow :
+
+I'll add notifs Service in backend
+I'll add the block Service
+I'll add Visit History logging 
+I'll link the chat with the sockets
+
+- Make it real time for profile when Viewing an account
+
+
+- Initial GPS location capture
+
+- Suggestions that match their profile. (Browsing see to do list)
