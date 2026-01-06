@@ -3,3 +3,18 @@ password view / show (inputs)
 forgot password form
 backend = bug in fill profile first time = (tags saved when image error!)
 backend = add resend email feature
+
+
+
+design :
+login: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
+
+forgot the password form with -> email address
+Display your own Profile visit History logging UI Page.
+
+Interactive Map: Develop user map interface.
+
+
+Sorting in Explore page (Sortable/Filterable Search)
+
+pop-up/notif UI one for Notifs and another for chat

@@ -38,6 +38,15 @@ class PresenceGateway(Namespace):
         except Exception as _:
             return False
 
+    @ConnectionManager.socket_guard()
+    def on_like(self, id):
+        print(id, flush=True)
+        try :
+            online = ConnectionManager.is_user_online(int(id))
+        except Exception as _:
+            return False
+
+
     def error_handler(e):
         print ("Hello error", flush=True)
         print (e, flush=True)

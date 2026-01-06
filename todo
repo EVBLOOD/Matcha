@@ -1,11 +1,11 @@
 [ ] Mandatory
     [x] chose a lang. (choosen: Vue + Flask)
     [x] Database Setup.
-    [ ] Registration :
-        [ ] Registration UI Page (form with -> email address, username, last name, first name, and a password).
+    [x] Registration :
+        [x] Registration UI Page (form with -> email address, username, last name, first name, and a password).
         [x] Backend registration logic.
         [x] Email verification (send verification email with unique link).
-    [ ] Login :
+    [x] Login :
         [ ] Login UI Page (form with -> username and password + forgot the password).
         [x] Backend login logic.
         [ ] Bonus: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
@@ -13,26 +13,26 @@
         [ ] "Reset Password" UI page (form with -> email address).
         [ ] "Forgot Password" UI link redirect page (form with -> new password).
         [x] Password reset request logic (send the unique email link).
-    [ ] Logout :
+    [x] Logout :
         [x] Logout logic.
     [ ] User Profile (Edit/Create) :
         [x] Profile first time UI Page (form for -> gender, sexual preferences, bio interests with tags, 5 pictures as profile, location).
         [ ] Bonus: Social Media Picture Import: Allow picture import from social platforms.
-        [ ] Profile Edit UI Page (form for -> all previuos feilds + first name, last name, email, LOCATION).
+        [x] Profile Edit UI Page (form for -> all previuos feilds + first name, last name, email, LOCATION).
         [x] Backend profile add/update logic.
         [x] Image upload functionality.
         [x] Interest tags implementation (reusable tags).
     [ ] User Profile (View) :
         [ ] Display your own profile data on a UI page with (Viewers and Likers).
-        [x. ] Display your own profile data on backend.
+        [x] Display your own profile data on backend.
         [ ] Display your own Profile visit History logging UI Page.
-        [ ] Display Other User Profile UI Page (show all profile info except email/password + status).
-        [ ] Online Status & Last Seen.
+        [x] Display Other User Profile UI Page (show all profile info except email/password + status).
+        [x] Online Status & Last Seen.
         [ ] "Like"/"Unlike" button/action to profile picture.
         [ ] "Like" Feature on profile picture (and "Unlike")
-        [ ] Track user online status (session management or similar).
-        [ ] Backend "like" logic.
-        [ ] Backend "unlike" logic.
+        [x] Track user online status (session management or similar).
+        [x] Backend "like" logic.
+        [x] Backend "unlike" logic.
         [x] "Profile Likers" tracking implementation.
         [x] "Profile Viewers" tracking implementation.
         [ ] Fame Rating calculation and display (public).
@@ -43,7 +43,7 @@
         [ ] Initial GPS location capture ("without knowledge" if they don't want to).
         [ ] Location modification in profile editing.
     [ ] Browsing :
-        [ ] Browse Profiles UI Page (display suggested profiles -> Sorting and Filtering included).
+        [x] Browse Profiles UI Page (display suggested profiles -> Sorting and Filtering included).
         [ ] Bonus: Interactive Map: Develop user map interface.
         [ ] Suggestions that match their profile.
         [ ] Algorithm for generating "interesting" profile suggestions based on criteria (orientation, location, tags, fame).

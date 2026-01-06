@@ -9,6 +9,7 @@ from app.core.security import AuthService, Security
 # from app.services.user_service import get_user_contacts
 from flask_socketio import emit
 
+from app.services.user_interactions_service import UserInteractionsService
 
 class ConnectionManager :
 
@@ -58,6 +59,30 @@ class ConnectionManager :
             redis.exists(f"ws:user:{user_id}:online")
         )
 
+    @staticmethod
+    def interact_with_user(user_id: int, dst_id: int, type: str) -> bool:
+        if (type == "Like") :
+            UserInteractionsService.insert_user_interactions(dst_id, user_id)
+        elif type == "Dislike" :
+            UserInteractionsService.remove_user_interactions(dst_id, user_id)
+        else :
+            UserInteractionsService.insert_user_interactions(dst_id, user_id)
+
+        emit('notify', {type: dst_id, "type": "Follow Back"}, room=f"Notifs_user_{dst_id}") # TODO: I should review this
+    #   [ ] On "Like" received.
+    #     [ ] On Profile viewed.
+    #     [ ] On Message received.
+    #     [ ] On "Like" back (connection).
+    #     [ ] On "Unlike" (disconnection).
+
+
+
+        redis = Config.redis_instence
+        # update this
+        # join_room(f"online_user_{user_id}")
+        return bool(
+            redis.exists(f"ws:user:{user_id}:online")
+        )
 
     @staticmethod
     def socket_guard(required_roles=None, check_profile=True):
