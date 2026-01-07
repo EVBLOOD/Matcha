@@ -58,6 +58,7 @@ class ProfileService:
             profile = ProfileRepository.get_user_profile(user_id=to_find_user_id, my_acount=searcher_id, same=same)
             if profile is None : 
                 raise ValueError("No such a profile")
+
             print(profile, flush=True)
             if same :
                 interactions = {
@@ -66,6 +67,9 @@ class ProfileService:
                     "views_count": profile["views_count"]
                 }
             else :
+                if profile["user_block_status"] and profile["user_block_status"] > 0 :
+                    raise ValueError("No such a profile")
+                
                 interactions = {
                     "is_same": False,
                     "interaction_status": profile["interaction_status"],
