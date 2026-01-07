@@ -13,3 +13,12 @@ def getChats():
         return jsonify({"data": ChatService.get_chats(request.user_id)})
     except Exception as e:
         return jsonify({"error": str(e)}), 404
+
+@chats_bp.route('/<int:conversation_id>', methods=['GET'])
+@Security.auth_guard()
+def getMessages(conversation_id):
+    try :
+        print(f"conversation_id {conversation_id}", flush=True)
+        return jsonify({"data": ChatService.get_messages(request.user_id, conversation_id)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404

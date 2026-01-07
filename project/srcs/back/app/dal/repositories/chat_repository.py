@@ -60,9 +60,39 @@ class ChatRepository(BaseRepository):
         row = cls._fetch_one(query, (user1_id,user2_id, user2_id,user1_id))
         return Conversation(*row) if row else None
     
+    # @classmethod
+    # def get_messages(cls, chat_id: int, start: int = 0, number: int = 10) :  # TODO: this is worng but keep for now
+    #     return None
+    
     @classmethod
-    def get_messages(cls, chat_id: int, start: int = 0, number: int = 10) :  # TODO: this is worng but keep for now
-        return None
+    def get_messages(cls, chat_id: int, user_id: int) :
+        query = """
+            SELECT
+                c.id AS conversation_id,
+                c.created_at,
+                u.id AS peer_id,
+                u.username,
+                u.first_name,
+                u.last_name,
+                u.last_online,
+                (SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                    FROM user_pictures up
+                    WHERE up.user_id = u.id AND up.is_profile_picture = TRUE)
+                    AS profile_picture_url,
+                (SELECT json_agg(json_build_object('id', ms.id, 'sender_id', ms.sender_id, 'sent_at',ms.sent_at, 'is_read' ,ms.is_read, 'content', ms.content))
+                    FROM messages  ms
+                    WHERE ms.conversation_id = c.id) AS messages_list
+            FROM conversations AS c
+            JOIN users u ON u.id = (
+                CASE 
+                    WHEN c.user1_id = %s THEN c.user2_id 
+                    ELSE c.user1_id 
+                END
+            )
+            WHERE (c.user1_id = %s OR c.user2_id = %s) AND c.id = %s;
+            """
+        params = (user_id, user_id,user_id, chat_id)
+        return cls._fetch_all(query, params)
     
     @classmethod
     def get_chats(cls, user_id: int) :  # TODO: this is worng but keep for now

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     import { ref, onMounted, watch, nextTick } from 'vue';
     import { useRoute } from 'vue-router';
     const route = useRoute();
@@ -9,13 +9,13 @@
         { id: 3, name: 'Sadio Mané', date: 'Jan 01, 2026', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
         { id: 4, name: 'Mohamed Salah', date: 'Apr 23, 2024', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '1 day ago' }
     ];
-    const selectedUser = ref(users.find(user => user.id === parseInt(route.params.id)));
+    const selectedUser = ref(users.find(user => user.id === parseInt(route.params.id as string)));
     const messagesContainer = ref(null);
 
     watch(
         () => route.params.id,
         (newId) => { 
-            selectedUser.value = users.find(user => user.id === parseInt(newId)) 
+            selectedUser.value = users.find(user => user.id === parseInt(newId as string)) 
         },
     );
 
@@ -45,13 +45,53 @@
 
     function scrollToBottom() {
         if (!messagesContainer.value) return;
-        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+        // messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
     }
+
+import type {ConversationsResponse} from '@/types/apiResponses'
+import ChatService from '@/api/services/ChatService'
+import axios, { AxiosError } from 'axios';
+
+interface BackendError {
+  error: string;
+}
+
+const conversationData = ref<ConversationsResponse[] | null>(null);
+
+const isLoading = ref(true);
+const isError = ref<string | null>(null);
+
+const fetchConversations = async () => {
+    if (!route.params.id) return;
+    isLoading.value = true;
+    try {
+        const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
+        console.log(data)
+        // conversationData.value = data;
+        conversationData.value = [...data.data];
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            isError.value = (err.response?.data as BackendError)?.error;
+        }
+        else {
+            isError.value = "Registration failed for unknown reason'";
+        }
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+watch(() => route.params.id, fetchConversations);
+
+onMounted(fetchConversations);
+
+
+    
 
 </script>
 
 <template>
-    <div class="chat">
+    <div class="chat" v-if="selectedUser">
         <div class="header">
             <button class="back-btn" @click="$router.push('/messages')">←</button>
             <div class="user">
