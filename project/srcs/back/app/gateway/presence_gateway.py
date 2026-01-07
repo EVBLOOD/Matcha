@@ -62,6 +62,21 @@ class PresenceGateway(Namespace):
         except Exception as _:
             return False
 
+    @ConnectionManager.socket_guard()
+    def on_block(self, id):
+        print(id, flush=True)
+        try :
+            ConnectionManager.interact_with_user(request.user_id, int(id), "Block")
+        except Exception as _:
+            return False
+
+    @ConnectionManager.socket_guard()
+    def on_unblock(self, id):
+        print(id, flush=True)
+        try :
+            ConnectionManager.interact_with_user(request.user_id, int(id), "Unblock")
+        except Exception as _:
+            return False
     def error_handler(e):
         print ("Hello error", flush=True)
         print (e, flush=True)

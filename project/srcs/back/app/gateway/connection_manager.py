@@ -12,6 +12,7 @@ from flask_socketio import emit
 from app.services.user_interactions_service import UserInteractionsService
 from app.services.notifications_service import NotificationService
 from app.services.profile_views_service import ProfileViewsService
+from app.services.user_blocks_service import UserBlocksService
 
 class ConnectionManager :
 
@@ -76,7 +77,11 @@ class ConnectionManager :
             if done and is_connection :
                 type_response = "unmatch"
         elif type == "Block" :
-            UserInteractionsService.insert_user_interactions(dst_id, user_id)
+            if is_connection :
+                print ("I should remove all the likes between them and so the views", flush=True)
+            UserBlocksService.insert_user_blocks(dst_id, user_id)
+        elif type == "Unblock" :
+            UserBlocksService.remove_user_blocks(dst_id, user_id)
         else :
             type_response = "view"
             print("LOLE",flush=True)
