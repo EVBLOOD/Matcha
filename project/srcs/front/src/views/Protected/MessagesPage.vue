@@ -3,7 +3,7 @@ import { ref, onMounted, watch, computed } from 'vue';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 
 import ChatService from '@/api/services/ChatService'
-import type {UserProfileResponse} from '@/types/apiResponses'
+import type {ConversationsResponse} from '@/types/apiResponses'
 import axios, { AxiosError } from 'axios';
 
 interface BackendError {
@@ -27,17 +27,18 @@ function openChat(userId: number) {
 }
 
 
-const profileData = ref<UserProfileResponse | null>(null);
+const conversationsData = ref<ConversationsResponse[] | null>(null);
 
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 
-const fetchProfile = async () => {
+const fetchConversations = async () => {
     isLoading.value = true;
     try {
         const { data } = await ChatService.getChat();
         console.log(data)
-        profileData.value = data;
+        // conversationsData.value = data;
+        conversationsData.value = [...data.data];
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -50,21 +51,21 @@ const fetchProfile = async () => {
     }
 };
 
-watch(() => route.params.id, fetchProfile);
+// watch(() => route.params.id, fetchConversations);
 
-onMounted(fetchProfile);
+onMounted(fetchConversations);
 </script>
 
 <template>
-    <div class="contentx">
+    <div v-if="!isLoading && !isError && conversationsData" class="contentx">
         <div :class="['sideBar', { hideOnMobile: chatOpen }]">
-            <div class="user" v-for="user in users" :key="user.id" @click="openChat(user.id)">
+            <div class="user" v-for="user in conversationsData" :key="user.peer_id" @click="openChat(user.conversation_id)">
                 <div class="avatar">
-                    <img :src="user.avatar" alt="avatar" />
+                    <img :src="`http://localhost:8081/profile/pictures/${user.profile_picture_url[0].url}`" alt="avatar" />
                 </div>
                 <div class="infos">
-                    <p class="name">{{ user.name }}</p>
-                    <p class="date">{{ user.date }}</p>
+                    <p class="name">{{ user.first_name + " " + user.last_name }}</p>
+                    <p class="date">{{ user.created_at }}</p>
                 </div>
             </div>
         </div>

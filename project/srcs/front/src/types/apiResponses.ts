@@ -62,6 +62,16 @@ export interface NotificationsResponse {
     username: string;
 }
 
+export interface ConversationsResponse {
+    conversation_id: number;
+    created_at: string;
+    first_name: string;
+    last_name: string;
+    last_online: string;
+    peer_id: number;
+    profile_picture_url: UserProfilePicturesResponse[];
+    username: string;
+}
 
 
 // export interface UserProfile extends User {
