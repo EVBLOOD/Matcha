@@ -28,7 +28,7 @@ const fetchNotifications = async () => {
   try {
     const { data } = await NotificationsService.getNotifications();
     console.log(`data ${data.data}`)
-    NotificationsData.value = data.data;
+    NotificationsData.value = [...data.data];
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -57,10 +57,10 @@ onMounted(fetchNotifications);
         No Notifications For You
     </div>
     <div v-if="!isLoading && !isError && NotificationsData" class="contenty">
-        <div class="notif">
+        <div v-for="value in NotificationsData" class="notif">
             <PictureNdIcon :height="59" :width="59" :readonly="true" initialImage='/img/avatar.svg' initialIcon="/img/viewProfileNotifIcon.svg" />
             <div>
-               New message from <span>@evblood</span>
+               {{value.type}} from <span>@evblood</span>
             </div>
         </div>
         <div class="notif">

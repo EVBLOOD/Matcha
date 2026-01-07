@@ -60,4 +60,4 @@ class notificationsRepository(BaseRepository):
             """
         params = (user_id, )
 
-        return cls._execute(query, params)
+        return cls._fetch_all(query, params)

@@ -27,6 +27,21 @@ class BaseRepository:
             return dict(zip(keys, values))
 
     @classmethod
+    def _fetch_all(cls, query: str, params=None):
+        with Config.DB_instence.get_cursor() as cursor:
+            cursor.execute(query, params)
+            description = cursor.description
+            keys = [col[0] for col in description]
+            values = cursor.fetchall()
+            data = []
+            if not values :
+                return None
+            for value in values :
+                data.append(dict(zip(keys, value))) 
+                
+            return data
+
+    @classmethod
     def _fetch(cls, query: str, params=None):
         with Config.DB_instence.get_cursor() as cursor:
             cursor.execute(query, params)
