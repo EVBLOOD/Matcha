@@ -13,6 +13,7 @@ from app.services.user_interactions_service import UserInteractionsService
 from app.services.notifications_service import NotificationService
 from app.services.profile_views_service import ProfileViewsService
 from app.services.user_blocks_service import UserBlocksService
+from app.services.chat_service import ChatService
 
 class ConnectionManager :
 
@@ -66,13 +67,14 @@ class ConnectionManager :
     def interact_with_user(user_id: int, dst_id: int, type: str) -> bool:
         is_connection = UserInteractionsService.get_user_interactions(user_id, dst_id)
         block_status = UserBlocksService.get_blocks_status(user_id, dst_id)
-        print(is_connection, flush=True)
+        conversation_id = None
         type_response = None
         if not block_status and type == "Like" :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
             type_response = "like"
             if is_connection :
                 type_response = "match"
+                conversation_id = ChatService.create_conversation(dst_id, user_id)
         elif not block_status and type == "Dislike" :
             done = UserInteractionsService.remove_user_interactions(dst_id, user_id)
             if done and is_connection :
@@ -92,6 +94,8 @@ class ConnectionManager :
         if type_response :
             done = NotificationService.create_notification(dst_id, type_response, user_id)
             if done :
+                if conversation_id :
+                    emit('notify', {type: dst_id, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{dst_id}")
                 emit('notify', {type: dst_id, "type": type_response}, room=f"Notifs_user_{dst_id}")
     #     [ ] On Message received.
 
