@@ -26,7 +26,10 @@ class ChatService :
 
         chat = ChatRepository.get_messages(chat_id, start, number)
         return chat
-    
     @classmethod
-    def get_chats(cls, user_id: str, start: int, number: int = 10) :
-        return ChatRepository.get_chats(user_id, start, number)
+    def get_chats(cls, user_id: str) :
+        return ChatRepository.get_chats(user_id)
+
+    # @classmethod
+    # def get_chats(cls, user_id: str, start: int, number: int = 10) :
+    #     return ChatRepository.get_chats(user_id, start, number)

@@ -1,27 +1,63 @@
-<script setup>
-    import { ref, onMounted, watch, computed } from 'vue';
-    import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
+<script setup lang="ts">
+import { ref, onMounted, watch, computed } from 'vue';
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 
-    const router = useRouter();
-    const route = useRoute();
+import ChatService from '@/api/services/ChatService'
+import type {UserProfileResponse} from '@/types/apiResponses'
+import axios, { AxiosError } from 'axios';
 
-    const users = [
-        { id: 1, name: 'Karim Id Bouhouch', date: 'Apr 15, 2025', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
-        { id: 2, name: 'Saad Akllam', date: 'May 01, 2025', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '2 hours ago' },
-        { id: 3, name: 'Sadio Mané', date: 'Jan 01, 2026', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
-        { id: 4, name: 'Mohamed Salah', date: 'Apr 23, 2024', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '1 day ago' }
-    ];
+interface BackendError {
+  error: string;
+}
 
-    const chatOpen = computed(() => !!route.params.id)
+const router = useRouter();
+const route = useRoute();
 
-    function openChat(userId) {
-        router.push(`/messages/${userId}`);
+const users = [
+    { id: 1, name: 'Karim Id Bouhouch', date: 'Apr 15, 2025', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
+    { id: 2, name: 'Saad Akllam', date: 'May 01, 2025', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '2 hours ago' },
+    { id: 3, name: 'Sadio Mané', date: 'Jan 01, 2026', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
+    { id: 4, name: 'Mohamed Salah', date: 'Apr 23, 2024', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '1 day ago' }
+];
+
+const chatOpen = computed(() => !!route.params.id)
+
+function openChat(userId: number) {
+    router.push(`/messages/${userId}`);
+}
+
+
+const profileData = ref<UserProfileResponse | null>(null);
+
+const isLoading = ref(true);
+const isError = ref<string | null>(null);
+
+const fetchProfile = async () => {
+    isLoading.value = true;
+    try {
+        const { data } = await ChatService.getChat();
+        console.log(data)
+        profileData.value = data;
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            isError.value = (err.response?.data as BackendError)?.error;
+        }
+        else {
+            isError.value = "Registration failed for unknown reason'";
+        }
+    } finally {
+        isLoading.value = false;
     }
+};
+
+watch(() => route.params.id, fetchProfile);
+
+onMounted(fetchProfile);
 </script>
 
 <template>
     <div class="contentx">
-        <div :class="['sideBar', { hideOnMobile: chatOpen }]" >
+        <div :class="['sideBar', { hideOnMobile: chatOpen }]">
             <div class="user" v-for="user in users" :key="user.id" @click="openChat(user.id)">
                 <div class="avatar">
                     <img :src="user.avatar" alt="avatar" />
@@ -39,7 +75,6 @@
 </template>
 
 <style lang="scss" scoped>
-
 .contentx {
     color: #FFFFFF;
     display: flex;
@@ -95,9 +130,7 @@
     object-fit: cover;
 }
 
-.user .infos {
-
-}
+.user .infos {}
 
 .user .infos .name {
     font-weight: 500;
