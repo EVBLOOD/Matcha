@@ -71,6 +71,7 @@ class ChatManager :
             {"text": message, "sender": sender, "id": message_id}, 
             room=private_room
         )
+        ## add a notif is user isn't in room.
 
         receiver_sockets: Set[bytes] = redis.smembers(f"chat:user_sockets:{receiver}")
         active_viewers: Set[bytes] = redis.smembers(f"chat:private_rooms:{private_room}")

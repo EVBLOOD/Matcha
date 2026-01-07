@@ -21,10 +21,11 @@ export const useSocketStore = defineStore('socket', {
 
         socketStatus.on('notify', (msg: string) => {
           console.log(msg)
-         this.notifications.push(msg); // this is just a current example to use in future | I should fix backend
+         this.notifications.push(msg); // waiting for desing to add it in front as pop up
         });
 
         socketChat.on('recieved_message', (msg: string) => {
+          console.log(msg)
          this.new_chats_notifs.push(msg); // this is just a current example to use in future | I should fix backend
         });
     },
