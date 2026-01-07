@@ -11,6 +11,7 @@ from flask_socketio import emit
 
 from app.services.user_interactions_service import UserInteractionsService
 from app.services.notifications_service import NotificationService
+from app.services.profile_views_service import ProfileViewsService
 
 class ConnectionManager :
 
@@ -79,6 +80,7 @@ class ConnectionManager :
         else :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
             type_response = "view"
+            ProfileViewsService.insert_profile_views(dst_id, user_id)
         # here I should save to DB
         if type_response :
             done = NotificationService.create_notification(dst_id, type_response, user_id)
