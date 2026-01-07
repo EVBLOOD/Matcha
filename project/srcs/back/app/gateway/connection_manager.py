@@ -84,7 +84,6 @@ class ConnectionManager :
             UserBlocksService.remove_user_blocks(dst_id, user_id)
         else :
             type_response = "view"
-            print("LOLE",flush=True)
             ProfileViewsService.insert_profile_views(dst_id, user_id)
         # here I should save to DB
         if type_response :

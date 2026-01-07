@@ -27,9 +27,21 @@ const dislikeHandler = () => {
     if (!profileData) return
     socketStore.interactWithUser(profileData.value.user.user_id, 'dislike')
 }
+
+
 if (profileData && route.params.id !== userStore.getUserID.toString()) {
     console.log("HERE")
     socketStore.interactWithUser(profileData.value.user.user_id, 'view')
+}
+
+const blockHandler = () => {
+    if (!profileData) return
+    socketStore.interactWithUser(profileData.value.user.user_id, 'block')
+}
+
+const unblockHandler = () => {
+    if (!profileData) return
+    socketStore.interactWithUser(profileData.value.user.user_id, 'unblock')
 }
 </script>
 
