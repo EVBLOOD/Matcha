@@ -81,7 +81,6 @@ class ProfileRepository(BaseRepository):
                     ) AS interests,
                     (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND status = 'liked') AS likes_count,
                     (SELECT COUNT(*) FROM profile_views WHERE viewed_id = u.id) AS views_count
-
                 FROM users u
                 LEFT JOIN profiles p ON u.id = p.user_id
                 WHERE
@@ -123,7 +122,9 @@ class ProfileRepository(BaseRepository):
                     ) AS is_connected,
                     (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND status = 'liked') AS likes_count,
                     (SELECT COUNT(*) FROM profile_views WHERE viewed_id = u.id) AS views_count,
-                    (SELECT COUNT(*) FROM user_blocks WHERE (blocker_id = u.id AND blocker_id = %s) OR (blocker_id = %s AND blocker_id = u.id)) AS user_block_status
+                    (SELECT COUNT(*) FROM user_blocks WHERE (blocker_id = u.id AND blocker_id = %s) OR (blocker_id = %s AND blocker_id = u.id)) AS user_block_status,
+                    (SELECT id FROM conversations WHERE (user1_id = u.id AND user2_id = %s) OR (user1_id = %s AND user2_id = u.id)) AS converstion_id
+
                 FROM
                     users AS u
                 JOIN
@@ -133,6 +134,6 @@ class ProfileRepository(BaseRepository):
                 WHERE
                     u.id = %s;
             """
-            params = (my_acount, my_acount, my_acount, user_id, user_id, user_id)
+            params = (my_acount, my_acount, my_acount, user_id, user_id,my_acount, my_acount, user_id,)
 
         return cls._execute(query, params)

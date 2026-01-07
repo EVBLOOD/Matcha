@@ -77,6 +77,10 @@ class ProfileService:
                     "likes_count": profile["likes_count"],
                     "views_count": profile["views_count"]
                 }
+                if profile["is_connected"] == 2:
+                    lkd = profile["converstion_id"]
+                    print(f"profile: is_connected : {lkd}", flush=True)
+                    interactions["conversation_id"] = profile["converstion_id"]
             return {
                     "user": {
                         "user_id": profile["user_id"],

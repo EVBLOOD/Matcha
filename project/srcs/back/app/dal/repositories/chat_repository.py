@@ -21,9 +21,10 @@ class ChatRepository(BaseRepository):
 
     @classmethod
     def create_conversation(cls, profile_data: Conversation) :
+        print("This is a match:4", flush=True)
         norm_data = {
-            'user1_id' : profile_data.user_id,
-            'user2_id' : profile_data.url,
+            'user1_id' : profile_data.user1_id,
+            'user2_id' : profile_data.user2_id,
         }
         conversation_id = cls.insert(table_name=cls._table_name_conversations, columns=cls._columns_insertion_conversations, data=norm_data)
         return conversation_id
@@ -31,10 +32,10 @@ class ChatRepository(BaseRepository):
     @classmethod
     def insert_message(cls, profile_data: Message) :
         norm_data = {
-            'conversation_id' : profile_data.user_id,
-            'sender_id' : profile_data.url,
-            'content' : profile_data.is_profile_picture,
-            'is_read' : profile_data.is_profile_picture
+            'conversation_id' : profile_data.conversation_id,
+            'sender_id' : profile_data.sender_id,
+            'content' : profile_data.content,
+            'is_read' : profile_data.is_read
         }
         id = cls.insert(table_name=cls._table_name_messages, columns=cls._columns_insertion_messages, data=norm_data)
         return id
@@ -43,8 +44,8 @@ class ChatRepository(BaseRepository):
     @classmethod # TODO: this is worng but keep for now
     def mark_read(cls, profile_data: Message) :
         norm_data = {
-            'conversation_id' : profile_data.user_id,
-            'is_read' : profile_data.is_profile_picture
+            'conversation_id' : profile_data.conversation_id,
+            'is_read' : profile_data.is_read
         }
         picture_id = cls.insert(table_name=cls._table_name_messages, columns=cls._columns_insertion_messages, data=norm_data)
         return picture_id
@@ -54,8 +55,10 @@ class ChatRepository(BaseRepository):
         return cls.find_by_something(id=id)
 
     @classmethod
-    def find_conversation(cls, user1_id: int, user2_id: int) : # TODO: this is worng but keep for now
-        return cls.find_by_something(id=user1_id)
+    def find_conversation(cls, user1_id: int, user2_id: int) :
+        query = "SELECT * FROM conversations WHERE (user1_id = %s AND user2_id = %s) OR (user1_id = %s AND user2_id = %s)"
+        row = cls._fetch_one(query, (user1_id,user2_id, user2_id,user1_id))
+        return Conversation(*row) if row else None
     
     @classmethod
     def get_messages(cls, chat_id: int, start: int = 0, number: int = 10) :  # TODO: this is worng but keep for now

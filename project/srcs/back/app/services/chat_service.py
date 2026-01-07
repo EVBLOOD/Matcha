@@ -15,7 +15,8 @@ class ChatService :
         chat_id = ChatRepository.find_conversation(user1_id, user2_id)
         if not chat_id :
             chat_id =  ChatRepository.create_conversation(Conversation(user1_id=user1_id, user2_id=user2_id))
-        return chat_id
+            return chat_id
+        return chat_id.id
     
     @classmethod
     def get_messages(cls, user_id: int, chat_id: int, start: int = 0, number: int = 10) :
