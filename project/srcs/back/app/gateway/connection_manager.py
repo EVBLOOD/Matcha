@@ -10,6 +10,7 @@ from app.core.security import AuthService, Security
 from flask_socketio import emit
 
 from app.services.user_interactions_service import UserInteractionsService
+from app.services.notifications_service import NotificationService
 
 class ConnectionManager :
 
@@ -66,21 +67,23 @@ class ConnectionManager :
         type_response = None
         if (type == "Like") :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
-            type_response = "Connection On Water"
+            type_response = "like"
             if is_connection :
-                type_response = "Connection On FIRE"
+                type_response = "match"
         elif type == "Dislike" :
             done = UserInteractionsService.remove_user_interactions(dst_id, user_id)
             if done and is_connection :
-                type_response = "Connection Killed"
+                type_response = "unmatch"
         elif type == "Block" :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
         else :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
-            type_response = "Viewed Your AC"
+            type_response = "view"
         # here I should save to DB
         if type_response :
-            emit('notify', {type: dst_id, "type": type_response}, room=f"Notifs_user_{dst_id}") # TODO: I should review this
+            done = NotificationService.create_notification(dst_id, type_response, user_id)
+            if done :
+                emit('notify', {type: dst_id, "type": type_response}, room=f"Notifs_user_{dst_id}")
     #     [ ] On Message received.
 
 

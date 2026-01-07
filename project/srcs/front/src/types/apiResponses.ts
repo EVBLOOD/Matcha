@@ -50,6 +50,18 @@ export interface UserProfileResponse {
   user: UserProfileAttrsResponse
 }
 
+export interface NotificationsResponse {
+    create_at: string;
+    is_read: boolean;
+    notification_id: number;
+    picture_url: UserProfilePicturesResponse[];
+    sourse_user_id: number;
+    type: string;
+    user_id: number;
+    username: string;
+}
+
+
 
 // export interface UserProfile extends User {
 //     bio: string;

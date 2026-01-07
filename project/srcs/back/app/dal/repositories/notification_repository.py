@@ -56,7 +56,7 @@ class notificationsRepository(BaseRepository):
                 FROM notifications n
                 LEFT JOIN users s ON n.source_user_id = s.id
                 WHERE
-                    n.id = %s;
+                    n.user_id = %s;
             """
         params = (user_id, )
 

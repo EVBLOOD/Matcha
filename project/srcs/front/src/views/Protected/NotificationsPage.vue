@@ -3,7 +3,7 @@
     // import { RouterLink, RouterView } from 'vue-router';
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
 import NotificationsService from '@/api/services/NotificationsService'
-// import type {notificationsResponse} from '@/types/apiResponses'
+import type { NotificationsResponse } from '@/types/apiResponses'
 
 import { ref, computed, onMounted } from 'vue';
 
@@ -19,7 +19,7 @@ const previewProfile = ref(null);
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 
-// const NotificationsData = ref<notificationsResponse | null>(null);
+const NotificationsData = ref<NotificationsResponse[] | null>(null);
 
 
 
@@ -27,7 +27,8 @@ const fetchNotifications = async () => {
   isLoading.value = true;
   try {
     const { data } = await NotificationsService.getNotifications();
-    console.log(`data ${data}`)
+    console.log(`data ${data.data}`)
+    NotificationsData.value = data.data;
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -43,16 +44,19 @@ const fetchNotifications = async () => {
 
 onMounted(fetchNotifications);
 
-const avatarStyle = computed(() => {
-    const image = previewProfile.value || "/img/avatar.svg";
-    return {
-        backgroundImage: `url(${image})`
-    };
-});
+// const avatarStyle = computed(() => {
+//     const image = previewProfile.value || "/img/avatar.svg";
+//     return {
+//         backgroundImage: `url(${image})`
+//     };
+// });
 </script>
 
 <template>
-    <div class="contenty">
+    <div v-if="!isLoading && !isError && !NotificationsData" class="contenty">
+        No Notifications For You
+    </div>
+    <div v-if="!isLoading && !isError && NotificationsData" class="contenty">
         <div class="notif">
             <PictureNdIcon :height="59" :width="59" :readonly="true" initialImage='/img/avatar.svg' initialIcon="/img/viewProfileNotifIcon.svg" />
             <div>
