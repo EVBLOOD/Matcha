@@ -9,8 +9,9 @@ class ProfileViewsService:
     def insert_profile_views(viewed_id: int, user_id: int) :
         if not UserRepository.find_by_id(viewed_id) :
             raise ValueError("User doesn't exist!")
-
-        interact = ProfileViews(liked_id=viewed_id, viewer_id=user_id)
+        print("LOL", flush=True)
+        interact = ProfileViews(viewed_id=viewed_id, viewer_id=user_id)
+        print("LOL", flush=True)
 
         ProfileViewsRepository.create_profile_views(interact)
 
@@ -28,7 +29,7 @@ class ProfileViewsService:
         if not UserRepository.find_by_id(viewed_id) :
             raise ValueError("User doesn't exist!")
 
-        return ProfileViewsRepository.remove_profile_view_existance(liked_id=viewed_id, 
+        return ProfileViewsRepository.remove_profile_view_existance(viewed_id=viewed_id, 
                                                                      viewer_id=user_id)
     
     def get_all_likes_got(user_id: int = None, viewed_id: int = None) :

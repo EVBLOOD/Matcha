@@ -78,8 +78,8 @@ class ConnectionManager :
         elif type == "Block" :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
         else :
-            UserInteractionsService.insert_user_interactions(dst_id, user_id)
             type_response = "view"
+            print("LOLE",flush=True)
             ProfileViewsService.insert_profile_views(dst_id, user_id)
         # here I should save to DB
         if type_response :
