@@ -54,7 +54,7 @@ const unblockHandler = () => {
             </RouterLink>
             <Button
                 v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.is_connected == 2"
-                class="link" :to="`/messages`" text="Message">
+                class="link" :to="`/messages/${profileData.interactions.conversation_id}`" text="Message">
             </Button>
 
             <Button

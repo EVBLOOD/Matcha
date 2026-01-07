@@ -40,6 +40,7 @@ export interface UserProfileInteractionsResponse {
     views_count: number;
     is_connected?: number;
     interaction_status?: string;
+    conversation_id?: number;
 }
 
 export interface UserProfileResponse {
