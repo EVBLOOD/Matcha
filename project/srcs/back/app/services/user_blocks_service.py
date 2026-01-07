@@ -31,7 +31,10 @@ class UserBlocksService:
 
         return UserBlocksRepository.remove_user_blocks_existance(blocked_id=blocked_id, 
                                                                      blocker_id=user_id)
-    
+
+    def get_blocks_status(user_id: int, user_id_two: int) :
+        return UserBlocksRepository.get_user_blocks_existance_visca(user_id, user_id_two)
+
     def get_all_blocks_got(user_id: int = None, blocked_id: int = None) :
         get_blocks = None
         if user_id :

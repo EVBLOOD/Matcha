@@ -65,27 +65,30 @@ class ConnectionManager :
     @staticmethod
     def interact_with_user(user_id: int, dst_id: int, type: str) -> bool:
         is_connection = UserInteractionsService.get_user_interactions(user_id, dst_id)
+        block_status = UserBlocksService.get_blocks_status(user_id, dst_id)
         print(is_connection, flush=True)
         type_response = None
-        if (type == "Like") :
+        if not block_status and type == "Like" :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
             type_response = "like"
             if is_connection :
                 type_response = "match"
-        elif type == "Dislike" :
+        elif not block_status and type == "Dislike" :
             done = UserInteractionsService.remove_user_interactions(dst_id, user_id)
             if done and is_connection :
                 type_response = "unmatch"
-        elif type == "Block" :
+        elif not block_status and type == "Block" :
             if is_connection :
-                print ("I should remove all the likes between them and so the views", flush=True)
+                UserInteractionsService.remove_user_interactions(dst_id, user_id)
+                UserInteractionsService.remove_user_interactions(user_id, dst_id)
             UserBlocksService.insert_user_blocks(dst_id, user_id)
-        elif type == "Unblock" :
+        elif block_status and type == "Unblock" :
             UserBlocksService.remove_user_blocks(dst_id, user_id)
-        else :
+        elif not block_status:
             type_response = "view"
             ProfileViewsService.insert_profile_views(dst_id, user_id)
-        # here I should save to DB
+        else :
+            return
         if type_response :
             done = NotificationService.create_notification(dst_id, type_response, user_id)
             if done :

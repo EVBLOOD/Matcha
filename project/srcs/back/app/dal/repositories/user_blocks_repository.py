@@ -35,7 +35,13 @@ class UserBlocksRepository(BaseRepository):
         query = "SELECT blocker_id FROM user_blocks WHERE blocker_id = %s AND blocked_id = %s"
         row = cls._fetch_one(query, (blocker_id, blocked_id,))
         return row
-    
+
+    @classmethod
+    def get_user_blocks_existance_visca(cls, blocker_id: int, blocked_id: int) :
+        query = "SELECT blocker_id FROM user_blocks WHERE (blocker_id = %s AND blocked_id = %s) OR (blocker_id = %s AND blocked_id = %s)"
+        row = cls._fetch_one(query, (blocker_id, blocked_id, blocked_id,blocker_id ))
+        return row
+
     @classmethod
     def remove_user_blocks_existance(cls, blocker_id: int, blocked_id: int) :
         blocker_id = cls.get_user_blocks_existance(blocker_id, blocked_id)
