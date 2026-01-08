@@ -38,6 +38,13 @@ class UserInteractionsRepository(BaseRepository):
         return row
     
     @classmethod
+    def are_users_connected(cls, liker_id: str, liked_id: str) :
+        query = "SELECT id FROM user_interactions WHERE (liker_id = %s AND liked_id = %s) OR (liker_id = %s AND liked_id = %s)"
+        row = cls._fetch_all(query, (liker_id, liked_id,liked_id ,liker_id,))
+        print(row, flush=True)
+        return len(row) == 2
+
+    @classmethod
     def remove_user_interaction_existance(cls, liker_id: str, liked_id: str) :
         id = cls.get_user_interaction_existance(liker_id, liked_id)
         if not id :

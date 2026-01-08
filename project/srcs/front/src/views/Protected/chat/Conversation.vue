@@ -6,10 +6,13 @@
     import { useSocketStore } from '@/stores/socket'
     import  userUserStore  from '@/stores/user'
     import axios, { AxiosError } from 'axios';
+    import { useSocketListener } from '@/composables/useSocketChat'
 
     interface BackendError {
         error: string;
     }
+
+    // new_message_notification
 
 
     const route = useRoute();
@@ -73,6 +76,12 @@
         }
         return `http://localhost:8081/profile/pictures/${link}`
     }
+
+
+    useSocketListener('message_chat', (params) => {{
+        console.log(params)
+    }})
+
     // const messagesContainer = ref(null);
     //    const messages = ref([
     //     { id: 1, text: 'Salam', fromMe: false },

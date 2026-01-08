@@ -22,6 +22,13 @@ class UserInteractionsService:
             raise ValueError("User doesn't exist!")
         row = UserInteractionsRepository.get_user_interaction_existance(user_id, liked_user)
         return row
+    
+    @staticmethod
+    def are_users_connected(liked_user: int, user_id: int) :
+        if not UserRepository.find_by_id(liked_user) :
+            raise ValueError("User doesn't exist!")
+        return UserInteractionsRepository.are_users_connected(user_id, liked_user)
+    
 
 
     @staticmethod

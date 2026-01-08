@@ -106,3 +106,4 @@ class UserService:
 
         AuthService.user_session_changed_role(user_id=user_id, session_id=session_id)
         return True
+        

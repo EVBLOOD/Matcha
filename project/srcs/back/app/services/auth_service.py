@@ -24,6 +24,7 @@ class AuthService :
 
         try :
             user = UserRepository.find_by_username(username=username)
+            print(user, flush=True)
             
             if bcrypt.checkpw(password.encode(), user.password_hash.encode()) :
                 return user

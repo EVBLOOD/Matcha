@@ -6,7 +6,7 @@ from flask_socketio import disconnect, join_room, ConnectionRefusedError, leave_
 import json
 from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
-# from app.services.user_service import get_user_contacts
+from app.services.user_interactions_service import UserInteractionsService
 from app.services.chat_service import ChatService
 from flask_socketio import emit
 from typing import Set
@@ -62,19 +62,18 @@ class ChatManager :
     @staticmethod
     def broadcast_message(sender: str, receiver: str, message: str, socket_id: str):
         # NOTE: This is where you would enforce friend/security checks!
+        if not UserInteractionsService.are_users_connected(sender, receiver) :
+            return {"You aren't allowd to reach this person!"}
+        print ("Works", flush=True)
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
-        # save message to DB :
-        print("sending message", flush=True)
         message_id = ChatService.send_message(sender, receiver, message)
-        print("message sent", flush=True)
 
         emit(
             'chat', 
             {"text": message, "sender": sender, "id": message_id}, 
             room=private_room
         )
-        ## add a notif is user isn't in room.
 
         receiver_sockets: Set[bytes] = redis.smembers(f"chat:user_sockets:{receiver}")
         active_viewers: Set[bytes] = redis.smembers(f"chat:private_rooms:{private_room}")
@@ -87,6 +86,12 @@ class ChatManager :
                 {"sender": sender, "count_change": 1}, 
                 room=notify_room
             )
+        else :
+            chat_room = ChatManager._get_canonical_room_name(receiver)
+            emit(
+                'message_chat', 
+                {"text": message, "sender": sender, "id": message_id}, 
+                room=chat_room)
         return message_id
 
 
