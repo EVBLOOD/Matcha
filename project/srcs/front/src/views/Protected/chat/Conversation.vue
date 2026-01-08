@@ -1,7 +1,7 @@
 <script setup lang="ts">
-    import { ref, onMounted, watch, nextTick, onUnmounted } from 'vue';
+    import { ref, onMounted, watch, nextTick, onUnmounted, useTemplateRef } from 'vue';
     import { useRoute } from 'vue-router';
-    import type {ConversationsResponse} from '@/types/apiResponses'
+    import type { ConversationsResponse, MessagesResponse } from '@/types/apiResponses'
     import ChatService from '@/api/services/ChatService'
     import { useSocketStore } from '@/stores/socket'
     import  userUserStore  from '@/stores/user'
@@ -21,6 +21,7 @@
     
 
     const conversationData = ref<ConversationsResponse[] | null>(null);
+    const conversationMessages = ref<MessagesResponse[] | null>(null);
     const isLoading = ref(true);
     const isError = ref<string | null>(null);
     const newMessage = ref('')
@@ -35,6 +36,8 @@
             console.log(data)
             // conversationData.value = data;
             conversationData.value = [...data.data];
+            if (conversationData.value[0].messages_list)
+                conversationMessages.value = [...conversationData.value[0].messages_list]
             socketStore.joinChat(conversationData.value[0].peer_id.toString())
             // useSocketListener('join_chat')
         } catch (err: unknown) {
@@ -58,8 +61,8 @@
 
         if (conversationData.value) {
             const id = socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
-            if (conversationData.value[0].messages_list)
-                conversationData.value[0].messages_list = [...conversationData.value[0].messages_list, {id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"}]
+            if (conversationMessages.value)
+                conversationMessages.value.push({id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"})
         }
         newMessage.value = ''
     }
@@ -82,28 +85,20 @@
         console.log(params)
     }})
 
-    // const messagesContainer = ref(null);
-    //    const messages = ref([
-    //     { id: 1, text: 'Salam', fromMe: false },
-    //     { id: 2, text: 'Wa salam! Kidayr ?', fromMe: true },
-    //     { id: 3, text: 'Labas hamdullah, nta ?', fromMe: false },
-    //     { id: 4, text: 'Kolchi mzyan', fromMe: true }
-    // ])
+    const messagesContainer = ref<HTMLElement | null>(null);
 
-    // watch(
-    //     messages,
-    //     async () => {
-    //         await nextTick();
-    //         scrollToBottom();
-    //     },
-    //     { deep: true }
-    // );
+
+    watch(
+            conversationMessages, scrollToBottom,
+            { deep: true }
+        );
     
 
-    // function scrollToBottom() {
-    //     if (!messagesContainer.value) return;
-    //     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    // }
+    async function scrollToBottom() {
+        await nextTick();
+        if (!messagesContainer.value) return;
+        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+    }
 </script>
 
 <template>
@@ -126,8 +121,8 @@
             </div>
             <button class="btn">View Profile</button>
         </div>
-        <div v-if="conversationData[0].messages_list" class="messages" ref="messagesContainer">
-            <div v-for="msg in conversationData[0].messages_list" :key="msg.id" :class="['message', msg.sender_id == userStore.getUserID ? 'sent' : 'received']">
+        <div v-if="conversationMessages" class="messages" ref="messagesContainer">
+            <div v-for="msg in conversationMessages" :key="msg.id" :class="['message', msg.sender_id == userStore.getUserID ? 'sent' : 'received']">
                 {{ msg.content }}
             </div>
         </div>

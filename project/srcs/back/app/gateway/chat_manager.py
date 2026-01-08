@@ -61,10 +61,9 @@ class ChatManager :
 
     @staticmethod
     def broadcast_message(sender: str, receiver: str, message: str, socket_id: str):
-        # NOTE: This is where you would enforce friend/security checks!
         if not UserInteractionsService.are_users_connected(sender, receiver) :
             return {"You aren't allowd to reach this person!"}
-        print ("Works", flush=True)
+
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
         message_id = ChatService.send_message(sender, receiver, message)
@@ -79,19 +78,19 @@ class ChatManager :
         active_viewers: Set[bytes] = redis.smembers(f"chat:private_rooms:{private_room}")
         sockets_needing_notif = receiver_sockets - active_viewers
 
-        if sockets_needing_notif:
-            notify_room = ChatManager._get_user_room_name(receiver)
-            emit(
-                'new_message_notification', 
-                {"sender": sender, "count_change": 1}, 
-                room=notify_room
-            )
-        else :
-            chat_room = ChatManager._get_canonical_room_name(receiver)
-            emit(
-                'message_chat', 
-                {"text": message, "sender": sender, "id": message_id}, 
-                room=chat_room)
+        # if sockets_needing_notif:
+        #     notify_room = ChatManager._get_user_room_name(receiver)
+        #     emit(
+        #         'new_message_notification', 
+        #         {"sender": sender, "count_change": 1}, 
+        #         room=notify_room
+        #     )
+        # else :
+        chat_room = ChatManager._get_canonical_room_name(receiver)
+        emit(
+            'message_chat', 
+            {"text": message, "sender": sender, "id": message_id}, 
+            room=chat_room)
         return message_id
 
 
