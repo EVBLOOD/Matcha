@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import { socketChat, socketStatus } from '@/socket/socket';
 import { ref } from 'vue';
+import { useSocialStore } from '@/stores/profile';
+
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
@@ -19,8 +21,9 @@ export const useSocketStore = defineStore('socket', {
         this.onlineUsers.set(id, value);
       });
 
-        socketStatus.on('notify', (msg: string) => {
+        socketStatus.on('notify', (msg) => {
           console.log(msg)
+          this.handleSocialEvent(msg.type, {"userId": msg.dst_id, "conversation_id": msg.conversation_id, });
          this.notifications.push(msg); // waiting for desing to add it in front as pop up
         });
 
@@ -112,6 +115,35 @@ export const useSocketStore = defineStore('socket', {
         Authorization: `Bearer ${token}`
       };
       socketStatus.emit(type, user_id)
+    },
+    handleSocialEvent(type: string, payload: any) {
+      const profileStore = useSocialStore();
+      // const notifStore = useNotificationStore();
+      // notifStore.addNotification(type + payload); // this is for later
+      // notifStore.unreadCount++;
+
+
+      switch (type) {
+        case 'match':
+          profileStore.handleNewMatch(payload.userId);
+          break;
+        
+        case 'like':
+          if (profileStore.activeProfile?.user.user_id === payload.userId) {
+            profileStore.fetchProfile(payload.userId);
+          }
+          break;
+
+        case 'view':
+          if (profileStore.activeProfile?.user.user_id === payload.userId && profileStore.activeProfile?.interactions.views_count) {
+            profileStore.activeProfile.interactions.views_count++;
+          }
+          break;
+
+        case 'block':
+          profileStore.handleBlock(payload.userId);
+          break;
+      }
     }
   }
 });
