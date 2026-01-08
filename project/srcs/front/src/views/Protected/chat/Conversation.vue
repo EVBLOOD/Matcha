@@ -1,118 +1,97 @@
 <script setup lang="ts">
     import { ref, onMounted, watch, nextTick, onUnmounted } from 'vue';
     import { useRoute } from 'vue-router';
+    import type {ConversationsResponse} from '@/types/apiResponses'
+    import ChatService from '@/api/services/ChatService'
+    import { useSocketStore } from '@/stores/socket'
+    import  userUserStore  from '@/stores/user'
+    import axios, { AxiosError } from 'axios';
+
+    interface BackendError {
+        error: string;
+    }
+
+
     const route = useRoute();
+    const socketStore = useSocketStore()
+    const userStore = userUserStore()
     
-    const users = [
-        { id: 1, name: 'Karim Id Bouhouch', date: 'Apr 15, 2025', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
-        { id: 2, name: 'Saad Akllam', date: 'May 01, 2025', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '2 hours ago' },
-        { id: 3, name: 'Sadio Mané', date: 'Jan 01, 2026', avatar: '/img/profilePictureDemo.png', online: true, lastSeen: 'Online' },
-        { id: 4, name: 'Mohamed Salah', date: 'Apr 23, 2024', avatar: '/img/profilePictureDemo.png', online: false, lastSeen: '1 day ago' }
-    ];
-    const selectedUser = ref(users.find(user => user.id === parseInt(route.params.id as string)));
-    const messagesContainer = ref(null);
 
-    watch(
-        () => route.params.id,
-        (newId) => { 
-            selectedUser.value = users.find(user => user.id === parseInt(newId as string)) 
-        },
-    );
-
-    const messages = ref([
-        { id: 1, text: 'Salam', fromMe: false },
-        { id: 2, text: 'Wa salam! Kidayr ?', fromMe: true },
-        { id: 3, text: 'Labas hamdullah, nta ?', fromMe: false },
-        { id: 4, text: 'Kolchi mzyan', fromMe: true }
-    ])
-
-    watch(
-        messages,
-        async () => {
-            await nextTick();
-            scrollToBottom();
-        },
-        { deep: true }
-    );
-    
+    const conversationData = ref<ConversationsResponse[] | null>(null);
+    const isLoading = ref(true);
+    const isError = ref<string | null>(null);
     const newMessage = ref('')
 
-    function sendMessage_() {
+
+
+    const fetchConversations = async () => {
+        if (!route.params.id) return;
+        isLoading.value = true;
+        try {
+            const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
+            console.log(data)
+            // conversationData.value = data;
+            conversationData.value = [...data.data];
+            socketStore.joinChat(conversationData.value[0].peer_id.toString())
+            // useSocketListener('join_chat')
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                isError.value = (err.response?.data as BackendError)?.error;
+            }
+            else {
+                isError.value = "Registration failed for unknown reason'";
+            }
+        } finally {
+            isLoading.value = false;
+        }
+    };
+    
+    onMounted(fetchConversations);
+
+    watch(() => route.params.id, fetchConversations);
+
+    function sendMessage() {
         if (!newMessage.value.trim()) return;
-        messages.value.push({ id: Date.now(), text: newMessage.value, fromMe: true })
+
+        if (conversationData.value) socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
+
         newMessage.value = ''
     }
 
-    function scrollToBottom() {
-        if (!messagesContainer.value) return;
-        // messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    }
+    onUnmounted(() => {
+        if (conversationData.value)
+            socketStore.leaveChat(conversationData.value[0].peer_id.toString())
+    })
 
-import type {ConversationsResponse} from '@/types/apiResponses'
-import ChatService from '@/api/services/ChatService'
-import { useSocketStore } from '@/stores/socket'
-import  userUserStore  from '@/stores/user'
-import axios, { AxiosError } from 'axios';
-// import  useSocketListener from '@/composables/useSocketChat'
 
-interface BackendError {
-  error: string;
-}
-
-const conversationData = ref<ConversationsResponse[] | null>(null);
-
-const isLoading = ref(true);
-const isError = ref<string | null>(null);
-const socketStore = useSocketStore()
-const userStore = userUserStore()
-
-const fetchConversations = async () => {
-    if (!route.params.id) return;
-    isLoading.value = true;
-    try {
-        const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
-        console.log(data)
-        // conversationData.value = data;
-        conversationData.value = [...data.data];
-        socketStore.joinChat(conversationData.value[0].peer_id.toString())
-        // useSocketListener('join_chat')
-    } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
-            isError.value = (err.response?.data as BackendError)?.error;
+    const pictures_handler = (link: string) => {
+        if (link.indexOf('/') > 0) {
+            return link
         }
-        else {
-            isError.value = "Registration failed for unknown reason'";
-        }
-    } finally {
-        isLoading.value = false;
+        return `http://localhost:8081/profile/pictures/${link}`
     }
-};
+    // const messagesContainer = ref(null);
+    //    const messages = ref([
+    //     { id: 1, text: 'Salam', fromMe: false },
+    //     { id: 2, text: 'Wa salam! Kidayr ?', fromMe: true },
+    //     { id: 3, text: 'Labas hamdullah, nta ?', fromMe: false },
+    //     { id: 4, text: 'Kolchi mzyan', fromMe: true }
+    // ])
 
-function sendMessage() {
-    if (!newMessage.value.trim()) return;
+    // watch(
+    //     messages,
+    //     async () => {
+    //         await nextTick();
+    //         scrollToBottom();
+    //     },
+    //     { deep: true }
+    // );
+    
 
-    if (conversationData.value) socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
-
-    newMessage.value = ''
-}
-
-watch(() => route.params.id, fetchConversations);
-
-onMounted(fetchConversations);
-
-onUnmounted(() => {
-    if (conversationData.value)
-        socketStore.leaveChat(conversationData.value[0].peer_id.toString())
-})
-
-
-const pictures_handler = (link: string) => {
-    if (link.indexOf('/') > 0) {
-        return link
-    }
-    return `http://localhost:8081/profile/pictures/${link}`
-}
-
+    // function scrollToBottom() {
+    //     if (!messagesContainer.value) return;
+    //     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+    // }
 </script>
 
 <template>
