@@ -53,8 +53,11 @@
     function sendMessage() {
         if (!newMessage.value.trim()) return;
 
-        if (conversationData.value) socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
-
+        if (conversationData.value) {
+            const id = socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
+            if (conversationData.value[0].messages_list)
+                conversationData.value[0].messages_list = [...conversationData.value[0].messages_list, {id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"}]
+        }
         newMessage.value = ''
     }
 

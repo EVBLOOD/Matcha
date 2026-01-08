@@ -1,11 +1,11 @@
 class Message:
     def __init__(
         self,
-        id: int,
         conversation_id: int,
         sender_id: int,
         content: str,
-        is_read: bool
+        is_read: bool,
+        id: int = None
     ) :
         self.id = id
         self.conversation_id = conversation_id

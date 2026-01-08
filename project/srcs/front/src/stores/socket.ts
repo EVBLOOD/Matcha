@@ -78,10 +78,12 @@ export const useSocketStore = defineStore('socket', {
         console.log(resp)
       }))
     },
-    sendMessage(id: string, content: string) {
+    sendMessage(id: string, content: string) : number {
+      let id_message = undefined
       socketChat.emit('send_message', {user_id: id, text: content}, ((resp: any) => {
-        console.log(resp)
+        id_message = resp as number
       }))
+      return id_message || -1
     },
     UserStatus(id: string) {
       return this.onlineUsers.get(id)

@@ -58,7 +58,7 @@ class ChatRepository(BaseRepository):
     def find_conversation(cls, user1_id: int, user2_id: int) :
         query = "SELECT * FROM conversations WHERE (user1_id = %s AND user2_id = %s) OR (user1_id = %s AND user2_id = %s)"
         row = cls._fetch_one(query, (user1_id,user2_id, user2_id,user1_id))
-        return Conversation(*row) if row else None
+        return Conversation(id=row[0], *(row[1:])) if row else None
     
     # @classmethod
     # def get_messages(cls, chat_id: int, start: int = 0, number: int = 10) :  # TODO: this is worng but keep for now

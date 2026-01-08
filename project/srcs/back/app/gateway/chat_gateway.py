@@ -26,10 +26,11 @@ class ChatGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_send_message(self, user_message):
         try :
+            print(f"on_send_message: {user_message}", flush=True)
             sender = request.user_id
             receiver = user_message["user_id"]
             text = user_message["text"]
-            ChatManager.broadcast_message(sender=sender, receiver=receiver, message=text, socket_id=request.sid)
+            return ChatManager.broadcast_message(sender=sender, receiver=receiver, message=text, socket_id=request.sid)
         except Exception as e :
             print (e, flush=True)
             return False

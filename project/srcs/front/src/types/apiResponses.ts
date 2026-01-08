@@ -66,7 +66,7 @@ export interface MessagesResponse {
     content: string;
     id: number;
     is_read: boolean;
-    sender_id: null;
+    sender_id: number;
     sent_at: string;
 }
 

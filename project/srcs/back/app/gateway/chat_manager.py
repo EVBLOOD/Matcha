@@ -7,6 +7,7 @@ import json
 from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
 # from app.services.user_service import get_user_contacts
+from app.services.chat_service import ChatService
 from flask_socketio import emit
 from typing import Set
 
@@ -64,8 +65,10 @@ class ChatManager :
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
         # save message to DB :
-        # message_id from DB
-        message_id = 1
+        print("sending message", flush=True)
+        message_id = ChatService.send_message(sender, receiver, message)
+        print("message sent", flush=True)
+
         emit(
             'chat', 
             {"text": message, "sender": sender, "id": message_id}, 
@@ -84,6 +87,7 @@ class ChatManager :
                 {"sender": sender, "count_change": 1}, 
                 room=notify_room
             )
+        return message_id
 
 
 
