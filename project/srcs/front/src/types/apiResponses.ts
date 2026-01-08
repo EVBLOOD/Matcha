@@ -62,6 +62,14 @@ export interface NotificationsResponse {
     username: string;
 }
 
+export interface MessagesResponse {
+    content: string;
+    id: number;
+    is_read: boolean;
+    sender_id: null;
+    sent_at: string;
+}
+
 export interface ConversationsResponse {
     conversation_id: number;
     created_at: string;
@@ -71,7 +79,10 @@ export interface ConversationsResponse {
     peer_id: number;
     profile_picture_url: UserProfilePicturesResponse[];
     username: string;
+    messages_list?: MessagesResponse[];
 }
+
+
 
 
 // export interface UserProfile extends User {

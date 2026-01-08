@@ -51,6 +51,7 @@
 import type {ConversationsResponse} from '@/types/apiResponses'
 import ChatService from '@/api/services/ChatService'
 import { useSocketStore } from '@/stores/socket'
+import  userUserStore  from '@/stores/user'
 import axios, { AxiosError } from 'axios';
 // import  useSocketListener from '@/composables/useSocketChat'
 
@@ -63,6 +64,7 @@ const conversationData = ref<ConversationsResponse[] | null>(null);
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 const socketStore = useSocketStore()
+const userStore = userUserStore()
 
 const fetchConversations = async () => {
     if (!route.params.id) return;
@@ -133,9 +135,9 @@ const pictures_handler = (link: string) => {
             </div>
             <button class="btn">View Profile</button>
         </div>
-        <div class="messages" ref="messagesContainer">
-            <div v-for="msg in messages" :key="msg.id" :class="['message', msg.fromMe ? 'sent' : 'received']">
-                {{ msg.text }}
+        <div v-if="conversationData[0].messages_list" class="messages" ref="messagesContainer">
+            <div v-for="msg in conversationData[0].messages_list" :key="msg.id" :class="['message', msg.sender_id == userStore.getUserID ? 'sent' : 'received']">
+                {{ msg.content }}
             </div>
         </div>
         <div class="inputBar">
