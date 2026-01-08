@@ -11,6 +11,7 @@ import type { UserProfileResponse } from '@/types/apiResponses'
 import { useSocketStore } from '@/stores/socket';
 
 import { useSocialStore } from '@/stores/profile';
+import { watch } from 'vue';
 const profile = useSocialStore()
 
 
@@ -24,23 +25,32 @@ console.log(profileData)
 const socketStore = useSocketStore()
 const likeHandler = () => {
     if (!profileData) return
+    if (profileData.interactions.is_connected) profileData.interactions.is_connected++
+    else profileData.interactions.is_connected = 1
+    profileData.interactions.likes_count++
+    profileData.interactions.interaction_status = 'liked'
     socketStore.interactWithUser(profileData.user.user_id, 'like')
 }
 
 const dislikeHandler = () => {
     if (!profileData) return
+    if (profileData.interactions.is_connected) profileData.interactions.is_connected--
+    else profileData.interactions.is_connected = 0
+    profileData.interactions.likes_count--
+    profileData.interactions.interaction_status = undefined
     socketStore.interactWithUser(profileData.user.user_id, 'dislike')
 }
 
 
 if (profileData && route.params.id !== userStore.getUserID.toString()) {
-    console.log("HERE")
+    // console.log("HERE")
     socketStore.interactWithUser(profileData.user.user_id, 'view')
 }
 
 const blockHandler = () => {
     if (!profileData) return
     socketStore.interactWithUser(profileData.user.user_id, 'block')
+    profile.clearActiveProfile()
 }
 
 const unblockHandler = () => {
@@ -54,6 +64,14 @@ const pictures_handler = (link: string) => {
     }
     return `http://localhost:8081/profile/pictures/${link}`
 }
+
+// watch(profileData, ()=> )
+
+// watch(() => profile.activeProfile, () => {
+//     console.log("upda")
+//     // profile.fetchProfile(parseInt(route.params.id as string))
+
+// });
 </script>
 
 <template>

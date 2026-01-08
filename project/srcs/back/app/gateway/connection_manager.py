@@ -95,8 +95,9 @@ class ConnectionManager :
             done = NotificationService.create_notification(dst_id, type_response, user_id)
             if done :
                 if conversation_id :
-                    emit('notify', {"dst_id": dst_id, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{dst_id}")
-                emit('notify', {"dst_id": dst_id, "type": type_response}, room=f"Notifs_user_{dst_id}")
+                    emit('notify', {"source_id": user_id, "dst_id": dst_id, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{dst_id}")
+                else :
+                    emit('notify', {"source_id": user_id, "dst_id": dst_id, "type": type_response}, room=f"Notifs_user_{dst_id}")
     #     [ ] On Message received.
 
 

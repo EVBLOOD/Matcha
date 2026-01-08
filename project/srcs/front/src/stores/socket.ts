@@ -22,8 +22,8 @@ export const useSocketStore = defineStore('socket', {
       });
 
         socketStatus.on('notify', (msg) => {
-          console.log(msg)
-          this.handleSocialEvent(msg.type, {"userId": msg.dst_id, "conversation_id": msg.conversation_id, });
+          // console.log(msg)
+          this.handleSocialEvent(msg.type, {"userId": msg.dst_id, "conversation_id": msg.conversation_id, "FromId": msg.source_id});
          this.notifications.push(msg); // waiting for desing to add it in front as pop up
         });
 
@@ -125,9 +125,11 @@ export const useSocketStore = defineStore('socket', {
 
       switch (type) {
         case 'match':
-          profileStore.handleNewMatch(payload.userId);
+          profileStore.handleNewMatch(payload.FromId);
           break;
-        
+        case 'unmatch':
+          profileStore.handleUnMatch(payload.FromId);
+          break;
         case 'like':
           if (profileStore.activeProfile?.user.user_id === payload.userId) {
             profileStore.fetchProfile(payload.userId);

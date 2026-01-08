@@ -47,12 +47,20 @@ export const useSocialStore = defineStore('profile', {
 
     handleNewMatch(partnerId: number) {
       if (this.activeProfile?.user.user_id === partnerId) {
+        this.activeProfile.interactions.is_connected = 2
         this.isMatch = true;
       }
     },
+    handleUnMatch(partnerId: number) {
 
+      if (this.activeProfile?.user.user_id === partnerId) {
+        this.activeProfile.interactions.is_connected = (this.activeProfile.interactions.is_connected || 1) - 1
+        this.isMatch = true;
+      }
+    },
     handleBlock(userId: number) {
       if (this.activeProfile?.user.user_id === userId) {
+
         this.activeProfile = null;
       }
     },
