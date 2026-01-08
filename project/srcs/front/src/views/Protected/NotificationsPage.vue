@@ -66,6 +66,14 @@ const avatarStyleFun = (value: NotificationsResponse) => {
     }
     return image;
 };
+
+
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `http://localhost:8081/profile/pictures/${link}`
+}
 </script>
 
 <template>
@@ -74,7 +82,7 @@ const avatarStyleFun = (value: NotificationsResponse) => {
     </div>
     <div v-if="!isLoading && !isError && NotificationsData" class="contenty">
         <div v-for="value in NotificationsData" class="notif">
-            <PictureNdIcon :height="59" :width="59" :readonly="true" :initialImage="`http://localhost:8081/profile/pictures/${value.picture_url[0].url}`" :initialIcon="avatarStyleFun(value)" />
+            <PictureNdIcon :height="59" :width="59" :readonly="true" :initialImage="pictures_handler(value.picture_url[0].url)" :initialIcon="avatarStyleFun(value)" />
             <div>
                {{value.type[0].toUpperCase() + value.type.slice(1)}} from <span>@{{value.username}}</span>
             </div>

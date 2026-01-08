@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, onMounted, watch, nextTick } from 'vue';
+    import { ref, onMounted, watch, nextTick, onUnmounted } from 'vue';
     import { useRoute } from 'vue-router';
     const route = useRoute();
     
@@ -37,7 +37,7 @@
     
     const newMessage = ref('')
 
-    function sendMessage() {
+    function sendMessage_() {
         if (!newMessage.value.trim()) return;
         messages.value.push({ id: Date.now(), text: newMessage.value, fromMe: true })
         newMessage.value = ''
@@ -50,7 +50,9 @@
 
 import type {ConversationsResponse} from '@/types/apiResponses'
 import ChatService from '@/api/services/ChatService'
+import { useSocketStore } from '@/stores/socket'
 import axios, { AxiosError } from 'axios';
+// import  useSocketListener from '@/composables/useSocketChat'
 
 interface BackendError {
   error: string;
@@ -60,6 +62,7 @@ const conversationData = ref<ConversationsResponse[] | null>(null);
 
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
+const socketStore = useSocketStore()
 
 const fetchConversations = async () => {
     if (!route.params.id) return;
@@ -69,6 +72,8 @@ const fetchConversations = async () => {
         console.log(data)
         // conversationData.value = data;
         conversationData.value = [...data.data];
+        socketStore.joinChat(conversationData.value[0].peer_id.toString())
+        // useSocketListener('join_chat')
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -81,29 +86,47 @@ const fetchConversations = async () => {
     }
 };
 
+function sendMessage() {
+    if (!newMessage.value.trim()) return;
+
+    if (conversationData.value) socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
+
+    newMessage.value = ''
+}
+
 watch(() => route.params.id, fetchConversations);
 
 onMounted(fetchConversations);
 
+onUnmounted(() => {
+    if (conversationData.value)
+        socketStore.leaveChat(conversationData.value[0].peer_id.toString())
+})
 
-    
+
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `http://localhost:8081/profile/pictures/${link}`
+}
 
 </script>
 
 <template>
-    <div class="chat" v-if="selectedUser">
+    <div class="chat" v-if="conversationData && !isLoading && !isError">
         <div class="header">
             <button class="back-btn" @click="$router.push('/messages')">←</button>
             <div class="user">
                 <div class="avatar">
-                    <img :src="selectedUser.avatar" alt="avatar" />
+                    <img :src="pictures_handler(conversationData[0].profile_picture_url[0].url)" alt="avatar" />
                 </div>
                 <div class="infos">
-                    <p class="name">{{ selectedUser.name }}</p>
+                    <p class="name">{{ conversationData[0].first_name + " " + conversationData[0].last_name}}</p>
                     <div class="status">
-                        <span :class="['dot', selectedUser.online ? 'online' : 'offline']"></span>
+                        <span :class="['dot', conversationData[0].last_online ? 'online' : 'offline']"></span>
                         <span class="text">
-                            {{ selectedUser.online ? 'Online' : `Last seen ${selectedUser.lastSeen}` }}
+                            {{ !conversationData[0].last_online ? 'Online' : `Last seen ${conversationData[0].last_online}` }}
                         </span>
                     </div>
                 </div>

@@ -26,11 +26,18 @@ const availableTags = ref(profileData?.value.interests);
 const selectedOrientation = ref(profileData?.value.user.sexual_preference);
 const selectedGender = ref(profileData?.value.user.gender);
 
-const initialImage =  `http://localhost:8081/profile/pictures/${profileData?.value.pictures.filter(pic => pic.is_profile_picture)[0].url}`;
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `http://localhost:8081/profile/pictures/${link}`
+}
+
+const initialImage =  pictures_handler(profileData?.value.pictures.filter(pic => pic.is_profile_picture)[0].url as string);
 const initialpictures = profileData?.value.pictures.filter(img => !img.is_profile_picture).map(img => {
     return {
     id: img.url,
-    url: `http://localhost:8081/profile/pictures/${img.url}`
+    url: pictures_handler(img.url as string)
 }})
 
 const selectedProfile = ref<File | null>(null);

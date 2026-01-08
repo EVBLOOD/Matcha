@@ -56,6 +56,12 @@ const statusColor = computed(() => {
         };
 });
 
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `http://localhost:8081/profile/pictures/${link}`
+}
 
 </script>
 
@@ -63,7 +69,7 @@ const statusColor = computed(() => {
     <div v-if="!isLoading && !isError && profileData" class="contentz">
         <div class="sideBar">
             <div class="sideBar_personal_info">
-                <img width="250px" height="250px" style="margin-bottom: 22px;" :src="`http://localhost:8081/profile/pictures/${profileData.pictures.find(obj => obj.is_profile_picture == true)?.url}`" alt="">
+                <img width="250px" height="250px" style="margin-bottom: 22px;" :src="pictures_handler(profileData.pictures.find(obj => obj.is_profile_picture == true)?.url as string)" alt="">
                 <div style="font-weight:500; font-size: 26px;">{{profileData.user.first_name + " " + profileData.user.last_name}}</div>
                 <div class="status_bar">
                     <div class="status" :style="statusColor"></div> {{socket.UserStatus(profileData.user.user_id.toString())}}

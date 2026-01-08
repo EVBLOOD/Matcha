@@ -68,6 +68,21 @@ export const useSocketStore = defineStore('socket', {
         }
       })
     },
+    joinChat(id: string) {
+      socketChat.emit('join_chat', {user_id: id}, ((resp: any) => {
+        console.log(resp)
+      }))
+    },
+    leaveChat(id: string) {
+      socketChat.emit('join_chat', {user_id: id}, ((resp: any) => {
+        console.log(resp)
+      }))
+    },
+    sendMessage(id: string, content: string) {
+      socketChat.emit('send_message', {user_id: id, text: content}, ((resp: any) => {
+        console.log(resp)
+      }))
+    },
     UserStatus(id: string) {
       return this.onlineUsers.get(id)
     },

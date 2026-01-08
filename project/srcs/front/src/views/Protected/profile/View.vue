@@ -43,6 +43,13 @@ const unblockHandler = () => {
     if (!profileData) return
     socketStore.interactWithUser(profileData.value.user.user_id, 'unblock')
 }
+
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `http://localhost:8081/profile/pictures/${link}`
+}
 </script>
 
 <template>
@@ -72,7 +79,7 @@ const unblockHandler = () => {
         </div>
         <div class="user_infos">
             <RenderPictures :readonly="true"
-                :initialpictures="profileData.pictures.filter(obj => !obj.is_profile_picture).map(obj => { return { id: obj.url, url: `http://localhost:8081/profile/pictures/${obj.url}` } })" />
+                :initialpictures="profileData.pictures.filter(obj => !obj.is_profile_picture).map(obj => { return { id: obj.url, url: pictures_handler(obj.url) } })" />
             <div class="gender_location">
                 <div><img src="/img/maleIcon.svg" alt=""> {{ profileData.user.gender }}</div>
                 <div><img src="/img/locationIcon.svg" alt=""> California - USA </div>

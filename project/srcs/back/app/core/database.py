@@ -3,6 +3,7 @@ import psycopg2.pool
 from flask import g, current_app
 from contextlib import contextmanager
 
+from app.core.seed_db import get_seed_data
 
 class Database:
     pool = None
@@ -62,6 +63,7 @@ class Database:
                 cursor = conn.cursor()
                 cursor.execute(script)
                 conn.commit()
+            get_seed_data(self)
         except Exception as e:
             conn.rollback()
             current_app.logger.error(f"Database initialization failed: {str(e)}")

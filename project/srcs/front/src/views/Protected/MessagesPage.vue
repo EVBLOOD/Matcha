@@ -54,6 +54,13 @@ const fetchConversations = async () => {
 // watch(() => route.params.id, fetchConversations);
 
 onMounted(fetchConversations);
+
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `http://localhost:8081/profile/pictures/${link}`
+}
 </script>
 
 <template>
@@ -61,7 +68,7 @@ onMounted(fetchConversations);
         <div :class="['sideBar', { hideOnMobile: chatOpen }]">
             <div class="user" v-for="user in conversationsData" :key="user.peer_id" @click="openChat(user.conversation_id)">
                 <div class="avatar">
-                    <img :src="`http://localhost:8081/profile/pictures/${user.profile_picture_url[0].url}`" alt="avatar" />
+                    <img :src="pictures_handler(user.profile_picture_url[0].url)" alt="avatar" />
                 </div>
                 <div class="infos">
                     <p class="name">{{ user.first_name + " " + user.last_name }}</p>
