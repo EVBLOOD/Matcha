@@ -41,7 +41,8 @@ class ChatManager :
 
     @staticmethod
     def join_private_room(user_id: str, other_id: str, socket_id: str):
-        # NOTE: Implement friend check/security here
+        if not UserInteractionsService.are_users_connected(other_id, user_id) :
+            return {"You aren't allowd to reach this person!"}
         redis = Config.redis_instence
         room_name = ChatManager._get_canonical_room_name(user_id, other_id)
 
@@ -52,7 +53,8 @@ class ChatManager :
 
     @staticmethod
     def leave_private_room(user_id: str, other_id: str, socket_id: str):
-        # check if they are friends => else disconect socket.
+        if not UserInteractionsService.are_users_connected(other_id, user_id) :
+            return {"You aren't allowd to reach this person!"}
         redis = Config.redis_instence
         room_name = ChatManager._get_canonical_room_name(user_id, other_id)
         
@@ -67,30 +69,26 @@ class ChatManager :
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
         message_id = ChatService.send_message(sender, receiver, message)
-
+        print ("Sending the message", flush=True)
         emit(
-            'chat', 
+            'message_chat', 
             {"text": message, "sender": sender, "id": message_id}, 
             room=private_room
         )
+        print ("Done sending the message", flush=True)
 
         receiver_sockets: Set[bytes] = redis.smembers(f"chat:user_sockets:{receiver}")
         active_viewers: Set[bytes] = redis.smembers(f"chat:private_rooms:{private_room}")
         sockets_needing_notif = receiver_sockets - active_viewers
 
-        # if sockets_needing_notif:
-        #     notify_room = ChatManager._get_user_room_name(receiver)
-        #     emit(
-        #         'new_message_notification', 
-        #         {"sender": sender, "count_change": 1}, 
-        #         room=notify_room
-        #     )
-        # else :
-        chat_room = ChatManager._get_canonical_room_name(receiver)
-        emit(
-            'message_chat', 
-            {"text": message, "sender": sender, "id": message_id}, 
-            room=chat_room)
+        if sockets_needing_notif:
+            # TODO: correct this later
+            notify_room = ChatManager._get_user_room_name(receiver)
+            emit(
+                'new_message_notification', 
+                {"sender": sender, "count_change": 1}, 
+                room=notify_room
+            )
         return message_id
 
 

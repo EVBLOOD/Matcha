@@ -39,7 +39,6 @@
             if (conversationData.value[0].messages_list)
                 conversationMessages.value = [...conversationData.value[0].messages_list]
             socketStore.joinChat(conversationData.value[0].peer_id.toString())
-            // useSocketListener('join_chat')
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
                 isError.value = (err.response?.data as BackendError)?.error;
@@ -61,8 +60,8 @@
 
         if (conversationData.value) {
             const id = socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
-            if (conversationMessages.value)
-                conversationMessages.value.push({id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"})
+            // if (conversationMessages.value)
+            //     conversationMessages.value.push({id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"})
         }
         newMessage.value = ''
     }
@@ -81,9 +80,13 @@
     }
 
 
-    useSocketListener('message_chat', (params) => {{
+    useSocketListener('message_chat', (params) => {
+
+         if (conversationMessages.value )
+                conversationMessages.value.push({id: params.id, content: params.text, is_read: true, sender_id: params.sender as number, sent_at: "Now"})
+
         console.log(params)
-    }})
+    })
 
     const messagesContainer = ref<HTMLElement | null>(null);
 
