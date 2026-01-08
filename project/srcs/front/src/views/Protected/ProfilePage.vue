@@ -9,52 +9,73 @@ import ProfileService from '@/api/services/ProfileService'
 import type {UserProfileResponse} from '@/types/apiResponses'
 import axios, { AxiosError } from 'axios';
 
+import { useSocialStore } from '@/stores/profile';
 import { useSocketStore } from '@/stores/socket';
 
 
 const route = useRoute();
-const userStore = useUserStore();
-const profileData = ref<UserProfileResponse | null>(null);
-const isLoading = ref(true);
-const isError = ref<string | null>(null);
+// const profileData = ref<UserProfileResponse | null>(null);
+// const isLoading = ref(true);
+// const isError = ref<string | null>(null);
 
-interface BackendError {
-  error: string;
-}
+// interface BackendError {
+//   error: string;
+// }
+
+
+// const fetchProfile = async () => {
+//   isLoading.value = true;
+//   try {
+//     const { data } = await ProfileService.getProfile(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
+//     profileData.value = data;
+//     if (profileData.value?.user)
+//         socket.reachStausOneUser(profileData.value.user.user_id.toString())
+//   } catch(err : unknown) {
+//     if (axios.isAxiosError(err)) {
+//         isError.value = (err.response?.data as BackendError)?.error;
+//     }
+//     else {
+//         isError.value = "Registration failed for unknown reason'";
+//     }
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
+
+
+const profile = useSocialStore()
+
+watch(() => route.params.id, () => {
+    profile.fetchProfile(parseInt(route.params.id as string))
+
+});
+
+
+const userStore = useUserStore();
+
 
 const socket = useSocketStore();
+// socket.reachStausOneUser(profileData.value.user.user_id.toString())
 
-const fetchProfile = async () => {
-  isLoading.value = true;
-  try {
-    const { data } = await ProfileService.getProfile(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
-    profileData.value = data;
-    if (profileData.value?.user)
-        socket.reachStausOneUser(profileData.value.user.user_id.toString())
-  } catch(err : unknown) {
-    if (axios.isAxiosError(err)) {
-        isError.value = (err.response?.data as BackendError)?.error;
-    }
-    else {
-        isError.value = "Registration failed for unknown reason'";
-    }
-  } finally {
-    isLoading.value = false;
-  }
-};
+onMounted(() => {
+    profile.fetchProfile(parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id))
+    if (profile.activeProfile)
+        socket.reachStausOneUser(profile.activeProfile.user.user_id.toString())
+});
 
-watch(() => route.params.id, fetchProfile);
-
-onMounted(fetchProfile);
-
-provide('profileData', profileData);
 
 const statusColor = computed(() => {
-    if (profileData.value)
+    if (profile.activeProfile)
         return {
-            background: socket.UserStatus(profileData.value.user.user_id.toString()) == "Online" ? "rgb(6, 201, 6)" : "red"
+            background: socket.UserStatus(profile.activeProfile.user.user_id.toString()) == "Online" ? "rgb(6, 201, 6)" : "red"
         };
 });
+
+
+// provide('profileData', profile.activeProfile);
+
+
+
 
 const pictures_handler = (link: string) => {
     if (link.indexOf('/') > 0) {
@@ -66,24 +87,24 @@ const pictures_handler = (link: string) => {
 </script>
 
 <template>
-    <div v-if="!isLoading && !isError && profileData" class="contentz">
+    <div v-if="!profile.loading && !profile.error && profile.activeProfile" class="contentz">
         <div class="sideBar">
             <div class="sideBar_personal_info">
-                <img width="250px" height="250px" style="margin-bottom: 22px;" :src="pictures_handler(profileData.pictures.find(obj => obj.is_profile_picture == true)?.url as string)" alt="">
-                <div style="font-weight:500; font-size: 26px;">{{profileData.user.first_name + " " + profileData.user.last_name}}</div>
+                <img width="250px" height="250px" style="margin-bottom: 22px;" :src="pictures_handler(profile.activeProfile.pictures.find(obj => obj.is_profile_picture == true)?.url as string)" alt="">
+                <div style="font-weight:500; font-size: 26px;">{{profile.activeProfile.user.first_name + " " + profile.activeProfile.user.last_name}}</div>
                 <div class="status_bar">
-                    <div class="status" :style="statusColor"></div> {{socket.UserStatus(profileData.user.user_id.toString())}}
+                    <div class="status" :style="statusColor"></div> {{socket.UserStatus(profile.activeProfile.user.user_id.toString())}}
                 </div>
             </div>
             <div class="stats_holder">
                 <div class="stats_count"> <img src="/img/viewIcon.svg" alt=""> Profile Views : <span
-                        style="font-weight: bold;">{{profileData.interactions.views_count}}</span></div>
+                        style="font-weight: bold;">{{profile.activeProfile.interactions.views_count}}</span></div>
                 <div class="stats_count"> <img src="/img/likesIcon.svg" alt=""> Likes Received : <span
-                        style="font-weight: bold;">{{profileData.interactions.likes_count}}</span></div>
+                        style="font-weight: bold;">{{profile.activeProfile.interactions.likes_count}}</span></div>
             </div>
             <div>
                 <p>Fame Rating 🔥</p>
-                <Fame :initialFameScore="profileData.profile.fame_rating"/>
+                <Fame :initialFameScore="profile.activeProfile.profile.fame_rating"/>
             </div>
         </div>
         <div class="profile_vue">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
-import { inject, onMounted, type Ref } from 'vue';
+// import { inject, onMounted, type Ref } from 'vue';
 
 import RenderPictures from '@/components/RenderPictures.vue';
 import Button from '@/components/Button.vue';
@@ -10,38 +10,42 @@ import useUserStore from '@/stores/user';
 import type { UserProfileResponse } from '@/types/apiResponses'
 import { useSocketStore } from '@/stores/socket';
 
+import { useSocialStore } from '@/stores/profile';
+const profile = useSocialStore()
+
+
 const route = useRoute();
 const userStore = useUserStore();
 
-const profileData = inject<Ref<UserProfileResponse>>('profileData');
+const profileData = profile.activeProfile;
 
-console.log(profileData?.value)
+console.log(profileData)
 
 const socketStore = useSocketStore()
 const likeHandler = () => {
     if (!profileData) return
-    socketStore.interactWithUser(profileData.value.user.user_id, 'like')
+    socketStore.interactWithUser(profileData.user.user_id, 'like')
 }
 
 const dislikeHandler = () => {
     if (!profileData) return
-    socketStore.interactWithUser(profileData.value.user.user_id, 'dislike')
+    socketStore.interactWithUser(profileData.user.user_id, 'dislike')
 }
 
 
 if (profileData && route.params.id !== userStore.getUserID.toString()) {
     console.log("HERE")
-    socketStore.interactWithUser(profileData.value.user.user_id, 'view')
+    socketStore.interactWithUser(profileData.user.user_id, 'view')
 }
 
 const blockHandler = () => {
     if (!profileData) return
-    socketStore.interactWithUser(profileData.value.user.user_id, 'block')
+    socketStore.interactWithUser(profileData.user.user_id, 'block')
 }
 
 const unblockHandler = () => {
     if (!profileData) return
-    socketStore.interactWithUser(profileData.value.user.user_id, 'unblock')
+    socketStore.interactWithUser(profileData.user.user_id, 'unblock')
 }
 
 const pictures_handler = (link: string) => {
