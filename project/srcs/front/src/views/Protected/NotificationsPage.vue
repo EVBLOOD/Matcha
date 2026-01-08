@@ -5,7 +5,7 @@ import PictureNdIcon from '@/components/PictureNdIcon.vue';
 import NotificationsService from '@/api/services/NotificationsService'
 import type { NotificationsResponse } from '@/types/apiResponses'
 
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 
 import { useSocketStore } from '@/stores/socket';
 import axios, { AxiosError } from 'axios';
@@ -74,6 +74,7 @@ const pictures_handler = (link: string) => {
     }
     return `http://localhost:8081/profile/pictures/${link}`
 }
+
 </script>
 
 <template>

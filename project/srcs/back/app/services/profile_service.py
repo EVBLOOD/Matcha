@@ -7,7 +7,13 @@ from app.services.tags_service import TagsService
 from app.dal.repositories.user_repository import UserRepository
 from app.services.picture_service import PictureService
 from app.services.auth_service import AuthService
+from app.core.config import Config
 # from typing import Set
+
+from flask import jsonify
+import requests
+
+import geoip2.database
 
 class ProfileService:
     # TODO:
@@ -16,7 +22,7 @@ class ProfileService:
     # in that case
     @staticmethod
     def create_profile(user_id: int, gender: str, sexual_preference: str,\
-                        biography: str, location_set_by_user: bool, files_list, tags: str, latitude: float = 0, longitude: float = 0) :
+                        biography: str, location_set_by_user: bool, files_list, tags: str, latitude: float = 0, longitude: float = 0, ip: str = "") :
         
         tags_list = set(tags.split(';'))
 
@@ -28,6 +34,8 @@ class ProfileService:
         try :
             TagsService.insert_tags(tags_list, user_id)
             PictureService.proccess_images(files_list, user_id)
+            # if not latitude and not longitude :
+                # if not latitude and not longitude :
             was_done = ProfileRepository.upsert_profile(
                 Profile(user_id, gender, sexual_preference, biography, location_set_by_user)
             )
@@ -35,7 +43,38 @@ class ProfileService:
         except Exception as e:
             raise Exception(e)
         return was_done
-    
+
+    @staticmethod
+    def initial_location(ip: str) :    
+        if ip == '127.0.0.1':
+            ip = '8.8.8.8' 
+
+        try:
+            print(ip, flush=True)
+            # ip = '105.76.167.86'
+
+            resp = Config.GEOIP_READER.city(ip)
+            print(resp, flush=True)
+            # data = resp.json()
+            
+            print(resp, flush=True)
+            result = {
+                "city": resp.city.name,
+                "country": resp.country.iso_code,
+                "lat": resp.location.latitude,
+                "lng": resp.location.longitude,
+                "ip": ip
+            }
+            print(result, flush=True)
+
+            return jsonify({"f" : "result"})
+        except geoip2.errors.AddressNotFound:
+            print(f"Address {ip} not found in the database.",flush=True)
+        except Exception as e:
+            print(f"An error occurred: {e}", flush=True)
+
+        return jsonify({"error": "Fallback to default region"}), 200
+
     @staticmethod
     def update_profile(user_id: int, gender: str, sexual_preference: str,\
                         biography: str, location_set_by_user: bool, latitude: float, longitude: float) :

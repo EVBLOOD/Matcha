@@ -21,11 +21,8 @@ Uregent to add :
 
 Bonus to prepare :
 - login: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
+
 - Map: Develop user map interface.
-
-
-- Make it real time for profile when doing things to an account
-
 
 - Initial GPS location capture
 

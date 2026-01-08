@@ -3,13 +3,14 @@ import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
 import InputLabel from '@/components/InputLabel.vue';
 import Select from '@/components/Select.vue';
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import useUserStore from '@/stores/user';
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
 import RenderPictures from '@/components/RenderPictures.vue';
 import TagsList from '@/components/TagsList.vue';
 
 
+import { usePreciseLocation } from '@/composables/usePreciseLocation'
 import UserService from '@/api/services/UserService'
 import { useRouter } from 'vue-router'
 
@@ -29,6 +30,9 @@ const insertedBio = ref('');
 const insertedPictures = ref<PicturesDisplying[]>([]);
 
 const router = useRouter()
+
+const { coords, getPreciseLocation } = usePreciseLocation()
+
 
 const handleSubmit = async () => {
     // add protections
@@ -52,8 +56,11 @@ const handleSubmit = async () => {
     });
 
     formData.append('location_set_by_user', String(false));
-    //   formData.append('latitude', bio.value);
-    //   formData.append('longitude', bio.value);
+
+    if (coords.value.latitude && coords.value.longitude) {
+        formData.append('latitude', coords.value.latitude.toString());
+        formData.append('longitude', coords.value.longitude.toString());
+    }
     
     try {
         await UserService.completeProfile(formData);
@@ -77,6 +84,22 @@ const handlePicures = (files: PicturesDisplying[]) => {
 const handleTags = (tags: string[]) => {
     selectedIntersts.value = [...tags];
 };
+
+onMounted(async () => {
+  try {
+    getPreciseLocation()
+  } catch (e) {
+    console.log(e)
+  }
+})
+
+watch(
+    coords, () => {
+        console.log(coords.value)
+    }
+)
+
+
 </script>
 
 <template>

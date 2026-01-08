@@ -35,3 +35,7 @@ class Config:
     ma_instence = None
     mail = None
     socket_instence = None
+
+
+    db_path = None
+    GEOIP_READER = None

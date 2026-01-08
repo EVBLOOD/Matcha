@@ -34,7 +34,12 @@ services:
     restart: on-failure
     volumes:
       - ${PWD}/srcs/back:/var/www/html
+      - geoip-data:/var/www/html/app/data/maxmind:ro
     env_file: .env
+    environment:
+      - GEOIP_DB_PATH="/var/www/html/app/data/maxmind/GeoLite2-City.mmdb"
+    depends_on:
+      - geoip-updater
 
   database:
     image: postgres
@@ -63,12 +68,22 @@ services:
     restart: on-failure
     command: redis-server --appendonly yes
 
+  geoip-updater:
+      image: ghcr.io/maxmind/geoipupdate:latest
+      environment:
+        - GEOIPUPDATE_ACCOUNT_ID=$GEOIPUPDATE_ACCOUNT_ID
+        - GEOIPUPDATE_LICENSE_KEY=$GEOIPUPDATE_LICENSE_KEY
+        - GEOIPUPDATE_EDITION_IDS=$GEOIPUPDATE_EDITION_IDS
+        - GEOIPUPDATE_FREQUENCY=72
+      volumes:
+        - geoip-data:/usr/share/GeoIP
 
 networks:
   matcha:
     driver: bridge
 
-# volumes:
+volumes:
+  geoip-data:
 #   matcha_vol_front:
 #     driver_opts:
 #       o: bind
