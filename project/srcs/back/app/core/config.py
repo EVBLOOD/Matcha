@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-from flask_marshmallow import Marshmallow
-import requests
+# from flask_marshmallow import Marshmallow
 
 load_dotenv ()
 
@@ -31,7 +30,7 @@ class Config:
     MAIL_USERNAME =  os.getenv('MAIL_USERNAME', 'noreplay@matcha.com')
     MAIL_PASSWORD =  os.getenv('MAIL_PASSWORD', '')
     MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', '')
-    BACKEND_LINK = os.getenv('BACKEND_LINK', 'localhost/api')
+    VITE_BACKEND_LINK = os.getenv('VITE_BACKEND_LINK', 'localhost/api')
     FRONT_LINK = os.getenv('FRONT_LINK', 'localhost') # for the origins
     ma_instence = None
     mail = None
@@ -40,4 +39,4 @@ class Config:
 
     GEOIP_DB_PATH = os.getenv('GEOIP_DB_PATH', 'localhost:8081')
     GEOIP_READER = None
-    PUBLIC_IP = requests.get("https://api.ipify.org").text
+    PUBLIC_IP = None

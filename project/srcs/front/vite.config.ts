@@ -12,6 +12,9 @@ export default defineConfig({
     vueJsx(),
     vueDevTools(),
   ],
+  define: {
+    'process.env': process.env
+  },
   css: {
     preprocessorOptions: {
       scss:{

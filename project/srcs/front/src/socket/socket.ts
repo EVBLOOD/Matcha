@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.SOCKET_LINK || import.meta.env.BACKEND_LINK;
+const SOCKET_URL = import.meta.env.VITE_BACKEND_LINK || import.meta.env.VITE_BACKEND_LINK;
 
 
 export const socketStatus: Socket = io(`${SOCKET_URL}/status`, {

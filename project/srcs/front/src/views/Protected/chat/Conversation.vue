@@ -76,7 +76,7 @@
         if (link.indexOf('/') > 0) {
             return link
         }
-        return `${import.meta.env.BACKEND_LINK}/profile/pictures/${link}`
+        return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
     }
 
 

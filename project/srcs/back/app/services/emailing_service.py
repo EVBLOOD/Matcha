@@ -7,7 +7,7 @@ class EmailingService :
             subject="Welcome to Matcha",
             recipients=[email],
         )
-        link = Config.BACKEND_LINK + "/user/verify_account?token_id=" + token 
+        link = Config.VITE_BACKEND_LINK + "/user/verify_account?token_id=" + token 
 
         msg.body = f"""
         Hello { username },
