@@ -7,33 +7,32 @@ interface Coords {
 
 export function usePreciseLocation() {
   const coords = ref<Coords>({ latitude: null, longitude: null })
-  const error = ref<string | null>(null)
-  const isLoading = ref(false)
 
-  const getPreciseLocation = () => {
-    isLoading.value = true
-    
-    if (!("geolocation" in navigator)) {
-      error.value = "Geolocation service is not supported"
-      isLoading.value = false
-      return
-    }
+  const getPreciseLocation = () : Promise<Coords | null> => { return new Promise((resolve) =>
+  {
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        coords.value = {
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude
-        }
-        isLoading.value = false
-      },
-      (err) => {
-        error.value = err.message
-        isLoading.value = false
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    )
+      if (!("geolocation" in navigator)) {
+        resolve(null);
+        return
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          coords.value = {
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude
+          }
+          resolve(coords.value);
+        },
+        (err) => {
+          console.warn("User denied or error:", err.message);
+          resolve(null);
+        },
+        { enableHighAccuracy: true }
+      )
+  })
   }
 
-  return { coords, error, isLoading, getPreciseLocation }
+  return { coords, getPreciseLocation }
 }
+

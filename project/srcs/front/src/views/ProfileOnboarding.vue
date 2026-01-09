@@ -31,11 +31,20 @@ const insertedPictures = ref<PicturesDisplying[]>([]);
 
 const router = useRouter()
 
-const { coords, getPreciseLocation } = usePreciseLocation()
+const { getPreciseLocation, coords } = usePreciseLocation()
 
 
 const handleSubmit = async () => {
-    // add protections
+    // add protections for inputs:
+    try {
+
+
+    const locationResult = await getPreciseLocation();
+    console.log((coords.value.latitude || "").toString())
+    console.log((coords.value.longitude || "").toString())
+    console.log(locationResult)
+
+    console.log("Wait!")
     const formData = new FormData();
 
     formData.append('biography', insertedBio.value);
@@ -55,14 +64,25 @@ const handleSubmit = async () => {
         }
     });
 
-    formData.append('location_set_by_user', String(false));
+    console.log(locationResult)
+    console.log((coords.value.latitude || "").toString())
+    console.log((coords.value.longitude || "").toString())
 
-    if (coords.value.latitude && coords.value.longitude) {
+    if (coords.value.latitude !== null && coords.value.longitude !== null) {
         formData.append('latitude', coords.value.latitude.toString());
         formData.append('longitude', coords.value.longitude.toString());
+        formData.append('location_set_by_user', String(true));
+        console.log("locationResult is on")
+    } else {
+        formData.append('location_set_by_user', String(false));
+        console.log("locationResult is off")
+
     }
+
+    console.log(coords.value)
+    console.log(locationResult)
     
-    try {
+    
         await UserService.completeProfile(formData);
         const user = useUserStore();
         await user.fetchUser();
@@ -84,20 +104,6 @@ const handlePicures = (files: PicturesDisplying[]) => {
 const handleTags = (tags: string[]) => {
     selectedIntersts.value = [...tags];
 };
-
-onMounted(async () => {
-  try {
-    getPreciseLocation()
-  } catch (e) {
-    console.log(e)
-  }
-})
-
-watch(
-    coords, () => {
-        console.log(coords.value)
-    }
-)
 
 
 </script>

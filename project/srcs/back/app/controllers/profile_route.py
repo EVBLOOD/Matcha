@@ -49,6 +49,7 @@ def create_profile() :
             ip = request.remote_addr
 
         try :
+            print(f"validated_data: {validated_data}", flush=True)
             was_added = ProfileService.create_profile(user_id=user_id, **validated_data, files_list=files, ip=ip)
         except Exception as e :
             return jsonify({"error": str(e)}), 500

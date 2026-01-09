@@ -39,8 +39,13 @@ class ProfileService:
             TagsService.insert_tags(tags_list, user_id)
             PictureService.proccess_images(files_list, user_id)
             
+            print(f"latitude: {latitude}, longitude: {longitude}", flush=True)
+            print(f"not location_set_by_user {not location_set_by_user }")
+            print(f"not (not latitude and not longitude) {(not latitude and not longitude)}")
+            print(f"(-90 <= latitude <= 90 and -180 <= longitude <= 180) {(-90 <= latitude <= 90 and -180 <= longitude <= 180)}")
+            print(f"not (-90 <= latitude <= 90 and -180 <= longitude <= 180) {not (-90 <= latitude <= 90 and -180 <= longitude <= 180)}")
             if not location_set_by_user or (not latitude and not longitude) or \
-                (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+                not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
                 result = ProfileService.initial_location(ip)
                 latitude = result["lat"]
                 longitude = result["lng"]
