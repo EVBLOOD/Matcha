@@ -14,8 +14,14 @@ from flask_cors import CORS
 
 import os
 import geoip2.database
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+
 
 app = Flask(__name__)
+
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1)
+
 app.config.from_object(Config)
 Config.DB_instence = Database(app=app)
 Config.redis_instence = FlaskRedis(app=app)
@@ -26,7 +32,10 @@ Config.mail = Mail(app)
 Config.ma_instence = Marshmallow(app=app)
 
 # Config.db_path = os.path.join(os.getcwd(), 'data', 'GeoLite2-City.mmdb')
-Config.GEOIP_READER = geoip2.database.Reader(Config.GEOIP_DB_PATH)
+try :
+    Config.GEOIP_READER = geoip2.database.Reader(Config.GEOIP_DB_PATH)
+except Exception :
+    print(f"Please verify you env vars!", flush=True)
 
 Config.socket_instence = SocketIO(app, cors_allowed_origins="*")
 Config.socket_instence.on_namespace(PresenceGateway('/status'))

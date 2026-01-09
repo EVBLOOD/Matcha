@@ -28,9 +28,9 @@ services:
     image: matcha_back
     networks:
       - matcha
-    ports:
-      - 8081:8080
-      - 5001:5000
+    # ports:
+    #   - 8081:8080
+    #   - 5001:5000
     restart: on-failure
     volumes:
       - ${PWD}/srcs/back:/var/www/html
@@ -40,6 +40,8 @@ services:
       - GEOIP_DB_PATH=/var/www/html/app/data/maxmind/GeoLite2-City.mmdb
     depends_on:
       - geoip-updater
+    expose:
+      - "8080"
 
   database:
     image: postgres
@@ -77,7 +79,16 @@ services:
         - GEOIPUPDATE_FREQUENCY=72
       volumes:
         - geoip-data:/usr/share/GeoIP
-
+  web:
+      image: nginx:alpine
+      ports:
+        - "8081:80"
+      volumes:
+        - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      depends_on:
+        - back 
+      networks:
+        - matcha
 networks:
   matcha:
     driver: bridge

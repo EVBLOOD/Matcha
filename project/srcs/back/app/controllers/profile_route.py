@@ -26,26 +26,6 @@ def get_profile(user_id) :
         return jsonify({"error": str(e)}), 404
 
 
-# def get_actual_ip():
-#     if request.headers.get('X-Forwarded-For'):
-#         return request.headers.get('X-Forwarded-For').split(',')[0].strip()
-#     return request.remote_addr
-
-
-@profile_bp.route('/initial-location')
-def initial_location():
-    print(request)
-    # ip = get_actual_ip()
-    if request.headers.get('X-Forwarded-For'):
-        ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
-        print('X-Forwarded-For', flush=True)
-    else :
-        print('No X-Forwarded-For', flush=True)
-        ip = request.remote_addr
-    print(ip, flush=True)
-    return ProfileService.initial_location(ip)
-
-
 @profile_bp.route('/create_profile', methods=['POST'])
 @Security.auth_guard(check_profile=False)
 def create_profile() :
@@ -62,11 +42,12 @@ def create_profile() :
                 return jsonify({"errors": "No attached files!"}), 400
         except Exception as err:
             return jsonify({"errors": err.messages}), 400
+
         if request.headers.get('X-Forwarded-For'):
             ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
         else :
             ip = request.remote_addr
-        # ip = get_actual_ip()
+
         try :
             was_added = ProfileService.create_profile(user_id=user_id, **validated_data, files_list=files, ip=ip)
         except Exception as e :

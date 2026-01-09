@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask_marshmallow import Marshmallow
+import requests
 
 load_dotenv ()
 
@@ -39,3 +40,4 @@ class Config:
 
     GEOIP_DB_PATH = os.getenv('GEOIP_DB_PATH', 'localhost:8081')
     GEOIP_READER = None
+    PUBLIC_IP = requests.get("https://api.ipify.org").text

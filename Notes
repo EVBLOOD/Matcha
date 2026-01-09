@@ -27,3 +27,10 @@ Bonus to prepare :
 - Initial GPS location capture
 
 - Suggestions that match their profile. (Browsing see to do list)
+
+<!-- 
+from geopy.geocoders import Nominatim
+
+geolocator = Nominatim(user_agent="geoip_check")
+location = geolocator.reverse((lat, lng))
+print(location.address) -->

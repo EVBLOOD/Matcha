@@ -95,10 +95,11 @@ class UserRepository(BaseRepository):
     ) -> bool:
         query = """
             UPDATE users 
-            SET latitude = %s, longitude = %s 
+            SET latitude = %s,longitude = %s 
             WHERE id = %s
+            RETURNING id
         """
-        return cls._execute(query, (latitude, longitude, user_id)) > 0
+        return cls._execute(query, (latitude, longitude, user_id,))
 
     @classmethod
     def update_password(cls, user_id: int, new_password: str) :

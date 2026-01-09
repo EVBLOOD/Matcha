@@ -15,6 +15,11 @@ import requests
 
 import geoip2.database
 
+from geoip2.errors import AddressNotFoundError
+import ipaddress
+
+
+
 class ProfileService:
     # TODO:
     # this has a problem in case of failure of one of the insertions in the database, it should be fixed 
@@ -25,55 +30,61 @@ class ProfileService:
                         biography: str, location_set_by_user: bool, files_list, tags: str, latitude: float = 0, longitude: float = 0, ip: str = "") :
         
         tags_list = set(tags.split(';'))
-
         if ProfileRepository.find_profile_exists(user_id) :
-            raise ValueError("Profile already filled!")
+            raise ValueError("Profile already filled!")        
         if not files_list or len(files_list) > 5 or len(files_list) < 1:
             raise ValueError("Must provide 1-5 pictures")
         TagsService.check_tag_name_valid(tags_list) # TODO: trim tags
         try :
             TagsService.insert_tags(tags_list, user_id)
             PictureService.proccess_images(files_list, user_id)
-            # if not latitude and not longitude :
-                # if not latitude and not longitude :
+            
+            if not location_set_by_user or (not latitude and not longitude) or \
+                (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+                result = ProfileService.initial_location(ip)
+                latitude = result["lat"]
+                longitude = result["lng"]
             was_done = ProfileRepository.upsert_profile(
                 Profile(user_id, gender, sexual_preference, biography, location_set_by_user)
             )
+            UserRepository.update_location(user_id, latitude, longitude)
             AuthService.update_profile_profile_completion(user_id)
         except Exception as e:
+            print(f"{e}", flush=True)
             raise Exception(e)
         return was_done
 
     @staticmethod
+    def is_public_ip(ip):
+        try:
+            ip_obj = ipaddress.ip_address(ip)
+            return ip_obj.is_global
+        except ValueError:
+            return False
+
+    
+    @staticmethod
     def initial_location(ip: str) :    
-        if ip == '127.0.0.1':
-            ip = '8.8.8.8' 
+        if not ProfileService.is_public_ip(ip):
+            ip = Config.PUBLIC_IP
 
         try:
-            print(ip, flush=True)
-            # ip = '105.76.167.86'
-
             resp = Config.GEOIP_READER.city(ip)
-            print(resp, flush=True)
-            # data = resp.json()
-            
-            print(resp, flush=True)
             result = {
-                "city": resp.city.name,
-                "country": resp.country.iso_code,
                 "lat": resp.location.latitude,
                 "lng": resp.location.longitude,
                 "ip": ip
             }
-            print(result, flush=True)
+            print(f"GEOIP_READER: {resp}", flush=True)
+            print(f"result: {result}", flush=True)
+            return result
 
-            return jsonify({"f" : "result"})
-        except geoip2.errors.AddressNotFound:
+        except AddressNotFoundError:
             print(f"Address {ip} not found in the database.",flush=True)
         except Exception as e:
             print(f"An error occurred: {e}", flush=True)
 
-        return jsonify({"error": "Fallback to default region"}), 200
+        return None
 
     @staticmethod
     def update_profile(user_id: int, gender: str, sexual_preference: str,\
