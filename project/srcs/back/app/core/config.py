@@ -31,8 +31,8 @@ class Config:
     MAIL_USERNAME =  os.getenv('MAIL_USERNAME', 'noreplay@matcha.com')
     MAIL_PASSWORD =  os.getenv('MAIL_PASSWORD', '')
     MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', '')
-    BACKEND_LINK = os.getenv('BACKEND_LINK', 'localhost:8081')
-    FRONT_LINK = os.getenv('FRONT_LINK', 'localhost:300') # for the origins
+    BACKEND_LINK = os.getenv('BACKEND_LINK', 'localhost/api')
+    FRONT_LINK = os.getenv('FRONT_LINK', 'localhost') # for the origins
     ma_instence = None
     mail = None
     socket_instence = None

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8081",
+  baseURL: import.meta.env.BACKEND_LINK,
   // headers: {
   //   'Content-Type': 'application/json',
   // }

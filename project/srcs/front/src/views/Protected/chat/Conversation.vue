@@ -76,7 +76,7 @@
         if (link.indexOf('/') > 0) {
             return link
         }
-        return `http://localhost:8081/profile/pictures/${link}`
+        return `${import.meta.env.BACKEND_LINK}/profile/pictures/${link}`
     }
 
 

@@ -4,6 +4,7 @@ from app.core.security import Security
 from app.core.schemas import UserRegisterSchema, ValidationError
 import time
 
+from app.core.config import Config
 
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
 
@@ -40,7 +41,7 @@ def verify_account() :
         print (token_id, flush=True)
         value = UserService.verify_account(token=token_id)
         if value :
-            return redirect("http://localhost:3000/confirm-email", code=302) # TODO: maybe to login with success prompt -> profile fill
+            return redirect(f"{Config.FRONT_LINK}/confirm-email", code=302) # TODO: maybe to login with success prompt -> profile fill
         else :
             print(f"mafhemtch aba: {value}", flush=True)
             return jsonify({"error": str(value)}), 400

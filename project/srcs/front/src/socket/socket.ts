@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.SOCKET_LINK || 'http://localhost:8081';
+const SOCKET_URL = import.meta.env.SOCKET_LINK || import.meta.env.BACKEND_LINK;
 
 
 export const socketStatus: Socket = io(`${SOCKET_URL}/status`, {
