@@ -39,55 +39,55 @@ const handleSubmit = async () => {
     try {
 
 
-    const locationResult = await getPreciseLocation();
-    console.log((coords.value.latitude || "").toString())
-    console.log((coords.value.longitude || "").toString())
-    console.log(locationResult)
+        const locationResult = await getPreciseLocation();
+        console.log((coords.value.latitude || "").toString())
+        console.log((coords.value.longitude || "").toString())
+        console.log(locationResult)
 
-    console.log("Wait!")
-    const formData = new FormData();
+        console.log("Wait!")
+        const formData = new FormData();
 
-    formData.append('biography', insertedBio.value);
-    formData.append('gender', selectedGender.value);
-    formData.append('sexual_preference', selectedOrientation.value);
-    
+        formData.append('biography', insertedBio.value);
+        formData.append('gender', selectedGender.value);
+        formData.append('sexual_preference', selectedOrientation.value);
 
 
-    formData.append('tags', selectedIntersts.value.join(';'));
-    if (selectedProfile.value) {
-        formData.append('profile', selectedProfile.value);
-    }
 
-    insertedPictures.value.forEach((img) => {
-        if (img.file) {
-            formData.append(img.id, img.file); 
+        formData.append('tags', selectedIntersts.value.join(';'));
+        if (selectedProfile.value) {
+            formData.append('profile', selectedProfile.value);
         }
-    });
 
-    console.log(locationResult)
-    console.log((coords.value.latitude || "").toString())
-    console.log((coords.value.longitude || "").toString())
+        insertedPictures.value.forEach((img) => {
+            if (img.file) {
+                formData.append(img.id, img.file);
+            }
+        });
 
-    if (coords.value.latitude !== null && coords.value.longitude !== null) {
-        formData.append('latitude', coords.value.latitude.toString());
-        formData.append('longitude', coords.value.longitude.toString());
-        formData.append('location_set_by_user', String(true));
-        console.log("locationResult is on")
-    } else {
-        formData.append('location_set_by_user', String(false));
-        console.log("locationResult is off")
+        console.log(locationResult)
+        console.log((coords.value.latitude || "").toString())
+        console.log((coords.value.longitude || "").toString())
 
-    }
+        if (coords.value.latitude !== null && coords.value.longitude !== null) {
+            formData.append('latitude', coords.value.latitude.toString());
+            formData.append('longitude', coords.value.longitude.toString());
+            formData.append('location_set_by_user', String(true));
+            console.log("locationResult is on")
+        } else {
+            formData.append('location_set_by_user', String(false));
+            console.log("locationResult is off")
 
-    console.log(coords.value)
-    console.log(locationResult)
-    
-    
-        await UserService.completeProfile(formData);
-        const user = useUserStore();
-        await user.fetchUser();
+        }
 
-        router.push('/')
+        console.log(coords.value)
+        console.log(locationResult)
+
+
+        // await UserService.completeProfile(formData);
+        // const user = useUserStore();
+        // await user.fetchUser();
+
+        // router.push('/')
     } catch (error) {
         console.error("Upload failed", error);
     }
@@ -109,48 +109,49 @@ const handleTags = (tags: string[]) => {
 </script>
 
 <template>
-        <Card title="Complete Your Profile">
-            <div class="avatar_section">
-                <div>
-                    <PictureNdIcon :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
-                </div>
-                <p class="full_name">Saad AKLLAM</p>
+    <Card title="Complete Your Profile">
+        <div class="avatar_section">
+            <div>
+                <PictureNdIcon :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
             </div>
+            <p class="full_name">Saad AKLLAM</p>
+        </div>
 
-            <div class="gender_div">
-                <p>Gender</p>
-                <div class="labels_list">
-                    <InputLabel name="gender" label="Male" type="radio" id="male" value="male" v-model="selectedGender" />
-                    <InputLabel name="gender" label="Female" type="radio" id="female" value="female" v-model="selectedGender" />
-                    <InputLabel name="gender" label="Other" type="radio" id="other" value="other" v-model="selectedGender" />
-                </div>
+        <div class="gender_div">
+            <p>Gender</p>
+            <div class="labels_list">
+                <InputLabel name="gender" label="Male" type="radio" id="male" value="male" v-model="selectedGender" />
+                <InputLabel name="gender" label="Female" type="radio" id="female" value="female"
+                    v-model="selectedGender" />
+                <InputLabel name="gender" label="Other" type="radio" id="other" value="other"
+                    v-model="selectedGender" />
             </div>
+        </div>
 
-            <div class="orientation_div">
-                <p>Orientation</p>
-                <Select :options="orientation" v-model="selectedOrientation"/>
-            </div>
+        <div class="orientation_div">
+            <p>Orientation</p>
+            <Select :options="orientation" v-model="selectedOrientation" />
+        </div>
 
-            <div class="interest_div">
-                <p>Interest</p>
-                <TagsList @tags-selected="handleTags" :initialtags="availableTags"/>
-            </div>
+        <div class="interest_div">
+            <p>Interest</p>
+            <TagsList @tags-selected="handleTags" :initialtags="availableTags" />
+        </div>
 
-            <div class="bio_div">
-                <p>Bio</p>
-                <textarea v-model="insertedBio" class="bio_erea" name="bio" id="bio" maxlength="500"></textarea>
-            </div>
+        <div class="bio_div">
+            <p>Bio</p>
+            <textarea v-model="insertedBio" class="bio_erea" name="bio" id="bio" maxlength="500"></textarea>
+        </div>
 
-            <div class="bio_div">
-                <p>Photos</p>
-                <RenderPictures @files-selected="handlePicures"/>
-            </div>
-            <Button @click="handleSubmit" text="Save and Continue"></Button>
-        </Card>
+        <div class="bio_div">
+            <p>Photos</p>
+            <RenderPictures @files-selected="handlePicures" />
+        </div>
+        <Button @click="handleSubmit" text="Save and Continue"></Button>
+    </Card>
 </template>
 
 <style lang="scss" scoped>
-
 .bio_div {
     display: flex;
     flex-direction: column;
