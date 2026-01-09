@@ -33,8 +33,8 @@ Config.ma_instence = Marshmallow(app=app)
 
 try :
     Config.GEOIP_READER = geoip2.database.Reader(Config.GEOIP_DB_PATH)
-except Exception :
-    print(f"Please verify you env vars!", flush=True)
+except Exception as e:
+    print(f"Please verify you env vars! or {e}", flush=True)
 
 
 try:

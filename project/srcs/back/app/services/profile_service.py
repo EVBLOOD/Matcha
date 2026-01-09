@@ -74,6 +74,7 @@ class ProfileService:
             ip = Config.PUBLIC_IP
 
         try:
+            print(Config.GEOIP_READER, flush=True)
             resp = Config.GEOIP_READER.city(ip)
             result = {
                 "lat": resp.location.latitude,
