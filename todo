@@ -23,7 +23,7 @@
         [x] Image upload functionality.
         [x] Interest tags implementation (reusable tags).
     [ ] User Profile (View) :
-        [ ] Display your own profile data on a UI page with (Viewers and Likers).
+        [x] Display your own profile data on a UI page with (Viewers and Likers).
         [x] Display your own profile data on backend.
         [ ] Display your own Profile visit History logging UI Page.
         [x] Display Other User Profile UI Page (show all profile info except email/password + status).
@@ -40,7 +40,7 @@
         [ ] Report Fake Account Feature: Implement report functionality.
         [ ] Block User Feature: Implement block/unblock functionality.
     [ ] GPS Location :
-        [ ] Initial GPS location capture ("without knowledge" if they don't want to).
+        [x] Initial GPS location capture ("without knowledge" if they don't want to).
         [ ] Location modification in profile editing.
     [ ] Browsing :
         [x] Browse Profiles UI Page (display suggested profiles -> Sorting and Filtering included).
@@ -54,18 +54,18 @@
         [ ] Backend search query logic (using search criteria).
         [ ] Sortable/Filterable Search Results Display (same as browsing).
     [ ] Chat :
-        [ ] Chat UI Interface.
+        [x] Chat UI Interface.
         [ ] Bonus: Video/Audio Chat: Implement video/audio chat feature.
         [ ] New message pop-up/notif UI.
-        [ ] Backend chat implementation.
+        [x] Backend chat implementation.
         [ ] New message notif implementation.
     [ ] Notifications:
         [ ] UI for Unread notification indicator.
-        [ ] Display UI Notifications Area or maybe Dropdown.
-        [ ] Notification system in database
+        [x] Display UI Notifications Area or maybe Dropdown.
+        [x] Notification system in database
         [x] Notification system (Real-time notification delivery)
         [x] On "Like" received.
-        [ ] On Profile viewed.
+        [x] On Profile viewed.
         [ ] On Message received.
         [x] On "Like" back (connection).
         [x] On "Unlike" (disconnection).
