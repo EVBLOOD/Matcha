@@ -27,4 +27,4 @@ vite.config.ts.backup
 *.tsbuildinfo
 
 
-GeoLite2-City.mmdb
+*/data/maxmind

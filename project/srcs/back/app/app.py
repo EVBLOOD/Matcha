@@ -25,8 +25,8 @@ Config.mail = Mail(app)
 
 Config.ma_instence = Marshmallow(app=app)
 
-Config.db_path = os.path.join(os.getcwd(), 'data', 'GeoLite2-City.mmdb')
-Config.GEOIP_READER = geoip2.database.Reader(Config.db_path)
+# Config.db_path = os.path.join(os.getcwd(), 'data', 'GeoLite2-City.mmdb')
+Config.GEOIP_READER = geoip2.database.Reader(Config.GEOIP_DB_PATH)
 
 Config.socket_instence = SocketIO(app, cors_allowed_origins="*")
 Config.socket_instence.on_namespace(PresenceGateway('/status'))

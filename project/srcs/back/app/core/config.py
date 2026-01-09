@@ -37,5 +37,5 @@ class Config:
     socket_instence = None
 
 
-    db_path = None
+    GEOIP_DB_PATH = os.getenv('GEOIP_DB_PATH', 'localhost:8081')
     GEOIP_READER = None

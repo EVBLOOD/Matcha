@@ -37,7 +37,7 @@ services:
       - geoip-data:/var/www/html/app/data/maxmind:ro
     env_file: .env
     environment:
-      - GEOIP_DB_PATH="/var/www/html/app/data/maxmind/GeoLite2-City.mmdb"
+      - GEOIP_DB_PATH=/var/www/html/app/data/maxmind/GeoLite2-City.mmdb
     depends_on:
       - geoip-updater
 

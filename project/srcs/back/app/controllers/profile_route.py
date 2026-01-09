@@ -34,10 +34,13 @@ def get_profile(user_id) :
 
 @profile_bp.route('/initial-location')
 def initial_location():
+    print(request)
     # ip = get_actual_ip()
     if request.headers.get('X-Forwarded-For'):
         ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
+        print('X-Forwarded-For', flush=True)
     else :
+        print('No X-Forwarded-For', flush=True)
         ip = request.remote_addr
     print(ip, flush=True)
     return ProfileService.initial_location(ip)
