@@ -150,7 +150,7 @@ router.beforeEach(async (to, from, next) => {
           return next({ name: 'home' });
         }
       }
-      socketStore.connectAll()
+      if (user.isVerified && user.isProfileComplete) socketStore.connectAll()
     } else {
       if (!to.meta.public) {
           return next({ name: 'login' });
