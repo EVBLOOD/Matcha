@@ -1,6 +1,5 @@
 import axios from 'axios';
-console.log(process.env)
-console.log(import.meta.env)
+
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_LINK,
   // headers: {
