@@ -38,8 +38,8 @@ services:
     env_file: .env
     environment:
       - GEOIP_DB_PATH=/var/www/html/app/data/maxmind/GeoLite2-City.mmdb
-    # depends_on:
-    #   - geoip-updater
+    depends_on:
+      - geoip-updater
     expose:
       - "8080"
 
@@ -70,15 +70,15 @@ services:
     restart: on-failure
     command: redis-server --appendonly yes
 
-  # geoip-updater:
-  #     image: ghcr.io/maxmind/geoipupdate:latest
-  #     environment:
-  #       - GEOIPUPDATE_ACCOUNT_ID=$GEOIPUPDATE_ACCOUNT_ID
-  #       - GEOIPUPDATE_LICENSE_KEY=$GEOIPUPDATE_LICENSE_KEY
-  #       - GEOIPUPDATE_EDITION_IDS=$GEOIPUPDATE_EDITION_IDS
-  #       - GEOIPUPDATE_FREQUENCY=72
-  #     volumes:
-  #       - geoip-data:/usr/share/GeoIP
+  geoip-updater:
+      image: ghcr.io/maxmind/geoipupdate:latest
+      environment:
+        - GEOIPUPDATE_ACCOUNT_ID=$GEOIPUPDATE_ACCOUNT_ID
+        - GEOIPUPDATE_LICENSE_KEY=$GEOIPUPDATE_LICENSE_KEY
+        - GEOIPUPDATE_EDITION_IDS=$GEOIPUPDATE_EDITION_IDS
+        - GEOIPUPDATE_FREQUENCY=72
+      volumes:
+        - geoip-data:/usr/share/GeoIP
   web:
       image: nginx:alpine
       ports:
