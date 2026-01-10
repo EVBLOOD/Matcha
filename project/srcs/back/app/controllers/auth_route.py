@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, redirect
 from app.services.auth_service import AuthService
 from app.core.security import Security
 from app.core.schemas import UserLoginSchema, ValidationError
@@ -32,6 +32,12 @@ def login() :
         }), 200
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
+
+@auth_bp.route('/oauth/<string:provider>', methods=['POST'])
+def proxy_to(provider):
+    url = f"http://auth_sidecar:4567/auth/{provider}"
+    return redirect(url)
+
 
 @auth_bp.route('/logout', methods=['POST'])
 @Security.auth_guard(check_profile=False, require_verify_mail=False)

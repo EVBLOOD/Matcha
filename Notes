@@ -32,8 +32,12 @@ Bonus to prepare :
 
 - Suggestions that match their profile. (orientation, location, tags, fame)
 
-- check the redis things
+
 - Video/Audio Chat: Implement video/audio chat feature.
+
+- check the redis things
+
+
 <!-- 
 from geopy.geocoders import Nominatim
 
