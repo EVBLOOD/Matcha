@@ -26,6 +26,14 @@ Bonus to prepare :
 
 - Suggestions that match their profile. (Browsing see to do list)
 
+- Get Citys Name
+
+- Fame Rating calculation and display (public).
+
+- Suggestions that match their profile. (orientation, location, tags, fame)
+
+- check the redis things
+- Video/Audio Chat: Implement video/audio chat feature.
 <!-- 
 from geopy.geocoders import Nominatim
 

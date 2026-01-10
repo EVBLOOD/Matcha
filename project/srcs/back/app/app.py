@@ -14,13 +14,13 @@ from flask_cors import CORS
 
 import os
 import geoip2.database
-from werkzeug.middleware.proxy_fix import ProxyFix
+# from werkzeug.middleware.proxy_fix import ProxyFix
 import requests
 
 
 app = Flask(__name__)
 
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1)
+# app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1)
 
 app.config.from_object(Config)
 Config.DB_instence = Database(app=app)
@@ -40,11 +40,12 @@ except Exception as e:
 try:
     response = requests.get("https://1.1.1.1/cdn-cgi/trace")
     for line in response.text.split('\n'):
-        if line.startswith('ip='):
+        if line.startswith('ip=') :
             Config.PUBLIC_IP = line.split('=')[1]
-    print(Config.PUBLIC_IP,flush=True)
-except:
+except Exception:
     Config.PUBLIC_IP = "8.8.8.8"
+
+print(f"Config->PUBLIC_IP: {Config.PUBLIC_IP}", flush=True)
 
 Config.socket_instence = SocketIO(app, cors_allowed_origins="*")
 Config.socket_instence.on_namespace(PresenceGateway('/status'))

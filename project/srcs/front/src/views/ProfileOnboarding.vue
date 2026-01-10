@@ -37,8 +37,6 @@ const { getPreciseLocation, coords } = usePreciseLocation()
 const handleSubmit = async () => {
     // add protections for inputs:
     try {
-
-
         const locationResult = await getPreciseLocation();
         console.log((coords.value.latitude || "").toString())
         console.log((coords.value.longitude || "").toString())
@@ -83,11 +81,11 @@ const handleSubmit = async () => {
         console.log(locationResult)
 
 
-        // await UserService.completeProfile(formData);
-        // const user = useUserStore();
-        // await user.fetchUser();
+        await UserService.completeProfile(formData);
+        const user = useUserStore();
+        await user.fetchUser();
 
-        // router.push('/')
+        router.push('/')
     } catch (error) {
         console.error("Upload failed", error);
     }

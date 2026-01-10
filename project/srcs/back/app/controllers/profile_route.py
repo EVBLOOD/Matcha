@@ -62,6 +62,33 @@ def create_profile() :
         return jsonify({"error": str(e)}), 400
 
 
+
+# TODO: this is for debuging
+@profile_bp.route('/create_profile_info', methods=['GET'])
+def create_profile_info() :
+    try :
+
+        if request.headers.get('X-Forwarded-For'):
+            ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
+        else :
+            ip = request.remote_addr
+        print(f"ip: {ip}", flush=True)
+        print(f"request->remote_addr: {request.remote_addr}", flush=True)
+        print(f"request->headers->get('X-Forwarded-For'): {request.headers.get('X-Forwarded-For')}", flush=True)
+        try :
+            was_added = ProfileService.initial_location(ip=ip)
+            print(f"was_added: {was_added}", flush=True)
+        except Exception as e :
+            return jsonify({"error": str(e)}), 500
+
+        if was_added :
+            return jsonify({"success": "profile created for user"}), 201
+        else :
+            return jsonify({"error": "server error"}), 500
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400
+
+
 @profile_bp.route('/update_profile', methods=['POST'])
 @Security.auth_guard()
 def update_profile() :
