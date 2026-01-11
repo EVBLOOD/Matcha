@@ -108,8 +108,9 @@ class ProfileService:
     @staticmethod
     def get_user_address(latitude: float, longitude: float) :
         geolocator = Nominatim(user_agent="geo_app")
-        location = geolocator.reverse(f"{latitude}, {longitude}")
+        location = geolocator.reverse(f"{latitude}, {longitude}", language="en")
         address = location.raw.get('address', {})
+        print(address, flush=True)
         city = address.get('city', address.get('town', address.get('village', 'Unknown')))
         country = address.get('country', 'Unknown')
         return city, country
@@ -159,7 +160,7 @@ class ProfileService:
                         "last_name": profile["last_name"],
                         "sexual_preference": profile["sexual_preference"],
                         "gender": profile["gender"],
-                        "location": Address if not profile["location_set_by_user"] else f"{country}, {city}"
+                        "location": Address if not profile["location_set_by_user"] else f"{city}, {country}"
                     },
                     "profile": {
                         "biography": profile["biography"],
