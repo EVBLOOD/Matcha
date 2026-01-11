@@ -1,9 +1,13 @@
-from flask import Blueprint, request, jsonify, Response
+from flask import Blueprint, request, jsonify, Response, redirect, response
 from app.services.auth_service import AuthService
 from app.core.security import Security
 from app.core.schemas import UserLoginSchema, ValidationError
 from app.core.config import Config
 import requests
+
+from app.dal.repositories.user_repository import UserRepository
+from app.dal.models.user import User
+
 
 auth_bp = Blueprint('auth_api', __name__, url_prefix='/auth')
 
@@ -105,35 +109,44 @@ def handle_github_callback():
 
     user = upstream_resp.json()["infos"]
 
-    # upstream_resp.nickname
-    # upstream_resp.email
+    user_by_email = UserRepository.find_by_email(user.email)
 
-    # checking if the username or email already exists, if the email exists you get in.
+    user_id = user_by_email.id
 
-    # if the email doesn't exists but the username exists we create you a new one
+    if user_by_email and not user_by_email.is_verified :
+        UserRepository.verify_token(user_id)
+    if user_by_email:
+        access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
+        return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
 
-    # else we create an account for you simply :
+    username = user.nickname
+
+    user_by_username = None
+    if not user_by_email :
+        user_by_username = UserRepository.find_by_username(username)
     
-    # I'll generate a random password for the user and send it to him in email instead of the verification code
-    # try :
-    #     user = UserService.create_user(**validated_data)
-    #     return jsonify({"id": user}), 201
-    # except ValueError as e:
-    #     return jsonify({"error": str(e)}), 400
-    # response_headers = []
-    # for k, v in upstream_resp.headers.items():
-    #     if k.lower() == 'set-cookie':
-    #         v = v.replace("domain=omni_auth", Config.PUBLIC_HOST.split(':')[0])
-    #     elif k.lower() == 'location':
-    #         v = v.replace("omni_auth:4567", Config.PUBLIC_HOST)
-    #     response_headers.append((k, v))
+    if not user_by_email and not user_by_username :
+        user_id = UserRepository.create_user_oauth(User(
+            username=username, 
+            email=user.email,
+            first_name=user.name.split(" ")[0],
+            last_name=user.name.split(" ")[1])
+        )
 
-    # return Response(
-    #     upstream_resp.raw,
-    #     status=upstream_resp.status_code,
-    #     headers=response_headers,
-    #     content_type=upstream_resp.headers.get('Content-Type')
-    # )
+    if user_by_username :
+        username =  UserRepository.generate_unique_username(username)
+        user_id = UserRepository.create_user_oauth(User(
+            username=username, 
+            email=user.email,
+            first_name=user.name.split(" ")[0],
+            last_name=user.name.split(" ")[1])
+        )
+
+    user_id = user_by_email.id
+
+    access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
+    return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
+
 
 @auth_bp.route('/logout', methods=['POST'])
 @Security.auth_guard(check_profile=False, require_verify_mail=False)

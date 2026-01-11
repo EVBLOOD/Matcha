@@ -48,11 +48,11 @@ class AuthApp < Sinatra::Base
     puts auth
 
     halt 400, { error: "Authentication failed" }.to_json unless auth
-    email = auth['info']
-    puts email
+    infos = auth['info']
+    puts infos
     
     content_type :json
-    { infos: email, status: 'authenticated' }.to_json
+    { infos: infos, status: 'authenticated' }.to_json
     end
 
     get '/auth/failure' do

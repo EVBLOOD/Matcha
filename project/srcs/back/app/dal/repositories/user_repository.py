@@ -3,6 +3,9 @@ from app.dal.models.user import User
 from typing import Optional
 import secrets
 
+import re
+import random
+import string
 
 class UserRepository(BaseRepository):
     _table_name = "users"
@@ -47,8 +50,8 @@ class UserRepository(BaseRepository):
             except Exception as e :
                 trying += 1
         return None
-    
-    
+
+
     @classmethod
     def find_by_verification_token(cls, token: str) :
         query = "SELECT id, is_verified FROM users WHERE verification_token = %s"
@@ -128,3 +131,42 @@ class UserRepository(BaseRepository):
             RETURNING id
         """
         return cls._execute(query, (first_name, last_name ,username, user_id))
+
+    @classmethod
+    def create_user_oauth(cls, user_data: User) -> Optional[User]:
+        norm_data = {
+            'username' : user_data.username,
+            'first_name' : user_data.first_name,
+            'last_name' : user_data.last_name,
+            'email' : user_data.email,
+            'is_verified' : True
+        }
+        user_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion, data=norm_data)
+        return user_id    
+    
+    @classmethod
+    def cleaning_username(cls, username: str):
+        text = text.lower().strip()
+        return re.sub(r'[^\w+]', '', text)
+
+    @classmethod
+    def generate_unique_username(cls, username: str):
+        clean_name = cls.cleaning_username(username)
+        
+        exists = cls.find_by_username(clean_name)
+        if not exists:
+            return clean_name
+
+        for _ in range(6):
+            suffix = "".join(random.choices(string.digits, k=6))
+            new_username = f"{clean_name}_{suffix}"
+            
+            exists = cls.find_by_username(new_username)
+            if not exists:
+                return new_username
+
+        while not exists:
+            new_username = f"{clean_name}".join(random.choices(string.ascii_lowercase + string.digits, k=6))
+            exists = cls.find_by_username(new_username)
+            if not exists:
+                return new_username

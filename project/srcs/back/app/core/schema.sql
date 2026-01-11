@@ -19,7 +19,8 @@ CREATE TABLE users (
     username VARCHAR(50) UNIQUE NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    password_hash CHAR(60) NOT NULL,
+    -- password_hash CHAR(60) NOT NULL,
+    password_hash CHAR(60), -- if null means it's oauth
     email VARCHAR(255) UNIQUE NOT NULL,
     fame_rating INT DEFAULT 0 NOT NULL,
     latitude DECIMAL(10, 8),
