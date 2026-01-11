@@ -2,7 +2,7 @@ from app.dal.models.picture import Picture
 from app.dal.repositories.pictures_repository import PicturesRepository
 from typing import Optional
 import re
-import imghdr
+# import imghdr
 from PIL import Image
 from app.core.config import Config
 import uuid
@@ -23,29 +23,36 @@ class PictureService:
         if not cls.allowed_file(filename):
             raise ValueError("File extension not allowed")
         
-        file_stream.seek(0)
-        actual_extension = imghdr.what(file_stream)
-        if not actual_extension:
-            raise ValueError("Not a valid image file")
+        # file_stream.seek(0)
+        # actual_extension = imghdr.what(file_stream)
+        # if not actual_extension:
+        #     raise ValueError("Not a valid image file")
         
         try:
             file_stream.seek(0)
             img = Image.open(file_stream)
             img.verify()
+
+            file_stream.seek(0)
+            img = Image.open(file_stream)
             if img.width > Config.max_width or img.height > Config.max_height:
-                raise ValueError("Invalid image size")
+                raise ValueError(f"Image too large ({img.width}x{img.height})")
             # img.close()
         except Exception as e:
             raise ValueError("Invalid image content")
-        
+        file_stream.seek(0)
         return True
 
     def save_file(file) :
         file.stream.seek(0)
-        ext = imghdr.what(file.stream)
-        file.stream.seek(0)
+        img = Image.open(file.stream)
+        ext = img.format.lower() if img.format else "jpg"
+        print(ext, flush=True)
+        # ext = imghdr.what(file.stream)
         filename = f"{uuid.uuid4().hex}.{ext}"
         file_path = os.path.join("app/"+Config.UPLOAD_FOLDER, filename)
+        
+        file.stream.seek(0)
         file.save(file_path)
         return filename
 
