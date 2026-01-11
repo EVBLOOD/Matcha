@@ -114,3 +114,28 @@ CREATE TABLE user_reports (
     reason TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE OR REPLACE FUNCTION calculate_fame() 
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT' AND TG_TABLE_NAME = 'user_interactions' AND NEW.status = 'liked') THEN
+        UPDATE users SET fame_rating = fame_rating + 10 WHERE id = NEW.liked_id;
+
+    ELSIF (TG_OP = 'INSERT' AND TG_TABLE_NAME = 'profile_views') THEN
+        UPDATE users SET fame_rating = fame_rating + 1 WHERE id = NEW.viewed_id;
+
+    ELSIF (TG_OP = 'DELETE' AND TG_TABLE_NAME = 'user_interactions' AND OLD.status = 'liked') THEN
+        UPDATE users SET fame_rating = fame_rating - 10 WHERE id = OLD.liked_id; 
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_fame_interactions
+AFTER INSERT OR DELETE ON user_interactions
+FOR EACH ROW EXECUTE FUNCTION calculate_fame();
+
+CREATE TRIGGER trg_fame_views
+AFTER INSERT ON profile_views
+FOR EACH ROW EXECUTE FUNCTION calculate_fame();

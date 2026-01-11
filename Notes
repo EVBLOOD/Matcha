@@ -19,13 +19,7 @@ Uregent to add :
 
 
 
-Bonus to prepare :
 
-- Map: Develop user map interface.
-
-- Suggestions that match their profile. (Browsing see to do list)
-
-- Get Citys Name
 
 - Fame Rating calculation and display (public).
 
@@ -34,12 +28,7 @@ Bonus to prepare :
 
 - Video/Audio Chat: Implement video/audio chat feature.
 
+
+- Map: Develop user map interface.
+
 - check the redis things
-
-
-<!-- 
-from geopy.geocoders import Nominatim
-
-geolocator = Nominatim(user_agent="geoip_check")
-location = geolocator.reverse((lat, lng))
-print(location.address) -->
