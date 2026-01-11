@@ -139,3 +139,4 @@ FOR EACH ROW EXECUTE FUNCTION calculate_fame();
 CREATE TRIGGER trg_fame_views
 AFTER INSERT ON profile_views
 FOR EACH ROW EXECUTE FUNCTION calculate_fame();
+
