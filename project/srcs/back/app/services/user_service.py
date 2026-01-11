@@ -43,7 +43,7 @@ class UserService:
                 # TODO: remove email from redis record
                 raise ValueError ("Email Not VALID!")
         return user_id
-
+    
     @staticmethod
     def verify_account(token : str) :
         (user_id, is_verified) = UserRepository.find_by_verification_token(token)

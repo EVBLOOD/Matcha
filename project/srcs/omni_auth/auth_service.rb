@@ -41,7 +41,6 @@ class AuthApp < Sinatra::Base
             provider_ignores_state: true
         }
     end
-# http://localhost:8081/api/auth/oauth/github
 
   get '/api/auth/oauth/callback' do
     puts request.env['omniauth']
@@ -53,10 +52,10 @@ class AuthApp < Sinatra::Base
     puts email
     
     content_type :json
-    { email: email, status: 'authenticated' }.to_json
+    { infos: email, status: 'authenticated' }.to_json
     end
 
-  get '/auth/failure' do
-  "Authentication failed: #{params[:message]}"
+    get '/auth/failure' do
+        "Authentication failed: #{params[:message]}"
     end
 end

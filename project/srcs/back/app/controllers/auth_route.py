@@ -103,20 +103,37 @@ def handle_github_callback():
         stream=True
     )
 
-    response_headers = []
-    for k, v in upstream_resp.headers.items():
-        if k.lower() == 'set-cookie':
-            v = v.replace("domain=omni_auth", Config.PUBLIC_HOST.split(':')[0])
-        elif k.lower() == 'location':
-            v = v.replace("omni_auth:4567", Config.PUBLIC_HOST)
-        response_headers.append((k, v))
+    user = upstream_resp.json()["infos"]
 
-    return Response(
-        upstream_resp.raw,
-        status=upstream_resp.status_code,
-        headers=response_headers,
-        content_type=upstream_resp.headers.get('Content-Type')
-    )
+    # upstream_resp.nickname
+    # upstream_resp.email
+
+    # checking if the username or email already exists, if the email exists you get in.
+
+    # if the email doesn't exists but the username exists we create you a new one
+
+    # else we create an account for you simply :
+    
+    # I'll generate a random password for the user and send it to him in email instead of the verification code
+    # try :
+    #     user = UserService.create_user(**validated_data)
+    #     return jsonify({"id": user}), 201
+    # except ValueError as e:
+    #     return jsonify({"error": str(e)}), 400
+    # response_headers = []
+    # for k, v in upstream_resp.headers.items():
+    #     if k.lower() == 'set-cookie':
+    #         v = v.replace("domain=omni_auth", Config.PUBLIC_HOST.split(':')[0])
+    #     elif k.lower() == 'location':
+    #         v = v.replace("omni_auth:4567", Config.PUBLIC_HOST)
+    #     response_headers.append((k, v))
+
+    # return Response(
+    #     upstream_resp.raw,
+    #     status=upstream_resp.status_code,
+    #     headers=response_headers,
+    #     content_type=upstream_resp.headers.get('Content-Type')
+    # )
 
 @auth_bp.route('/logout', methods=['POST'])
 @Security.auth_guard(check_profile=False, require_verify_mail=False)
