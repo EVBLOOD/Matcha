@@ -16,8 +16,12 @@ import ViewSettingsDefault from '@/views/Protected//profile/ViewSettingsDefault.
 import ViewSettingsPassword from '@/views/Protected//profile/ViewSettingsPassword.vue';
 import Conversation from '@/views/Protected//chat/Conversation.vue';
 
+import OauthPage from '@/views/OauthPage.vue';
+
+
 import useUserStore from '@/stores/user';
 import { useSocketStore } from '@/stores/socket';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -109,6 +113,12 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginPage,
+      meta: { public: true }
+    },
+    {
+      path: '/auth-success',
+      name: 'oauth',
+      component: OauthPage,
       meta: { public: true }
     },
     {
