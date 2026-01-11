@@ -14,8 +14,9 @@ from flask import jsonify
 import requests
 
 import geoip2.database
-
 from geoip2.errors import AddressNotFoundError
+
+from geopy.geocoders import Nominatim
 import ipaddress
 
 
@@ -91,7 +92,7 @@ class ProfileService:
             print(f"An error occurred: {e}", flush=True)
 
         return None
-
+    
     @staticmethod
     def update_profile(user_id: int, gender: str, sexual_preference: str,\
                         biography: str, location_set_by_user: bool, latitude: float, longitude: float) :
@@ -104,7 +105,15 @@ class ProfileService:
     def check_profile_filled(user_id: int) :
         return ProfileRepository.find_profile_exists(user_id)
     
-    
+    @staticmethod
+    def get_user_address(latitude: float, longitude: float) :
+        geolocator = Nominatim(user_agent="geo_app")
+        location = geolocator.reverse(f"{latitude}, {longitude}")
+        address = location.raw.get('address', {})
+        city = address.get('city', address.get('town', address.get('village', 'Unknown')))
+        country = address.get('country', 'Unknown')
+        return city, country
+
     @staticmethod
     def get_profile(searcher_id: int, to_find_user_id: int) :
         try :
@@ -114,6 +123,11 @@ class ProfileService:
             profile = ProfileRepository.get_user_profile(user_id=to_find_user_id, my_acount=searcher_id, same=same)
             if profile is None : 
                 raise ValueError("No such a profile")
+
+            if profile["location_set_by_user"] :
+                city, country = ProfileService.get_user_address(profile["latitude"], profile["longitude"])
+            else :
+                Address = "Not Shared!"
 
             print(profile, flush=True)
             if same :
@@ -144,7 +158,8 @@ class ProfileService:
                         "first_name": profile["first_name"],
                         "last_name": profile["last_name"],
                         "sexual_preference": profile["sexual_preference"],
-                        "gender": profile["gender"]
+                        "gender": profile["gender"],
+                        "location": Address if not profile["location_set_by_user"] else f"{country}, {city}"
                     },
                     "profile": {
                         "biography": profile["biography"],

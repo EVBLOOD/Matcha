@@ -30,7 +30,8 @@ export interface UserProfileAttrsResponse {
     sexual_preference: string;
     user_id: number;
     username: string;
-    email?: string
+    email?: string;
+    location?: string;
 }
 
 

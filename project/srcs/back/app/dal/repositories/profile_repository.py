@@ -65,9 +65,12 @@ class ProfileRepository(BaseRepository):
                     u.last_name,
                     u.fame_rating,
                     u.last_online,
+                    u.latitude,
+                    u.longitude,
                     p.gender,
                     p.sexual_preference,
                     p.biography,
+                    p.location_set_by_user,
                     (
                         SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
                         FROM user_pictures up
@@ -96,9 +99,12 @@ class ProfileRepository(BaseRepository):
                     u.first_name,
                     u.fame_rating,
                     u.last_name,
+                    u.longitude,
+                    u.latitude,
                     p.gender,
                     p.sexual_preference,
                     p.biography,
+                    p.location_set_by_user,
                     (
                         SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
                         FROM user_pictures up

@@ -70,8 +70,6 @@ const handleSubmit = async () => {
     });
 
     formData.append('location_set_by_user', `${false}`);
-    //   formData.append('latitude', bio.value);
-    //   formData.append('longitude', bio.value);
 
     try {
         await UserService.completeProfile(formData);
