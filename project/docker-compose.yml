@@ -108,6 +108,7 @@ services:
       - matcha
     depends_on:
       - database
+    
 
   web:
     image: nginx:alpine

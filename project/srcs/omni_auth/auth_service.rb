@@ -1,18 +1,61 @@
 require 'sinatra'
 require 'omniauth'
 require 'omniauth-github'
+require 'json'
 
-set :bind, '0.0.0.0'
+class AuthApp < Sinatra::Base
+    configure do
+        set :bind, '0.0.0.0'
+        
+        set :sessions, true
 
-use Rack::Session::Cookie, secret: ENV['SESSION_SECRET']
+        use Rack::Session::Cookie, 
+            key: 'my_app_session',
+            secret: ENV['SESSION_SECRET'],
+            httponly: true,
+            secure: false,
+            domain: 'localhost'
 
-use OmniAuth::Builder do
-  provider :github, ENV['GITHUB_CLIENT_ID'], ENV['GITHUB_CLIENT_SECRET']
-end
+        set :host_authorization, { 
+            permitted_hosts: [
+              'omni_auth',
+              'localhost',
+              '127.0.0.1'
+            ] 
+          }
+    end
 
-get '/auth/github/callback' do
-  auth = request.env['omniauth.auth']
-  email = auth.info.email
-  
-  redirect "http://back:8080/login/callback?email=#{email}&external=true"
+    OmniAuth.config.request_validation_phase = nil
+    use OmniAuth::Builder do
+      provider :github, 
+        ENV['GITHUB_ID'], 
+        ENV['GITHUB_SECRET'],
+        
+        {
+          authorize_params: {
+            redirect_uri: 'http://localhost:8081/api/auth/oauth/callback',
+            callback_path: '/api/auth/oauth/callback'
+          },
+            callback_path: '/api/auth/oauth/callback',
+            provider_ignores_state: true
+        }
+    end
+# http://localhost:8081/api/auth/oauth/github
+
+  get '/api/auth/oauth/callback' do
+    puts request.env['omniauth']
+    auth = request.env['omniauth.auth']
+    puts auth
+
+    halt 400, { error: "Authentication failed" }.to_json unless auth
+    email = auth['info']
+    puts email
+    
+    content_type :json
+    { email: email, status: 'authenticated' }.to_json
+    end
+
+  get '/auth/failure' do
+  "Authentication failed: #{params[:message]}"
+    end
 end

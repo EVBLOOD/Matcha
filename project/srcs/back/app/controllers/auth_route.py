@@ -1,7 +1,9 @@
-from flask import Blueprint, request, jsonify, redirect
+from flask import Blueprint, request, jsonify, Response
 from app.services.auth_service import AuthService
 from app.core.security import Security
 from app.core.schemas import UserLoginSchema, ValidationError
+
+import requests
 
 auth_bp = Blueprint('auth_api', __name__, url_prefix='/auth')
 
@@ -33,10 +35,131 @@ def login() :
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
 
-@auth_bp.route('/oauth/<string:provider>', methods=['POST'])
+
+
+
+PUBLIC_HOST = "localhost:8081"
+
+@auth_bp.route('/oauth/<string:provider>', methods=['GET', 'POST'])
 def proxy_to(provider):
-    url = f"http://auth_sidecar:4567/auth/{provider}"
-    return redirect(url)
+    upstream_url = f"http://omni_auth:4567/auth/{provider}"
+
+    headers = dict(request.headers)
+    headers['Host'] = PUBLIC_HOST
+    headers['X-Forwarded-Proto'] = 'http'
+
+    cookies = request.cookies
+
+    data = request.get_data() if request.method == 'POST' else None
+
+    upstream_resp = requests.request(
+        method='POST',
+        url=upstream_url,
+        headers=headers,
+        cookies=cookies,
+        data=data,
+        params=request.args,
+        allow_redirects=False,
+        stream=True
+    )
+
+    response_headers = []
+    for k, v in upstream_resp.headers.items():
+        if k.lower() == 'set-cookie':
+            v = v.replace("omni_auth", PUBLIC_HOST.split(':')[0])
+            print(v, flush=True)
+        elif k.lower() == 'location':
+            print(v, flush=True)
+            v = v.replace("omni_auth:4567", PUBLIC_HOST)
+        response_headers.append((k, v))
+
+    return Response(
+        upstream_resp.raw,
+        status=upstream_resp.status_code,
+        headers=response_headers,
+        content_type=upstream_resp.headers.get('Content-Type')
+    )
+
+
+@auth_bp.route('/oauth/callback', methods=['GET', 'POST'])
+def handle_github_callback():
+    upstream_url = f"http://omni_auth:4567/api/auth/oauth/callback"
+
+    headers = {k: v for k, v in request.headers if k.lower() != 'host'}
+    headers['Host'] = PUBLIC_HOST
+    headers['X-Forwarded-Proto'] = 'http'
+
+
+    cookies = request.cookies
+
+    data = request.get_data() if request.method == 'POST' else None
+
+    upstream_resp = requests.request(
+        method=request.method,
+        url=upstream_url,
+        headers=headers,
+        cookies=cookies,
+        data=data,
+        params=request.args,
+        allow_redirects=False,
+        stream=True
+    )
+
+    response_headers = []
+    for k, v in upstream_resp.headers.items():
+        if k.lower() == 'set-cookie':
+            v = v.replace("domain=omni_auth", PUBLIC_HOST.split(':')[0])
+        elif k.lower() == 'location':
+            v = v.replace("omni_auth:4567", PUBLIC_HOST)
+        response_headers.append((k, v))
+
+    return Response(
+        upstream_resp.raw,
+        status=upstream_resp.status_code,
+        headers=response_headers,
+        content_type=upstream_resp.headers.get('Content-Type')
+    )
+
+
+
+# @auth_bp.route('/oauth/<string:provider>', methods=['GET'])
+# def proxy_to(provider):
+#     url = f"http://omni_auth:4567/auth/{provider}"
+#     print(url, flush=True)
+#     # headers = []
+#     # for key, value in ruby_response.headers.items():
+#     #     if key.lower() == 'set-cookie':
+#     #         # Replace 'domain=omni_auth' with 'domain=localhost'
+#     #         value = value.replace('domain=omni_auth', 'domain=localhost')
+#     #     headers.append((key, value))
+
+#     # ruby_response = requests.post(url)
+#     ruby_response = requests.post(url, allow_redirects=False)
+#     print(ruby_response.content, flush=True)
+#     print(ruby_response.headers, flush=True)
+#     print(ruby_response.status_code, flush=True)
+#     return Response(ruby_response.content, ruby_response.status_code, ruby_response.headers.items())
+
+
+# @auth_bp.route('/oauth/callback')
+# def handle_github_callback():
+
+#     headers = {key: value for (key, value) in request.headers if key != 'Host'}
+#     headers['Host'] = 'localhost'
+    
+#     internal_url = "http://omni_auth:4567/oauth/callback"
+
+#     # print 
+#     ruby_response = requests.get(
+#         internal_url, 
+#         params=request.args, 
+#         headers=headers, 
+#         # headers=request.headers, 
+#         cookies=request.cookies,
+#         allow_redirects=False
+#     )
+
+#     return Response(ruby_response.content, ruby_response.status_code, ruby_response.headers.items())
 
 
 @auth_bp.route('/logout', methods=['POST'])
