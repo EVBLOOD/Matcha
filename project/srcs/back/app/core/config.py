@@ -40,3 +40,5 @@ class Config:
     GEOIP_DB_PATH = os.getenv('GEOIP_DB_PATH', 'localhost:8081')
     GEOIP_READER = None
     PUBLIC_IP = None
+
+    PUBLIC_HOST = os.getenv('PUBLIC_HOST', 'localhost:8081')
