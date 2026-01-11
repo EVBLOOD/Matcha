@@ -123,6 +123,7 @@ def handle_github_callback():
     if user_by_email:
         user_id = user_by_email.id
         access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
+        print(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}", flush=True)
         return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
 
     username = oauth_user["nickname"]
@@ -149,6 +150,7 @@ def handle_github_callback():
         )
 
     access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
+    print(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}", flush=True)
     return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
 
 
