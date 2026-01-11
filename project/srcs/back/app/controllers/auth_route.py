@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, Response, redirect, response
+from flask import Blueprint, request, jsonify, Response, redirect
 from app.services.auth_service import AuthService
 from app.core.security import Security
 from app.core.schemas import UserLoginSchema, ValidationError
@@ -106,20 +106,26 @@ def handle_github_callback():
         allow_redirects=False,
         stream=True
     )
+    resp_data = upstream_resp.json()
+    print(resp_data, flush=True)
 
-    user = upstream_resp.json()["infos"]
+    oauth_user = upstream_resp.json()["infos"]
 
-    user_by_email = UserRepository.find_by_email(user.email)
+    print(oauth_user, flush=True)
 
-    user_id = user_by_email.id
+    user_by_email = UserRepository.find_by_email(oauth_user["email"])
+
+    user_id = None
 
     if user_by_email and not user_by_email.is_verified :
+        user_id = user_by_email.id
         UserRepository.verify_token(user_id)
     if user_by_email:
+        user_id = user_by_email.id
         access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
         return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
 
-    username = user.nickname
+    username = oauth_user["nickname"]
 
     user_by_username = None
     if not user_by_email :
@@ -128,21 +134,19 @@ def handle_github_callback():
     if not user_by_email and not user_by_username :
         user_id = UserRepository.create_user_oauth(User(
             username=username, 
-            email=user.email,
-            first_name=user.name.split(" ")[0],
-            last_name=user.name.split(" ")[1])
+            email=oauth_user["email"],
+            first_name=oauth_user["name"].split(" ")[0],
+            last_name=oauth_user["name"].split(" ")[1])
         )
 
     if user_by_username :
         username =  UserRepository.generate_unique_username(username)
         user_id = UserRepository.create_user_oauth(User(
             username=username, 
-            email=user.email,
-            first_name=user.name.split(" ")[0],
-            last_name=user.name.split(" ")[1])
+            email=oauth_user["email"],
+            first_name=oauth_user["name"].split(" ")[0],
+            last_name=oauth_user["name"].split(" ")[1])
         )
-
-    user_id = user_by_email.id
 
     access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
     return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")

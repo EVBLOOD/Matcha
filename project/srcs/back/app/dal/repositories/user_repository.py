@@ -19,6 +19,10 @@ class UserRepository(BaseRepository):
         "password_hash", "email"
     ]
 
+    _columns_insertion_oauth = [
+        "username", "first_name", "last_name", "email", "is_verified"
+    ]
+
     @classmethod
     def create_user(cls, user_data: User) -> Optional[User]:
         norm_data = {
@@ -141,7 +145,7 @@ class UserRepository(BaseRepository):
             'email' : user_data.email,
             'is_verified' : True
         }
-        user_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion, data=norm_data)
+        user_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion_oauth, data=norm_data)
         return user_id    
     
     @classmethod
