@@ -36,6 +36,7 @@ class AuthApp < Sinatra::Base
             redirect_uri: 'http://localhost:8081/api/auth/oauth/callback',
             callback_path: '/api/auth/oauth/callback'
           },
+            scope: "user:email", 
             callback_path: '/api/auth/oauth/callback',
             provider_ignores_state: true
         }
