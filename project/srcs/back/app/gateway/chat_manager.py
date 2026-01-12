@@ -101,13 +101,3 @@ class ChatManager :
         # redis again
         emit('video_signal', reciever_id, room=private_room, include_self=False)
 
-
-    @staticmethod
-    def accept_join(caller_id: str, reciever_id, socket_id):
-        private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
-        call_room = f"{private_room}_call"
-        # redis again
-        join_room(call_room)
-        print ("Done sending the message", flush=True)
-
-

@@ -37,13 +37,7 @@ class ChatGateway(Namespace):
         
     @ConnectionManager.socket_guard()
     def on_video_call(self,  body):
-        print(body, flush=True)
         ChatManager.join_call(request.user_id, body, request.sid)
-
-
-    @ConnectionManager.socket_guard()
-    def on_join_video_chat(body):
-        ChatManager.accept_join(request.user_id, body, request.sid)
 
     @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
