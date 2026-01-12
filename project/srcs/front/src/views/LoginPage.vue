@@ -51,38 +51,126 @@ const handleLogin = async () => {
 </script>
 
 <template>
-        <Card title="Create Your Account">
+        <Card title="Welcome back">
+            <p class="description">Sign in to continue to your account</p>
+            <button class="btn-github">
+              <img src="/img/github-white-icon.png" alt="GitHub" class="github-icon" />
+              Continue with GitHub
+            </button>
+            <div class="separator">
+              <span>Or</span>
+            </div>
             <Input name="unameoremail" label="Username" id="unameoremail" v-model="userName" />
             <Input name="pword" label="Password" id="pword" v-model="passWord" type="password"/>
-            <!-- <Button  class="btn" text="Login" @click="handleLogin"></Button> -->
+            <p class="forgot_pass" @click="router.push('Reset')">Forgot your password</p>
 
             <div class="btn" style="display: flex;flex-direction: column; gap: 2px;padding: 6px;">
-                <Button text="Login" @click="handleLogin"  style="background-color: #DEB0F5;"></Button>
-                <Button text="Register" to="register"></Button>
+                <Button text="Sign in" @click="handleLogin"  style="background-color: #9566B0;"></Button>
             </div>
-        <div class="extra">Forgot password? <Button class="just_btn" to="Reset" text="Reset Password" backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
+            <p class="account">Don’t have an account? &nbsp; <p class="sign_up" @click="router.push('register')">Sign up</p></p>
         </Card>
 </template>
 
 <style lang="scss" scoped>
     .btn {
-        margin-top:  5%;
-        margin-bottom:  5%;
+      margin-top:  5%;
+      margin-bottom:  5%;
     }
 
     .extra {
-        display: flex;
-        justify-content: center;
-        align-content: center;
-        width: 100%;
-        gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      width: 100%;
+      gap: 5px;
     }
 
     .just_btn {
-    margin-top: 0%;
-    padding: 0px;
-    border-style: none;
+      margin-top: 0%;
+      padding: 0px;
+      border-style: none;
     }
+
+    .forgot_pass{
+      margin-top: -2%;
+      font-size: 14px;
+      text-decoration: underline;
+      cursor: pointer;
+      color: #e4e4e4;
+    }
+
+    .account{
+      display: flex;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .sign_up{
+      text-decoration: underline;
+      cursor: pointer;
+      color: #e4e4e4;
+    }
+
+    .description{
+      color: #F4E4FC;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .btn-github {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 16px;
+      background-color: #24292f;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease, box-shadow 0.2s ease;
+      font-family: $font-main;
+    }
+
+    .btn-github:hover {
+      background-color: #2c3137;
+    }
+
+    .github-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #F4E4FC;
+      font-size: 14px;
+      margin: 20px 0;
+    }
+
+    .separator::before,
+    .separator::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background-color: #BD82DD;
+    }
+
+    .separator::before {
+      margin-right: 12px;
+    }
+
+    .separator::after {
+      margin-left: 12px;
+    }
+
     @media (max-width: $breakpoint-md) {
         .page{
             display: flex;

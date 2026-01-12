@@ -35,6 +35,7 @@
         font-weight: 500;
         font-size: 1rem;
         transition: transform 0.2s ease;
+        font-family: $font-main;
     &:hover {
         transform: scale(0.95);
         opacity: 0.9;

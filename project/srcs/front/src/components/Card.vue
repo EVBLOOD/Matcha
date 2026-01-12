@@ -27,7 +27,7 @@ const props = defineProps({
             text-align: center;
             font-weight: 700;
             font-size: 32px;
-            margin-bottom: 10%;
+            margin-bottom: 20px;
         }
     }
 
