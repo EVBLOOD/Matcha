@@ -12,8 +12,8 @@ const props = defineProps({
         default: "/img/avatar.svg"
     },
     age: {
-        type: Number,
-        default: 18
+        type: String,
+        default: "18"
     },
     location: {
         type: String,

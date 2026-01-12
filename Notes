@@ -21,17 +21,13 @@ Uregent to add :
 
 
 
-- Fame Rating calculation and display (public).
-
-- Suggestions that match their profile. (orientation, location, tags, fame)
-
 - Video/Audio Chat: Implement video/audio chat feature.
 
 
-- Map: Develop user map interface.
 
 - check the redis things
 
 
 - design:
     form date of birth adding!
+    Map: Develop user map interface.

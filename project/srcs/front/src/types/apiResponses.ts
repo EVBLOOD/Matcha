@@ -86,7 +86,7 @@ export interface ConversationsResponse {
 export interface SuggestionsResponse {
     user_id: number;
     fame_rating: number;
-    age: number;
+    age: string;
     last_name: string;
     first_name: string;
     username: string;
