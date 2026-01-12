@@ -21,6 +21,7 @@ CREATE TABLE users (
     last_name VARCHAR(50) NOT NULL,
     -- password_hash CHAR(60) NOT NULL,
     password_hash CHAR(60), -- if null means it's oauth
+    birthdate DATE DEFAULT '1999-08-01' NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     fame_rating INT DEFAULT 0 NOT NULL,
     latitude DECIMAL(10, 8),

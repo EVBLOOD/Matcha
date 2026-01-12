@@ -18,8 +18,6 @@ def serve_uploaded_image(filename):
 @profile_bp.route('/<int:user_id>', methods=['GET'])
 @Security.auth_guard()
 def get_profile(user_id) :
-    print(user_id, flush=True)
-
     try :
         return ProfileService.get_profile(request.user_id, user_id)
     except Exception as e:

@@ -10,6 +10,7 @@ class User:
         first_name: str = None,
         last_name: str = None,
         password_hash: str = None,
+        birthdate: datetime = None,
         email: str = None,
         fame_rating: int = 0,
         latitude: float = 0.0,
@@ -32,8 +33,11 @@ class User:
             self.is_verified = is_verified
             self.last_online = last_online
             self.password_hash = password_hash
+            self.birthdate = birthdate
         elif insertion_check is True :
             self.password_hash = self.hashing_password(password_hash)
+            # TODO : check age here
+            self.birthdate = birthdate
         self.verification_token = verification_token
         self.username = username
         self.first_name = first_name

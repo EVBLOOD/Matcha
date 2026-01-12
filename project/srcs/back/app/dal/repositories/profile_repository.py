@@ -71,6 +71,7 @@ class ProfileRepository(BaseRepository):
                     p.sexual_preference,
                     p.biography,
                     p.location_set_by_user,
+                    EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) AS age,
                     (
                         SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
                         FROM user_pictures up
@@ -105,6 +106,7 @@ class ProfileRepository(BaseRepository):
                     p.sexual_preference,
                     p.biography,
                     p.location_set_by_user,
+                    EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) AS age,
                     (
                         SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
                         FROM user_pictures up

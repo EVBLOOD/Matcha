@@ -24,6 +24,7 @@ class AuthService :
 
         try :
             user = UserRepository.find_by_username(username=username)
+            print(user, flush=True)
             if not user.password_hash :
                raise ValueError("Please log-in with your social account or reset your password to create one")
             if bcrypt.checkpw(password.encode(), user.password_hash.encode()) :

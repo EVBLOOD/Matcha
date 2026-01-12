@@ -12,12 +12,18 @@ class SuggestionsRepository(BaseRepository):
                 WHERE u.id = %s
             )
             SELECT 
-                u.id, u.username, u.fame_rating,
-                (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + 
-                 sin(radians(cud.latitude)) * sin(radians(u.latitude)))) AS distance,
-                (SELECT COUNT(*) FROM user_interests ui 
-                 WHERE ui.user_id = u.id 
-                 AND ui.tag_id IN (SELECT tag_id FROM user_interests WHERE user_id = cud.id)) as same_tags
+                u.id,
+                u.username,
+                u.fame_rating,
+                u.first_name,
+                u.last_name,
+                u.latitude,
+                u.longitude,
+                EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) AS age,
+                (SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture)) FROM user_pictures up WHERE up.user_id = u.id AND up.is_profile_picture = TRUE) AS profile_picture_url,
+                (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + sin(radians(cud.latitude)) * sin(radians(u.latitude)))) AS distance,
+                (SELECT COUNT(*) FROM user_interests ui WHERE ui.user_id = u.id AND ui.tag_id IN (SELECT tag_id FROM user_interests WHERE user_id = cud.id)) as same_tags,
+                p.location_set_by_user
             FROM users u
             JOIN profiles p ON u.id = p.user_id
             CROSS JOIN currentuser cud
