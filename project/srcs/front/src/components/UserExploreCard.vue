@@ -7,6 +7,10 @@ const props = defineProps({
         type: String,
         default: "Saad AKLLAM"
     },
+    avatar: {
+        type: String,
+        default: "/img/avatar.svg"
+    },
     age: {
         type: Number,
         default: 18
@@ -33,7 +37,7 @@ const clickLike = () => {
 <template>
 
     <div class="user_card">
-        <img src="/img/avatar.svg" alt="">
+        <img style="border-radius: 50%;" width="150px" height="150px" :src="avatar" alt="">
         <span>{{fullName}}</span>
         <div>
             <span>{{ age }}</span>

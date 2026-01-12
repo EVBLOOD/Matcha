@@ -83,8 +83,16 @@ export interface ConversationsResponse {
     messages_list?: MessagesResponse[];
 }
 
-
-
+export interface SuggestionsResponse {
+    user_id: number;
+    fame_rating: number;
+    age: number;
+    last_name: string;
+    first_name: string;
+    username: string;
+    location: string;
+    profile_picture_url: UserProfilePicturesResponse[];
+}
 
 // export interface UserProfile extends User {
 //     bio: string;

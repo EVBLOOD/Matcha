@@ -8,11 +8,11 @@ const handleSubmit = () => {
 }
 
 import SuggestionsService from '@/api/services/SuggestionsService'
-import type {UserProfileResponse} from '@/types/apiResponses'
+import type { SuggestionsResponse } from '@/types/apiResponses'
 import axios, { AxiosError } from 'axios';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
-const profileData = ref<UserProfileResponse | null>(null);
+const suggestionsData = ref<SuggestionsResponse[] | null>(null);
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 
@@ -26,7 +26,7 @@ const fetchSugestions = async () => {
   try {
     const { data } = await SuggestionsService.getSuggestions();
     console.log(data)
-    profileData.value = data;
+    suggestionsData.value = data["data"];
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -39,7 +39,16 @@ const fetchSugestions = async () => {
   }
 };
 
-fetchSugestions()
+onMounted(() => {
+    fetchSugestions()
+})
+
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
+}
 </script>
 
 <template>
@@ -59,16 +68,7 @@ fetchSugestions()
             </div>
         </div>
         <div class="body">
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
-            <UserExploreCard :userID="1"/>
+            <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id" :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age" :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)"/>
         </div>
     </div>
 </template>
