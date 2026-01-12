@@ -34,9 +34,19 @@ class ChatGateway(Namespace):
         except Exception as e :
             print (e, flush=True)
             return False
+        
+    @ConnectionManager.socket_guard()
+    def on_video_call(self,  body):
+        print(body, flush=True)
+        ChatManager.join_call(request.user_id, body["user_id"], request.sid)
+
+
+    @ConnectionManager.socket_guard()
+    def on_join_video_chat(body):
+        ChatManager.accept_join(request.user_id, body["user_id"], request.sid)
 
     @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
         print(f"End call {request.user_id} - Reason: {reason}", flush=True)
         ChatManager.disconnect_user_socket(request.user_id, request.sid)
-        return        
+        return

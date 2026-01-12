@@ -90,6 +90,17 @@ class ChatManager :
                 room=notify_room
             )
         return message_id
+    
+    @staticmethod
+    def join_call(caller_id: str, reciever_id: str, socket_id) :
+        room_name = ChatManager._get_canonical_room_name(reciever_id, caller_id)
+        # redis again
+        emit('video_signal', {"user_id": caller_id}, room=room_name, include_self=False)
 
-
+    @staticmethod
+    def accept_join(caller_id: str, reciever_id: str, socket_id):
+        room_name = ChatManager._get_canonical_room_name(reciever_id, caller_id)
+        call_room = f"{room_name}_call"
+        # redis again
+        join_room(call_room)
 

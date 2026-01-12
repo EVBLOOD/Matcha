@@ -14,7 +14,8 @@ import ViewSettings from '@/views/Protected//profile/ViewSettings.vue';
 import ViewSettingsMore from '@/views/Protected//profile/ViewSettingsMore.vue';
 import ViewSettingsDefault from '@/views/Protected//profile/ViewSettingsDefault.vue';
 import ViewSettingsPassword from '@/views/Protected//profile/ViewSettingsPassword.vue';
-import Conversation from '@/views/Protected//chat/Conversation.vue';
+// import Conversation from '@/views/Protected//chat/Conversation.vue';
+import Conversation from '@/views/Protected//chat/Calls.vue';
 
 import OauthPage from '@/views/OauthPage.vue';
 

@@ -76,6 +76,16 @@ export const useSocketStore = defineStore('socket', {
         console.log(resp)
       }))
     },
+    JoinUser(id: string) {
+      socketChat.emit('join_video_chat', {user_id: id}, ((resp: any) => {
+        console.log(resp)
+      }))
+    },
+    CallUser(id: string, type: string, args: any) {
+      socketChat.emit('video_call', {user_id: id, type: type, args: args}, ((resp: any) => {
+        console.log(resp)
+      }))
+    },
     leaveChat(id: string) {
       socketChat.emit('join_chat', {user_id: id}, ((resp: any) => {
         console.log(resp)

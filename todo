@@ -35,7 +35,7 @@
         [x] Backend "unlike" logic.
         [x] "Profile Likers" tracking implementation.
         [x] "Profile Viewers" tracking implementation.
-        [ ] Fame Rating calculation and display (public).
+        [x] Fame Rating calculation and display (public).
         [ ] Visit History logging when viewing profiles.
         [ ] Report Fake Account Feature: Implement report functionality.
         [ ] Block User Feature: Implement block/unblock functionality.
