@@ -48,12 +48,41 @@ const handleLogin = async () => {
 };
 // TODO: we should integrate the Loading and error displaying
 
+// const startOAuth = () => {
+//   const authUrl = "http://localhost:8081/api/auth/oauth/github";
+//   window.open(authUrl);
+// };
+
+const startOAuth = () => {
+  const url = "http://localhost:8081/api/auth/oauth/github";
+
+  const width = 600;
+  const height = 700;
+  const left = window.screenX + (window.outerWidth - width) / 2;
+  const top = window.screenY + (window.outerHeight - height) / 2;
+
+  const popup = window.open(
+    url,
+    'auth-popup',
+    `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,status=1`
+  );
+
+  return popup;
+};
+
+const authChannel = new BroadcastChannel('auth_status');
+
+authChannel.onmessage = (event) => {
+  if (event.data.type === 'AUTH_SUCCESS') {
+    router.push('/')
+  }
+};
 </script>
 
 <template>
         <Card title="Welcome back">
             <p class="description">Sign in to continue to your account</p>
-            <button class="btn-github">
+            <button class="btn-github" v-on:click="startOAuth">
               <img src="/img/github-white-icon.png" alt="GitHub" class="github-icon" />
               Continue with GitHub
             </button>
