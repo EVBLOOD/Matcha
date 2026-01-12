@@ -73,9 +73,9 @@ const startOAuth = () => {
 const authChannel = new BroadcastChannel('auth_status');
 
 authChannel.onmessage = (event) => {
-  if (event.data.type === 'AUTH_SUCCESS') {
+  // if (event.data.type === 'AUTH_SUCCESS') {
     router.push('/')
-  }
+  // }
 };
 </script>
 

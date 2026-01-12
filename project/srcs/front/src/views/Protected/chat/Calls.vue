@@ -116,10 +116,28 @@
     const remoteVideo = ref<HTMLVideoElement | null>(null);
     const isCalling = ref(false);
 
+    const callState = ref<'dialing' | 'ringing' | 'connected'>('dialing');
 
-    const setupWebRTC = async () => {
+    const createPeerConnection = () => {
         pc = new RTCPeerConnection(rtcConfig);
 
+        pc.ontrack = (event: RTCTrackEvent) => {
+            if (remoteVideo.value) {
+                remoteVideo.value.srcObject = event.streams[0];
+                callState.value = 'connected';
+            }
+        };
+
+        pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
+            if (event.candidate && conversationData.value) {
+                socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'candidate', event.candidate);
+            }
+        };
+    };
+
+    const setupWebRTC = async () => {
+        createPeerConnection();
+        
         try {
             localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             if (localVideo.value) localVideo.value.srcObject = localStream;
@@ -130,62 +148,73 @@
         } catch (err) {
             console.error("Access denied for camera/mic:", err);
         }
-
-        pc.ontrack = (event: RTCTrackEvent) => {
-            if (remoteVideo.value) {
-                remoteVideo.value.srcObject = event.streams[0];
-            }
-        };
-
-        pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
-            if (event.candidate) {
-                socketStore.CallUser(route.params.id as string, 'candidate', event.candidate)
-            }
-        };
     };
-
-
-    onMounted(async () => {
-        await setupWebRTC();
-
-        useSocketListener('video_signal', async (data) => {
-            if (!pc) return;
-            if (data.type === 'offer') {
-                await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-                const answer = await pc.createAnswer();
-                await pc.setLocalDescription(answer);
-                socketStore.CallUser(route.params.id as string, 'answer' , answer)
-
-                isCalling.value = true;
-                } 
-                else if (data.type === 'answer') {
-                await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-                } 
-                else if (data.type === 'candidate') {
-                await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-            }
-        })
-    });
 
     const startCall = async () => {
-        if (!pc) return;
         isCalling.value = true;
+        callState.value = 'dialing';
+        
+        await setupWebRTC();
+        
+        if (!pc) return;
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
-        socketStore.CallUser(route.params.id as string, 'offer', offer)
+        if (conversationData.value)
+            socketStore.CallUser(conversationData.value[0].peer_id.toString() as string, 'offer', offer);
     };
+
+    const acceptCall = async (offer: RTCSessionDescriptionInit) => {
+        isCalling.value = true;
+        callState.value = 'connected';
+        
+        await setupWebRTC();
+        
+        if (!pc) return;
+        await pc.setRemoteDescription(new RTCSessionDescription(offer));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        if (conversationData.value)
+        socketStore.CallUser(conversationData.value[0].peer_id.toString() as string, 'answer', answer);
+    };
+    useSocketListener('video_signal', async (data) => {
+        console.log(data)
+        if (data.type === 'offer') {
+            console.log('offering you')
+            isCalling.value = true;
+            callState.value = 'ringing';
+            
+            pendingOffer.value = data.args; 
+        } 
+        else if (data.type === 'answer') {
+            console.log('answering you')
+            if (pc) {
+                await pc.setRemoteDescription(new RTCSessionDescription(data.args));
+                callState.value = 'connected';
+            }
+        } 
+        else if (data.type === 'candidate') {
+            console.log('connecting you')
+
+            if (pc) {
+                await pc.addIceCandidate(new RTCIceCandidate(data.args));
+            }
+        }
+    });
+
+    const pendingOffer = ref<RTCSessionDescriptionInit | null>(null);
+
     const endCall = () => {
         if (localStream) {
             localStream.getTracks().forEach(track => track.stop());
+            localStream = null;
         }
         if (pc) {
             pc.close();
             pc = null;
         }
         isCalling.value = false;
+        pendingOffer.value = null;
     };
-
-    const callState = ref<'dialing' | 'ringing' | 'connected'>('dialing');
 </script>
 
 <template>
@@ -214,7 +243,7 @@
             </div>
         </div>
         <Teleport to="body">
-            <div v-if="isCalling">
+            <div v-if="isCalling" class="video-call">
                 <div>
                     <div v-if="callState === 'dialing'">
                         <div>Calling...</div>
@@ -224,7 +253,7 @@
                     <div v-if="callState === 'ringing'">
                         <h3>Incoming Call...</h3>
                         <div>
-                            <button @click="startCall">Accept</button>
+                            <button @click="acceptCall(pendingOffer!)">Accept</button>
                             <button @click="endCall">Decline</button>
                         </div>
                     </div>
@@ -247,6 +276,30 @@
 </template>
 
 <style lang="scss" scoped>
+
+
+// to update this 1999 styling.
+.video-call {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+video {
+    width: 300px;
+    background: #333;
+}
+
+
 
 .chat{
     display: flex;

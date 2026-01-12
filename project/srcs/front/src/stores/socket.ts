@@ -71,25 +71,21 @@ export const useSocketStore = defineStore('socket', {
         }
       })
     },
-    joinChat(id: string) {
+    joinChat(id: any) {
       socketChat.emit('join_chat', {user_id: id}, ((resp: any) => {
         console.log(resp)
       }))
     },
-    JoinUser(id: string) {
+    JoinUser(id: any) {
       socketChat.emit('join_video_chat', {user_id: id}, ((resp: any) => {
         console.log(resp)
       }))
     },
     CallUser(id: string, type: string, args: any) {
-      socketChat.emit('video_call', {user_id: id, type: type, args: args}, ((resp: any) => {
-        console.log(resp)
-      }))
+      socketChat.emit('video_call', {user_id: id, type: type, args: args})
     },
     leaveChat(id: string) {
-      socketChat.emit('join_chat', {user_id: id}, ((resp: any) => {
-        console.log(resp)
-      }))
+      socketChat.emit('join_chat', {user_id: id})
     },
     sendMessage(id: string, content: string) : number {
       let id_message = undefined

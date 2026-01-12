@@ -68,6 +68,7 @@ class ChatManager :
 
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
+        print(private_room, flush=True)
         message_id = ChatService.send_message(sender, receiver, message)
         print ("Sending the message", flush=True)
         emit(
@@ -92,15 +93,21 @@ class ChatManager :
         return message_id
     
     @staticmethod
-    def join_call(caller_id: str, reciever_id: str, socket_id) :
-        room_name = ChatManager._get_canonical_room_name(reciever_id, caller_id)
+    def join_call(caller_id: str, reciever_id, socket_id) :
+        private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
+        print(private_room, flush=True)
+
+
         # redis again
-        emit('video_signal', {"user_id": caller_id}, room=room_name, include_self=False)
+        emit('video_signal', reciever_id, room=private_room, include_self=False)
+
 
     @staticmethod
-    def accept_join(caller_id: str, reciever_id: str, socket_id):
-        room_name = ChatManager._get_canonical_room_name(reciever_id, caller_id)
-        call_room = f"{room_name}_call"
+    def accept_join(caller_id: str, reciever_id, socket_id):
+        private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
+        call_room = f"{private_room}_call"
         # redis again
         join_room(call_room)
+        print ("Done sending the message", flush=True)
+
 
