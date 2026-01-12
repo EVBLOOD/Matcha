@@ -3,13 +3,13 @@ from app.dal.base_repository import BaseRepository
 class SuggestionsRepository(BaseRepository):
     
     @classmethod
-    def get_suggestions(cls, user_id: int) :  # TODO: this is worng but keep for now
+    def get_suggestions(cls, user_id: int, lastUser = None) :  # TODO: this is worng but keep for now
         query = """
             WITH currentuser AS (
                 SELECT u.id, u.latitude, u.longitude, p.gender, p.sexual_preference
                 FROM users u 
                 JOIN profiles p ON u.id = p.user_id 
-                WHERE u.id = 11
+                WHERE u.id = %s
             )
             SELECT 
                 u.id, u.username, u.fame_rating,
@@ -30,13 +30,20 @@ class SuggestionsRepository(BaseRepository):
                     (p.gender != cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('straight', 'bisexual')) OR
                     (p.gender = cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('gay', 'bisexual'))
                 ))
-              )
+                )
               AND u.id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = cud.id)
+              AND (%s IS NULL OR (
+                (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + 
+                sin(radians(cud.latitude)) * sin(radians(u.latitude)))), u.id
+                ) > (%s, %s))
             ORDER BY 
                 distance ASC,
-                same_tags DESC,
-                u.fame_rating DESC
-            LIMIT 50;
-            """
-        params = (user_id, user_id,user_id)
+                u.id ASC
+            LIMIT 20;
+        """
+        if not lastUser :
+            params = (user_id, None , 0, 0, )
+        else :
+            params = (user_id, lastUser["id"], lastUser["distance"], lastUser["id"], )
+
         return cls._fetch_all(query, params)

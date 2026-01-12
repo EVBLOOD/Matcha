@@ -164,7 +164,7 @@ class ProfileService:
                     },
                     "profile": {
                         "biography": profile["biography"],
-                        "fame_rating": profile["fame_rating"],
+                        "fame_rating": round(min(5, max(0, (profile["fame_rating"] / 5000) * 4 + 1)), 1),
                     },
                     "pictures": profile["profile_picture_url"],
                     "interactions": interactions,

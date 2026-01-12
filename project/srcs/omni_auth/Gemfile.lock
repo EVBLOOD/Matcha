@@ -10,6 +10,7 @@ GEM
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
     ffi (1.17.3-aarch64-linux-gnu)
+    ffi (1.17.3-x86_64-linux-gnu)
     hashie (5.1.0)
       logger
     json (2.18.0)
@@ -79,6 +80,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  x86_64-linux
 
 DEPENDENCIES
   json

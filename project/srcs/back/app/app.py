@@ -56,12 +56,14 @@ from app.controllers.auth_route import auth_bp
 from app.controllers.profile_route import profile_bp
 from app.controllers.notifs_route import notifs_bp
 from app.controllers.chats_route import chats_bp
+from app.controllers.suggestions_route import suggestions_bp
 
 app.register_blueprint(user_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(notifs_bp)
 app.register_blueprint(chats_bp)
+app.register_blueprint(suggestions_bp)
 
 # Config.socket_instence.run(app, host="0.0.0.0", port=8080)
 

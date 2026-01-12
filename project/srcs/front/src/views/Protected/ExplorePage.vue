@@ -7,6 +7,39 @@ const handleSubmit = () => {
     console.log("SEARCH!")
 }
 
+import SuggestionsService from '@/api/services/SuggestionsService'
+import type {UserProfileResponse} from '@/types/apiResponses'
+import axios, { AxiosError } from 'axios';
+import { ref } from 'vue';
+
+const profileData = ref<UserProfileResponse | null>(null);
+const isLoading = ref(true);
+const isError = ref<string | null>(null);
+
+interface BackendError {
+  error: string;
+}
+
+
+const fetchSugestions = async () => {
+  isLoading.value = true;
+  try {
+    const { data } = await SuggestionsService.getSuggestions();
+    console.log(data)
+    profileData.value = data;
+  } catch(err : unknown) {
+    if (axios.isAxiosError(err)) {
+        isError.value = (err.response?.data as BackendError)?.error;
+    }
+    else {
+        isError.value = "Registration failed for unknown reason'";
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+fetchSugestions()
 </script>
 
 <template>

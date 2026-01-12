@@ -5,5 +5,5 @@ from app.dal.models.conversation import Conversation
 
 class SuggestionsService :
     @classmethod
-    def get_suggestionss(cls, user_id: str) :
-        return SuggestionsRepository.get_suggestionss(user_id)
+    def get_suggestions(cls, user_id: str) :
+        return SuggestionsRepository.get_suggestions(user_id)

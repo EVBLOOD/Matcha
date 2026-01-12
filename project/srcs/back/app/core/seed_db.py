@@ -35,7 +35,7 @@ def get_seed_data(db, count=500):
                     INSERT INTO users (username, first_name, last_name, password_hash, email, fame_rating, latitude, longitude, is_verified)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, True) RETURNING id
                 """, (username, first_name, last_name, 
-                      TEST_PASSWORD_HASH, email, round(random.uniform(0, 5), 1),
+                      TEST_PASSWORD_HASH, email, 0.0,
                       float(fake.latitude()), float(fake.longitude())))
                 user_ids.append(cur.fetchone()[0])
 

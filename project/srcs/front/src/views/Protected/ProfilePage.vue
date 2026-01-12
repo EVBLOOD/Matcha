@@ -1,46 +1,17 @@
 <script setup lang="ts">
-import { ref, provide, onMounted, watch, computed } from 'vue';
+import { onMounted, watch, computed } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 
 import Fame from '@/components/Fame.vue';
 
 import useUserStore from '@/stores/user';
-import ProfileService from '@/api/services/ProfileService'
-import type {UserProfileResponse} from '@/types/apiResponses'
-import axios, { AxiosError } from 'axios';
+
 
 import { useSocialStore } from '@/stores/profile';
 import { useSocketStore } from '@/stores/socket';
 
 
 const route = useRoute();
-// const profileData = ref<UserProfileResponse | null>(null);
-// const isLoading = ref(true);
-// const isError = ref<string | null>(null);
-
-// interface BackendError {
-//   error: string;
-// }
-
-
-// const fetchProfile = async () => {
-//   isLoading.value = true;
-//   try {
-//     const { data } = await ProfileService.getProfile(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
-//     profileData.value = data;
-//     if (profileData.value?.user)
-//         socket.reachStausOneUser(profileData.value.user.user_id.toString())
-//   } catch(err : unknown) {
-//     if (axios.isAxiosError(err)) {
-//         isError.value = (err.response?.data as BackendError)?.error;
-//     }
-//     else {
-//         isError.value = "Registration failed for unknown reason'";
-//     }
-//   } finally {
-//     isLoading.value = false;
-//   }
-// };
 
 
 const profile = useSocialStore()
@@ -55,7 +26,6 @@ const userStore = useUserStore();
 
 
 const socket = useSocketStore();
-// socket.reachStausOneUser(profileData.value.user.user_id.toString())
 
 onMounted(() => {
     profile.fetchProfile(parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id))
@@ -70,12 +40,6 @@ const statusColor = computed(() => {
             background: socket.UserStatus(profile.activeProfile.user.user_id.toString()) == "Online" ? "rgb(6, 201, 6)" : "red"
         };
 });
-
-
-// provide('profileData', profile.activeProfile);
-
-
-
 
 const pictures_handler = (link: string) => {
     if (link.indexOf('/') > 0) {
