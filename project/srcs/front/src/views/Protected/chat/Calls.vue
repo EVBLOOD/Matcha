@@ -1,220 +1,225 @@
 <script setup lang="ts">
-    import { ref, onMounted, watch, nextTick, onUnmounted, useTemplateRef } from 'vue';
-    import { useRoute } from 'vue-router';
-    import type { ConversationsResponse, MessagesResponse } from '@/types/apiResponses'
-    import ChatService from '@/api/services/ChatService'
-    import { useSocketStore } from '@/stores/socket'
-    import  userUserStore  from '@/stores/user'
-    import axios, { AxiosError } from 'axios';
-    import { useSocketListener } from '@/composables/useSocketChat'
+import { ref, onMounted, watch, nextTick, onUnmounted, useTemplateRef } from 'vue';
+import { useRoute } from 'vue-router';
+import type { ConversationsResponse, MessagesResponse } from '@/types/apiResponses'
+import ChatService from '@/api/services/ChatService'
+import { useSocketStore } from '@/stores/socket'
+import userUserStore from '@/stores/user'
+import axios, { AxiosError } from 'axios';
+import { useSocketListener } from '@/composables/useSocketChat'
 
-    interface BackendError {
-        error: string;
-    }
+interface BackendError {
+    error: string;
+}
 
-    // new_message_notification
-
-
-    const route = useRoute();
-    const socketStore = useSocketStore()
-    const userStore = userUserStore()
-    
-
-    const conversationData = ref<ConversationsResponse[] | null>(null);
-    const conversationMessages = ref<MessagesResponse[] | null>(null);
-    const isLoading = ref(true);
-    const isError = ref<string | null>(null);
-    const newMessage = ref('')
+// new_message_notification
 
 
+const route = useRoute();
+const socketStore = useSocketStore()
+const userStore = userUserStore()
 
-    const fetchConversations = async () => {
-        if (!route.params.id) return;
-        isLoading.value = true;
-        try {
-            const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
-            console.log(data)
-            // conversationData.value = data;
-            conversationData.value = [...data.data];
-            if (conversationData.value[0].messages_list)
-                conversationMessages.value = [...conversationData.value[0].messages_list]
-            socketStore.joinChat(conversationData.value[0].peer_id.toString())
-        } catch (err: unknown) {
-            if (axios.isAxiosError(err)) {
-                isError.value = (err.response?.data as BackendError)?.error;
-            }
-            else {
-                isError.value = "Registration failed for unknown reason'";
-            }
-        } finally {
-            isLoading.value = false;
+
+const conversationData = ref<ConversationsResponse[] | null>(null);
+const conversationMessages = ref<MessagesResponse[] | null>(null);
+const isLoading = ref(true);
+const isError = ref<string | null>(null);
+const newMessage = ref('')
+
+
+
+const fetchConversations = async () => {
+    if (!route.params.id) return;
+    isLoading.value = true;
+    try {
+        const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
+        // conversationData.value = data;
+        conversationData.value = [...data.data];
+        if (conversationData.value[0].messages_list)
+            conversationMessages.value = [...conversationData.value[0].messages_list]
+        socketStore.joinChat(conversationData.value[0].peer_id.toString())
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            isError.value = (err.response?.data as BackendError)?.error;
         }
-    };
-    
-    onMounted(fetchConversations);
-
-    watch(() => route.params.id, fetchConversations);
-
-    function sendMessage() {
-        if (!newMessage.value.trim()) return;
-
-        if (conversationData.value) {
-            const id = socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
-            // if (conversationMessages.value)
-            //     conversationMessages.value.push({id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"})
+        else {
+            isError.value = "Registration failed for unknown reason'";
         }
-        newMessage.value = ''
+    } finally {
+        isLoading.value = false;
     }
+};
 
-    onUnmounted(() => {
-        if (conversationData.value)
-            socketStore.leaveChat(conversationData.value[0].peer_id.toString())
-    })
+onMounted(fetchConversations);
 
+watch(() => route.params.id, fetchConversations);
 
-    const pictures_handler = (link: string) => {
-        if (link.indexOf('/') > 0) {
-            return link
-        }
-        return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
+function sendMessage() {
+    if (!newMessage.value.trim()) return;
+
+    if (conversationData.value) {
+        const id = socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
+        // if (conversationMessages.value)
+        //     conversationMessages.value.push({id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"})
     }
+    newMessage.value = ''
+}
+
+onUnmounted(() => {
+    if (conversationData.value)
+        socketStore.leaveChat(conversationData.value[0].peer_id.toString())
+})
 
 
-    useSocketListener('message_chat', (params) => {
-
-         if (conversationMessages.value )
-                conversationMessages.value.push({id: params.id, content: params.text, is_read: true, sender_id: params.sender as number, sent_at: "Now"})
-
-        console.log(params)
-    })
-
-    const messagesContainer = ref<HTMLElement | null>(null);
-
-
-    watch(
-            conversationMessages, scrollToBottom,
-            { deep: true }
-        );
-    
-
-    async function scrollToBottom() {
-        await nextTick();
-        if (!messagesContainer.value) return;
-        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
     }
+    return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
+}
+
+
+useSocketListener('message_chat', (params) => {
+
+    if (conversationMessages.value)
+        conversationMessages.value.push({ id: params.id, content: params.text, is_read: true, sender_id: params.sender as number, sent_at: "Now" })
+
+})
+
+const messagesContainer = ref<HTMLElement | null>(null);
+
+
+watch(
+    conversationMessages, scrollToBottom,
+    { deep: true }
+);
+
+
+async function scrollToBottom() {
+    await nextTick();
+    if (!messagesContainer.value) return;
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+}
 
 
 
-    const rtcConfig: RTCConfiguration = {
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]};
+const rtcConfig: RTCConfiguration = {
+    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+};
 
-    let pc: RTCPeerConnection | null = null;
-    let localStream: MediaStream | null = null;
+let pc: RTCPeerConnection | null = null;
+let localStream: MediaStream | null = null;
 
 
-    const localVideo = ref<HTMLVideoElement | null>(null);
-    const remoteVideo = ref<HTMLVideoElement | null>(null);
-    const isCalling = ref(false);
+const localVideo = ref<HTMLVideoElement | null>(null);
+const remoteVideo = ref<HTMLVideoElement | null>(null);
+const isCalling = ref(false);
 
-    const callState = ref<'dialing' | 'ringing' | 'connected'>('dialing');
+const callState = ref<'dialing' | 'ringing' | 'connected'>('dialing');
 
-    const createPeerConnection = () => {
-        pc = new RTCPeerConnection(rtcConfig);
+const createPeerConnection = () => {
+    pc = new RTCPeerConnection(rtcConfig);
 
-        pc.ontrack = (event: RTCTrackEvent) => {
-            if (remoteVideo.value) {
-                remoteVideo.value.srcObject = event.streams[0];
-                callState.value = 'connected';
-            }
-        };
-
-        pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
-            if (event.candidate && conversationData.value) {
-                socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'candidate', event.candidate);
-            }
-        };
-    };
-
-    const setupWebRTC = async () => {
-        createPeerConnection();
-        
-        try {
-            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            if (localVideo.value) localVideo.value.srcObject = localStream;
-
-            localStream.getTracks().forEach(track => {
-                if (pc && localStream) pc.addTrack(track, localStream);
-            });
-        } catch (err) {
-            console.error("Access denied for camera/mic:", err);
+    pc.ontrack = (event: RTCTrackEvent) => {
+        if (remoteVideo.value) {
+            remoteVideo.value.srcObject = event.streams[0];
+            callState.value = 'connected';
         }
     };
 
-    const startCall = async () => {
+    pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
+        if (event.candidate && conversationData.value) {
+            socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'candidate', event.candidate);
+        }
+    };
+};
+
+const setupWebRTC = async () => {
+    createPeerConnection();
+
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        if (localVideo.value) localVideo.value.srcObject = localStream;
+
+        localStream.getTracks().forEach(track => {
+            if (pc && localStream) pc.addTrack(track, localStream);
+        });
+    } catch (err) {
+        console.error("Access denied for camera/mic:", err);
+    }
+};
+
+const startCall = async () => {
+    isCalling.value = true;
+    callState.value = 'dialing';
+
+    await setupWebRTC();
+
+    if (!pc) return;
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    if (conversationData.value)
+        socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'offer', offer);
+};
+
+const acceptCall = async (offer: RTCSessionDescriptionInit) => {
+    isCalling.value = true;
+    callState.value = 'connected';
+
+    await setupWebRTC();
+
+    if (!pc) return;
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    if (conversationData.value)
+        socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'answer', answer);
+};
+
+useSocketListener('video_signal', async (data) => {
+    if (data.type === 'offer') {
         isCalling.value = true;
-        callState.value = 'dialing';
-        
-        await setupWebRTC();
-        
-        if (!pc) return;
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        if (conversationData.value)
-            socketStore.CallUser(conversationData.value[0].peer_id.toString() as string, 'offer', offer);
-    };
+        callState.value = 'ringing';
 
-    const acceptCall = async (offer: RTCSessionDescriptionInit) => {
-        isCalling.value = true;
-        callState.value = 'connected';
-        
-        await setupWebRTC();
-        
-        if (!pc) return;
-        await pc.setRemoteDescription(new RTCSessionDescription(offer));
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-        if (conversationData.value)
-        socketStore.CallUser(conversationData.value[0].peer_id.toString() as string, 'answer', answer);
-    };
-    useSocketListener('video_signal', async (data) => {
-        console.log(data)
-        if (data.type === 'offer') {
-            console.log('offering you')
-            isCalling.value = true;
-            callState.value = 'ringing';
-            
-            pendingOffer.value = data.args; 
-        } 
-        else if (data.type === 'answer') {
-            console.log('answering you')
-            if (pc) {
-                await pc.setRemoteDescription(new RTCSessionDescription(data.args));
-                callState.value = 'connected';
-            }
-        } 
-        else if (data.type === 'candidate') {
-            console.log('connecting you')
-
-            if (pc) {
-                await pc.addIceCandidate(new RTCIceCandidate(data.args));
-            }
-        }
-    });
-
-    const pendingOffer = ref<RTCSessionDescriptionInit | null>(null);
-
-    const endCall = () => {
-        if (localStream) {
-            localStream.getTracks().forEach(track => track.stop());
-            localStream = null;
-        }
+        pendingOffer.value = data.args;
+    }
+    else if (data.type === 'answer') {
         if (pc) {
-            pc.close();
-            pc = null;
+            await pc.setRemoteDescription(new RTCSessionDescription(data.args));
+            callState.value = 'connected';
         }
-        isCalling.value = false;
-        pendingOffer.value = null;
-    };
+    }
+    else if (data.type === 'candidate') {
+        if (pc) {
+            await pc.addIceCandidate(new RTCIceCandidate(data.args));
+        }
+    } else if (data.type === 'hangup') {
+        endCall(false);
+    }
+});
+
+const pendingOffer = ref<RTCSessionDescriptionInit | null>(null);
+
+const endCall = (sendSignal: boolean = true) => {
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+    }
+    if (pc) {
+        pc.close();
+        pc = null;
+    }
+    isCalling.value = false;
+    pendingOffer.value = null;
+
+    isCalling.value = false;
+    callState.value = 'dialing';
+
+    if (sendSignal) {
+        if (conversationData.value)
+        socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'hangup', null);
+    }
+};
 </script>
 
 <template>
@@ -226,11 +231,12 @@
                     <img :src="pictures_handler(conversationData[0].profile_picture_url[0].url)" alt="avatar" />
                 </div>
                 <div class="infos">
-                    <p class="name">{{ conversationData[0].first_name + " " + conversationData[0].last_name}}</p>
+                    <p class="name">{{ conversationData[0].first_name + " " + conversationData[0].last_name }}</p>
                     <div class="status">
                         <span :class="['dot', conversationData[0].last_online ? 'online' : 'offline']"></span>
                         <span class="text">
-                            {{ !conversationData[0].last_online ? 'Online' : `Last seen ${conversationData[0].last_online}` }}
+                            {{ !conversationData[0].last_online ? 'Online' : `Last seen
+                            ${conversationData[0].last_online}` }}
                         </span>
                     </div>
                 </div>
@@ -238,7 +244,8 @@
             <button class="btn">View Profile</button>
         </div>
         <div v-if="conversationMessages" class="messages" ref="messagesContainer">
-            <div v-for="msg in conversationMessages" :key="msg.id" :class="['message', msg.sender_id == userStore.getUserID ? 'sent' : 'received']">
+            <div v-for="msg in conversationMessages" :key="msg.id"
+                :class="['message', msg.sender_id == userStore.getUserID ? 'sent' : 'received']">
                 {{ msg.content }}
             </div>
         </div>
@@ -247,21 +254,21 @@
                 <div>
                     <div v-if="callState === 'dialing'">
                         <div>Calling...</div>
-                        <button @click="endCall" class="cancel-btn">Cancel</button>
+                        <button @click="endCall()" class="cancel-btn">Cancel</button>
                     </div>
 
                     <div v-if="callState === 'ringing'">
                         <h3>Incoming Call...</h3>
                         <div>
                             <button @click="acceptCall(pendingOffer!)">Accept</button>
-                            <button @click="endCall">Decline</button>
+                            <button @click="endCall()">Decline</button>
                         </div>
                     </div>
 
                     <div v-show="callState === 'connected'">
                         <video ref="remoteVideo" autoplay playsinline></video>
                         <video ref="localVideo" autoplay muted playsinline></video>
-                        <button @click="endCall">Hang Up</button>
+                        <button @click="endCall()">Hang Up</button>
                     </div>
                 </div>
             </div>
@@ -276,8 +283,6 @@
 </template>
 
 <style lang="scss" scoped>
-
-
 // to update this 1999 styling.
 .video-call {
     position: fixed;
@@ -301,14 +306,14 @@ video {
 
 
 
-.chat{
+.chat {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
 }
 
-.chat .header{
+.chat .header {
     border-bottom: 1px solid $border-color;
     padding: 8px 20px;
     flex-shrink: 0;
@@ -359,7 +364,7 @@ video {
     height: 100%;
     width: 100%;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.25) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 
 .message {
@@ -474,7 +479,7 @@ video {
     flex-shrink: 0;
 }
 
-.btn{
+.btn {
     cursor: pointer;
     border: none;
     color: white;
@@ -491,19 +496,19 @@ video {
     transition: 0.3s;
 }
 
-.btn:hover{
+.btn:hover {
     transition: 0.3s;
     opacity: 0.8;
 }
 
 @media (max-width: $breakpoint-md) {
-        .back-btn {
-            display: block;
-        }
-        .chat .header{
-            display: flex;
-            align-items: center;
-        }
+    .back-btn {
+        display: block;
     }
-</style>
 
+    .chat .header {
+        display: flex;
+        align-items: center;
+    }
+}
+</style>
