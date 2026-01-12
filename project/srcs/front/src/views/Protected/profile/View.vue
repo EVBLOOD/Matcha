@@ -43,7 +43,6 @@ const dislikeHandler = () => {
 
 
 if (profileData && route.params.id !== userStore.getUserID.toString()) {
-    // console.log("HERE")
     socketStore.interactWithUser(profileData.user.user_id, 'view')
 }
 

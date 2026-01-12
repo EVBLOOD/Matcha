@@ -120,14 +120,17 @@ CREATE TABLE user_reports (
 CREATE OR REPLACE FUNCTION calculate_fame() 
 RETURNS TRIGGER AS $$
 BEGIN
-    IF (TG_OP = 'INSERT' AND TG_TABLE_NAME = 'user_interactions' AND NEW.status = 'liked') THEN
-        UPDATE users SET fame_rating = fame_rating + 10 WHERE id = NEW.liked_id;
-
-    ELSIF (TG_OP = 'INSERT' AND TG_TABLE_NAME = 'profile_views') THEN
-        UPDATE users SET fame_rating = fame_rating + 1 WHERE id = NEW.viewed_id;
-
-    ELSIF (TG_OP = 'DELETE' AND TG_TABLE_NAME = 'user_interactions' AND OLD.status = 'liked') THEN
-        UPDATE users SET fame_rating = fame_rating - 10 WHERE id = OLD.liked_id; 
+    IF (TG_TABLE_NAME = 'user_interactions') THEN
+        IF (TG_OP = 'INSERT' AND NEW.status = 'liked') THEN
+            UPDATE users SET fame_rating = fame_rating + 10 WHERE id = NEW.liked_id;
+        ELSIF (TG_OP = 'DELETE' AND OLD.status = 'liked') THEN
+            UPDATE users SET fame_rating = fame_rating - 10 WHERE id = OLD.liked_id; 
+        END IF;
+    END IF;
+    IF (TG_TABLE_NAME = 'profile_views') THEN
+        IF (TG_OP = 'INSERT') THEN
+            UPDATE users SET fame_rating = fame_rating + 1 WHERE id = NEW.viewed_id;
+        END IF;
     END IF;
     RETURN NULL;
 END;

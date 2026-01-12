@@ -114,7 +114,9 @@ export const useSocketStore = defineStore('socket', {
         socketStatus.io.opts.extraHeaders = {
         Authorization: `Bearer ${token}`
       };
-      socketStatus.emit(type, user_id)
+      console.log(
+        socketStatus.emit(type, user_id)
+      ) 
     },
     handleSocialEvent(type: string, payload: any) {
       const profileStore = useSocialStore();
