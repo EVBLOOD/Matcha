@@ -17,7 +17,6 @@ class PresenceGateway(Namespace):
         try :
             online = ConnectionManager.is_user_online(int(id))
             # here check friendship status!
-            print(f"user {id} : {online}", flush=True)
             return {"status": online}
         except Exception as _:
             return False
@@ -26,7 +25,6 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_check_users_connect(self, ids):
-        print(ids, flush=True)
         try :
             status = []
             for id in ids["users"] :
@@ -40,7 +38,6 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_like(self, id):
-        print(f"{id}: on_like", flush=True)
         try :
             ConnectionManager.interact_with_user(request.user_id, int(id), "Like")
         except Exception as _:
@@ -48,7 +45,6 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_dislike(self, id):
-        print(id, flush=True)
         try :
             ConnectionManager.interact_with_user(request.user_id, int(id), "Dislike")
         except Exception as _:
@@ -56,7 +52,6 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_view(self, id):
-        print(id, flush=True)
         try :
             ConnectionManager.interact_with_user(request.user_id, int(id), "View")
         except Exception as _:
@@ -64,7 +59,6 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_block(self, id):
-        print(id, flush=True)
         try :
             ConnectionManager.interact_with_user(request.user_id, int(id), "Block")
         except Exception as _:
@@ -72,14 +66,11 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_unblock(self, id):
-        print(id, flush=True)
         try :
             ConnectionManager.interact_with_user(request.user_id, int(id), "Unblock")
         except Exception as _:
             return False
     def error_handler(e):
-        print ("Hello error", flush=True)
-        print (e, flush=True)
         disconnect()
 
 

@@ -69,9 +69,7 @@ def proxy_to(provider):
     for k, v in upstream_resp.headers.items():
         if k.lower() == 'set-cookie':
             v = v.replace("omni_auth", Config.PUBLIC_HOST.split(':')[0])
-            print(v, flush=True)
         elif k.lower() == 'location':
-            print(v, flush=True)
             v = v.replace("omni_auth:4567", Config.PUBLIC_HOST)
         response_headers.append((k, v))
 
@@ -107,11 +105,9 @@ def handle_github_callback():
         stream=True
     )
     resp_data = upstream_resp.json()
-    print(resp_data, flush=True)
 
     oauth_user = upstream_resp.json()["infos"]
 
-    print(oauth_user, flush=True)
 
     user_by_email = UserRepository.find_by_email(oauth_user["email"])
 
@@ -123,7 +119,6 @@ def handle_github_callback():
     if user_by_email:
         user_id = user_by_email.id
         access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
-        print(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}", flush=True)
         return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
 
     username = oauth_user["nickname"]
@@ -150,7 +145,6 @@ def handle_github_callback():
         )
 
     access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
-    print(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}", flush=True)
     return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
 
 
@@ -209,7 +203,6 @@ def confirm_reset():
 
         if not all([token, new_password]):
             raise ValueError("Token and password required")
-        print(":LOL", flush=True)
         AuthService.check_and_reset_token(token=token, new_password=new_password)
 
         return jsonify({"message": "Password updated successfully"}), 200

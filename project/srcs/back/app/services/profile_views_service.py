@@ -9,9 +9,8 @@ class ProfileViewsService:
     def insert_profile_views(viewed_id: int, user_id: int) :
         if not UserRepository.find_by_id(viewed_id) :
             raise ValueError("User doesn't exist!")
-        print("LOL", flush=True)
+
         interact = ProfileViews(viewed_id=viewed_id, viewer_id=user_id)
-        print("LOL", flush=True)
 
         ProfileViewsRepository.create_profile_views(interact)
 

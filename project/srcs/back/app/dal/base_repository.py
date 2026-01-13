@@ -7,7 +7,6 @@ class BaseRepository:
     @classmethod
     def _fetch_one(cls, query: str, params=None):
         with Config.DB_instence.get_cursor() as cursor:
-            print(query, flush=True)
             cursor.execute(query, params)
             return cursor.fetchone()
 

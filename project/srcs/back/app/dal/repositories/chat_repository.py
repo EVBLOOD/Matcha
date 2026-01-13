@@ -21,7 +21,6 @@ class ChatRepository(BaseRepository):
 
     @classmethod
     def create_conversation(cls, profile_data: Conversation) :
-        print("This is a match:4", flush=True)
         norm_data = {
             'user1_id' : profile_data.user1_id,
             'user2_id' : profile_data.user2_id,

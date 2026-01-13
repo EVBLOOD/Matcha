@@ -39,12 +39,7 @@ class ProfileService:
         try :
             TagsService.insert_tags(tags_list, user_id)
             PictureService.proccess_images(files_list, user_id)
-            
-            print(f"latitude: {latitude}, longitude: {longitude}", flush=True)
-            print(f"not location_set_by_user {not location_set_by_user }")
-            print(f"not (not latitude and not longitude) {(not latitude and not longitude)}")
-            print(f"(-90 <= latitude <= 90 and -180 <= longitude <= 180) {(-90 <= latitude <= 90 and -180 <= longitude <= 180)}")
-            print(f"not (-90 <= latitude <= 90 and -180 <= longitude <= 180) {not (-90 <= latitude <= 90 and -180 <= longitude <= 180)}")
+
             if not location_set_by_user or (not latitude and not longitude) or \
                 not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
                 result = ProfileService.initial_location(ip)
@@ -56,7 +51,6 @@ class ProfileService:
             UserRepository.update_location(user_id, latitude, longitude)
             AuthService.update_profile_profile_completion(user_id)
         except Exception as e:
-            print(f"{e}", flush=True)
             raise Exception(e)
         return was_done
 
@@ -75,15 +69,12 @@ class ProfileService:
             ip = Config.PUBLIC_IP
 
         try:
-            print(Config.GEOIP_READER, flush=True)
             resp = Config.GEOIP_READER.city(ip)
             result = {
                 "lat": resp.location.latitude,
                 "lng": resp.location.longitude,
                 "ip": ip
             }
-            print(f"GEOIP_READER: {resp}", flush=True)
-            print(f"result: {result}", flush=True)
             return result
 
         except AddressNotFoundError:
@@ -110,7 +101,6 @@ class ProfileService:
         geolocator = Nominatim(user_agent="geo_app")
         location = geolocator.reverse(f"{latitude}, {longitude}", language="en")
         address = location.raw.get('address', {})
-        print(address, flush=True)
         city = address.get('city', address.get('town', address.get('village', 'Unknown')))
         country = address.get('country', 'Unknown')
         return city, country
@@ -122,15 +112,16 @@ class ProfileService:
             if to_find_user_id== searcher_id :
                 same = True
             profile = ProfileRepository.get_user_profile(user_id=to_find_user_id, my_acount=searcher_id, same=same)
+
             if profile is None : 
                 raise ValueError("No such a profile")
+            
 
             if profile["location_set_by_user"] :
                 city, country = ProfileService.get_user_address(profile["latitude"], profile["longitude"])
             else :
                 Address = "Not Shared!"
 
-            print(profile, flush=True)
             if same :
                 interactions = {
                     "is_same": True,
@@ -149,8 +140,6 @@ class ProfileService:
                     "views_count": profile["views_count"]
                 }
                 if profile["is_connected"] == 2:
-                    lkd = profile["converstion_id"]
-                    print(f"profile: is_connected : {lkd}", flush=True)
                     interactions["conversation_id"] = profile["converstion_id"]
             return {
                     "user": {

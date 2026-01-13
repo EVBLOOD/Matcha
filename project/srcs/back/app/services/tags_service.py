@@ -11,7 +11,6 @@ class TagsService:
     def insert_tags(tags: Set[str], user_id: str) :
 
         for tag in tags :
-            print(tag, flush=True)
             tag_id = TagsRepository.find_tags_exists(
                 tag_name=tag
             )

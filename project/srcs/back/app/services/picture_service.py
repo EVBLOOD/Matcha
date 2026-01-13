@@ -47,8 +47,7 @@ class PictureService:
         file.stream.seek(0)
         img = Image.open(file.stream)
         ext = img.format.lower() if img.format else "jpg"
-        print(ext, flush=True)
-        # ext = imghdr.what(file.stream)
+
         filename = f"{uuid.uuid4().hex}.{ext}"
         file_path = os.path.join("app/"+Config.UPLOAD_FOLDER, filename)
         

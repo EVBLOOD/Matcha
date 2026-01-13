@@ -73,12 +73,12 @@ def get_seed_data(db, count=500):
                     conv_id = conv_id_result[0]
 
                     messages_data = [
-                        (u1, "Hey! How are you?", datetime.now() - timedelta(minutes=random.randint(50, 60))),
-                        (u2, "I'm good, just testing this app!", datetime.now() - timedelta(minutes=random.randint(40, 50))),
-                        (u1, "Seems to be working perfectly.", datetime.now() - timedelta(minutes=random.randint(30, 40))),
-                        (u2, "Agreed! The seeder is pretty fast.", datetime.now() - timedelta(minutes=random.randint(20, 30))),
-                        (u1, "Love the new pictures feature!", datetime.now() - timedelta(minutes=random.randint(10, 20))),
-                        (u2, "Yeah, makes the profiles look much better.", datetime.now() - timedelta(minutes=random.randint(1, 10)))
+                        (u1, "salut", datetime.now() - timedelta(minutes=random.randint(50, 60))),
+                        (u2, "salut", datetime.now() - timedelta(minutes=random.randint(40, 50))),
+                        (u1, "cv?", datetime.now() - timedelta(minutes=random.randint(30, 40))),
+                        (u2, "cv hmd et toi?", datetime.now() - timedelta(minutes=random.randint(20, 30))),
+                        (u1, "cv hmd", datetime.now() - timedelta(minutes=random.randint(10, 20))),
+                        (u2, "ewa?", datetime.now() - timedelta(minutes=random.randint(1, 10)))
                     ]
                     
                     for sender_id, text, sent_time in messages_data:

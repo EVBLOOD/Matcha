@@ -10,9 +10,7 @@ from app.core.config import Config
 profile_bp = Blueprint('profile_api', __name__, url_prefix='/profile')
 
 @profile_bp.route('/pictures/<string:filename>', methods=['GET'])
-# @Security.auth_guard()
 def serve_uploaded_image(filename):
-    print(filename, flush=True)
     return send_from_directory(Config.UPLOAD_FOLDER, filename)
 
 @profile_bp.route('/<int:user_id>', methods=['GET'])
@@ -47,7 +45,6 @@ def create_profile() :
             ip = request.remote_addr
 
         try :
-            print(f"validated_data: {validated_data}", flush=True)
             was_added = ProfileService.create_profile(user_id=user_id, **validated_data, files_list=files, ip=ip)
         except Exception as e :
             return jsonify({"error": str(e)}), 500
@@ -70,12 +67,8 @@ def create_profile_info() :
             ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
         else :
             ip = request.remote_addr
-        print(f"ip: {ip}", flush=True)
-        print(f"request->remote_addr: {request.remote_addr}", flush=True)
-        print(f"request->headers->get('X-Forwarded-For'): {request.headers.get('X-Forwarded-For')}", flush=True)
         try :
             was_added = ProfileService.initial_location(ip=ip)
-            print(f"was_added: {was_added}", flush=True)
         except Exception as e :
             return jsonify({"error": str(e)}), 500
 

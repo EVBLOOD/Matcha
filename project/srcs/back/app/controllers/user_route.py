@@ -43,7 +43,6 @@ def verify_account() :
         if value :
             return redirect(f"{Config.FRONT_LINK}/confirm-email", code=302) # TODO: maybe to login with success prompt -> profile fill
         else :
-            print(f"mafhemtch aba: {value}", flush=True)
             return jsonify({"error": str(value)}), 400
     except ValueError as e :
         return jsonify({"error": str(e)}), 400 # TODO: this should be updated somehow, maybe to login with issue prompt -> resend email

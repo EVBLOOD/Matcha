@@ -68,7 +68,6 @@ class ChatManager :
 
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
-        print(private_room, flush=True)
         message_id = ChatService.send_message(sender, receiver, message)
         print ("Sending the message", flush=True)
         emit(
@@ -95,7 +94,6 @@ class ChatManager :
     @staticmethod
     def join_call(caller_id: str, reciever_id, socket_id) :
         private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
-        print(private_room, flush=True)
 
 
         # redis again

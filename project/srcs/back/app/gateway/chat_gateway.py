@@ -26,7 +26,6 @@ class ChatGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_send_message(self, user_message):
         try :
-            print(f"on_send_message: {user_message}", flush=True)
             sender = request.user_id
             receiver = user_message["user_id"]
             text = user_message["text"]
@@ -41,6 +40,5 @@ class ChatGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
-        print(f"End call {request.user_id} - Reason: {reason}", flush=True)
         ChatManager.disconnect_user_socket(request.user_id, request.sid)
         return

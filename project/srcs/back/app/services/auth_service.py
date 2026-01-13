@@ -17,20 +17,17 @@ class AuthService :
             print (is_verified, flush=True)
             return is_verified and is_verified[0]
         except Exception as e :
-            print(e, flush=True)
             return False
     @staticmethod
     def verify_user(username: str, password: str) :
 
         try :
             user = UserRepository.find_by_username(username=username)
-            print(user, flush=True)
             if not user.password_hash :
                raise ValueError("Please log-in with your social account or reset your password to create one")
             if bcrypt.checkpw(password.encode(), user.password_hash.encode()) :
                 return user
         except Exception as e :
-            print(e, flush=True)
             return None
         return None
     
@@ -105,7 +102,6 @@ class AuthService :
         
         session_user_id = session_data.get(b"user_id")
         session_auth_version = session_data.get(b"auth_version")
-        print(session_user_id.decode(), session_auth_version.decode(), current_auth_version, flush=True)
 
         if not session_user_id or session_user_id.decode() != str(user_id):
             return False, []
@@ -164,7 +160,6 @@ class AuthService :
 
         user_version = uuid.uuid4().hex
         redis.set(f"user:{user_id}:auth_version", user_version)
-        print(user_version, flush=True)
         return user_id
 
     @staticmethod

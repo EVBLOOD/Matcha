@@ -9,9 +9,7 @@ class UserBlocksService:
     def insert_user_blocks(blocked_id: int, user_id: int) :
         if not UserRepository.find_by_id(blocked_id) :
             raise ValueError("User doesn't exist!")
-        print("LOL", flush=True)
         interact = UserBlocks(blocked_id=blocked_id, blocker_id=user_id)
-        print("LOL", flush=True)
 
         UserBlocksRepository.create_user_blocks(interact)
 
