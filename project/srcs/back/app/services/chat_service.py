@@ -6,9 +6,7 @@ from app.dal.models.conversation import Conversation
 class ChatService :
     @classmethod
     def send_message(cls, sender: int, reciever : int, message: str) :
-        print ("here start!", flush=True)
         chat_id = cls.create_conversation(sender, reciever)
-        print ("here!", flush=True)
         id_message = ChatRepository.insert_message(Message(conversation_id=chat_id, sender_id=sender, content=message, is_read=False))
         return id_message
 

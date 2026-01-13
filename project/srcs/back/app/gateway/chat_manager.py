@@ -69,13 +69,11 @@ class ChatManager :
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
         message_id = ChatService.send_message(sender, receiver, message)
-        print ("Sending the message", flush=True)
         emit(
             'message_chat', 
             {"text": message, "sender": sender, "id": message_id}, 
             room=private_room
         )
-        print ("Done sending the message", flush=True)
 
         receiver_sockets: Set[bytes] = redis.smembers(f"chat:user_sockets:{receiver}")
         active_viewers: Set[bytes] = redis.smembers(f"chat:private_rooms:{private_room}")

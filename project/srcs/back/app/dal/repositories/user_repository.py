@@ -34,7 +34,7 @@ class UserRepository(BaseRepository):
         }
         user_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion, data=norm_data)
         token_verify  = cls.create_verify_token(user_id=user_id)
-        print (token_verify, flush=True)
+
         return user_data, token_verify, user_id
     
     @classmethod

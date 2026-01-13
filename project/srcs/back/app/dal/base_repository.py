@@ -57,9 +57,6 @@ class BaseRepository:
     ) -> Tuple[Optional[sql.Composed], Optional[List[Any]]]:
 
         if not isinstance(data, dict) or set(data.keys()) != set(columns):
-
-            print (data.keys(), set(columns), flush=True)
-            print (set(data.keys()) != set(columns), flush=True)
             return None, None
         
         ordered_values = [data[col] for col in columns]
@@ -83,7 +80,6 @@ class BaseRepository:
         data: Dict[str, Any],
         returning="id") :
         query, _values = cls._build_insert_query(table_name=table_name, columns=columns, data=data)
-        print (query, flush=True)
         if returning :
             query += sql.SQL(" RETURNING {}").format(sql.Identifier(returning))
 

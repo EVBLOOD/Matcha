@@ -38,7 +38,6 @@ def verify_account() :
         if not isinstance(token_id, str) :
             return jsonify({"error": "Missing required fields"}), 400
 
-        print (token_id, flush=True)
         value = UserService.verify_account(token=token_id)
         if value :
             return redirect(f"{Config.FRONT_LINK}/confirm-email", code=302) # TODO: maybe to login with success prompt -> profile fill

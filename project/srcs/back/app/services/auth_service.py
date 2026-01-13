@@ -14,7 +14,6 @@ class AuthService :
 
         try :
             is_verified = UserRepository.find_by_id(id=user_id, what="is_verified")
-            print (is_verified, flush=True)
             return is_verified and is_verified[0]
         except Exception as e :
             return False
@@ -78,7 +77,6 @@ class AuthService :
     @classmethod
     def validate_token(cls, user_id, session_id):
         expired, sessions = cls.find_user_session_nt_valid(user_id, session_id)
-        print (expired, sessions, flush=True)
         if len(sessions) == 0 :
             return ("Not authorized", 403)
         if expired :

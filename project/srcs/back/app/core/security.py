@@ -39,7 +39,6 @@ class Security :
                     if not set(required_roles).intersection(user_roles):
                         return jsonify({"error": "Insufficient permissions"}), 403
                 request.session_id = get_jwt_identity()
-                print (request.session_id, flush=True)
                 request.user_id = claims["user_id"]
                 return fn(*args, **kwargs)
             return wrapper

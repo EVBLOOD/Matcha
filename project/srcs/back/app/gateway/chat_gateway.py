@@ -9,7 +9,6 @@ class ChatGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_connect(self):
-        print (f"welecome {request.user_id} to chat", flush=True)
         
         ChatManager.connect_user_socket(request.user_id, request.sid)
         
@@ -31,7 +30,6 @@ class ChatGateway(Namespace):
             text = user_message["text"]
             return ChatManager.broadcast_message(sender=sender, receiver=receiver, message=text, socket_id=request.sid)
         except Exception as e :
-            print (e, flush=True)
             return False
         
     @ConnectionManager.socket_guard()

@@ -120,7 +120,6 @@ class ConnectionManager :
                     if not token:
                         raise Exception("Missing authentication token")
                     decoded_token = Security.jwt._decode_jwt_from_config(token)
-                    print (decoded_token, flush=True)
                     message, status = AuthService.validate_token(decoded_token["user_id"], decoded_token["sub"])
                     if status != 200 :
                         raise Exception(message)

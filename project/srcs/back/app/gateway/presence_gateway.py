@@ -8,7 +8,6 @@ class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_connect(self):
         ConnectionManager.connect_user(user_id=request.user_id, sid=str(request.sid))
-        print (f"Hello World PresenceGateway( on_connect ) {request.user_id}", flush=True)
         return True
 
 

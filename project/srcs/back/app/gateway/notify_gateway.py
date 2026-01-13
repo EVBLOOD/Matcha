@@ -12,8 +12,6 @@ class NotifyGateway(Namespace):
 
     
     def error_handler(e):
-        print ("Hello error", flush=True)
-        print (e, flush=True)
         disconnect()
 
     # def on_message(self, user_message) :
