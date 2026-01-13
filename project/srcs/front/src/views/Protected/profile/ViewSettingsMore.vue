@@ -9,40 +9,42 @@ import TagsList from '@/components/TagsList.vue';
 
 
 import { useRouter } from 'vue-router'
-import { inject, type Ref } from 'vue';
 
 import UserService from '@/api/services/UserService'
 import useUserStore from '@/stores/user';
-import type { UserProfileResponse } from '@/types/apiResponses'
 import type { PicturesDisplying } from '@/types/helpers'
 
-const profileData = inject<Ref<UserProfileResponse>>('profileData');
+import { useSocialStore } from '@/stores/profile';
+
+const profile = useSocialStore()
+
 
 const orientation = [{ value: 'straight', label: 'Straight' }, { value: 'gay', label: 'Gay' }, { value: 'bisexual', label: 'Bisexual' }]
 
-const availableTags = ref(profileData?.value.interests);
+const availableTags = ref(profile.activeProfile?.interests);
 
 
-const selectedOrientation = ref(profileData?.value.user.sexual_preference);
-const selectedGender = ref(profileData?.value.user.gender);
+const selectedOrientation = ref(profile.activeProfile?.user.sexual_preference);
+const selectedGender = ref(profile.activeProfile?.user.gender);
 
 const pictures_handler = (link: string) => {
-    if (link.indexOf('/') > 0) {
+    console.log(link)
+    if (link && link.indexOf('/') > 0) {
         return link
     }
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
-const initialImage =  pictures_handler(profileData?.value.pictures.filter(pic => pic.is_profile_picture)[0].url as string);
-const initialpictures = profileData?.value.pictures.filter(img => !img.is_profile_picture).map(img => {
+const initialImage =  pictures_handler(profile.activeProfile?.pictures.filter(pic => pic.is_profile_picture)[0].url as string);
+const initialpictures = profile.activeProfile?.pictures.filter(img => !img.is_profile_picture).map(img => {
     return {
     id: img.url,
     url: pictures_handler(img.url as string)
 }})
 
 const selectedProfile = ref<File | null>(null);
-const selectedIntersts = ref<string[]>(profileData?.value.interests || []);
-const insertedBio = ref(profileData?.value.profile.biography);
+const selectedIntersts = ref<string[]>(profile.activeProfile?.interests || []);
+const insertedBio = ref(profile.activeProfile?.profile.biography);
 const insertedPictures = ref<PicturesDisplying[]>([]);
 
 
@@ -101,7 +103,7 @@ const handleTags = (tags: string[]) => {
             <div>
                 <PictureNdIcon :initialImage="initialImage" :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
             </div>
-            <p class="full_name">{{profileData?.user.first_name + " " + profileData?.user.last_name}}</p>
+            <p class="full_name">{{profile.activeProfile?.user.first_name + " " + profile.activeProfile?.user.last_name}}</p>
         </div>
 
         <div class="gender_div">

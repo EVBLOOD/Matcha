@@ -98,7 +98,7 @@ class ProfileService:
     
     @staticmethod
     def get_user_address(latitude: float, longitude: float) :
-        geolocator = Nominatim(user_agent="geo_app", timeout=10)
+        geolocator = Nominatim(user_agent="geo_app")
         location = geolocator.reverse(f"{latitude}, {longitude}", language="en")
         address = location.raw.get('address', {})
         city = address.get('city', address.get('town', address.get('village', 'Unknown')))

@@ -3,14 +3,13 @@ import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 import { ref } from 'vue'
 
-import type { UserProfileResponse } from '@/types/apiResponses'
-import { inject, type Ref } from 'vue';
+import { useSocialStore } from '@/stores/profile';
 
-const profileData = inject<Ref<UserProfileResponse>>('profileData');
-const firstName = ref(profileData?.value.user.first_name);
-const lastName = ref(profileData?.value.user.last_name);
-const email = ref(profileData?.value.user.email || "");
-const userName = ref(profileData?.value.user.username);
+const profile = useSocialStore()
+const firstName = ref(profile.activeProfile?.user.first_name);
+const lastName = ref(profile.activeProfile?.user.last_name);
+const email = ref(profile.activeProfile?.user.email || "");
+const userName = ref(profile.activeProfile?.user.username);
 
 
 const clickSave = (e: Event) => {
