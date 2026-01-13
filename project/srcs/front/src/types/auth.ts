@@ -7,3 +7,8 @@ export interface Login {
 export interface RecoverPassword {
     email: string;
 }
+
+export interface RecoverPasswordIn {
+    new_password: string;
+    token: string;
+}

@@ -195,21 +195,21 @@ def verify_reset_token():
             raise ValueError("Token required")
         if AuthService.check_token(token=token) is None :
             return jsonify({"valid": False, "error": "Invalid/expired token"}), 401
-        return jsonify({"valid": True}), 200
+        
+        return redirect(f"{Config.FRONT_LINK}/new-password?token={token}", code=302) 
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
 
 @auth_bp.route('/confirm-reset', methods=['POST'])
 def confirm_reset():
-    try :
-    
+    try :    
         body = request.get_json()
         token = body.get('token')
         new_password = body.get('new_password')
 
         if not all([token, new_password]):
             raise ValueError("Token and password required")
-
+        print(":LOL", flush=True)
         AuthService.check_and_reset_token(token=token, new_password=new_password)
 
         return jsonify({"message": "Password updated successfully"}), 200

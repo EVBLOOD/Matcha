@@ -34,7 +34,7 @@ class EmailingService :
             subject="Email from Matcha",
             recipients=[email],
         )
-        link = Config.FRONT + "/user/verify_change_email?token=" + token + "&email=" + email
+        link = Config.VITE_BACKEND_LINK + "/user/verify_change_email?token=" + token + "&email=" + email
 
         msg.body = f"""
         Hello { username },
@@ -60,7 +60,7 @@ class EmailingService :
             subject="Email from Matcha",
             recipients=[email],
         )
-        link = Config.FRONT + "/user/verify-reset-token?token=" + token
+        link = Config.VITE_BACKEND_LINK + "/auth/verify-reset-token?token=" + token
 
         msg.body = f"""
         Hello { username },

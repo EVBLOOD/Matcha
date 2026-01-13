@@ -3,6 +3,8 @@ import LandingPage from '@/views/LandingPage.vue';
 import RegisterPage from '@/views/RegisterPage.vue';
 import EmailConfirmationPage from '@/views/EmailConfirmationPage.vue';
 import LoginPage from '@/views/LoginPage.vue';
+import ResetPage from '@/views/ResetPage.vue';
+import UpdatePassword from '@/views/UpdatePassword.vue';
 import ProfileOnboarding from '@/views/ProfileOnboarding.vue';
 import HomePage from '@/views/Protected/HomePage.vue';
 import ExplorePage from '@/views/Protected/ExplorePage.vue';
@@ -114,6 +116,18 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginPage,
+      meta: { public: true }
+    },
+    {
+      path: '/reset-password',
+      name: 'reset',
+      component: ResetPage,
+      meta: { public: true }
+    },
+    {
+      path: '/new-password',
+      name: 'new-password',
+      component: UpdatePassword,
       meta: { public: true }
     },
     {

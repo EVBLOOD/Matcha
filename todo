@@ -6,12 +6,12 @@
         [x] Backend registration logic.
         [x] Email verification (send verification email with unique link).
     [x] Login :
-        [ ] Login UI Page (form with -> username and password + forgot the password).
+        [x] Login UI Page (form with -> username and password + forgot the password).
         [x] Backend login logic.
         [x] Bonus: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
     [ ] Password Reset :
-        [ ] "Reset Password" UI page (form with -> email address).
-        [ ] "Forgot Password" UI link redirect page (form with -> new password).
+        [x] "Reset Password" UI page (form with -> email address).
+        [x] "Forgot Password" UI link redirect page (form with -> new password).
         [x] Password reset request logic (send the unique email link).
     [x] Logout :
         [x] Logout logic.
