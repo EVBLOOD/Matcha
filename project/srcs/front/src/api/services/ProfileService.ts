@@ -8,5 +8,8 @@ export default {
   },
   likeProfile() {
     return [];
+  },
+  updateProfile(payload: any) {
+    return apiClient.post(`/profile/update_profile`, payload);
   }
 };

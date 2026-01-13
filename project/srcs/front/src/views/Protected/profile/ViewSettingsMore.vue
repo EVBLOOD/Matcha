@@ -10,7 +10,7 @@ import TagsList from '@/components/TagsList.vue';
 
 import { useRouter } from 'vue-router'
 
-import UserService from '@/api/services/UserService'
+import ProfileService from '@/api/services/ProfileService'
 import useUserStore from '@/stores/user';
 import type { PicturesDisplying } from '@/types/helpers'
 
@@ -74,7 +74,7 @@ const handleSubmit = async () => {
     formData.append('location_set_by_user', `${false}`);
 
     try {
-        await UserService.completeProfile(formData);
+        await ProfileService.updateProfile(formData);
         const user = useUserStore();
         await user.fetchUser();
 
