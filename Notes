@@ -1,33 +1,16 @@
-Login form should have create account
-password view / show (inputs)
-forgot password form
-backend = bug in fill profile first time = (tags saved when image error!)
-backend = add resend email feature
-
-
-
-design :
-
-Urgent to fix:
-- Suggestions page where you'll be able to see suggestion and be able to filter it by one of those options, age, location, “fame rating”, common tags, and being able to sort them by one of them too
-
-- Sorting, Filtering in Explore page (Sortable/Filterable Search) user will be able to filter by one or many options and able to sort.
-Uregent to add :
-- forgot the password form with -> email address
-- new password view for ppl who forgot the password
-- pop-up/notif UI one for Notifs and another for chat
-
-
-
-
-
-- Video/Audio Chat: Implement video/audio chat feature.
-
-
-
+- Date/Event Scheduling: Implement event/date scheduling feature.
 - check the redis things
 
 
 - design:
+    Explore page
+    Suggestions page
+    pop-up/notif UI one for Notifs and another for chat
     form date of birth adding!
+    profile picture editing.
+    Location modification in profile editing.
+    Video/Audio interface
     Map: Develop user map interface.
+
+backend = add resend email feature
+backend = bug in fill profile first time = (tags saved when image error!)
