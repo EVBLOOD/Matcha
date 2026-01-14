@@ -23,6 +23,6 @@ export default {
     return apiClient.post('/user/update-password', {'password': newpassword});
   },
   change_infos_top(payload: any) {
-    return apiClient.post('/user/change-infos-top', payload);
+    return apiClient.post('/user/change-general-infos', payload);
   }
 };

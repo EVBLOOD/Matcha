@@ -49,12 +49,12 @@ class EmailingService :
       Config.mail.send(msg)
   
   
-  def send_email_change_confirming(email: str, username : str, token: str) :
+  def send_email_change_confirming(email: str, username : str, token: str, session_id: str, user_id: int) :
       msg = Message(
           subject="Email from Matcha",
           recipients=[email],
       )
-      link = Config.VITE_BACKEND_LINK + "/user/verify_change_email?token=" + token + "&email=" + email
+      link = Config.VITE_BACKEND_LINK + "/user/verify_change_email?token=" + token + "&email=" + email  + "&id=" + str(user_id)  + "&sid=" + session_id
       msg.body = f"""
       Hello { username },
       To change your email account, please click the link below :

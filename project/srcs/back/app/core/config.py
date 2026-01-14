@@ -16,6 +16,7 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES', 3600))
     JWT_TOKEN_LOCATION = ["headers"]
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+    REDIS_DECODE_RESPONSES = True
     ALLOWED_EXTENSIONS = ""
     UPLOAD_FOLDER = "pictures_storage"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024

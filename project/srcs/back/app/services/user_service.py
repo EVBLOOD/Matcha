@@ -79,16 +79,18 @@ class UserService:
     @staticmethod
     def update_user_infos(user_id: int, username: str, first_name: str, last_name: str) :
         try :
+            print("DDOD", flush=True)
             UserRepository.update_user_infos(user_id, first_name, last_name , username)
         except Exception as e :
             raise ValueError(str(e)) # unique username
     
     @staticmethod
-    def update_user_email_request(user_id: int, email: str) :
+    def update_user_email_request(user_id: int, email: str, session_id: str ) :
         redis = Config.redis_instence
 
         user = UserRepository.find_by_email(email)
-        if user.id != int(user_id) or email == user.email:
+        print(user)
+        if user :
             raise ValueError("Email can't be used!")
         
         token = secrets.token_urlsafe(32)
@@ -99,22 +101,34 @@ class UserService:
         })
         redis.expire(key, 3600)
         redis.sadd(f"user_email_change:{user_id}:emails", email)
+        user = User(*UserRepository.find_by_id(user_id))
+
         # TODO: here we should check if the email is valid or reject it
         try :
-            EmailingService.send_email_change_confirming(email, user.username, email)
+            EmailingService.send_email_change_confirming(email, user.username, token, session_id, user_id)
         except Exception as e :
+            print(e, flush=True)
             # TODO: delete the email change from redis
             raise ValueError ("Email Not VALID!")
             raise ValueError(str(e))
 
+    @staticmethod
+    def update_user_email_request_and_infos(user_id: int, username: str, first_name: str, last_name: str, email: str, session_id: str) :
+
+        user = User(*UserRepository.find_by_id(user_id))
+        if user.email != email :
+            UserService.update_user_email_request(user_id, email, session_id)
+        if not (username == user.username and first_name == user.first_name and last_name == user.last_name) :
+            UserService.update_user_infos(user_id, username, first_name, last_name)
+        return 1
 
     @staticmethod
-    def confirm_change(self, user_id: int, token: str, email: str, session_id: str ) -> bool:
+    def confirm_change(user_id: int, token: str, email: str, session_id: str) -> bool:
         redis = Config.redis_instence
         key = f"email_change:{email}"
         data = redis.hgetall(key)
-        
-        if not data or data.get("token") != token or data.get("user_id") != user_id:
+
+        if not data or data.get(b"token").decode('utf-8') != token or data.get(b"user_id").decode('utf-8') != user_id:
             return False
         UserRepository.update_email(user_id, email)
         

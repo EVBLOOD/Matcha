@@ -111,11 +111,17 @@ class ProfileService:
     
     @staticmethod
     def get_user_address(latitude: float, longitude: float) :
-        geolocator = Nominatim(user_agent="geo_app")
-        location = geolocator.reverse(f"{latitude}, {longitude}", language="en")
-        address = location.raw.get('address', {})
-        city = address.get('city', address.get('town', address.get('village', 'Unknown')))
-        country = address.get('country', 'Unknown')
+        city = "Tiznit"
+        country = "Morroco"
+        try :
+
+            geolocator = Nominatim(user_agent="geo_app")
+            location = geolocator.reverse(f"{latitude}, {longitude}", language="en")
+            address = location.raw.get('address', {})
+            city = address.get('city', address.get('town', address.get('village', 'Unknown')))
+            country = address.get('country', 'Unknown')
+        except Exception as e:
+            print(e, flush=True)
         return city, country
 
     @staticmethod
@@ -129,6 +135,7 @@ class ProfileService:
             if profile is None : 
                 raise ValueError("No such a profile")
             
+            Address = "Not Shared!"
 
             if profile["location_set_by_user"] :
                 city, country = ProfileService.get_user_address(profile["latitude"], profile["longitude"])
@@ -160,6 +167,7 @@ class ProfileService:
                         "username": profile["username"],
                         "first_name": profile["first_name"],
                         "last_name": profile["last_name"],
+                        "email": profile["email"] if same else None,
                         "sexual_preference": profile["sexual_preference"],
                         "gender": profile["gender"],
                         "location": Address if not profile["location_set_by_user"] else f"{city}, {country}"

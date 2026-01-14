@@ -122,6 +122,16 @@ class UserRepository(BaseRepository):
         """
         password_hash = User.hashing_password(password=new_password)
         return cls._execute(query, (password_hash, user_id))
+    
+    @classmethod
+    def update_email(cls, user_id: int, email: str) :
+        query = """
+            UPDATE users 
+            SET email = %s 
+            WHERE id = %s
+            RETURNING id
+        """
+        return cls._execute(query, (email, user_id))
     #     _columns = [
     #     "id", "username", "first_name", "last_name", 
     #     "password_hash", "email", "fame_rating",
@@ -132,12 +142,13 @@ class UserRepository(BaseRepository):
         query = """
             UPDATE users 
             SET
-                first_name = %s 
-                last_name = %s 
+                first_name = %s,
+                last_name = %s,
                 username = %s 
             WHERE id = %s
             RETURNING id
         """
+        print(query, flush=True)
         return cls._execute(query, (first_name, last_name ,username, user_id))
 
     @classmethod

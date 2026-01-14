@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, redirect
 from app.services.user_service import UserService
 from app.core.security import Security
-from app.core.schemas import UserRegisterSchema, ValidationError
+from app.core.schemas import UserRegisterSchema, UpdateGeneralUserSchema, ValidationError
 import time
 
 from app.core.config import Config
@@ -79,3 +79,46 @@ def protected() :
 @user_bp.route("/not_protected", methods=["GET", "POST"])
 def not_protected() :
     return jsonify({"result": "not_protected"})
+
+
+
+@user_bp.route('/change-general-infos', methods=['POST'])
+@Security.auth_guard()
+def change_general_infos() :
+    try :
+        body = request.get_json()
+        user_id = request.user_id
+
+        schema = UpdateGeneralUserSchema()
+        try:
+            print(body, flush=True)
+            validated_data = schema.load(body)
+        except Exception as err:
+            return jsonify({"errors": err.messages}), 400
+        was_updated = UserService.update_user_email_request_and_infos(user_id=user_id, **validated_data, session_id=request.session_id)
+        if was_updated :
+            return jsonify({"success": "profile updated for user"}), 201
+        else :
+            return jsonify({"error": "profile couldn't be updated for user"}), 409
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400
+    
+@user_bp.route('/verify_change_email', methods=['GET'])
+def verify_change_email() :
+    try :
+        user_id = request.args.get('id')
+        session_id = request.args.get('sid')
+        token = request.args.get('token')
+        email = request.args.get('email')
+
+        if not isinstance(token, str) or not isinstance(email, str) or not \
+            isinstance(int(user_id), int) or not isinstance(session_id, str) :
+            return jsonify({"error": "Missing required fields"}), 400
+
+        done = UserService.confirm_change(user_id, token, email, session_id)
+        if done :
+            return jsonify({"success": "email was updated for user"}), 201
+        else :
+            return jsonify({"error": "email couldn't be updated for user, try again"}), 409
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400

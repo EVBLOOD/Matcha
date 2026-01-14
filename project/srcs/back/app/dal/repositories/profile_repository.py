@@ -67,6 +67,7 @@ class ProfileRepository(BaseRepository):
                     u.last_online,
                     u.latitude,
                     u.longitude,
+                    u.email,
                     p.gender,
                     p.sexual_preference,
                     p.biography,

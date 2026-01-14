@@ -29,10 +29,10 @@ const error = ref<null | string | any[]>(null);
 const clickSave = async (e: Event) => {
     try {
         const payload = {
-            'firstname': firstName.value,
-            'lastname': lastName.value,
+            'first_name': firstName.value,
+            'last_name': lastName.value,
             'email': email.value,
-            'userName': userName.value,
+            'username': userName.value,
         }
        await UserService.change_infos_top(payload);
        router.push('/')

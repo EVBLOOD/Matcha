@@ -69,3 +69,12 @@ class UserBlockSchema(Config.ma_instence.Schema):
 
 class TokenSchema(Config.ma_instence.Schema):
     token = fields.Str(required=True)
+
+
+class UpdateGeneralUserSchema(Config.ma_instence.Schema):
+    username = fields.Str(required=True, validate=validate.Length(min=3, max=50))
+    first_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
+    last_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
+    # TODO :
+    # valid email format should be moved to here
+    email = fields.Email(required=True)
