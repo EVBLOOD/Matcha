@@ -8,12 +8,12 @@ class UserInterestsRepository(BaseRepository):
     ]
 
     @classmethod
-    def create_user_interests(cls, user_interest: UserInterests) :
+    def create_user_interests(cls, user_interest: UserInterests, injected_cursor = None) :
         norm_data = {
             'user_id' : user_interest.user_id,
             'tag_id' : user_interest.tag_id,
         }
-        tag_id = cls.insert(table_name=cls._table_name, columns=cls._columns, data=norm_data, returning="tag_id")
+        tag_id = cls.insert(table_name=cls._table_name, columns=cls._columns, data=norm_data, returning="tag_id", injected_cursor=injected_cursor)
         return tag_id
 
     @classmethod

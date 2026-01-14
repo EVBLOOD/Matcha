@@ -56,7 +56,7 @@ class PictureService:
         return filename
 
     @classmethod
-    def proccess_images(cls, list_files, user_id) :
+    def proccess_images(cls, list_files, user_id, injected_cursor = None) :
         profile = False
         for file in list_files :
             if file == 'profile' :
@@ -69,7 +69,7 @@ class PictureService:
         for file in list_files :
             tmp = cls.save_file(list_files[file])
             tmp = Picture(id=0, user_id=user_id,url=tmp, is_profile_picture=(True if file == "profile" else False))
-            PicturesRepository.insert_picture(tmp)
+            PicturesRepository.insert_picture(tmp, injected_cursor)
         
 
 

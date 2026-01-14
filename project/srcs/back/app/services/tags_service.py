@@ -8,7 +8,7 @@ from typing import Set
 import re
 class TagsService:
     @staticmethod
-    def insert_tags(tags: Set[str], user_id: str) :
+    def insert_tags(tags: Set[str], user_id: str, injected_cursor = None) :
 
         for tag in tags :
             tag_id = TagsRepository.find_tags_exists(
@@ -19,7 +19,7 @@ class TagsService:
                     Tags(id=0, name=tag)
                 )
             UserInterestsRepository.create_user_interests( 
-                UserInterests(user_id=int(user_id), tag_id=tag_id)
+                UserInterests(user_id=int(user_id), tag_id=tag_id), injected_cursor
             )
     def check_tag_name_valid(tags : Set[str]) :
         if not isinstance(tags, Set):

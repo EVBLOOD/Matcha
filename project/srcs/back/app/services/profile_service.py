@@ -36,9 +36,15 @@ class ProfileService:
         if not files_list or len(files_list) > 5 or len(files_list) < 1:
             raise ValueError("Must provide 1-5 pictures")
         TagsService.check_tag_name_valid(tags_list) # TODO: trim tags
+        conn = None
+        injected_cursor = None
         try :
-            TagsService.insert_tags(tags_list, user_id)
-            PictureService.proccess_images(files_list, user_id)
+            conn = Config.DB_instence.get_connection() 
+            injected_cursor = conn.cursor()
+
+            TagsService.insert_tags(tags_list, user_id, injected_cursor)
+            # print("alo", flush=True)
+            PictureService.proccess_images(files_list, user_id, injected_cursor)
 
             if not location_set_by_user or (not latitude and not longitude) or \
                 not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
@@ -46,12 +52,19 @@ class ProfileService:
                 latitude = result["lat"]
                 longitude = result["lng"]
             was_done = ProfileRepository.upsert_profile(
-                Profile(user_id, gender, sexual_preference, biography, location_set_by_user)
+                Profile(user_id, gender, sexual_preference, biography, location_set_by_user), injected_cursor
             )
-            UserRepository.update_location(user_id, latitude, longitude)
+            UserRepository.update_location(user_id, latitude, longitude, injected_cursor)
+            conn.commit()
             AuthService.update_profile_profile_completion(user_id)
         except Exception as e:
+            print(e, flush=True)
+            conn.rollback()
             raise Exception(e)
+        if injected_cursor:
+            injected_cursor.close()
+        if conn:
+            conn.close()
         return was_done
 
     @staticmethod

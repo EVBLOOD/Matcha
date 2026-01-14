@@ -2,17 +2,30 @@
 from app.core.config import Config
 from psycopg2 import sql
 from typing import List, Dict, Any, Tuple, Optional
+from contextlib import nullcontext
 
 class BaseRepository:
     @classmethod
-    def _fetch_one(cls, query: str, params=None):
-        with Config.DB_instence.get_cursor() as cursor:
+    def get_exec_cursor(cls, existing_cursor=None):
+        if existing_cursor:
+            return nullcontext(existing_cursor)
+        return Config.DB_instence.get_cursor()
+
+    @classmethod
+    def get_exec_cursor_and_commit(cls, existing_cursor=None):
+        if existing_cursor:
+            return nullcontext(existing_cursor)
+        return Config.DB_instence.get_cursor(commit=True)
+
+    @classmethod
+    def _fetch_one(cls, query: str, params=None, injected_cursor = None):
+        with cls.get_exec_cursor(injected_cursor) as cursor:
             cursor.execute(query, params)
             return cursor.fetchone()
 
     @classmethod
-    def _execute(cls, query: str, params=None):
-        with Config.DB_instence.get_cursor(commit=True) as cursor:
+    def _execute(cls, query: str, params=None, injected_cursor = None):
+        with cls.get_exec_cursor_and_commit(injected_cursor) as cursor:
             cursor.execute(query, params)
 
             description = cursor.description
@@ -27,8 +40,8 @@ class BaseRepository:
             return dict(zip(keys, values))
 
     @classmethod
-    def _fetch_all(cls, query: str, params=None):
-        with Config.DB_instence.get_cursor() as cursor:
+    def _fetch_all(cls, query: str, params=None, injected_cursor = None):
+        with cls.get_exec_cursor(injected_cursor) as cursor:
             cursor.execute(query, params)
             description = cursor.description
             keys = [col[0] for col in description]
@@ -42,8 +55,8 @@ class BaseRepository:
             return data
 
     @classmethod
-    def _fetch(cls, query: str, params=None):
-        with Config.DB_instence.get_cursor() as cursor:
+    def _fetch(cls, query: str, params=None, injected_cursor = None):
+        with cls.get_exec_cursor(injected_cursor) as cursor:
             cursor.execute(query, params)
             return cursor.fetchall()
 
@@ -78,12 +91,12 @@ class BaseRepository:
         table_name: str,
         columns: List[str],
         data: Dict[str, Any],
-        returning="id") :
+        returning="id", injected_cursor = None) :
         query, _values = cls._build_insert_query(table_name=table_name, columns=columns, data=data)
         if returning :
             query += sql.SQL(" RETURNING {}").format(sql.Identifier(returning))
 
-        with Config.DB_instence.get_cursor(commit=True) as cursor:
+        with cls.get_exec_cursor_and_commit(injected_cursor) as cursor:
             cursor.execute(query, tuple(_values))
             return cursor.fetchone()[0] if returning else None
 
@@ -96,17 +109,17 @@ class BaseRepository:
         # return Config.DB_instence.execute(query, (id,), fetch_one=True)
 
     @classmethod
-    def delete(cls, id):
+    def delete(cls, id, injected_cursor = None):
         query = sql.SQL("DELETE FROM {} WHERE id = %s RETURNING id").format(
             sql.Identifier(cls._table_name)
         )
-        with Config.DB_instence.get_cursor(commit=True) as cursor:
+        with cls.get_exec_cursor_and_commit(injected_cursor) as cursor:
             cursor.execute(query, (id,))
             return cursor.fetchone()
     
     
     @classmethod
-    def find_by_something(cls, id, something="id", what="*"):
+    def find_by_something(cls, id, something="id", what="*", injected_cursor = None):
         if what == "*":
             what_sql = sql.SQL(what)
         else:
@@ -117,6 +130,6 @@ class BaseRepository:
             sql.Identifier(cls._table_name),
             sql.Identifier(something)
         )
-        with Config.DB_instence.get_cursor() as cursor:
+        with cls.get_exec_cursor(injected_cursor) as cursor:
             cursor.execute(query, (id,))
             return cursor.fetchone()

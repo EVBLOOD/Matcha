@@ -12,6 +12,9 @@ class Database:
         if app is not None:
             self.init_app(app)
     
+    def get_connection(self):
+        return self.pool.getconn()
+    
     def init_app(self, app):
         self.pool = psycopg2.pool.ThreadedConnectionPool(
             2, 10,

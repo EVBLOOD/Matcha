@@ -12,13 +12,13 @@ class PicturesRepository(BaseRepository):
     ]
 
     @classmethod
-    def insert_picture(cls, profile_data: Picture) :
+    def insert_picture(cls, profile_data: Picture, injected_cursor = None) :
         norm_data = {
             'user_id' : profile_data.user_id,
             'url' : profile_data.url,
             'is_profile_picture' : profile_data.is_profile_picture
         }
-        picture_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion, data=norm_data)
+        picture_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion, data=norm_data, injected_cursor=injected_cursor)
         return picture_id
 
     @classmethod

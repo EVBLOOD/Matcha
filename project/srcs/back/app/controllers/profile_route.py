@@ -47,12 +47,12 @@ def create_profile() :
         try :
             was_added = ProfileService.create_profile(user_id=user_id, **validated_data, files_list=files, ip=ip)
         except Exception as e :
-            return jsonify({"error": str(e)}), 500
+            return jsonify({"error": str(e)}), 422
 
         if was_added :
             return jsonify({"success": "profile created for user"}), 201
         else :
-            return jsonify({"error": "server error"}), 500
+            return jsonify({"error": "server error"}), 409
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
 

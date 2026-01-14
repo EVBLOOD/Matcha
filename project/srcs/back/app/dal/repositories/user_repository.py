@@ -98,7 +98,8 @@ class UserRepository(BaseRepository):
         cls, 
         user_id: int, 
         latitude: float,
-        longitude: float
+        longitude: float,
+        injected_cursor = None
     ) -> bool:
         query = """
             UPDATE users 
@@ -106,7 +107,7 @@ class UserRepository(BaseRepository):
             WHERE id = %s
             RETURNING id
         """
-        return cls._execute(query, (latitude, longitude, user_id,))
+        return cls._execute(query, (latitude, longitude, user_id,), injected_cursor)
 
     @classmethod
     def update_password(cls, user_id: int, new_password: str) :

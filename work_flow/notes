@@ -11,6 +11,3 @@
     Location modification in profile editing.
     Video/Audio interface
     Map: Develop user map interface.
-
-backend = add resend email feature
-backend = bug in fill profile first time = (tags saved when image error!)

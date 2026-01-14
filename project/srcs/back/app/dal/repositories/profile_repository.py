@@ -9,7 +9,7 @@ class ProfileRepository(BaseRepository):
         "location_set_by_user"
     ]
     @classmethod
-    def upsert_profile(cls, profile: Profile) -> bool:
+    def upsert_profile(cls, profile: Profile, injected_cursor = None) -> bool:
         query = """
             INSERT INTO profiles 
             (user_id, gender, sexual_preference, biography, location_set_by_user)
@@ -28,7 +28,7 @@ class ProfileRepository(BaseRepository):
             profile.biography,
             profile.location_set_by_user
         )
-        return cls._execute(query, params)
+        return cls._execute(query, params, injected_cursor)
 
     @classmethod
     def update_profile(cls, profile: Profile) -> bool:
