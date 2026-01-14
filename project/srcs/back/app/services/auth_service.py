@@ -19,7 +19,6 @@ class AuthService :
             return False
     @staticmethod
     def verify_user(username: str, password: str) :
-
         try :
             user = UserRepository.find_by_username(username=username)
             if not user.password_hash :

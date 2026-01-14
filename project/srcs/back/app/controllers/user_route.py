@@ -36,14 +36,13 @@ def create_user() :
 @Security.auth_guard(require_verify_mail=False, check_profile=False)
 def verify_account_retry() :
     try :
-        print(f"verify_account_retry: {request.user_id}", flush=True)
         value = UserService.resend_verify_token(request.user_id)
         if value :
             return jsonify({"success": "check your email please"}), 200
         else :
             return jsonify({"error": str(value)}), 400
     except ValueError as e :
-        return jsonify({"error": str(e)}), 400 # TODO: this should be updated somehow, maybe to login with issue prompt -> resend email
+        return jsonify({"error": str(e)}), 422
 
 @user_bp.route('/verify_account', methods=["GET", "POST"])
 def verify_account() :
@@ -51,14 +50,13 @@ def verify_account() :
         token_id = request.args.get('token_id')
         if not isinstance(token_id, str) :
             return jsonify({"error": "Missing required fields"}), 400
-
         value = UserService.verify_account(token=token_id)
         if value :
-            return redirect(f"{Config.FRONT_LINK}/confirm-email", code=302) # TODO: maybe to login with success prompt -> profile fill
+            return redirect(f"{Config.FRONT_LINK}/confirm-email", code=302)
         else :
             return jsonify({"error": str(value)}), 400
     except ValueError as e :
-        return jsonify({"error": str(e)}), 400 # TODO: this should be updated somehow, maybe to login with issue prompt -> resend email
+        return jsonify({"error": str(e)}), 400
 
 # @user_bp.route('/init_infos', methods=["POST"])
 # def init_infos() :

@@ -59,7 +59,10 @@ class UserRepository(BaseRepository):
     @classmethod
     def find_by_verification_token(cls, token: str) :
         query = "SELECT id, is_verified FROM users WHERE verification_token = %s"
-        (user_infos_id, user_infos_is_verified) = cls._fetch_one(query, (token, ))
+        value = cls._fetch_one(query, (token, ))
+        user_infos_id, user_infos_is_verified = (None, None)
+        if value :
+            (user_infos_id, user_infos_is_verified) = value
         return user_infos_id, user_infos_is_verified
 
     @classmethod

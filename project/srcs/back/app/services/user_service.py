@@ -47,6 +47,8 @@ class UserService:
     @staticmethod
     def verify_account(token : str) :
         (user_id, is_verified) = UserRepository.find_by_verification_token(token)
+        if not user_id :
+            raise ValueError("token isn't valid!!")
         if is_verified :
             raise ValueError("Account already verified")
         return UserRepository.verify_token(user_id)
