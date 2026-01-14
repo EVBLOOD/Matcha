@@ -74,7 +74,9 @@ class UserService:
     def change_password(user_id: int, password: str, session_id: str) :
         # TODO: check password 
         UserRepository.update_password(user_id=user_id, new_password=password)
+        print("done", flush=True)
         AuthService.user_session_changed_role(user_id=user_id, session_id=session_id)
+        return 1
     
     @staticmethod
     def update_user_infos(user_id: int, username: str, first_name: str, last_name: str) :
@@ -89,7 +91,7 @@ class UserService:
         redis = Config.redis_instence
 
         user = UserRepository.find_by_email(email)
-        print(user)
+
         if user :
             raise ValueError("Email can't be used!")
         

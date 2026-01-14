@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, redirect
 from app.services.user_service import UserService
 from app.core.security import Security
-from app.core.schemas import UserRegisterSchema, UpdateGeneralUserSchema, ValidationError
+from app.core.schemas import UserRegisterSchema, UpdateGeneralUserSchema, ValidationError, UpdateUserPasswordSchema
 import time
 
 from app.core.config import Config
@@ -120,5 +120,26 @@ def verify_change_email() :
             return jsonify({"success": "email was updated for user"}), 201
         else :
             return jsonify({"error": "email couldn't be updated for user, try again"}), 409
+    except ValueError as e :
+        return jsonify({"error": str(e)}), 400
+
+@user_bp.route('/update-password', methods=['POST'])
+@Security.auth_guard()
+def update_password() :
+    try :
+        body = request.get_json()
+        user_id = request.user_id
+
+        schema = UpdateUserPasswordSchema()
+        try:
+            validated_data = schema.load(body)
+        except Exception as err:
+            return jsonify({"errors": err.messages}), 400
+
+        was_added = UserService.change_password(user_id=user_id, **validated_data, session_id=request.session_id)
+        if was_added :
+            return jsonify({"success": "profile updated for user"}), 201
+        else :
+            return jsonify({"error":"server error"}), 500
     except ValueError as e :
         return jsonify({"error": str(e)}), 400

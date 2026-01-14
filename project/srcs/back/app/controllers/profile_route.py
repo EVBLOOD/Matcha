@@ -100,24 +100,3 @@ def update_profile() :
             return jsonify({"server error"}), 500
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
-
-@profile_bp.route('/update-password', methods=['POST'])
-@Security.auth_guard()
-def update_password() :
-    try :
-        body = request.get_json()
-        user_id = request.user_id
-
-        schema = UpdateProfileSchema()
-        try:
-            validated_data = schema.load(body)
-        except Exception as err:
-            return jsonify({"errors": err.messages}), 400
-
-        was_added = ProfileService.update_profile(user_id=user_id, **validated_data)
-        if was_added :
-            return jsonify({"profile updated for user"}), 201
-        else :
-            return jsonify({"server error"}), 500
-    except ValueError as e :
-        return jsonify({"error": str(e)}), 400

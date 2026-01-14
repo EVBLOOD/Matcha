@@ -78,3 +78,6 @@ class UpdateGeneralUserSchema(Config.ma_instence.Schema):
     # TODO :
     # valid email format should be moved to here
     email = fields.Email(required=True)
+
+class UpdateUserPasswordSchema(Config.ma_instence.Schema):
+    password = fields.Str(required=True, validate=validate.Length(min=8, max=60))
