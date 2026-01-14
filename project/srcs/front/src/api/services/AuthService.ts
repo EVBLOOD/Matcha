@@ -15,5 +15,8 @@ export default {
   },
   rest_new_password(payload: RecoverPasswordIn) {
     return apiClient.post('/auth/confirm-reset', payload)
+  },
+  resend_verfiy_mail() {
+    return apiClient.post('/user/verify_account_retry')
   }
 };

@@ -52,6 +52,23 @@ class UserService:
         return UserRepository.verify_token(user_id)
     
     @staticmethod
+    def resend_verify_token(user_id: int) :
+        user = UserRepository.find_by_id(user_id)
+        user = User(*user)
+        if user.is_verified :
+            raise ValueError("Account already verified")
+        token = UserRepository.create_verify_token(user_id)
+        if token :
+            if user_id is not None :
+                try :
+                    EmailingService.resend_email(user.email, user.username, token)
+                except Exception as e :
+                    raise ValueError ("Email Not VALID!")
+        else :
+            return None
+        return 1
+
+    @staticmethod
     def change_password(user_id: int, password: str, session_id: str) :
         # TODO: check password 
         UserRepository.update_password(user_id=user_id, new_password=password)
