@@ -19,6 +19,9 @@ const isMenuOpen = ref(false)
 
 
 // if (props.elemName === 'Age') 
+const AGEMIN = 18
+const AGEMAX = 24
+
 const AgeMin = ref(18)
 const AgeMax = ref(24)
 
@@ -30,6 +33,9 @@ const add_age = (type: string) => {
         AgeMax.value++;
         emit('AgeMax-selected', AgeMax.value);
     }
+    if (!toggle.value) toggle.value = true
+    if (AgeMin.value == AGEMIN && AgeMax.value == AGEMAX) toggle.value = false
+
 };
 
 const minus_age = (type: string) => {
@@ -40,6 +46,9 @@ const minus_age = (type: string) => {
         if (AgeMax.value > AgeMin.value) AgeMax.value--;
         emit('AgeMax-selected', AgeMax.value);
     }
+    if (!toggle.value) toggle.value = true
+    if (AgeMin.value == AGEMIN && AgeMax.value == AGEMAX) toggle.value = false
+
 };
 
 // else if (props.elemName === 'Location') 
@@ -49,10 +58,15 @@ const selection_location = (city: string) => {
     const index = selectedLocation.value.indexOf(city);
     if (index > -1) {
         selectedLocation.value.splice(index, 1);
+        if (!toggle.value) toggle.value = true
     } else {
         selectedLocation.value.push(city);
+        if (!toggle.value) toggle.value = true
     }
     emit('location-selected', selectedLocation.value);
+    if (!selectedLocation.value.length) toggle.value = false
+    
+    
 };
 
 // else if (props.elemName === 'Fame') 
@@ -63,7 +77,9 @@ const add_fame = () => {
         selectedFame.value = parseFloat((selectedFame.value + 0.1).toFixed(1));
         // selectedFame.value = selectedFame.value + 0.1;
         emit('fame-selected', selectedFame.value);
+        if (!toggle.value) toggle.value = true
     }
+    if (selectedFame.value == 4.0) toggle.value = false
 };
 
 const minus_fame = () => {
@@ -71,7 +87,10 @@ const minus_fame = () => {
         // selectedFame.value = selectedFame.value - 0.1;
         selectedFame.value = parseFloat((selectedFame.value - 0.1).toFixed(1));
         emit('fame-selected', selectedFame.value);
+        if (!toggle.value) toggle.value = true
     }
+    if (selectedFame.value == 4.0) toggle.value = false
+
 };
 
 //  else if (props.elemName === 'Tags') 
@@ -81,9 +100,13 @@ const tagClick = (tag: string) => {
     const index = selectedIntersts.value.indexOf(tag);
     if (index > -1) {
         selectedIntersts.value.splice(index, 1);
+        if (!toggle.value) toggle.value = true
     } else {
         selectedIntersts.value.push(tag);
+        if (!toggle.value) toggle.value = true
     }
+    if (!selectedIntersts.value.length) toggle.value = false
+
     emit('tags-selected', selectedIntersts.value);
 };
 
@@ -141,6 +164,18 @@ const checkListExists = (lt: String, elemName: string) => {
     }
     return selectedLocation.value.includes(lt as string)
 }
+
+const toggle = ref(false)
+const displayCancel = () => {
+    toggle.value = !toggle.value
+
+    AgeMin.value = AGEMIN
+    AgeMax.value = AGEMAX
+    selectedLocation.value = []
+    selectedFame.value = 4.0
+    selectedIntersts.value = []
+    selectedIntersts.value = []
+}
 </script>
 
 <template>
@@ -149,8 +184,8 @@ const checkListExists = (lt: String, elemName: string) => {
         <div v-if="!firstElem" class="break_line"></div>
         <div class="search_type">
             <div class="label_input">
-                <h3>{{ elemName || "evblood" }}</h3>
-                <input type="image" src="/img/arrowDownIcon.svg" @click="handleClick()" />
+                <h3  @click="handleClick()">{{ elemName || "evblood" }}</h3>
+                <input v-if="toggle" type="image" src="/img/removeFilterIcon.svg" @click="displayCancel"/>
             </div>
             <div v-if="elemName !== 'Tags' && elemName !== 'Location' && elemName !== 'Fame'">{{ valueDisplay }}</div>
             <div v-if="elemName === 'Tags' || elemName === 'Location'" style="display: flex; gap: 2px;">
@@ -211,6 +246,11 @@ const checkListExists = (lt: String, elemName: string) => {
     display: flex;
     gap: 60px;
     justify-content: space-between;
+    h3 {
+        text-decoration: underline;
+        cursor: pointer;
+        font-weight: 300;
+    }
 }
 
 .break_line {

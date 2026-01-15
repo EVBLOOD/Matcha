@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue';
-import SearchBarElem from '@/components/SearchBarElem.vue';
+import SuggestionsbarElem from '@/components/SuggestionsbarElem.vue';
 import UserExploreCard from '@/components/UserExploreCard.vue';
 
 const handleSubmit = () => {
@@ -10,12 +10,13 @@ const handleSubmit = () => {
 import SuggestionsService from '@/api/services/SuggestionsService'
 import type { SuggestionsResponse } from '@/types/apiResponses'
 import axios, { AxiosError } from 'axios';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const suggestionsData = ref<SuggestionsResponse[] | null>(null);
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
-
+const selectedChoice = ref<string | null>(null);
+// const selectedChoice = ref<string | null>(null);
 interface BackendError {
   error: string;
 }
@@ -49,21 +50,36 @@ const pictures_handler = (link: string) => {
     }
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
+
+const currentType = ref<string | null>(null);
+
+const Onclick = (type: string) => {
+    if (type === currentType.value) {
+        currentType.value = null
+        return
+    }
+    currentType.value = type
+}
+
+watch(selectedChoice, () => {
+    console.log(selectedChoice.value)
+})
 </script>
 
 <template>
     <div class="wraper">
         <div class="search_holder">
-            <h2 style="margin-bottom: 2%;font-weight: normal;">
-                Filters
-            </h2>
-            <div class="inner_search_bar">
-                <SearchBarElem :firstElem="true" elemName="Age" />
-                <SearchBarElem elemName="Location" 
-                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga','Oujda', 'Casablaca']" />
-                <SearchBarElem elemName="Fame" />
-                <SearchBarElem elemName="Tags" 
-                    :tagsList="['Sport', 'Coding', 'Cars', 'Sience','IT', 'Art']" />
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin: 5px;">
+                <Button text="Sort" @click="Onclick('Sort')" :img="'/img/filterIcon.svg'"></Button>
+                <Button text="Filter" @click="Onclick('Filter')" :img="'/img/sortIcon.svg'"></Button>
+            </div>
+            <div v-if="currentType" class="inner_search_bar">
+                <SuggestionsbarElem :firstElem="true" elemName="Age" :inputType="currentType == 'Sort' ? 'Filter' : 'radio'" @selected_choice="(value) => {selectedChoice = value}"/>
+                <SuggestionsbarElem elemName="Location" 
+                    :inputType="currentType == 'Sort' ? 'Filter' : 'radio'" @selected_choice="(value) => {selectedChoice = value}"/>
+                <SuggestionsbarElem elemName="Fame" :inputType="currentType == 'Sort' ? 'Filter' : 'radio'" @selected_choice="(value) => {selectedChoice = value}"/>
+                <SuggestionsbarElem elemName="Tags" 
+                    :inputType="currentType == 'Sort' ? 'Filter' : 'radio'" @selected_choice="(value) => {selectedChoice = value}"/>
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>
@@ -105,12 +121,12 @@ const pictures_handler = (link: string) => {
 .inner_search_bar {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
 
-    padding: 6px;
+    padding: 20px 35px 20px 35px;
 
-    gap: 10px;
+    gap: 2%;
     min-height: 83px;
 
     background-color: $components-background-color;
