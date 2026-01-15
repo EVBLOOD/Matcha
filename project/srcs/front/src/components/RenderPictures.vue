@@ -61,7 +61,7 @@ const onFileChange = (event: Event) => {
 <template>
     <div class="pictures_view">
         <div v-for="img in insertedPictures" :key="img.id">
-            <div class="image-box" :style="{ backgroundImage: `url(${img.url})` }">
+            <div class="image-box" :style="{ backgroundImage: `url(${img.url})`, width: `${width}px`, height: `${height}px` }">
                 <button v-if="!readonly" class="remove-btn" @click="removeImage(img.id)">×</button>
             </div>
         </div>
@@ -80,7 +80,7 @@ const onFileChange = (event: Event) => {
 .pictures_view {
     display: flex;
     flex-wrap: wrap;
-    gap: 4%;
+    gap: 4px;
 }
 
 .image-box {
@@ -123,7 +123,7 @@ const onFileChange = (event: Event) => {
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
-        gap: 4%;
+        gap: 2px;
     }
 
 }

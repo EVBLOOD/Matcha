@@ -46,6 +46,24 @@ const dislikeHandler = () => {
     socket.interactWithUser(profile.activeProfile.user.user_id, 'dislike')
 }
 
+const blockHandler = () => {
+    if (!profile.activeProfile) return
+    socket.interactWithUser(profile.activeProfile.user.user_id, 'block')
+    profile.clearActiveProfile()
+}
+
+const unblockHandler = () => {
+    if (!profile.activeProfile) return
+    socket.interactWithUser(profile.activeProfile.user.user_id, 'unblock')
+}
+
+
+
+const reportHandler = () => {
+    if (!profile.activeProfile) return
+    // socket.interactWithUser(profile.activeProfile.user.user_id, 'unblock')
+    // TODO: implement this!
+}
 
 onMounted(() => {
     profile.fetchProfile(parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id))
@@ -84,7 +102,7 @@ const pictures_handler = (link: string) => {
                     {{ socket.UserStatus(profile.activeProfile.user.user_id.toString()) }}
                 </div>
             </div>
-            <div class="interaction_field">
+            <div v-if="route.params.id !== userStore.getUserID.toString()" class="interaction_field">
                 <div class="like_messages">
                     <Button
                         style="width: 182px;" v-if="route.params.id !== userStore.getUserID.toString() && (!profile.activeProfile.interactions.is_connected || profile.activeProfile.interactions.is_connected <= 1) && profile.activeProfile.interactions.interaction_status !== 'liked'"
@@ -101,10 +119,10 @@ const pictures_handler = (link: string) => {
                 </div>
                 <div class="like_messages">
                     <Button
-                        style="width: 120px;" @click="dislikeHandler" text="Block">
+                        style="width: 120px;" @click="blockHandler" text="Block">
                     </Button>
                     <Button
-                        style="width: 120px;" @click="dislikeHandler" text="Report">
+                        style="width: 120px;" @click="reportHandler" text="Report">
                     </Button>
                 </div>
 

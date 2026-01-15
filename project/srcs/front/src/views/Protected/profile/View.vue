@@ -3,15 +3,15 @@ import { RouterLink, useRoute } from 'vue-router';
 // import { inject, onMounted, type Ref } from 'vue';
 
 import RenderPictures from '@/components/RenderPictures.vue';
-import Button from '@/components/Button.vue';
+// import Button from '@/components/Button.vue';
 import TagsList from '@/components/TagsList.vue';
 
 import useUserStore from '@/stores/user';
-import type { UserProfileResponse } from '@/types/apiResponses'
+// import type { UserProfileResponse } from '@/types/apiResponses'
 import { useSocketStore } from '@/stores/socket';
 
 import { useSocialStore } from '@/stores/profile';
-import { watch } from 'vue';
+// import { watch } from 'vue';
 const profile = useSocialStore()
 
 
@@ -23,39 +23,39 @@ const profileData = profile.activeProfile;
 console.log(profileData)
 
 const socketStore = useSocketStore()
-const likeHandler = () => {
-    if (!profileData) return
-    if (profileData.interactions.is_connected) profileData.interactions.is_connected++
-    else profileData.interactions.is_connected = 1
-    profileData.interactions.likes_count++
-    profileData.interactions.interaction_status = 'liked'
-    socketStore.interactWithUser(profileData.user.user_id, 'like')
-}
+// const likeHandler = () => {
+//     if (!profileData) return
+//     if (profileData.interactions.is_connected) profileData.interactions.is_connected++
+//     else profileData.interactions.is_connected = 1
+//     profileData.interactions.likes_count++
+//     profileData.interactions.interaction_status = 'liked'
+//     socketStore.interactWithUser(profileData.user.user_id, 'like')
+// }
 
-const dislikeHandler = () => {
-    if (!profileData) return
-    if (profileData.interactions.is_connected) profileData.interactions.is_connected--
-    else profileData.interactions.is_connected = 0
-    profileData.interactions.likes_count--
-    profileData.interactions.interaction_status = undefined
-    socketStore.interactWithUser(profileData.user.user_id, 'dislike')
-}
+// const dislikeHandler = () => {
+//     if (!profileData) return
+//     if (profileData.interactions.is_connected) profileData.interactions.is_connected--
+//     else profileData.interactions.is_connected = 0
+//     profileData.interactions.likes_count--
+//     profileData.interactions.interaction_status = undefined
+//     socketStore.interactWithUser(profileData.user.user_id, 'dislike')
+// }
 
 
 if (profileData && route.params.id !== userStore.getUserID.toString()) {
     socketStore.interactWithUser(profileData.user.user_id, 'view')
 }
 
-const blockHandler = () => {
-    if (!profileData) return
-    socketStore.interactWithUser(profileData.user.user_id, 'block')
-    profile.clearActiveProfile()
-}
+// const blockHandler = () => {
+//     if (!profileData) return
+//     socketStore.interactWithUser(profileData.user.user_id, 'block')
+//     profile.clearActiveProfile()
+// }
 
-const unblockHandler = () => {
-    if (!profileData) return
-    socketStore.interactWithUser(profileData.user.user_id, 'unblock')
-}
+// const unblockHandler = () => {
+//     if (!profileData) return
+//     socketStore.interactWithUser(profileData.user.user_id, 'unblock')
+// }
 
 const pictures_handler = (link: string) => {
     if (link.indexOf('/') > 0) {
@@ -99,8 +99,7 @@ const pictures_handler = (link: string) => {
 
         </div>
         <div class="user_infos">
-            <RenderPictures :readonly="true"
-                :initialpictures="profileData.pictures.filter(obj => !obj.is_profile_picture).map(obj => { return { id: obj.url, url: pictures_handler(obj.url) } })" />
+
             <div class="gender_location">
                 <div><img src="/img/maleIcon.svg" alt=""> {{ profileData.user.gender }}</div>
                 <div><img src="/img/locationIcon.svg" alt=""> {{ profileData.user.location }}</div>
@@ -109,6 +108,9 @@ const pictures_handler = (link: string) => {
                 {{ profileData.profile.biography }}
             </div>
             <TagsList :readonly="true" :initialtags="profileData.interests" />
+
+            <RenderPictures :width="230" :height="230" :readonly="true"
+                :initialpictures="profileData.pictures.filter(obj => !obj.is_profile_picture).map(obj => { return { id: obj.url, url: pictures_handler(obj.url) } })" />
 
         </div>
         <div>
@@ -119,6 +121,7 @@ const pictures_handler = (link: string) => {
 <style lang="scss" scoped>
 .wraper {
     display: flex;
+    flex-shrink: 0;
     flex-direction: column;
     gap: 5%;
     height: 100%;
@@ -126,13 +129,17 @@ const pictures_handler = (link: string) => {
 
 .user_infos {
     display: flex;
+    flex-shrink: 0;
+
     flex-direction: column;
-    gap: 2%;
-    height: 100%;
+    gap: 20px;
+    // height: 100%;
 }
 
 .link {
     display: flex;
+    flex-shrink: 0;
+
     gap: 10px;
     text-decoration: none;
     color: $text-color;
@@ -169,12 +176,16 @@ const pictures_handler = (link: string) => {
     .gender_location {
         width: 100%;
         display: flex;
+    flex-shrink: 0;
+
         justify-content: center;
         align-items: center;
         gap: 3%;
 
         div {
             display: flex;
+    flex-shrink: 0;
+
             gap: 2px;
         }
     }
