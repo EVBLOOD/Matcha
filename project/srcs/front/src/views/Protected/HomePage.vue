@@ -42,6 +42,7 @@ const clickLogOut = async () => {
             <img class="logo" style="margin-top: 15px;margin-left: 5%;" src="/img/Logo.svg" width="119px" alt="Logo" />
             <nav class="nav">
                 <RouterLink class="link" to="/"><img src="/img/homeIcon.svg" alt="" /> <span>Home</span></RouterLink>
+                <RouterLink class="link" to="/suggestions"><img src="/img/homeIcon.svg" alt="" /> <span>Suggestions</span></RouterLink>
                 <RouterLink class="link" to="/messages"><img src="/img/messagesIcon.svg" alt="" /> <span>Messages</span>
                 </RouterLink>
                 <RouterLink class="link" to="/notifications"><img src="/img/notificationsIcon.svg" alt="" />

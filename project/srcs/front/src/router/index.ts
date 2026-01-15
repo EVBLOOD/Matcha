@@ -8,16 +8,17 @@ import UpdatePassword from '@/views/UpdatePassword.vue';
 import ProfileOnboarding from '@/views/ProfileOnboarding.vue';
 import HomePage from '@/views/Protected/HomePage.vue';
 import ExplorePage from '@/views/Protected/ExplorePage.vue';
+import SuggestionsPage from '@/views/Protected/SuggestionsPage.vue';
 import MessagesPage from '@/views/Protected/MessagesPage.vue';
 import NotificationsPage from '@/views/Protected/NotificationsPage.vue';
 import ProfilePage from '@/views/Protected/ProfilePage.vue';
-import Vue from '@/views/Protected//profile/View.vue';
-import ViewSettings from '@/views/Protected//profile/ViewSettings.vue';
-import ViewSettingsMore from '@/views/Protected//profile/ViewSettingsMore.vue';
-import ViewSettingsDefault from '@/views/Protected//profile/ViewSettingsDefault.vue';
-import ViewSettingsPassword from '@/views/Protected//profile/ViewSettingsPassword.vue';
+import Vue from '@/views/Protected/profile/View.vue';
+import ViewSettings from '@/views/Protected/profile/ViewSettings.vue';
+import ViewSettingsMore from '@/views/Protected/profile/ViewSettingsMore.vue';
+import ViewSettingsDefault from '@/views/Protected/profile/ViewSettingsDefault.vue';
+import ViewSettingsPassword from '@/views/Protected/profile/ViewSettingsPassword.vue';
 // import Conversation from '@/views/Protected//chat/Conversation.vue';
-import Conversation from '@/views/Protected//chat/Calls.vue';
+import Conversation from '@/views/Protected/chat/Calls.vue';
 
 import OauthPage from '@/views/OauthPage.vue';
 
@@ -39,6 +40,12 @@ const router = createRouter({
           name: 'home',
           component: ExplorePage,
           meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Explore' },
+        },
+        {
+          path: 'suggestions',
+          name: 'suggestions',
+          component: SuggestionsPage,
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Suggestions' },
         },
         {
           path: 'messages',
