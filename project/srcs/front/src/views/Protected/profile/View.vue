@@ -80,7 +80,7 @@ const pictures_handler = (link: string) => {
                 :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt="" />
                 <span>Edit Profile</span>
             </RouterLink>
-            <Button
+            <!-- <Button
                 v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.is_connected == 2"
                 class="link" :to="`/messages/${profileData.interactions.conversation_id}`" text="Message">
             </Button>
@@ -92,7 +92,7 @@ const pictures_handler = (link: string) => {
             <Button
                 v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.interaction_status === 'liked'"
                 class="link" @click="dislikeHandler" text="Dislike">
-            </Button>
+            </Button> -->
 
             <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" to="`/more`"><img
                     src="/img/moreIcon.svg" alt="" /></RouterLink>

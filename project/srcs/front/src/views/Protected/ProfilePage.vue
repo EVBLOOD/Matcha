@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, watch, computed } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
+import Button from '@/components/Button.vue';
 
 import Fame from '@/components/Fame.vue';
 
@@ -26,6 +27,25 @@ const userStore = useUserStore();
 
 
 const socket = useSocketStore();
+
+const likeHandler = () => {
+    if (!profile.activeProfile) return
+    if (profile.activeProfile.interactions.is_connected) profile.activeProfile.interactions.is_connected++
+    else profile.activeProfile.interactions.is_connected = 1
+    profile.activeProfile.interactions.likes_count++
+    profile.activeProfile.interactions.interaction_status = 'liked'
+    socket.interactWithUser(profile.activeProfile.user.user_id, 'like')
+}
+
+const dislikeHandler = () => {
+    if (!profile.activeProfile) return
+    if (profile.activeProfile.interactions.is_connected) profile.activeProfile.interactions.is_connected--
+    else profile.activeProfile.interactions.is_connected = 0
+    profile.activeProfile.interactions.likes_count--
+    profile.activeProfile.interactions.interaction_status = undefined
+    socket.interactWithUser(profile.activeProfile.user.user_id, 'dislike')
+}
+
 
 onMounted(() => {
     profile.fetchProfile(parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id))
@@ -54,21 +74,50 @@ const pictures_handler = (link: string) => {
     <div v-if="!profile.loading && !profile.error && profile.activeProfile" class="contentz">
         <div class="sideBar">
             <div class="sideBar_personal_info">
-                <img width="250px" height="250px" style="margin-bottom: 22px;" :src="pictures_handler(profile.activeProfile.pictures.find(obj => obj.is_profile_picture == true)?.url as string)" alt="">
-                <div style="font-weight:500; font-size: 26px;">{{profile.activeProfile.user.first_name + " " + profile.activeProfile.user.last_name}}</div>
+                <img width="250px" height="250px" style="margin-bottom: 22px;"
+                    :src="pictures_handler(profile.activeProfile.pictures.find(obj => obj.is_profile_picture == true)?.url as string)"
+                    alt="">
+                <div style="font-weight:500; font-size: 26px;">{{ profile.activeProfile.user.first_name + " " +
+                    profile.activeProfile.user.last_name}}</div>
                 <div class="status_bar">
-                    <div class="status" :style="statusColor"></div> {{socket.UserStatus(profile.activeProfile.user.user_id.toString())}}
+                    <div class="status" :style="statusColor"></div>
+                    {{ socket.UserStatus(profile.activeProfile.user.user_id.toString()) }}
                 </div>
+            </div>
+            <div class="interaction_field">
+                <div class="like_messages">
+                    <Button
+                        style="width: 182px;" v-if="route.params.id !== userStore.getUserID.toString() && (!profile.activeProfile.interactions.is_connected || profile.activeProfile.interactions.is_connected <= 1) && profile.activeProfile.interactions.interaction_status !== 'liked'"
+                        @click="likeHandler" text="Like" img="/img/likeIcon@.svg" :color="'#592F6F'" :backgroundColor="'#FEA7FF'">
+                    </Button>
+                    <Button
+                        style="width: 182px;" v-if="route.params.id !== userStore.getUserID.toString() && profile.activeProfile.interactions.is_connected && profile.activeProfile.interactions.interaction_status === 'liked'"
+                        @click="dislikeHandler" text="Dislike" img="/img/likeIcon@.svg" :color="'#592F6F'" :backgroundColor="'#FEA7FF'">
+                    </Button>
+                    <Button
+                        :to="`/messages/${profile.activeProfile.interactions.conversation_id}`"
+                        img="/img/messageIcon.svg">
+                    </Button>
+                </div>
+                <div class="like_messages">
+                    <Button
+                        style="width: 120px;" @click="dislikeHandler" text="Block">
+                    </Button>
+                    <Button
+                        style="width: 120px;" @click="dislikeHandler" text="Report">
+                    </Button>
+                </div>
+
             </div>
             <div class="stats_holder">
                 <div class="stats_count"> <img src="/img/viewIcon.svg" alt=""> Profile Views : <span
-                        style="font-weight: bold;">{{profile.activeProfile.interactions.views_count}}</span></div>
+                        style="font-weight: bold;">{{ profile.activeProfile.interactions.views_count }}</span></div>
                 <div class="stats_count"> <img src="/img/likesIcon.svg" alt=""> Likes Received : <span
-                        style="font-weight: bold;">{{profile.activeProfile.interactions.likes_count}}</span></div>
+                        style="font-weight: bold;">{{ profile.activeProfile.interactions.likes_count }}</span></div>
             </div>
-            <div>
+            <div style="flex-shrink: 0;">
                 <p>Fame Rating 🔥</p>
-                <Fame :initialFameScore="profile.activeProfile.profile.fame_rating"/>
+                <Fame :initialFameScore="profile.activeProfile.profile.fame_rating" />
             </div>
         </div>
         <div class="profile_vue">
@@ -88,10 +137,9 @@ const pictures_handler = (link: string) => {
 }
 
 .sideBar {
-    padding: 5%;
+    padding: 2%;
     height: 100%;
-    gap: 10%;
-
+    gap: 5%;
     border-color: $border-color;
     flex-shrink: 0;
     display: flex;
@@ -106,6 +154,34 @@ const pictures_handler = (link: string) => {
     gap: 3%;
     font-weight: normal;
 }
+
+.sideBar_personal_info {
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+    // justify-content: center;
+    flex-shrink: 0;
+}
+
+.interaction_field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.like_messages {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+// .link {
+//     width:inherit;
+// }
 
 .status {
     height: 8px;
@@ -125,6 +201,7 @@ const pictures_handler = (link: string) => {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    flex-shrink: 0;
 }
 
 .profile_vue {
@@ -138,21 +215,23 @@ const pictures_handler = (link: string) => {
         flex-direction: column;
         height: fit-content;
     }
+
     .sideBar {
-        padding: 5%;
+        padding: 2%;
         width: 100%;
         height: fit-content;
         border-style: none;
         align-items: center;
         gap: 25px;
     }
+
     .sideBar_personal_info {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-
     }
+
     .status_bar {
         width: 100%;
         justify-content: center;
