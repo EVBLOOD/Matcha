@@ -17,26 +17,26 @@ const isLoading = ref(true);
 const isError = ref<string | null>(null);
 
 interface BackendError {
-  error: string;
+    error: string;
 }
 
 
 const fetchSugestions = async () => {
-  isLoading.value = true;
-  try {
-    const { data } = await SuggestionsService.getSuggestions();
-    console.log(data)
-    suggestionsData.value = data["data"];
-  } catch(err : unknown) {
-    if (axios.isAxiosError(err)) {
-        isError.value = (err.response?.data as BackendError)?.error;
+    isLoading.value = true;
+    try {
+        const { data } = await SuggestionsService.getSuggestions();
+        console.log(data)
+        suggestionsData.value = data["data"];
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            isError.value = (err.response?.data as BackendError)?.error;
+        }
+        else {
+            isError.value = "Registration failed for unknown reason'";
+        }
+    } finally {
+        isLoading.value = false;
     }
-    else {
-        isError.value = "Registration failed for unknown reason'";
-    }
-  } finally {
-    isLoading.value = false;
-  }
 };
 
 onMounted(() => {
@@ -49,6 +49,15 @@ const pictures_handler = (link: string) => {
     }
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
+
+
+const currentType = ref<string>('List')
+
+const Onclick = (type: string) => {
+    currentType.value = type
+}
+
+
 </script>
 
 <template>
@@ -59,22 +68,31 @@ const pictures_handler = (link: string) => {
             </h2>
             <div class="inner_search_bar">
                 <SearchBarElem :firstElem="true" elemName="Age" />
-                <SearchBarElem elemName="Location" 
-                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga','Oujda', 'Casablaca']" />
+                <SearchBarElem elemName="Location"
+                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" />
                 <SearchBarElem elemName="Fame" />
-                <SearchBarElem elemName="Tags" 
-                    :tagsList="['Sport', 'Coding', 'Cars', 'Sience','IT', 'Art']" />
+                <SearchBarElem elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" />
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>
-        <div class="body">
-            <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id" :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age" :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)"/>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin: 5px; margin-bottom: 2%;">
+            <Button text="List" @click="Onclick('List')" :img="'/img/listIcon.svg'"></Button>
+            <Button text="Map" @click="Onclick('Map')" :img="'/img/mapIcon.svg'"></Button>
+        </div>
+        <div v-if="currentType == 'List'" class="body">
+            <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id"
+                :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
+                :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
+        </div>
+                <div v-if="currentType == 'Map'" class="body">
+            <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id"
+                :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
+                :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
-
 .body {
     padding-bottom: 0px;
 
@@ -84,6 +102,7 @@ const pictures_handler = (link: string) => {
     gap: 2%;
     flex-wrap: wrap;
 }
+
 .wraper {
     padding: 3%;
     width: 100%;
@@ -132,6 +151,7 @@ const pictures_handler = (link: string) => {
         justify-content: center;
         width: 100%;
     }
+
     .btn {
         width: 100%;
         margin-left: 0%;
