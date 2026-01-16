@@ -110,6 +110,8 @@ const iconSize = ref<PointExpression>([32, 32]);
 </script>
 <!-- url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"  -->
 
+
+<!-- https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x} -->
 <template>
     <div class="map-container">
         <l-map 
@@ -121,7 +123,7 @@ const iconSize = ref<PointExpression>([32, 32]);
             @ready="onMapReady"
         >
             <l-tile-layer 
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}" 
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
                 layer-type="base"
                 name="OpenStreetMap"
             ></l-tile-layer>
