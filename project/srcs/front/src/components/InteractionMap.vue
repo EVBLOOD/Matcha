@@ -5,6 +5,8 @@ import { ref, onMounted } from "vue";
 import axios, { AxiosError } from 'axios';
 import type { Map as LeafletMap } from "leaflet";
 import type { UserLocation, Location } from "@/types/apiResponses";
+import { debounce } from '@/utils/debounce';
+import type { PointExpression } from 'leaflet';
 
 
 interface BackendError {
@@ -82,10 +84,8 @@ const onMapReady = (lmap: LeafletMap) => {
 
 };
 
-const onMapMove = (event: any) => {
-    const map = event.target;
-    const bounds = map.getBounds();
 
+const debouncedFetch = debounce((bounds: any) => {
     const bbox = {
         min_lat: bounds.getSouthWest().lat,
         max_lat: bounds.getNorthEast().lat,
@@ -93,7 +93,13 @@ const onMapMove = (event: any) => {
         max_lng: bounds.getNorthEast().lng
     };
     const query = new URLSearchParams(bbox as any).toString();
-    fetchRangeLocation(`?${query}`)
+    fetchRangeLocation(`?${query}`);
+}, 400);
+
+const onMapMove = (event: any) => {
+    const map = event.target;
+    const bounds = map.getBounds();
+    debouncedFetch(bounds);
 };
 
 
@@ -103,7 +109,8 @@ const pictures_handler = (link: string) => {
     }
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
-import type { PointExpression } from 'leaflet';
+
+
 const iconSize = ref<PointExpression>([32, 32]);
 
 

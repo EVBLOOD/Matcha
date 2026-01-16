@@ -8,10 +8,12 @@ const handleSubmit = () => {
     console.log("SEARCH!")
 }
 
+import { ref, onMounted } from 'vue';
+import axios, { AxiosError } from 'axios';
+
+
 import SuggestionsService from '@/api/services/SuggestionsService'
 import type { SuggestionsResponse } from '@/types/apiResponses'
-import axios, { AxiosError } from 'axios';
-import { ref, onMounted } from 'vue';
 
 const suggestionsData = ref<SuggestionsResponse[] | null>(null);
 const isLoading = ref(true);

@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
-// import { inject, onMounted, type Ref } from 'vue';
 
 import RenderPictures from '@/components/RenderPictures.vue';
-// import Button from '@/components/Button.vue';
 import TagsList from '@/components/TagsList.vue';
 
 import useUserStore from '@/stores/user';
-// import type { UserProfileResponse } from '@/types/apiResponses'
 import { useSocketStore } from '@/stores/socket';
-
 import { useSocialStore } from '@/stores/profile';
-// import { watch } from 'vue';
 const profile = useSocialStore()
 
 
@@ -23,39 +18,11 @@ const profileData = profile.activeProfile;
 console.log(profileData)
 
 const socketStore = useSocketStore()
-// const likeHandler = () => {
-//     if (!profileData) return
-//     if (profileData.interactions.is_connected) profileData.interactions.is_connected++
-//     else profileData.interactions.is_connected = 1
-//     profileData.interactions.likes_count++
-//     profileData.interactions.interaction_status = 'liked'
-//     socketStore.interactWithUser(profileData.user.user_id, 'like')
-// }
-
-// const dislikeHandler = () => {
-//     if (!profileData) return
-//     if (profileData.interactions.is_connected) profileData.interactions.is_connected--
-//     else profileData.interactions.is_connected = 0
-//     profileData.interactions.likes_count--
-//     profileData.interactions.interaction_status = undefined
-//     socketStore.interactWithUser(profileData.user.user_id, 'dislike')
-// }
 
 
 if (profileData && route.params.id !== userStore.getUserID.toString()) {
     socketStore.interactWithUser(profileData.user.user_id, 'view')
 }
-
-// const blockHandler = () => {
-//     if (!profileData) return
-//     socketStore.interactWithUser(profileData.user.user_id, 'block')
-//     profile.clearActiveProfile()
-// }
-
-// const unblockHandler = () => {
-//     if (!profileData) return
-//     socketStore.interactWithUser(profileData.user.user_id, 'unblock')
-// }
 
 const pictures_handler = (link: string) => {
     if (link.indexOf('/') > 0) {
@@ -64,13 +31,6 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
-// watch(profileData, ()=> )
-
-// watch(() => profile.activeProfile, () => {
-//     console.log("upda")
-//     // profile.fetchProfile(parseInt(route.params.id as string))
-
-// });
 </script>
 
 <template>
@@ -80,23 +40,6 @@ const pictures_handler = (link: string) => {
                 :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt="" />
                 <span>Edit Profile</span>
             </RouterLink>
-            <!-- <Button
-                v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.is_connected == 2"
-                class="link" :to="`/messages/${profileData.interactions.conversation_id}`" text="Message">
-            </Button>
-
-            <Button
-                v-if="route.params.id !== userStore.getUserID.toString() && (!profileData.interactions.is_connected || profileData.interactions.is_connected <= 1) && profileData.interactions.interaction_status !== 'liked'"
-                class="link" @click="likeHandler" text="Like">
-            </Button>
-            <Button
-                v-if="route.params.id !== userStore.getUserID.toString() && profileData.interactions.is_connected && profileData.interactions.interaction_status === 'liked'"
-                class="link" @click="dislikeHandler" text="Dislike">
-            </Button> -->
-
-            <RouterLink v-if="route.params.id !== userStore.getUserID.toString()" class="link" to="`/more`"><img
-                    src="/img/moreIcon.svg" alt="" /></RouterLink>
-
         </div>
         <div class="user_infos">
 
@@ -130,7 +73,6 @@ const pictures_handler = (link: string) => {
 .user_infos {
     display: flex;
     flex-shrink: 0;
-
     flex-direction: column;
     gap: 20px;
     // height: 100%;
@@ -139,7 +81,6 @@ const pictures_handler = (link: string) => {
 .link {
     display: flex;
     flex-shrink: 0;
-
     gap: 10px;
     text-decoration: none;
     color: $text-color;
