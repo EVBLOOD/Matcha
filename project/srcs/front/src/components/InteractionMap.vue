@@ -1,22 +1,10 @@
 <script setup lang="ts">
-import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup, LIcon } from "@vue-leaflet/vue-leaflet";
 import UserService from '@/api/services/UserService';
 import { ref, onMounted } from "vue";
 import axios, { AxiosError } from 'axios';
 import type { Map as LeafletMap } from "leaflet";
-
-
-interface UserLocation {
-    id: number;
-    username: string;
-    lat: number;
-    lng: number;
-}
-
-interface Location {
-    latitude: number,
-    longitude: number
-}
+import type { UserLocation, Location } from "@/types/apiResponses";
 
 
 interface BackendError {
@@ -41,7 +29,10 @@ const fetchMyLoc = async () => {
         if (my_location.value)
             center.value = [my_location.value.latitude, my_location.value.longitude]
         if (mapRef.value)
-            mapRef.value.flyTo(center.value, 14);
+            mapRef.value.flyTo(center.value, 14, {
+        animate: true,
+        duration: 1.5
+    });
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -75,12 +66,11 @@ const fetchRangeLocation = async (query: string) => {
 };
 
 
-const onMapReady = (event: any) => {
-    mapRef.value = event;
+const onMapReady = (lmap: LeafletMap) => {
+    mapRef.value = lmap;
     fetchMyLoc();
 
-    const map = event.target;
-    const bounds = map.getBounds();
+    const bounds = lmap.getBounds();
     const bbox = {
         min_lat: bounds.getSouthWest().lat,
         max_lat: bounds.getNorthEast().lat,
@@ -106,6 +96,15 @@ const onMapMove = (event: any) => {
     fetchRangeLocation(`?${query}`)
 };
 
+
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
+}
+import type { PointExpression } from 'leaflet';
+const iconSize = ref<PointExpression>([32, 32]);
 </script>
 
 <template>
@@ -124,7 +123,8 @@ const onMapMove = (event: any) => {
                 name="OpenStreetMap"
             ></l-tile-layer>
 
-            <l-marker v-for="user in users" :key="user.id" :lat-lng="[user.lat, user.lng]">
+            <l-marker v-for="user in users" :key="user.id" :lat-lng="[user.latitude, user.longitude]">
+                <l-icon :icon-url="pictures_handler(user.profile_picture_url[0].url)" :icon-size="iconSize" />
                 <l-popup>
                     <strong>{{ user.username }}</strong> <br />
                     <router-link :to="`/profile/${user.id}`">View Profile</router-link>
@@ -146,4 +146,9 @@ const onMapMove = (event: any) => {
 .map-container * {
   overflow: visible !important;
 }
+
+.icon-avatar {
+    border-radius: 50%;
+}
+
 </style>

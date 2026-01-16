@@ -94,6 +94,21 @@ export interface SuggestionsResponse {
     profile_picture_url: UserProfilePicturesResponse[];
 }
 
+
+export interface UserLocation {
+    id: number;
+    username: string;
+    latitude: number;
+    longitude: number;
+    profile_picture_url: UserProfilePicturesResponse[];
+
+}
+
+export interface Location {
+    latitude: number,
+    longitude: number
+}
+
 // export interface UserProfile extends User {
 //     bio: string;
 //     interests: string[];

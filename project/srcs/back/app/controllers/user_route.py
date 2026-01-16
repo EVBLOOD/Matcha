@@ -158,7 +158,7 @@ def get_users_in_map():
         else :
             users = UserService.get_range_users(request.user_id, min_lat, max_lat, min_lng, max_lng)
 
-        return jsonify([u.to_dict() for u in users])
+        return jsonify({"data": users})
     
     except Exception as e :
         print(e, flush=True)
