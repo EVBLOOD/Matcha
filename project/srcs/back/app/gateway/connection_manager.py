@@ -53,8 +53,8 @@ class ConnectionManager :
         
         if redis.scard(f"ws:user:{user_id}:sockets") == 0 :
             redis.delete(f"ws:user:{user_id}:online")
+        # I should update the logout time here and send it
         emit('connected', {user_id: "Disconnected"}, room=f"online_user_{user_id}")
-        # I should remove all prevouisly joined room
 
     @staticmethod
     def is_user_online(user_id: int, current_id: int) -> bool:

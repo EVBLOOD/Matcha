@@ -55,7 +55,8 @@ export const useSocketStore = defineStore('socket', {
     reachStausOneUser(id: string) {
       socketStatus.emit("check_user_connect", id, (response: any) => {
         if (response) {
-          this.onlineUsers.set(id, response.status ? "Online" : "Offline"); // TODO: update Offline to last view time.
+          console.log(response)
+          this.onlineUsers.set(id, response.status ? "Online" : response.status);
         }
       })
     },

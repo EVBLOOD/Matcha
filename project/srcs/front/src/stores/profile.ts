@@ -7,7 +7,7 @@ import ProfileService from '@/api/services/ProfileService'
 import type {UserProfileResponse} from '@/types/apiResponses'
 
 // this will cause problems if I keep it 
-// import { useSocketStore } from '@/stores/socket';
+import { useSocketStore } from '@/stores/socket';
 
 
 interface BackendError {
@@ -27,12 +27,12 @@ export const useSocialStore = defineStore('profile', {
   actions: {
     async fetchProfile(id: number) {
       this.loading = true;
-      // const socket = useSocketStore();
+      const socket = useSocketStore();
       try {
         const { data } = await ProfileService.getProfile(id.toString());
         this.activeProfile = data;
-        // if (this.activeProfile?.user)
-            // socket.reachStausOneUser(this.activeProfile.user.user_id.toString())
+        if (this.activeProfile?.user)
+            socket.reachStausOneUser(this.activeProfile.user.user_id.toString())
       } catch(err : unknown) {
         if (axios.isAxiosError(err)) {
             this.error = (err.response?.data as BackendError)?.error;
