@@ -189,3 +189,13 @@ class UserRepository(BaseRepository):
             exists = cls.find_by_username(new_username)
             if not exists:
                 return new_username
+
+    @classmethod
+    def find_by_location(cls, id: int,  min_lat: int, max_lat: int, min_lng: int, max_lng: int) -> Optional[User]:
+        query = """
+            SELECT * FROM users WHERE (latitude >= %s AND latitude <= %s) AND (longitude >= %s AND longitude <= %s)
+            AND id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = %s)
+            AND id NOT IN (SELECT blocker_id FROM user_blocks WHERE blocked_id = %s)
+        LIMIT 100"""
+        rows = cls._fetch_all(query, (min_lat,max_lat, min_lng, max_lng, id, id))
+        return rows

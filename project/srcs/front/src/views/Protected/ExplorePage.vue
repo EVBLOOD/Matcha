@@ -2,6 +2,7 @@
 import Button from '@/components/Button.vue';
 import SearchBarElem from '@/components/SearchBarElem.vue';
 import UserExploreCard from '@/components/UserExploreCard.vue';
+import InteractionMap from '@/components/InteractionMap.vue';
 
 const handleSubmit = () => {
     console.log("SEARCH!")
@@ -51,12 +52,11 @@ const pictures_handler = (link: string) => {
 }
 
 
-const currentType = ref<string>('List')
+const currentType = ref<string>('Map')
 
 const Onclick = (type: string) => {
     currentType.value = type
 }
-
 
 </script>
 
@@ -84,15 +84,16 @@ const Onclick = (type: string) => {
                 :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
                 :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
         </div>
-                <div v-if="currentType == 'Map'" class="body">
-            <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id"
-                :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
-                :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
+        <div v-if="currentType == 'Map'">
+            <InteractionMap />
         </div>
     </div>
 </template>
 
+
+
 <style lang="scss" scoped>
+
 .body {
     padding-bottom: 0px;
 

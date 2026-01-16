@@ -143,3 +143,35 @@ def update_password() :
             return jsonify({"error":"server error"}), 500
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
+
+@user_bp.route('/map',  methods=['GET'])
+@Security.auth_guard()
+def get_users_in_map():
+    try :
+
+        min_lat = request.args.get('min_lat')
+        max_lat = request.args.get('max_lat')
+        min_lng = request.args.get('min_lng')
+        max_lng = request.args.get('max_lng')
+        if not min_lat or not max_lat or not min_lng or not max_lng :
+            return jsonify({"error": "invalid"}), 400
+        else :
+            users = UserService.get_range_users(request.user_id, min_lat, max_lat, min_lng, max_lng)
+
+        return jsonify([u.to_dict() for u in users])
+    
+    except Exception as e :
+        print(e, flush=True)
+        return jsonify({"error": e}), 400
+
+
+@user_bp.route('/location',  methods=['GET'])
+@Security.auth_guard()
+def get_user_location():
+    try :
+        user = UserService.get_user_location(request.user_id)
+        return jsonify({"data": user})
+    
+    except Exception as e :
+        print(e, flush=True)
+        return jsonify({"error": e}), 400

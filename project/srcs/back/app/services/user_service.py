@@ -140,4 +140,15 @@ class UserService:
 
         AuthService.user_session_changed_role(user_id=user_id, session_id=session_id)
         return True
-        
+
+
+    @staticmethod
+    def get_range_users(user_id: int, min_lat: int, max_lat: int, min_lng: int, max_lng: int) :
+        users = UserRepository.find_by_location(user_id, min_lat, max_lat, min_lng, max_lng)
+        print(users, flush=True)
+        return users
+    
+    @staticmethod
+    def get_user_location(user_id: int) :
+        user = User(*UserRepository.find_by_id(user_id))
+        return {"latitude": user.latitude, "longitude": user.longitude}

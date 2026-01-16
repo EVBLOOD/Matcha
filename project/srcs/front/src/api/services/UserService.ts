@@ -24,5 +24,11 @@ export default {
   },
   change_infos_top(payload: any) {
     return apiClient.post('/user/change-general-infos', payload);
+  },
+  get_range_user_locations(query: string) {
+    return apiClient.get(`/user/map${query}`);
+  },
+  get_location_lt_lng() {
+    return apiClient.get('/user/location');
   }
 };
