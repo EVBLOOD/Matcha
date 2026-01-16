@@ -38,6 +38,7 @@ class SuggestionsRepository(BaseRepository):
                 ))
                 )
               AND u.id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = cud.id)
+              AND u.id NOT IN (SELECT blocker_id FROM user_blocks WHERE blocked_id = cud.id)
               AND (%s IS NULL OR (
                 (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + 
                 sin(radians(cud.latitude)) * sin(radians(u.latitude)))), u.id
@@ -53,3 +54,6 @@ class SuggestionsRepository(BaseRepository):
             params = (user_id, lastUser["id"], lastUser["distance"], lastUser["id"], )
 
         return cls._fetch_all(query, params)
+    
+
+# (SELECT COUNT(*) FROM user_blocks WHERE (blocked_id = u.id AND blocker_id = %s) OR (blocked_id = %s AND blocker_id = u.id)) AS user_block_status,

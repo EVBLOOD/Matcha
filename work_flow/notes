@@ -12,10 +12,10 @@
     profile picture editing.
     Location modification in profile editing.
     Video/Audio interface
-    Map: Develop user map interface.
+    Map: Develop user map interface. √
     Date/Event Scheduling: Implement event/date scheduling feature.
 
-TO THINK ABOUT :
+- TO THINK ABOUT :
     ON UPDATE :
         - user tags mannagement
         - user tags maybe should be separated than other logic..

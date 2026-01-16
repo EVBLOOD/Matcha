@@ -149,6 +149,7 @@ class ProfileService:
                     "views_count": profile["views_count"]
                 }
             else :
+                print(profile["user_block_status"], flush=True)
                 if profile["user_block_status"] and profile["user_block_status"] > 0 :
                     raise ValueError("No such a profile")
                 
