@@ -34,6 +34,8 @@ class ChatGateway(Namespace):
         
     @ConnectionManager.socket_guard()
     def on_video_call(self,  body):
+        if request.user_id == body["user_id"] :
+            return
         ChatManager.join_call(request.user_id, body, request.sid)
 
     @ConnectionManager.socket_guard()

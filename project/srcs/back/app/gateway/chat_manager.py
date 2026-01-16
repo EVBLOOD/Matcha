@@ -94,8 +94,10 @@ class ChatManager :
     
     @staticmethod
     def join_call(caller_id: str, reciever_id, socket_id) :
+        if not UserInteractionsService.are_users_connected(caller_id, reciever_id["user_id"]) :
+            return {"You aren't allowd to reach this person!"}
+        
         private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
-
 
         # redis again
         emit('video_signal', reciever_id, room=private_room, include_self=False)
