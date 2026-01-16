@@ -105,7 +105,10 @@ const pictures_handler = (link: string) => {
 }
 import type { PointExpression } from 'leaflet';
 const iconSize = ref<PointExpression>([32, 32]);
+
+
 </script>
+<!-- url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"  -->
 
 <template>
     <div class="map-container">
@@ -118,13 +121,13 @@ const iconSize = ref<PointExpression>([32, 32]);
             @ready="onMapReady"
         >
             <l-tile-layer 
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}" 
                 layer-type="base"
                 name="OpenStreetMap"
             ></l-tile-layer>
 
             <l-marker v-for="user in users" :key="user.id" :lat-lng="[user.latitude, user.longitude]">
-                <l-icon :icon-url="pictures_handler(user.profile_picture_url[0].url)" :icon-size="iconSize" />
+                <l-icon class-name="icon-avatar" :icon-url="pictures_handler(user.profile_picture_url[0].url)" :icon-size="iconSize" />
                 <l-popup>
                     <strong>{{ user.username }}</strong> <br />
                     <router-link :to="`/profile/${user.id}`">View Profile</router-link>
@@ -134,7 +137,7 @@ const iconSize = ref<PointExpression>([32, 32]);
     </div>
 </template>
 
-<style scoped>
+<style>
 
 .map-container {
   height: 500px;
@@ -147,8 +150,11 @@ const iconSize = ref<PointExpression>([32, 32]);
   overflow: visible !important;
 }
 
-.icon-avatar {
-    border-radius: 50%;
+.leaflet-marker-icon.icon-avatar {
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  border: 2px solid #edc707;
 }
+
 
 </style>
