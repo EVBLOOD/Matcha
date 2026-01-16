@@ -56,7 +56,10 @@ class ConnectionManager :
         # I should remove all prevouisly joined room
 
     @staticmethod
-    def is_user_online(user_id: int) -> bool:
+    def is_user_online(user_id: int, current_id: int) -> bool:
+        block_status = UserBlocksService.get_blocks_status(user_id, current_id)
+        if block_status :
+            return False
         redis = Config.redis_instence
         join_room(f"online_user_{user_id}")
         return bool(
@@ -65,6 +68,8 @@ class ConnectionManager :
 
     @staticmethod
     def interact_with_user(user_id: int, dst_id: int, type: str) -> bool:
+        if user_id == dst_id :
+            return
         is_connection = UserInteractionsService.get_user_interactions(user_id, dst_id)
         block_status = UserBlocksService.get_blocks_status(user_id, dst_id)
         conversation_id = None
@@ -84,12 +89,15 @@ class ConnectionManager :
                 UserInteractionsService.remove_user_interactions(dst_id, user_id)
                 UserInteractionsService.remove_user_interactions(user_id, dst_id)
             UserBlocksService.insert_user_blocks(dst_id, user_id)
+            return
         elif block_status and type == "Unblock" :
             UserBlocksService.remove_user_blocks(dst_id, user_id)
         elif not block_status:
             type_response = "view"
             ProfileViewsService.insert_profile_views(dst_id, user_id)
         else :
+            return
+        if block_status :
             return
         if type_response :
             done = NotificationService.create_notification(dst_id, type_response, user_id)

@@ -7,24 +7,18 @@ import Fame from '@/components/Fame.vue';
 
 import useUserStore from '@/stores/user';
 
-
 import { useSocialStore } from '@/stores/profile';
 import { useSocketStore } from '@/stores/socket';
 
-
 const route = useRoute();
-
 
 const profile = useSocialStore()
 
 watch(() => route.params.id, () => {
     profile.fetchProfile(parseInt(route.params.id as string))
-
 });
 
-
 const userStore = useUserStore();
-
 
 const socket = useSocketStore();
 
@@ -56,8 +50,6 @@ const unblockHandler = () => {
     if (!profile.activeProfile) return
     socket.interactWithUser(profile.activeProfile.user.user_id, 'unblock')
 }
-
-
 
 const reportHandler = () => {
     if (!profile.activeProfile) return

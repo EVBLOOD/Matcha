@@ -9,7 +9,7 @@ class ChatGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_connect(self):
-        
+
         ChatManager.connect_user_socket(request.user_id, request.sid)
         
         return True

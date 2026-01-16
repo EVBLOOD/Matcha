@@ -11,6 +11,9 @@ from app.services.chat_service import ChatService
 from flask_socketio import emit
 from typing import Set
 
+
+from app.services.user_blocks_service import UserBlocksService
+
 class ChatManager :
 
     # Just helpers

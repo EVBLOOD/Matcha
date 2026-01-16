@@ -198,9 +198,10 @@ class UserRepository(BaseRepository):
                 SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
                 FROM user_pictures up
                 WHERE up.user_id = u.id AND is_profile_picture = TRUE) AS profile_picture_url 
-                FROM users u WHERE (latitude >= %s AND latitude <= %s) AND (longitude >= %s AND longitude <= %s)
+                FROM users u
+            WHERE (latitude >= %s AND latitude <= %s) AND (longitude >= %s AND longitude <= %s)
             AND id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = %s)
             AND id NOT IN (SELECT blocker_id FROM user_blocks WHERE blocked_id = %s)
-        LIMIT 100"""
+        LIMIT 100;"""
         rows = cls._fetch_all(query, (min_lat,max_lat, min_lng, max_lng, id, id))
         return rows

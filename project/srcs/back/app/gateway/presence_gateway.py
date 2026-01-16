@@ -14,7 +14,7 @@ class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_check_user_connect(self, id):
         try :
-            online = ConnectionManager.is_user_online(int(id))
+            online = ConnectionManager.is_user_online(int(id), request.user_id)
             # here check friendship status!
             return {"status": online}
         except Exception as _:
@@ -28,7 +28,7 @@ class PresenceGateway(Namespace):
             status = []
             for id in ids["users"] :
                 # here check friendship status!
-                online = ConnectionManager.is_user_online(int(id))
+                online = ConnectionManager.is_user_online(int(id), request.user_id)
                 # here I should join the user channel:
                 status.append({id: online})
             return status

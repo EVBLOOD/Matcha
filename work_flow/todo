@@ -45,7 +45,7 @@
         [ ] Location modification in profile editing.
     [ ] Browsing :
         [x] Browse Profiles UI Page (display suggested profiles -> Sorting and Filtering included).
-        [ ] Bonus: Interactive Map: Develop user map interface.
+        [x] Bonus: Interactive Map: Develop user map interface.
         [ ] Suggestions that match their profile.
         [ ] Algorithm for generating "interesting" profile suggestions based on criteria (orientation, location, tags, fame).
         [ ] Sorting for Browse Page (age, location, fame, tags).
