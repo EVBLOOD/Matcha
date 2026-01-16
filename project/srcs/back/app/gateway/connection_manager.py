@@ -11,6 +11,7 @@ from flask_socketio import emit
 
 from app.services.user_interactions_service import UserInteractionsService
 from app.services.notifications_service import NotificationService
+from app.dal.repositories.user_repository import UserRepository
 from app.services.profile_views_service import ProfileViewsService
 from app.services.user_blocks_service import UserBlocksService
 from app.services.chat_service import ChatService
@@ -62,9 +63,13 @@ class ConnectionManager :
             return False
         redis = Config.redis_instence
         join_room(f"online_user_{user_id}")
-        return bool(
+        is_online = bool(
             redis.exists(f"ws:user:{user_id}:online")
         )
+        if not is_online :
+            response = UserRepository.find_by_id(user_id, 'last_online')
+            return response[0]
+        return is_online
 
     @staticmethod
     def interact_with_user(user_id: int, dst_id: int, type: str) -> bool:
