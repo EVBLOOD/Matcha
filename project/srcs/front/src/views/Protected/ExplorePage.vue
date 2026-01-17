@@ -15,7 +15,7 @@ import axios, { AxiosError } from 'axios';
 import SuggestionsService from '@/api/services/SuggestionsService'
 import type { SuggestionsResponse } from '@/types/apiResponses'
 
-const suggestionsData = ref<SuggestionsResponse[] | null>(null);
+const ExploreData = ref<SuggestionsResponse[] | null>(null);
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 
@@ -24,12 +24,12 @@ interface BackendError {
 }
 
 
-const fetchSugestions = async () => {
+const fetchExplores = async () => {
     isLoading.value = true;
     try {
-        const { data } = await SuggestionsService.getSuggestions();
+        const { data } = await SuggestionsService.getExplore();
         console.log(data)
-        suggestionsData.value = data["data"];
+        ExploreData.value = data["data"];
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -43,7 +43,7 @@ const fetchSugestions = async () => {
 };
 
 onMounted(() => {
-    fetchSugestions()
+    fetchExplores()
 })
 
 const pictures_handler = (link: string) => {
@@ -54,7 +54,7 @@ const pictures_handler = (link: string) => {
 }
 
 
-const currentType = ref<string>('Map')
+const currentType = ref<string>('List')
 
 const Onclick = (type: string) => {
     currentType.value = type
@@ -82,7 +82,7 @@ const Onclick = (type: string) => {
             <Button text="Map" @click="Onclick('Map')" :img="'/img/mapIcon.svg'"></Button>
         </div>
         <div v-if="currentType == 'List'" class="body">
-            <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id"
+            <UserExploreCard v-for="value in ExploreData" :userID="value.user_id"
                 :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
                 :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
         </div>
