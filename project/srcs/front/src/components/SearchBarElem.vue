@@ -175,6 +175,17 @@ const displayCancel = () => {
     selectedFame.value = 4.0
     selectedIntersts.value = []
     selectedIntersts.value = []
+
+
+    emit('AgeMin-selected', AgeMin.value);
+    emit('AgeMax-selected', AgeMax.value);
+
+    emit('location-selected', selectedLocation.value);
+    
+    emit('fame-selected', selectedFame.value);
+    
+    emit('tags-selected', selectedIntersts.value);
+
 }
 </script>
 

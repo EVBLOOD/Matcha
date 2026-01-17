@@ -4,10 +4,6 @@ import SearchBarElem from '@/components/SearchBarElem.vue';
 import UserExploreCard from '@/components/UserExploreCard.vue';
 import InteractionMap from '@/components/InteractionMap.vue';
 
-const handleSubmit = () => {
-    console.log("SEARCH!")
-}
-
 import { ref, onMounted } from 'vue';
 import axios, { AxiosError } from 'axios';
 
@@ -60,6 +56,29 @@ const Onclick = (type: string) => {
     currentType.value = type
 }
 
+const get_min_age = (value: any) => {
+    console.log(value)
+}
+const get_max_age = (value: any) => {
+    console.log(value)
+}
+const get_locations = (value: any) => {
+    console.log(value)
+    // location-selected
+}
+const get_fame = (value: any) => {
+    console.log(value)
+    // fame-selected
+}
+const get_tags = (value: any) => {
+    console.log(value)
+    // tags-selected
+}
+
+const handleSubmit = () => {
+    console.log("SEARCH!")
+}
+
 </script>
 
 <template>
@@ -69,11 +88,11 @@ const Onclick = (type: string) => {
                 Filters
             </h2>
             <div class="inner_search_bar">
-                <SearchBarElem :firstElem="true" elemName="Age" />
+                <SearchBarElem :firstElem="true" elemName="Age" @AgeMin-selected="get_min_age" @AgeMax-selected="get_max_age"/>
                 <SearchBarElem elemName="Location"
-                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" />
-                <SearchBarElem elemName="Fame" />
-                <SearchBarElem elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" />
+                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" @location-selected="get_locations"/>
+                <SearchBarElem elemName="Fame" @fame-selected="get_fame" />
+                <SearchBarElem elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" @tags-selected="get_tags"/>
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>
