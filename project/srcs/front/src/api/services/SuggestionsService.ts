@@ -7,4 +7,7 @@ export default {
   getExplore() {
     return apiClient.get('/suggestions/research');
   },
+  getSearch(query: any) {
+    return apiClient.get(`/suggestions/research?${query}`);
+  },
 };

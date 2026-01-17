@@ -19,11 +19,12 @@ def getSuggestions():
 def getExplore():
     try :
         age_min = request.args.get('age_min')
+        age_max = request.args.get('age_max')
         fame_min = request.args.get('fame_min')
         location = request.args.get('location')
         tags = request.args.getlist('tags')
 
-        if not any([age_min, fame_min, location, tags]):
+        if not any([age_min, age_max, fame_min, location, tags]):
             return jsonify({"data": SuggestionsService.get_emptyResearch(request.user_id)})
         else :
             query = "SELECT * FROM users ORDER BY fame_rating DESC LIMIT 20"

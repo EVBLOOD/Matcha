@@ -52,31 +52,56 @@ const pictures_handler = (link: string) => {
 
 const currentType = ref<string>('List')
 
+const query_base = {
+    'age_min': 18,
+    'age_max': 24,
+    'fame_min': 4,
+    'location': ['18'],
+    'tags': ['18'],
+}
+
 const Onclick = (type: string) => {
     currentType.value = type
 }
 
 const get_min_age = (value: any) => {
     console.log(value)
+    query_base['age_min'] = value
 }
 const get_max_age = (value: any) => {
     console.log(value)
+    query_base['age_max'] = value
 }
 const get_locations = (value: any) => {
     console.log(value)
-    // location-selected
+    query_base['location'] = value
 }
 const get_fame = (value: any) => {
     console.log(value)
-    // fame-selected
+    query_base['fame_min'] = value
 }
 const get_tags = (value: any) => {
     console.log(value)
-    // tags-selected
+    query_base['tags'] = value
 }
 
-const handleSubmit = () => {
-    console.log("SEARCH!")
+const handleSubmit = async () => {
+    isLoading.value = true;
+    try {
+        const query = new URLSearchParams(query_base as any).toString();
+        const { data } = await SuggestionsService.getSearch(query);
+        console.log(data)
+        ExploreData.value = data["data"];
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            isError.value = (err.response?.data as BackendError)?.error;
+        }
+        else {
+            isError.value = "Registration failed for unknown reason'";
+        }
+    } finally {
+        isLoading.value = false;
+    }
 }
 
 </script>
