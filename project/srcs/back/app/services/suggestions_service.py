@@ -71,19 +71,31 @@ class SuggestionsService :
             params.append(filters['age_min'])
 
         if filters.get('age_max'):
-            query += " AND EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) <= %s"
+            search_query += " AND EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) <= %s"
             params.append(filters['age_max'])
 
         if filters.get('fame_min'):
-            query += " AND u.fame_rating >= %s"
+            search_query += " AND u.fame_rating >= %s"
             params.append(filters['fame_min'])
 
-        if filters.get('location'): # list of cities
-            print("this is to add -!", flush=True)
+        if filters.get('location'):
+            tmp = []
+            for city in filters['location']:
+                bounds = {'min_lat': 0, 'max_lng': 0} # I should find a way to get the cords of cities
+                if bounds:
+                    tmp.append(
+                        "(u.latitude BETWEEN %s AND %s AND u.longitude BETWEEN %s AND %s)"
+                    )
+                    params.extend([
+                        bounds['min_lat'], bounds['max_lat'], 
+                        bounds['min_lng'], bounds['max_lng']
+                    ])
+            if tmp:
+                search_query += f" AND ({' OR '.join(tmp)})"
 
         if filters.get('tags'):
             tmp = ', '.join(['%s'] * len(filters['tags']))
-            query += f""" AND u.id IN (
+            search_query += f""" AND u.id IN (
                 SELECT ui.user_id FROM user_interests ui 
                 JOIN tags t ON ui.tag_id = t.id 
                 WHERE t.name IN ({tmp})
@@ -96,8 +108,6 @@ class SuggestionsService :
             "location": "distance ASC",
             "tags": "same_tags DESC"
         }
-
-
         
         order_clause = sort_options.get(sort_by, "distance ASC, same_tags DESC, u.fame_rating DESC")
         query += f" ORDER BY {order_clause}, u.id ASC LIMIT 20"
