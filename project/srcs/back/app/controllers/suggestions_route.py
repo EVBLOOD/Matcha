@@ -27,6 +27,7 @@ def getExplore():
         if not any([age_min, age_max, fame_min, location, tags]):
             return jsonify({"data": SuggestionsService.get_emptyResearch(request.user_id)})
         else :
-            query = "SELECT * FROM users ORDER BY fame_rating DESC LIMIT 20"
+            return jsonify({"data": SuggestionsService.get_emptyResearch(request.user_id)})
+            return jsonify({"data": SuggestionsService.get_emptyResearch(request.user_id)})
     except Exception as e:
         return jsonify({"error": str(e)}), 404
