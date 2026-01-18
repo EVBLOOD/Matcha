@@ -94,7 +94,7 @@ class SuggestionsService :
         #     if tmp:
         #         search_query += f" AND ({' OR '.join(tmp)})"
 
-        if filters.getlist('tags') and len(filters.getlist('tags')) and len(filters.getlist('tags')[0]):
+        if filters.getlist('tags') and len(filters.getlist('tags')) and len(filters.getlist('tags')[0]) :
             tmp = ', '.join(['%s'] * len(filters.getlist('tags')))
             search_query += f""" AND u.id IN (
                 SELECT ui.user_id FROM user_interests ui 
@@ -103,7 +103,6 @@ class SuggestionsService :
             )"""
             params.extend(filters.getlist('tags'))
         
-
         sort_options = {
             "age": "EXTRACT(YEAR FROM AGE(NOW(), u.birthdate))",
             "fame": "u.fame_rating",
@@ -124,7 +123,9 @@ class SuggestionsService :
 
         print(data, flush=True)
 
-        users = data.get("data", [])
+        users = data.get("data")
+        if not users :
+            users = []
 
         research = []
         for user in users :
