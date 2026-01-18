@@ -120,12 +120,35 @@ class SuggestionsRepository(BaseRepository):
                      sin(radians(cud.latitude)) * sin(radians(u.latitude)))) AS distance,
                     (SELECT COUNT(*) FROM user_interests ui 
                      WHERE ui.user_id = u.id AND ui.tag_id IN 
-                     (SELECT tag_id FROM user_interests WHERE user_id = cud.id)) as same_tags
+                     (SELECT tag_id FROM user_interests WHERE user_id = cud.id)) as same_tags,
+                    p.location_set_by_user
+                    
                 FROM users u
                 JOIN profiles p ON u.id = p.user_id
                 CROSS JOIN currentuser cud
                 WHERE u.id != cud.id
-                  AND {search_query}
+                  AND {search_query}  LIMIT 20
             """
-        return cls._fetch_all(query, params)
+        
+        rows = cls._fetch_all(query, params)
+        
+        # query = f"""
+        #         WITH currentuser AS (
+        #             SELECT id, latitude, longitude, gender, sexual_preference
+        #             FROM users u 
+        #             JOIN profiles p ON u.id = p.user_id 
+        #             WHERE u.id = %s
+        #         )
+        #         SELECT 
+        #             COUNT(u.id)
+        #         FROM users u
+        #         JOIN profiles p ON u.id = p.user_id
+        #         CROSS JOIN currentuser cud
+        #         WHERE u.id != cud.id
+        #           AND {search_query}
+        #     """
+        # page_data = cls._fetch_one(query, params)
+        
+        return {"data": rows, "page": (20/ 20)}
+
 # (SELECT COUNT(*) FROM user_blocks WHERE (blocked_id = u.id AND blocker_id = %s) OR (blocked_id = %s AND blocker_id = u.id)) AS user_block_status,

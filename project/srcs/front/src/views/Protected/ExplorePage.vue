@@ -55,9 +55,9 @@ const currentType = ref<string>('List')
 const query_base = {
     'age_min': 18,
     'age_max': 24,
-    'fame_min': 4,
-    'location': ['18'],
-    'tags': ['18'],
+    'fame_min': 0,
+    'location': [],
+    'tags': [],
 }
 
 const Onclick = (type: string) => {

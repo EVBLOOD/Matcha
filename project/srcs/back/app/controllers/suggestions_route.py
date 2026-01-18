@@ -23,11 +23,11 @@ def getExplore():
         fame_min = request.args.get('fame_min')
         location = request.args.get('location')
         tags = request.args.getlist('tags')
+        sort_by = request.args.get('sort_by')
 
-        if not any([age_min, age_max, fame_min, location, tags]):
+        if not any([age_min, age_max, fame_min, location, tags, sort_by]):
             return jsonify({"data": SuggestionsService.get_emptyResearch(request.user_id)})
         else :
-            return jsonify({"data": SuggestionsService.get_emptyResearch(request.user_id)})
-            return jsonify({"data": SuggestionsService.get_emptyResearch(request.user_id)})
+            return jsonify({"data": SuggestionsService.get_Research(request.user_id, request.args, sort_by, None)})
     except Exception as e:
         return jsonify({"error": str(e)}), 404
