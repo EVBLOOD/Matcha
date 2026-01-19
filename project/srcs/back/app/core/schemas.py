@@ -1,4 +1,6 @@
-from marshmallow import fields, validate, ValidationError, validates_schema
+from marshmallow import fields, validate, ValidationError, validates_schema, pre_load, validates, ValidationError
+from app.core.sanitizer import sanitize_text
+
 from app.core.config import Config
 
 
@@ -6,18 +8,33 @@ class UserRegisterSchema(Config.ma_instence.Schema):
     username = fields.Str(required=True, validate=validate.Length(min=3, max=50))
     first_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
     last_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
-    # TODO :
-    # password shouldn't contain any regular words including his name and last name.
     password = fields.Str(required=True, validate=validate.Length(min=8, max=60))
-    # TODO :
-    # valid email format should be moved to here
     email = fields.Email(required=True)
+    @pre_load
+    def sanitize_inputs(self, data, **kwargs):
+        if 'username' in data:
+            data['username'] = sanitize_text(data['username'])
+        if 'first_name' in data:
+            data['first_name'] = sanitize_text(data['first_name'])
+        if 'last_name' in data:
+            data['last_name'] = sanitize_text(data['last_name'])
+        return data
+
 
 class UserLoginSchema(Config.ma_instence.Schema):
     username = fields.Str(required=True)
     password = fields.Str(required=True)
 
 class ProfileSchema(Config.ma_instence.Schema):
+    @pre_load
+    def sanitize_inputs(self, data, **kwargs):
+        if 'biography' in data:
+            data['biography'] = sanitize_text(data['biography'])
+        if 'tags' in data:
+            tags = data['tags'].split(';')
+            sanitized_tags = [sanitize_text(t.strip()) for t in tags]
+            data['tags'] = ';'.join(sanitized_tags)
+        return data
     gender = fields.Str(required=True, validate=validate.OneOf(['male', 'female', 'other']))
     sexual_preference = fields.Str(required=True, validate=validate.OneOf(['straight', 'gay', 'bisexual']))
     biography = fields.Str(required=True, validate=validate.Length(max=500))
@@ -25,6 +42,7 @@ class ProfileSchema(Config.ma_instence.Schema):
     latitude = fields.Decimal(required=False, places=8)
     longitude = fields.Decimal(required=False, places=8)
     tags = fields.Str(required=True)
+
     @validates_schema
     def validate_location(self, data, **kwargs):
         if data.get('location_set_by_user'):
@@ -60,6 +78,12 @@ class UserInteractionSchema(Config.ma_instence.Schema):
 
 class MessageSchema(Config.ma_instence.Schema):
     content = fields.Str(required=True, validate=validate.Length(min=1))
+    @validates('content')
+    def sanitize_content(self, value):
+        cleaned = sanitize_text(value)
+        if not cleaned:
+            raise ValidationError("Message cannot be empty")
+        return cleaned
 
 class UserReportSchema(Config.ma_instence.Schema):
     reason = fields.Str(validate=validate.Length(max=500))

@@ -5,6 +5,7 @@ from PIL import Image
 from app.core.schemas import ProfileSchema, UpdateProfileSchema
 from app.core.config import Config
 from app.services.report_service import ReportService
+from app.core.sanitizer import sanitize_text
 
 
 
@@ -57,30 +58,6 @@ def create_profile() :
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
 
-
-
-# TODO: this is for debuging
-@profile_bp.route('/create_profile_info', methods=['GET'])
-def create_profile_info() :
-    try :
-
-        if request.headers.get('X-Forwarded-For'):
-            ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
-        else :
-            ip = request.remote_addr
-        try :
-            was_added = ProfileService.initial_location(ip=ip)
-        except Exception as e :
-            return jsonify({"error": str(e)}), 500
-
-        if was_added :
-            return jsonify({"success": "profile created for user"}), 201
-        else :
-            return jsonify({"error": "server error"}), 500
-    except ValueError as e :
-        return jsonify({"error": str(e)}), 400
-
-
 @profile_bp.route('/update_profile', methods=['POST'])
 @Security.auth_guard()
 def update_profile() :
@@ -110,7 +87,7 @@ def report_user(user_id):
     try:
         body = request.get_json()
         reason = body.get('reason', '').strip()
-        
+        reason = sanitize_text(reason)
         if len(reason) > 500:
             return jsonify({"error": "Reason too long (max 500 chars)"}), 400
         

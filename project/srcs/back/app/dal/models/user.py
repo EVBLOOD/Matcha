@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+
 import re
 import bcrypt
 
@@ -36,7 +37,14 @@ class User:
             self.birthdate = birthdate
         elif insertion_check is True :
             self.password_hash = self.hashing_password(password_hash)
-            # TODO : check age here
+            if birthdate:
+                min_age_date = datetime.now() - timedelta(days=18*365.25)
+                
+                if isinstance(birthdate, str):
+                    birthdate = datetime.strptime(birthdate, '%Y-%m-%d')
+                
+                if birthdate > min_age_date:
+                    raise ValueError("You must be at least 18 years old")
             self.birthdate = birthdate
         self.verification_token = verification_token
         self.username = username

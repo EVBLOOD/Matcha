@@ -5,6 +5,8 @@ from app.core.schemas import UserRegisterSchema, UpdateGeneralUserSchema, Valida
 import time
 
 from app.core.config import Config
+import logging
+logger = logging.getLogger(__name__)
 
 user_bp = Blueprint('user_api', __name__, url_prefix='/user')
 
@@ -58,23 +60,11 @@ def verify_account() :
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
 
-# @user_bp.route('/init_infos', methods=["POST"])
-# def init_infos() :
-#     try :
-#         # request.user_id : here is the user
-        
-#     except ValueError as e :
-#         return jsonify({"error": str(e)}), 400
-
 @user_bp.route("/protected", methods=["GET", "POST"])
 @Security.auth_guard()
 def protected() :
     return jsonify({"user_id": request.user_id})
 
-# @user_bp.route("/my_status", methods=["GET", "POST"])
-# @Security.auth_guard()
-# def my_status() :
-#     return jsonify({"result": f"protected {request.user_id}"})
 
 @user_bp.route("/not_protected", methods=["GET", "POST"])
 def not_protected() :
@@ -91,7 +81,7 @@ def change_general_infos() :
 
         schema = UpdateGeneralUserSchema()
         try:
-            print(body, flush=True)
+            logger.debug(f"change general infos body route: {body}")
             validated_data = schema.load(body)
         except Exception as err:
             return jsonify({"errors": err.messages}), 400

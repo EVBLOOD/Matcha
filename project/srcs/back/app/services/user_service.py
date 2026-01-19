@@ -58,8 +58,6 @@ class UserService:
             user_inputs=[username, email, first_name, last_name]
         )
 
-        # TODO: 
-        # The user IP should be shared with the state of him accepting that or not - important
         user_data, token_verify, user_id = UserRepository.create_user(User(
             username=username, 
             email=email,

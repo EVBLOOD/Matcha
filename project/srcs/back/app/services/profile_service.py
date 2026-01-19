@@ -22,10 +22,6 @@ import ipaddress
 
 
 class ProfileService:
-    # TODO:
-    # this has a problem in case of failure of one of the insertions in the database, it should be fixed 
-    # two solutions : remove everything in case of execption - just verify if the element is free then fill it
-    # in that case
     @staticmethod
     def create_profile(user_id: int, gender: str, sexual_preference: str,\
                         biography: str, location_set_by_user: bool, files_list, tags: str, latitude: float = 0, longitude: float = 0, ip: str = "") :
@@ -36,7 +32,7 @@ class ProfileService:
             raise ValueError("Profile already filled!")        
         if not files_list or len(files_list) > 5 or len(files_list) < 1:
             raise ValueError("Must provide 1-5 pictures")
-        TagsService.check_tag_name_valid(tags_list) # TODO: trim tags
+        TagsService.check_tag_name_valid(tags_list)
         conn = None
         injected_cursor = None
         try :

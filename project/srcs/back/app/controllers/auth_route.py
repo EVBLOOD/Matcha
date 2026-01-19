@@ -171,6 +171,7 @@ def logout() :
 #     new_token = create_access_token(identity=current_user)
 #     return jsonify(access_token=new_token), 200
 
+
 @auth_bp.route('/forgot_pass', methods=['POST'])
 def forgot_pass() :
     try :

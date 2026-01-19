@@ -4,4 +4,7 @@ cd /var/www/html;
 
 echo "--------------------- Starting --------------------------------";
 # uvicorn app.app:app --host 0.0.0.0 --port 8080 --reload
+
+pip install bleach
+
 FLASK_APP=app.app:app flask run --host 0.0.0.0 --port 8080 --debug

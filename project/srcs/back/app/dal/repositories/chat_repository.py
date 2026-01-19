@@ -59,9 +59,28 @@ class ChatRepository(BaseRepository):
         row = cls._fetch_one(query, (user1_id,user2_id, user2_id,user1_id))
         return Conversation(id=row[0], *(row[1:])) if row else None
     
-    # @classmethod
-    # def get_messages(cls, chat_id: int, start: int = 0, number: int = 10) :  # TODO: this is worng but keep for now
-    #     return None
+    @classmethod
+    def get_messages_page(cls, chat_id: int, user_id: int, limit: int = 50, before_id: int = None):        
+        query = """
+            SELECT 
+                m.id, m.conversation_id, m.sender_id, m.content, 
+                m.sent_at, m.is_read
+            FROM messages m
+            JOIN conversations c ON m.conversation_id = c.id
+            WHERE m.conversation_id = %s
+            AND (c.user1_id = %s OR c.user2_id = %s)
+        """
+        
+        params = [chat_id, user_id, user_id]
+        
+        if before_id:
+            query += " AND m.id < %s"
+            params.append(before_id)
+        
+        query += " ORDER BY m.sent_at DESC LIMIT %s"
+        params.append(limit)
+        
+        return cls._fetch_all(query, params)
     
     @classmethod
     def get_messages(cls, chat_id: int, user_id: int) :
@@ -120,6 +139,36 @@ class ChatRepository(BaseRepository):
         params = (user_id, user_id,user_id)
         return cls._fetch_all(query, params)
     
-    # @classmethod
-    # def get_chats(cls, user_id: int, start: int = 0, number: int = 10) :  # TODO: this is worng but keep for now
-    #     return None
+    @classmethod
+    def get_chats_page(cls, user_id: int, limit: int = 50, before_id: int = None):    
+        query = """
+            SELECT
+                c.id AS conversation_id,
+                c.created_at,
+                u.id AS peer_id,
+                u.username,
+                u.first_name,
+                u.last_name,
+                u.last_online,
+                (SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                    FROM user_pictures up
+                    WHERE up.user_id = u.id AND up.is_profile_picture = TRUE)
+                    AS profile_picture_url
+            FROM conversations AS c
+            JOIN users u ON u.id = (
+                CASE 
+                    WHEN c.user1_id = %s THEN c.user2_id 
+                    ELSE c.user1_id 
+                END
+            )
+            WHERE c.user1_id = %s OR c.user2_id = %s;
+            """
+        params = (user_id, user_id,user_id)
+        
+        if before_id:
+            query += " AND m.id < %s"
+            params.append(before_id)
+        
+        query += " ORDER BY m.sent_at DESC LIMIT %s"
+        params.append(limit)
+        return cls._fetch_all(query, params)
