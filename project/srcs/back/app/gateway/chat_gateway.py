@@ -26,8 +26,15 @@ class ChatGateway(Namespace):
     def on_send_message(self, user_message):
         try :
             sender = request.user_id
-            receiver = user_message["user_id"]
-            text = user_message["text"]
+            receiver = user_message.get("user_id")
+            text = user_message.get("text", "").strip()
+
+            if not receiver:
+                return False
+            
+            if not text or len(text) > 1000:
+                return False
+
             return ChatManager.broadcast_message(sender=sender, receiver=receiver, message=text, socket_id=request.sid)
         except Exception as e :
             return False

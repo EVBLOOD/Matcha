@@ -19,7 +19,8 @@ class Config:
     ALLOWED_EXTENSIONS = ""
     UPLOAD_FOLDER = "pictures_storage"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+    # ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+    ALLOWED_EXTENSIONS = {'PNG', 'JPG', 'JPEG'}
     max_width=5000
     max_height=5000
 

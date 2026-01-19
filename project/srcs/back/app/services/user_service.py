@@ -10,7 +10,36 @@ from app.dal.repositories.user_repository import UserRepository
 from app.services.user_interactions_service import UserInteractionsService
 from app.services.user_interests_service import UserInterestsService
 
+from zxcvbn import zxcvbn
+
+
 class UserService:
+
+    @staticmethod
+    def validate_password_strength(password: str, user_inputs: list = None) -> None:
+        if user_inputs is None:
+            user_inputs = []
+            
+        result = zxcvbn(password, user_inputs=user_inputs)
+        
+        if result['score'] < 3:
+            feedback = result['feedback']
+            suggestions = feedback.get('suggestions', [])
+            warning = feedback.get('warning', '')
+            
+            error_msg = "Password too weak. "
+            if warning:
+                error_msg += warning + " "
+            if suggestions:
+                error_msg += " ".join(suggestions)
+            
+            raise ValueError(error_msg)
+        
+        if len(password) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        if len(password) > 64:
+            raise ValueError("Password too long (max 64 characters)")
+
     @staticmethod
     def create_user(username: str, email: str,
                     password: str, first_name: str,
@@ -23,6 +52,12 @@ class UserService:
         
         if UserRepository.find_by_email(email):
             raise ValueError("email already taken")
+        
+        UserService.validate_password_strength(
+            password, 
+            user_inputs=[username, email, first_name, last_name]
+        )
+
         # TODO: 
         # The user IP should be shared with the state of him accepting that or not - important
         user_data, token_verify, user_id = UserRepository.create_user(User(

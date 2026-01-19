@@ -2,7 +2,7 @@ from app.core.config import Config
 from flask import jsonify
 from functools import wraps
 from flask import request
-from flask_socketio import disconnect, join_room, ConnectionRefusedError
+from flask_socketio import disconnect, join_room, ConnectionRefusedError, leave_room
 import json
 from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
@@ -51,9 +51,24 @@ class ConnectionManager :
         redis.hdel("ws:connections", f"sid:{sid}")
         redis.srem(f"ws:user:{user_id}:sockets", sid)
         
-        if redis.scard(f"ws:user:{user_id}:sockets") == 0 :
+        leave_room(f"Notifs_user_{user_id}", sid=sid)
+        leave_room(f"online_user_{user_id}", sid=sid)
+
+        cursor = 0
+        pattern = "chat:private_rooms:*"
+        while True:
+            cursor, keys = redis.scan(cursor, match=pattern, count=100)
+            for key in keys:
+                if redis.sismember(key, sid):
+                    redis.srem(key, sid)
+                    room_name = key.decode().replace("chat:private_rooms:", "")
+                    leave_room(room_name, sid=sid)
+            if cursor == 0:
+                break
+        if redis.scard(f"ws:user:{user_id}:sockets") == 0:
             redis.delete(f"ws:user:{user_id}:online")
-        # I should update the logout time here and send it
+            UserRepository.update_last_online(user_id)
+
         emit('connected', {user_id: "Disconnected"}, room=f"online_user_{user_id}")
 
     @staticmethod

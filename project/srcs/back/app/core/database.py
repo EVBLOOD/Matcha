@@ -17,7 +17,8 @@ class Database:
     
     def init_app(self, app):
         self.pool = psycopg2.pool.ThreadedConnectionPool(
-            2, 10,
+            # 2, 10,
+            5, 50,
             user=Config.DB_USER,
             password=Config.DB_PASSWORD,
             host=Config.DB_HOST,

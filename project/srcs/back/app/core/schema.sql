@@ -116,6 +116,17 @@ CREATE TABLE user_reports (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE dates (
+    id SERIAL PRIMARY KEY,
+    proposer_id INT REFERENCES users(id) ON DELETE CASCADE,
+    partner_id INT REFERENCES users(id) ON DELETE CASCADE,
+    location VARCHAR(255) NOT NULL,
+    scheduled_at TIMESTAMPTZ NOT NULL,
+    description TEXT,
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'declined', 'cancelled')),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 
 CREATE OR REPLACE FUNCTION calculate_fame() 
 RETURNS TRIGGER AS $$

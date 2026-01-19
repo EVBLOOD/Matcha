@@ -4,6 +4,7 @@ from app.core.security import Security
 from PIL import Image
 from app.core.schemas import ProfileSchema, UpdateProfileSchema
 from app.core.config import Config
+from app.services.report_service import ReportService
 
 
 
@@ -99,4 +100,27 @@ def update_profile() :
         else :
             return jsonify({"server error"}), 500
     except ValueError as e :
+        return jsonify({"error": str(e)}), 400
+
+
+@profile_bp.route('/report/<int:user_id>', methods=['POST'])
+@Security.auth_guard()
+def report_user(user_id):
+    """Report a user as fake account"""
+    try:
+        body = request.get_json()
+        reason = body.get('reason', '').strip()
+        
+        if len(reason) > 500:
+            return jsonify({"error": "Reason too long (max 500 chars)"}), 400
+        
+        ReportService.report_user(
+            reporter_id=request.user_id,
+            reported_id=user_id,
+            reason=reason
+        )
+        
+        return jsonify({"success": "User reported"}), 201
+        
+    except ValueError as e:
         return jsonify({"error": str(e)}), 400

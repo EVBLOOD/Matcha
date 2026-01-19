@@ -15,7 +15,7 @@ class PictureService:
     @classmethod
     def allowed_file(cls, filename):
         return '.' in filename and \
-               filename.rsplit('.', 1)[1].lower() in Config.ALLOWED_EXTENSIONS
+               filename.rsplit('.', 1)[1].upper() in Config.ALLOWED_EXTENSIONS
 
     @classmethod
     def validate_image(cls, file_stream, filename):
@@ -35,10 +35,15 @@ class PictureService:
 
             file_stream.seek(0)
             img = Image.open(file_stream)
+
+            if img.format not in Config.ALLOWED_EXTENSIONS:
+                raise ValueError(f"Invalid image format: {img.format}")
+            
             if img.width > Config.max_width or img.height > Config.max_height:
                 raise ValueError(f"Image too large ({img.width}x{img.height})")
             # img.close()
         except Exception as e:
+            print(e, flush=True)
             raise ValueError("Invalid image content")
         file_stream.seek(0)
         return True
