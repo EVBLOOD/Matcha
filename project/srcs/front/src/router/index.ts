@@ -157,37 +157,46 @@ router.beforeEach(async (to, from, next) => {
   const socketStore = useSocketStore();
   const token = localStorage.getItem('auth_token');
 
-    if (token && !user.isLoaded) {
+  if (token && !user.isLoaded) {
+    try {
       await user.fetchUser();
+    } catch (err) {
+      localStorage.removeItem('auth_token');
+      user.resetStore();
     }
-    if (!token) {
-      await user.fetchUser();
-      user.setIsLoaded(false)
-    }
+  }
 
-    if (user.isAuthenticated) {
-      if (!user.isVerified && to.meta.requiresVerification) {
-        return next({ name: 'email confirmation' });
-      } else if (!user.isProfileComplete && to.meta.requiresCompleteProfile) {
-        return next({ name: 'profile onboarding' });
-      } else {
-        if (to.meta.public) {
-          return next({ name: 'home' });
-        } else if (user.isVerified && !to.meta.requiresVerification) {
-          return next({ name: 'profile onboarding' });
-        } else if (user.isProfileComplete && !to.meta.requiresCompleteProfile) {
-          return next({ name: 'home' });
-        }
-        if (to.meta.requiresSameUser && to.params.id != user.getUserID) {
-          return next({ name: 'home' });
-        }
-      }
-      if (user.isVerified && user.isProfileComplete) socketStore.connectAll()
-    } else {
-      if (!to.meta.public) {
-          return next({ name: 'login' });
-      }
+  if (!token && user.isAuthenticated) {
+    user.resetStore(); 
+  }
+
+  if (!user.isAuthenticated) {
+    if (to.meta.public) {
+      return next();
     }
-    next();
+    return next({ name: 'login' });
+  }
+
+  if (to.meta.public) {
+    return next({ name: 'home' });
+  }
+
+  if (!user.isVerified && to.meta.requiresVerification && to.name !== 'email confirmation') {
+    return next({ name: 'email confirmation' });
+  }
+
+  if (user.isVerified && !user.isProfileComplete && to.meta.requiresCompleteProfile && to.name !== 'profile onboarding') {
+    return next({ name: 'profile onboarding' });
+  }
+
+  if (to.meta.requiresSameUser && to.params.id != user.getUserID) {
+    return next({ name: 'home' });
+  }
+
+  if (user.isVerified && user.isProfileComplete) {
+    socketStore.connectAll();
+  }
+
+  next();
 });
 export default router

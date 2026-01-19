@@ -53,6 +53,9 @@ const useUserStore = defineStore('user', {
     },
     setIsLoaded(isLoaded: boolean) {
       this.isLoaded = isLoaded;
+    },
+    resetStore() {
+      this.user = null
     }
   }
 });
