@@ -30,7 +30,8 @@ class ProfileService:
     def create_profile(user_id: int, gender: str, sexual_preference: str,\
                         biography: str, location_set_by_user: bool, files_list, tags: str, latitude: float = 0, longitude: float = 0, ip: str = "") :
         
-        tags_list = set(tags.split(';'))
+        # tags_list = set(tags.split(';'))
+        tags_list = {tag.strip() for tag in tags.split(';') if tag.strip()}
         if ProfileRepository.find_profile_exists(user_id) :
             raise ValueError("Profile already filled!")        
         if not files_list or len(files_list) > 5 or len(files_list) < 1:
@@ -58,13 +59,13 @@ class ProfileService:
             conn.commit()
             AuthService.update_profile_profile_completion(user_id)
         except Exception as e:
-            print(e, flush=True)
             conn.rollback()
-            raise Exception(e)
-        if injected_cursor:
-            injected_cursor.close()
-        if conn:
-            conn.close()
+            raise
+        finally:
+            if injected_cursor:
+                injected_cursor.close()
+            if conn:
+                Config.DB_instence.pool.putconn(conn)
         return was_done
 
     @staticmethod

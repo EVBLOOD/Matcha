@@ -4,7 +4,7 @@
 - maybe we should add a search bar
 
 - design:
-    errors displaying
+    errors displaying and loadings
     Explore page
     Suggestions page
     pop-up/notif UI one for Notifs and another for chat
@@ -20,4 +20,3 @@
         - user tags mannagement
         - user tags maybe should be separated than other logic..
         - photos management maybe should be separated than other logic..
-        {REASON} : all those require a rollback action when one of them fails plus error management will be complecated...

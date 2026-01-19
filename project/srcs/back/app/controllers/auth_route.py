@@ -127,12 +127,16 @@ def handle_github_callback():
     if not user_by_email :
         user_by_username = UserRepository.find_by_username(username)
     
+    name_parts = oauth_user["name"].split(" ", 1)
+    first_name = name_parts[0]
+    last_name = name_parts[1] if len(name_parts) > 1 else ""
+    
     if not user_by_email and not user_by_username :
         user_id = UserRepository.create_user_oauth(User(
             username=username, 
             email=oauth_user["email"],
-            first_name=oauth_user["name"].split(" ")[0],
-            last_name=oauth_user["name"].split(" ")[1])
+            first_name=first_name,
+            last_name=last_name)
         )
 
     if user_by_username :
@@ -140,8 +144,8 @@ def handle_github_callback():
         user_id = UserRepository.create_user_oauth(User(
             username=username, 
             email=oauth_user["email"],
-            first_name=oauth_user["name"].split(" ")[0],
-            last_name=oauth_user["name"].split(" ")[1])
+            first_name=first_name,
+            last_name=last_name)
         )
 
     access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)

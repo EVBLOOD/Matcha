@@ -1,8 +1,7 @@
 from app.core.config import Config
 from app.dal.repositories.suggestions_repository import SuggestionsRepository
 from app.services.profile_service import ProfileService
-from app.dal.models.message import Message
-from app.dal.models.conversation import Conversation
+
 
 class SuggestionsService :
     @classmethod

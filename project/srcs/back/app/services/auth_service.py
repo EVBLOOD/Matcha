@@ -17,6 +17,7 @@ class AuthService :
             return is_verified and is_verified[0]
         except Exception as e :
             return False
+
     @staticmethod
     def verify_user(username: str, password: str) :
         try :
