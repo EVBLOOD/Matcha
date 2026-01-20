@@ -3,6 +3,7 @@ import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 
 import AuthService from '@/api/services/AuthService'
 import useUserStore from '@/stores/user';
+import { toast } from '@/composables/useToast';
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -10,6 +11,7 @@ const router = useRouter()
 
 
 import { useSocketStore } from '@/stores/socket';
+import Button from '@/components/Button.vue';
 
 const socket = useSocketStore();
 
@@ -50,8 +52,7 @@ const clickLogOut = async () => {
                 </RouterLink>
                 <RouterLink class="link" :to="`/profile/${userStore.getUserID}`"><img src="/img/profileIcon.svg" alt="" /> <span>Profile</span>
                 </RouterLink>
-                <a class="link log_a" v-on:click="clickLogOut"><img src="/img/logOut.svg" alt="" /> <span>Log
-                        out</span></a>
+                <a class="link log_a" v-on:click="clickLogOut"><img src="/img/logOut.svg" alt="" /> <span>Log out</span></a>
             </nav>
         </div>
         <div class="main_div_parent">

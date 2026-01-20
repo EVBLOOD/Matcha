@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
   // import LandingPage from './views/LandingPage.vue';
+  import ToastContainer from './components/ToastContainer.vue';
 </script>
 
 <template>
   <div class="container">
-     <RouterView />
+    <RouterView />
+    <ToastContainer />
   </div>
 </template>
 

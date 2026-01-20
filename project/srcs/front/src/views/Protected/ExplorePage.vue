@@ -7,9 +7,9 @@ import InteractionMap from '@/components/InteractionMap.vue';
 import { ref, onMounted } from 'vue';
 import axios, { AxiosError } from 'axios';
 
-
 import SuggestionsService from '@/api/services/SuggestionsService'
 import type { SuggestionsResponse } from '@/types/apiResponses'
+import { toast } from '@/composables/useToast';
 
 const ExploreData = ref<SuggestionsResponse[] | null>(null);
 const isLoading = ref(true);
@@ -106,9 +106,7 @@ const handleSubmit = async () => {
 <template>
     <div class="wraper">
         <div class="search_holder">
-            <h2 style="margin-bottom: 2%;font-weight: normal;">
-                Filters
-            </h2>
+            <h2 style="margin-bottom: 2%;font-weight: normal;">Filters</h2>
             <div class="inner_search_bar">
                 <SearchBarElem :firstElem="true" elemName="Age" @AgeMin-selected="get_min_age" @AgeMax-selected="get_max_age"/>
                 <SearchBarElem elemName="Location"

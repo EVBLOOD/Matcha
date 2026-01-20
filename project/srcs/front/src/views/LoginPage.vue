@@ -2,6 +2,7 @@
 import Card from '@/components/Card.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
+import { toast } from '@/composables/useToast';
 
 import AuthService from '@/api/services/AuthService'
 import useUserStore from '@/stores/user';
@@ -42,6 +43,7 @@ const handleLogin = async () => {
       await user.fetchUser();
       router.push({ name: 'home' });
     }
+    toast('success', 'Login successful', 'You have successfully logged in.');
     if (response.data.access_token) router.push('/')
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
@@ -51,6 +53,7 @@ const handleLogin = async () => {
     }
   } finally {
     isLoading.value = false;
+    toast('error', 'Login failed', 'Invalid login credentials. Please try again.');
   }
 };
 // TODO: we should integrate the Loading and error displaying
