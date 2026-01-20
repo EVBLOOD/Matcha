@@ -65,6 +65,15 @@ class ProfileService:
         return was_done
 
     @staticmethod
+    def update_location(user_id, latitude, longitude):
+        try:
+            return UserRepository.update_location(user_id, latitude, longitude)
+        except ValueError:
+            return False
+
+
+
+    @staticmethod
     def is_public_ip(ip):
         try:
             ip_obj = ipaddress.ip_address(ip)
@@ -183,3 +192,4 @@ class ProfileService:
 
         except Exception as e :
             raise Exception(e)
+

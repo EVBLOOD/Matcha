@@ -46,15 +46,12 @@ const blockHandler = () => {
     profile.clearActiveProfile()
 }
 
-const unblockHandler = () => {
-    if (!profile.activeProfile) return
-    socket.interactWithUser(profile.activeProfile.user.user_id, 'unblock')
-}
-
 const reportHandler = () => {
     if (!profile.activeProfile) return
     // socket.interactWithUser(profile.activeProfile.user.user_id, 'unblock')
     // TODO: implement this!
+    // report then block
+    blockHandler()
 }
 
 onMounted(() => {

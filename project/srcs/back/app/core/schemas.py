@@ -134,3 +134,8 @@ class UpdateGeneralUserSchema(Config.ma_instence.Schema):
 
 class UpdateUserPasswordSchema(Config.ma_instence.Schema):
     password = fields.Str(required=True, validate=validate.Length(min=8, max=60))
+
+
+class UpdateLocation(Config.ma_instence.Schema):
+    latitude = fields.Decimal(required=True, places=8)
+    longitude = fields.Decimal(required=True, places=8)

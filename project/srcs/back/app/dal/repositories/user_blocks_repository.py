@@ -64,4 +64,3 @@ class UserBlocksRepository(BaseRepository):
             return None
         query = "DELETE FROM user_blocks WHERE (blocker_id = %s AND blocked_id = %s) OR (blocked_id = %s AND blocker_id = %s) RETURNING blocker_id"
         return cls._execute(query, (blocker_id, blocked_id, blocker_id, blocked_id))
-        return cls.delete((blocker_id, blocked_id))

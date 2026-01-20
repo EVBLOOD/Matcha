@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify, redirect
 from app.services.user_service import UserService
+from app.services.profile_service import ProfileService
 from app.core.security import Security
-from app.core.schemas import UserRegisterSchema, UpdateGeneralUserSchema, ValidationError, UpdateUserPasswordSchema
+from app.core.schemas import UserRegisterSchema, UpdateGeneralUserSchema, ValidationError, UpdateUserPasswordSchema, UpdateLocation
 import time
 
 from app.core.config import Config
@@ -172,3 +173,18 @@ def get_user_location():
     except Exception as e :
         print(e, flush=True)
         return jsonify({"error": e}), 400
+
+
+@user_bp.route('/update-location',  methods=['POST'])
+@Security.auth_guard()
+def update_user_location():
+        try:
+            body = request.get_json()
+            schema = UpdateLocation()
+
+            validated_data = schema.load(body)
+            user = ProfileService.update_location(request.user_id, **validated_data)
+            return jsonify({"data": user})
+        except Exception as err:
+            return jsonify({"errors": err.messages}), 400
+    
