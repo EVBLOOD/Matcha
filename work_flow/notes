@@ -10,7 +10,6 @@
     profile picture editing.
     Location modification in profile editing.
     Video/Audio interface
-    Map: Develop user map interface. √
     Date/Event Scheduling: Implement event/date scheduling feature.
 
 - TO THINK ABOUT :
@@ -40,8 +39,6 @@
 
 profile => 
  
-
-- front v-if should be updated : message unlike and link report
 
 - font Capitalize should be used
 

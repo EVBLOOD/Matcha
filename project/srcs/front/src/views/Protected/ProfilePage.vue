@@ -50,12 +50,11 @@ import InteractionService from '@/api/services/InteractionService'
 const reportHandler = async () => {
     if (!profile.activeProfile) return
     try {
-        await InteractionService.sendReport("I want to block him", profile.activeProfile.user.user_id)
+        await InteractionService.sendReport("I want to block him", profile.activeProfile.user.user_id);
+        blockHandler()
     } catch(err : unknown) {
         console.info("GPS isn't active!") 
-    }
-    
-    // blockHandler()
+    }   
 }
 
 onMounted(() => {
