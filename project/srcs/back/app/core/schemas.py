@@ -12,6 +12,11 @@ class UserRegisterSchema(Config.ma_instence.Schema):
     email = fields.Email(required=True)
     @pre_load
     def sanitize_inputs(self, data, **kwargs):
+        if hasattr(data, 'to_dict'):
+            data = data.to_dict()
+        else:
+            data = dict(data)
+
         if 'username' in data:
             data['username'] = sanitize_text(data['username'])
         if 'first_name' in data:
@@ -28,6 +33,11 @@ class UserLoginSchema(Config.ma_instence.Schema):
 class ProfileSchema(Config.ma_instence.Schema):
     @pre_load
     def sanitize_inputs(self, data, **kwargs):
+        if hasattr(data, 'to_dict'):
+            data = data.to_dict()
+        else:
+            data = dict(data)
+
         if 'biography' in data:
             data['biography'] = sanitize_text(data['biography'])
         if 'tags' in data:
