@@ -10,8 +10,8 @@ import AuthService from '@/api/services/AuthService';
 import axios, { AxiosError } from 'axios';
 
 interface BackendError {
-  error?: string;
-  errors?: any[];
+    error?: string;
+    errors?: any[];
 }
 
 const router = useRouter();
@@ -28,37 +28,58 @@ const isLoading = ref(false);
 const error = ref<null | string | any[]>(null);
 
 const handleResendMail = async () => {
-  isLoading.value = true;
-  error.value = null;
+    isLoading.value = true;
+    error.value = null;
 
-  try {
-       const response = await AuthService.resend_verfiy_mail();
-       console.log(response)
+    try {
+        const response = await AuthService.resend_verfiy_mail();
+        console.log(response)
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Resend email failed for unknown reason';
+            error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Resend email failed for unknown reason';
         } else {
             error.value = 'Resend email failed for unknown reason'
         }
-     } finally {
-       isLoading.value = false;
-     }
+    } finally {
+        isLoading.value = false;
+    }
 };
 
+const userStore = useUserStore();
+
+
+const clickLogOut = async () => {
+    try {
+        const response = await AuthService.logout();
+        console.log(response)
+        userStore.fetchUser()
+        localStorage.removeItem('auth_token');
+
+        userStore.setIsLoaded(false)
+
+        router.push('login')
+    } catch (err) {
+        console.log(err);
+        localStorage.removeItem('auth_token');
+    }
+}
 
 </script>
 
 
 <template>
-        <Card title="An email has been sent to your address.">
-            <Button class="btn" @click="handleResendMail"  text="Resend Email"></Button>
-            <div class="extra">Went to the wrong place? <Button class="just_btn" to="login" text="Back to Sign In"
-                    backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
-        </Card>
+    <div v-on:click="clickLogOut" style="position: absolute; bottom: 10%; left: 5%;">
+        <a class="link log_a"><img src="/img/logOut.svg" alt="" /> <span>Log
+                out</span></a>
+    </div>
+    <Card title="An email has been sent to your address.">
+        <Button class="btn" @click="handleResendMail" text="Resend Email"></Button>
+        <div class="extra">Went to the wrong place? <Button class="just_btn" to="login" text="Back to Sign In"
+                backgroundColor="rgba(255, 255, 255, 0)"></Button></div>
+    </Card>
 </template>
 
 <style lang="scss" scoped>
-
 .btn {
     margin-bottom: 5%;
 }
@@ -76,6 +97,28 @@ const handleResendMail = async () => {
     padding: 0px;
     border-style: none;
 }
+
+.link {
+    display: flex;
+    gap: 10px;
+    text-decoration: none;
+    color: $text-color;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    // height: 6%;
+    padding: 6%;
+    align-content: center;
+    cursor: pointer;
+    flex-wrap: wrap;
+}
+
+.link:hover {
+    background: $components-hover-color;
+    border-radius: 8px;
+
+}
+
 
 @media (max-width: $breakpoint-md) {
     .page {
