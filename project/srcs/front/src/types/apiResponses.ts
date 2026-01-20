@@ -116,6 +116,7 @@ export interface BlocksResponse {
     first_name: string,
     last_name: string,
     profile_picture_url: UserProfilePicturesResponse[]
+    unblock?: boolean
 }
 
 export interface LikesResponse {
@@ -123,7 +124,8 @@ export interface LikesResponse {
     username: string,
     first_name: string,
     last_name: string,
-    profile_picture_url: UserProfilePicturesResponse[]
+    profile_picture_url: UserProfilePicturesResponse[],
+    unlike?: boolean
 }
 
 export interface ViewsListResponse {

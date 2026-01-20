@@ -25,8 +25,7 @@ const fetchBlocks = async () => {
   isLoading.value = true;
   try {
     const { data } = await InteractionService.getViewsList();
-    console.log(data.data)
-    ViewsData.value = [...data.data];
+    if (data.data) ViewsData.value = [...data.data];
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -65,7 +64,7 @@ const OnclickOpenProfile = (user_id: number) => {
 
 <template>
     <div v-if="!isLoading && !isError && !ViewsData" class="contenty">
-        Block list is empty 
+        View list is empty 
     </div>
     <div v-if="!isLoading && !isError && ViewsData" class="contenty">
         <div v-for="value in ViewsData" class="element_list">

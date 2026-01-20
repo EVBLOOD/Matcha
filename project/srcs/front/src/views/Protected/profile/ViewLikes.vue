@@ -27,7 +27,7 @@ const fetchBlocks = async () => {
   try {
     const { data } = await InteractionService.getLikesList();
     console.log(`data ${data.data}`)
-    LikesData.value = [...data.data];
+    if (data.data) LikesData.value = [...data.data];
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -59,14 +59,20 @@ const profile = useSocialStore()
 
 const dislikeHandler = (user_id: number) => {
     socket.interactWithUser(user_id, 'dislike')
+    if (LikesData.value)
+    LikesData.value = LikesData.value?.map((elem) => {
+        if (elem.liked_id == user_id) elem.unlike = true
+        return elem
+    })
 }
 
 const likeHandler = (user_id: number) => {
     socket.interactWithUser(user_id, 'like')
-}
-
-const Onclick = (user_id: number) => {
-
+    if (LikesData.value)
+    LikesData.value = LikesData.value?.map((elem) => {
+        if (elem.liked_id == user_id) elem.unlike = false
+        return elem
+    })
 }
 
 import { useRouter } from 'vue-router';
@@ -78,11 +84,10 @@ const OnclickOpenProfile = (user_id: number) => {
 
 
 
-
 </script>
 
 <template>
-    <div v-if="!isLoading && !isError && LikesData && LikesData.length == 1" class="contenty">
+    <div v-if="!isLoading && !isError && !LikesData" class="contenty">
         Likes list is empty 
     </div>
     <div v-if="!isLoading && !isError && LikesData" class="contenty">
@@ -94,7 +99,8 @@ const OnclickOpenProfile = (user_id: number) => {
                    <span>@{{value.username}}</span>
                 </div>
             </div>
-            <Button style="mix-blend-mode: plus-lighter;" text="Unlike" @click="Onclick(value.liked_id)"></Button>
+            <Button v-if="!value.unlike" style="mix-blend-mode: plus-lighter;" text="Unlike" @click="dislikeHandler(value.liked_id)"></Button>
+            <Button v-if="value.unlike" style="mix-blend-mode: plus-lighter;" text="Like" @click="likeHandler(value.liked_id)"></Button>
             
         </div>
     </div>
