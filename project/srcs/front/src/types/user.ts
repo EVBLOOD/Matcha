@@ -6,7 +6,7 @@ export interface UserRegister {
     password: string;
     first_name: string;
     last_name: string;
-    birhdate: any;
+    birthdate: any;
 }
 
 

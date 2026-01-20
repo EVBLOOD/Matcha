@@ -127,6 +127,7 @@ class ProfileService:
             same = False
             if to_find_user_id== searcher_id :
                 same = True
+
             profile = ProfileRepository.get_user_profile(user_id=to_find_user_id, my_acount=searcher_id, same=same)
 
             if profile is None : 
@@ -168,7 +169,8 @@ class ProfileService:
                         "email": profile["email"] if same else None,
                         "sexual_preference": profile["sexual_preference"],
                         "gender": profile["gender"],
-                        "location": Address if not profile["location_set_by_user"] else f"{city}, {country}"
+                        "location": Address if not profile["location_set_by_user"] else f"{city}, {country}",
+                        'birthdate': profile["birthdate"] if same else ''
                     },
                     "profile": {
                         "biography": profile["biography"],

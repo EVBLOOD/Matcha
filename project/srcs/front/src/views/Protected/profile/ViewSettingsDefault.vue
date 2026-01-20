@@ -15,6 +15,10 @@ const lastName = ref(profile.activeProfile?.user.last_name);
 const email = ref(profile.activeProfile?.user.email || "");
 const userName = ref(profile.activeProfile?.user.username);
 
+const rawDate = new Date(profile.activeProfile?.user.birthdate || Date.now());
+const formattedDate = rawDate.toISOString().split('T')[0];
+const birthdate = ref(formattedDate);
+
 const router = useRouter()
 
 interface BackendError {
@@ -33,6 +37,7 @@ const clickSave = async (e: Event) => {
             'last_name': lastName.value,
             'email': email.value,
             'username': userName.value,
+            'birthdate': birthdate.value
         }
        await UserService.change_infos_top(payload);
        router.push('/')
@@ -51,14 +56,13 @@ const clickSave = async (e: Event) => {
 <template>
     <div class="wraper">
         <div class="two_inputs">
-
+            <Input name="uname" label="Username" id="uname" v-model="userName" type="text" />
             <Input name="fname" label="First Name" id="fname" v-model="firstName" type="text" />
             <Input name="lname" label="Last Name" id="lname" v-model="lastName" type="text" />
         </div>
         <div class="two_inputs">
-
             <Input name="email" label="Email" id="email" v-model="email" type="email" />
-            <Input name="uname" label="Username" id="uname" v-model="userName" type="text" />
+            <Input name="birthdate" label="Birthdate" id="birthdate" v-model="birthdate" type="date" />
         </div>
 
         <Button class="btn" text="Save" @click="clickSave"></Button>

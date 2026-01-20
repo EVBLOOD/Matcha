@@ -32,6 +32,7 @@ export interface UserProfileAttrsResponse {
     username: string;
     email?: string;
     location?: string;
+    birthdate?: string;
 }
 
 

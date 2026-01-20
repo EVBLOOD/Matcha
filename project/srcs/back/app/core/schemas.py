@@ -18,7 +18,7 @@ class UserRegisterSchema(Config.ma_instence.Schema):
     username = fields.Str(required=True, validate=validate.Length(min=3, max=50))
     first_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
     last_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
-    birhdate = fields.Date(required=True, validate=validate_date)
+    birthdate = fields.Date(required=True, validate=validate_date)
     password = fields.Str(required=True, validate=validate.Length(min=8, max=60))
     email = fields.Email(required=True)
     @pre_load
@@ -117,12 +117,20 @@ class TokenSchema(Config.ma_instence.Schema):
 
 
 class UpdateGeneralUserSchema(Config.ma_instence.Schema):
+    def validate_date(value):
+        try:
+            birthdate = datetime.strptime(str(value), '%Y-%m-%d')
+            if birthdate >= datetime.now():
+                raise ValidationError("Birthdate must be in the past.")
+        except ValueError:
+            raise ValidationError("Invalid date format.")
+
     username = fields.Str(required=True, validate=validate.Length(min=3, max=50))
     first_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
     last_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
-    # TODO :
-    # valid email format should be moved to here
     email = fields.Email(required=True)
+    birthdate = fields.Date(required=True, validate=validate_date)
+
 
 class UpdateUserPasswordSchema(Config.ma_instence.Schema):
     password = fields.Str(required=True, validate=validate.Length(min=8, max=60))

@@ -36,7 +36,7 @@ const handleRegister = async () => {
         password: passWord.value,
         first_name: firstName.value,
         last_name: lastName.value,
-        birhdate: birthdate.value
+        birthdate: birthdate.value
     };
     
     await UserService.register(payload);

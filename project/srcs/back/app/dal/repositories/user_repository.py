@@ -139,18 +139,19 @@ class UserRepository(BaseRepository):
     #     "latitude", "longitude", "is_verified"
     # ]
     @classmethod
-    def update_user_infos(cls, user_id: int, first_name: str, last_name : str, username: str) :
+    def update_user_infos(cls, user_id: int, first_name: str, last_name : str, username: str, birthdate) :
         query = """
             UPDATE users 
             SET
                 first_name = %s,
                 last_name = %s,
-                username = %s 
+                username = %s,
+                birthdate = %s
             WHERE id = %s
             RETURNING id
         """
         print(query, flush=True)
-        return cls._execute(query, (first_name, last_name ,username, user_id))
+        return cls._execute(query, (first_name, last_name ,username, birthdate,user_id))
 
     @classmethod
     def create_user_oauth(cls, user_data: User) -> Optional[User]:

@@ -43,7 +43,7 @@ class UserService:
     @staticmethod
     def create_user(username: str, email: str,
                     password: str, first_name: str,
-                    last_name: str, birhdate) -> Optional[User]:
+                    last_name: str, birthdate) -> Optional[User]:
 
 
         if UserRepository.find_by_username(username):
@@ -63,7 +63,7 @@ class UserService:
             password_hash=password,
             first_name=first_name,
             last_name=last_name,
-            birthdate=birhdate,
+            birthdate=birthdate,
             insertion_check=True
         ))
         if user_id is not None :
@@ -110,10 +110,9 @@ class UserService:
         return 1
     
     @staticmethod
-    def update_user_infos(user_id: int, username: str, first_name: str, last_name: str) :
+    def update_user_infos(user_id: int, username: str, first_name: str, last_name: str, birthdate) :
         try :
-            print("DDOD", flush=True)
-            UserRepository.update_user_infos(user_id, first_name, last_name , username)
+            UserRepository.update_user_infos(user_id, first_name, last_name , username, birthdate)
         except Exception as e :
             raise ValueError(str(e)) # unique username
     
@@ -146,13 +145,22 @@ class UserService:
             raise ValueError(str(e))
 
     @staticmethod
-    def update_user_email_request_and_infos(user_id: int, username: str, first_name: str, last_name: str, email: str, session_id: str) :
+    def update_user_email_request_and_infos(user_id: int, username: str, first_name: str, last_name: str, email: str, birthdate, session_id: str) :
+        from datetime import datetime, timedelta
+        if birthdate:
+                min_age_date = datetime.now() - timedelta(days=18*365.25)
+                
+                if isinstance(birthdate, str):
+                    birthdate = datetime.strptime(birthdate, '%Y-%m-%d')
+                
+                if birthdate > min_age_date.date():
+                    raise ValueError("You must be at least 18 years old")
 
         user = User(*UserRepository.find_by_id(user_id))
         if user.email != email :
             UserService.update_user_email_request(user_id, email, session_id)
-        if not (username == user.username and first_name == user.first_name and last_name == user.last_name) :
-            UserService.update_user_infos(user_id, username, first_name, last_name)
+        if not (username == user.username and first_name == user.first_name and last_name == user.last_name and birthdate == user.birthdate) :
+            UserService.update_user_infos(user_id, username, first_name, last_name, birthdate)
         return 1
 
     @staticmethod
