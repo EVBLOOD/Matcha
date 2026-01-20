@@ -14,6 +14,7 @@ const router = useRouter()
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
+const birthdate = ref('');
 const userName = ref('');
 const passWord = ref('');
 const confPassWord = ref('');
@@ -35,6 +36,7 @@ const handleRegister = async () => {
         password: passWord.value,
         first_name: firstName.value,
         last_name: lastName.value,
+        birhdate: birthdate.value
     };
     
     await UserService.register(payload);
@@ -61,6 +63,7 @@ const handleRegister = async () => {
             </div>
             <Input name="email" label="Email" id="email" v-model="email" type="email" />
             <Input name="uname" label="Username" id="uname" v-model="userName" />
+            <Input name="birthdate" label="Birthdate" id="birthdate" v-model="birthdate" type="date" />
             <div class="two-inputs">
                 <Input name="pword" label="Password" id="pword" v-model="passWord" type="password" />
                 <Input name="cpword" label="Confirm Password" id="cpword" v-model="confPassWord" type="password" />

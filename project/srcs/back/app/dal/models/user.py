@@ -43,7 +43,7 @@ class User:
                 if isinstance(birthdate, str):
                     birthdate = datetime.strptime(birthdate, '%Y-%m-%d')
                 
-                if birthdate > min_age_date:
+                if birthdate > min_age_date.date():
                     raise ValueError("You must be at least 18 years old")
             self.birthdate = birthdate
         self.verification_token = verification_token

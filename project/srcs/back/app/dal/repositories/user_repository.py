@@ -12,15 +12,15 @@ class UserRepository(BaseRepository):
     _columns = [
         "id", "username", "first_name", "last_name", 
         "password_hash", "email", "fame_rating",
-        "latitude", "longitude", "is_verified"
+        "latitude", "longitude", "is_verified", "birthdate"
     ]
     _columns_insertion = [
         "username", "first_name", "last_name", 
-        "password_hash", "email"
+        "password_hash", "email", "birthdate"
     ]
 
     _columns_insertion_oauth = [
-        "username", "first_name", "last_name", "email", "is_verified"
+        "username", "first_name", "last_name", "email", "is_verified", "birthdate"
     ]
 
     @classmethod
@@ -30,7 +30,8 @@ class UserRepository(BaseRepository):
             'first_name' : user_data.first_name,
             'last_name' : user_data.last_name,
             'password_hash' : user_data.password_hash,
-            'email' : user_data.email
+            'email' : user_data.email,
+            'birthdate' : user_data.birthdate
         }
         user_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion, data=norm_data)
         token_verify  = cls.create_verify_token(user_id=user_id)

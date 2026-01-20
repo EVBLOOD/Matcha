@@ -3,11 +3,22 @@ from app.core.sanitizer import sanitize_text
 
 from app.core.config import Config
 
+from datetime import datetime
 
 class UserRegisterSchema(Config.ma_instence.Schema):
+    def validate_date(value):
+        # print(value, flush=True)
+        try:
+            birthdate = datetime.strptime(str(value), '%Y-%m-%d')
+            if birthdate >= datetime.now():
+                raise ValidationError("Birthdate must be in the past.")
+        except ValueError:
+            raise ValidationError("Invalid date format.")
+
     username = fields.Str(required=True, validate=validate.Length(min=3, max=50))
     first_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
     last_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
+    birhdate = fields.Date(required=True, validate=validate_date)
     password = fields.Str(required=True, validate=validate.Length(min=8, max=60))
     email = fields.Email(required=True)
     @pre_load

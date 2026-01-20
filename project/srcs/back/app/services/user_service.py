@@ -43,8 +43,7 @@ class UserService:
     @staticmethod
     def create_user(username: str, email: str,
                     password: str, first_name: str,
-                    last_name: str, latitude: Optional[float] = None,
-                    longitude: Optional[float] = None) -> Optional[User]:
+                    last_name: str, birhdate) -> Optional[User]:
 
 
         if UserRepository.find_by_username(username):
@@ -64,8 +63,7 @@ class UserService:
             password_hash=password,
             first_name=first_name,
             last_name=last_name,
-            # longitude=longitude,
-            # latitude=latitude 
+            birthdate=birhdate,
             insertion_check=True
         ))
         if user_id is not None :
