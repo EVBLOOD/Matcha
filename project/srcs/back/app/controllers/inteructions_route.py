@@ -30,6 +30,6 @@ def getMyLikes():
 def getMyViews():
     try :
         # get_all_likes_got
-        return jsonify({"data": ProfileViewsService.get_all_ot_likes_given(request.user_id)})
+        return jsonify({"data": ProfileViewsService.get_all_likes_got(request.user_id)})
     except Exception as e:
         return jsonify({"error": str(e)}), 404
