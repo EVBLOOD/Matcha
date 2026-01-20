@@ -37,6 +37,10 @@ const pictures_handler = (link: string) => {
     <div v-if="profileData" class="wraper">
         <div style="width: 100%;display: flex; justify-content: flex-end; flex-shrink: 0; gap: 2%;">
             <RouterLink v-if="route.params.id === userStore.getUserID.toString()" class="link"
+                :to="`${route.params.id}/interactions`">
+                <span>My Interactions</span>
+            </RouterLink>
+            <RouterLink v-if="route.params.id === userStore.getUserID.toString()" class="link"
                 :to="`${route.params.id}/settings`"><img src="/img/editProfileIcon.svg" alt="" />
                 <span>Edit Profile</span>
             </RouterLink>

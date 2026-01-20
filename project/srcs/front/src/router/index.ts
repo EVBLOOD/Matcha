@@ -16,7 +16,15 @@ import Vue from '@/views/Protected/profile/View.vue';
 import ViewSettings from '@/views/Protected/profile/ViewSettings.vue';
 import ViewSettingsMore from '@/views/Protected/profile/ViewSettingsMore.vue';
 import ViewSettingsDefault from '@/views/Protected/profile/ViewSettingsDefault.vue';
+import ViewBlocks from '@/views/Protected/profile/ViewBlocks.vue';
+import ViewSeens from '@/views/Protected/profile/ViewSeens.vue';
+import VueInteractions from '@/views/Protected/profile/VueInteractions.vue';
+import ViewLikes from '@/views/Protected/profile/ViewLikes.vue';
 import ViewSettingsPassword from '@/views/Protected/profile/ViewSettingsPassword.vue';
+
+
+
+
 // import Conversation from '@/views/Protected//chat/Conversation.vue';
 import Conversation from '@/views/Protected/chat/Calls.vue';
 
@@ -95,8 +103,29 @@ const router = createRouter({
                   meta: { requiresSameUser: true, requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'More details' }
                 }
               ]
+            },
+            {
+              path: 'interactions',
+              component: VueInteractions,
+              meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'Personal Interactions' },
+              children : [
+                {
+                  path: '',
+                  component: ViewLikes,
+                  meta: { requiresSameUser: true, requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'View Likes List' }
+                },
+                {
+                  path: 'vues',
+                  component: ViewSeens,
+                  meta: { requiresSameUser: true, requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'View Visitors' }
+                },
+                {
+                  path: 'blocks',
+                  component: ViewBlocks,
+                  meta: { requiresSameUser: true, requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Profile', subtitle: 'View Block List' }
+                }
+              ]
             }
-
           ]
         },
       ]
