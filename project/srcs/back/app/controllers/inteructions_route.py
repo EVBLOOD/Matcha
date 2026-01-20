@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 # from app.services.suggestions_service import SuggestionsService
+from app.services.report_service import ReportService
 from app.services.user_interactions_service import UserInteractionsService
 from app.services.user_blocks_service import UserBlocksService
 from app.services.profile_views_service import ProfileViewsService
@@ -33,3 +34,19 @@ def getMyViews():
         return jsonify({"data": ProfileViewsService.get_all_likes_got(request.user_id)})
     except Exception as e:
         return jsonify({"error": str(e)}), 404
+
+from app.core.schemas import SetReport
+
+@inteructions_bp.route('/report', methods=['POST'])
+@Security.auth_guard()
+def reportUser():
+    try:
+        body = request.get_json()
+        schema = SetReport()
+
+        validated_data = schema.load(body)
+        ReportService.report_user(request.user_id, **validated_data)
+        return jsonify({"data": "reported"})
+    except Exception as err:
+        return jsonify({"errors": err.messages}), 400
+   

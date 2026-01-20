@@ -139,3 +139,18 @@ class UpdateUserPasswordSchema(Config.ma_instence.Schema):
 class UpdateLocation(Config.ma_instence.Schema):
     latitude = fields.Decimal(required=True, places=8)
     longitude = fields.Decimal(required=True, places=8)
+
+
+class SetReport(Config.ma_instence.Schema):
+    @pre_load
+    def sanitize_inputs(self, data, **kwargs):
+        if hasattr(data, 'to_dict'):
+            data = data.to_dict()
+        else:
+            data = dict(data)
+
+        if 'reason' in data:
+            data['reason'] = sanitize_text(data['reason'])
+        return data
+    reason = fields.Str(required=True, validate=validate.Length(max=500))
+    reported_id = fields.Int(required=True)

@@ -9,5 +9,8 @@ export default {
   },
   getLikesList() {
     return apiClient.get('/inteructions/likes');
+  },
+  sendReport(reason: string, reported_id: number) {
+    return apiClient.post('/inteructions/report', {reason, reported_id});
   }
 };
