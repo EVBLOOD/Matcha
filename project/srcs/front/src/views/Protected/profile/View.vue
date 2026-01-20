@@ -32,8 +32,19 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
-const Onclick = () => {
+import { usePreciseLocation } from '@/composables/usePreciseLocation'
+import UserService from '@/api/services/UserService';
+const { getPreciseLocation, coords } = usePreciseLocation()
 
+const OnclickUpdateLocal = async () => {
+    try {
+        await getPreciseLocation();
+
+        await UserService.update_location_lt_lng((coords.value.latitude || "").toString(),
+        (coords.value.longitude || "").toString())
+      } catch(err : unknown) {
+        console.info("GPS isn't active!") 
+      }
 }
 </script>
 
@@ -57,7 +68,7 @@ const Onclick = () => {
                     <div>
                         <img src="/img/locationIcon.svg" alt=""> {{ profileData.user.location }}
                     </div>
-                    <Button style="mix-blend-mode: plus-lighter;" text="Update" @click="Onclick()"></Button>
+                    <Button v-if="route.params.id === userStore.getUserID.toString()" style="mix-blend-mode: plus-lighter;" text="Update" @click="OnclickUpdateLocal()"></Button>
                 </div>
             </div>
             <div>

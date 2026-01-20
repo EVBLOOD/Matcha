@@ -34,3 +34,4 @@ class ReportService(BaseRepository):
         if report_count >= 5:
             # TO BLOCK USER OR DELETE IT
             print(f"reported_id: {reported_id} report_count: {report_count}", flush=True)
+        return True

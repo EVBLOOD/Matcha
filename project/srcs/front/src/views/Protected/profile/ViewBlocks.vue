@@ -27,7 +27,9 @@ const fetchBlocks = async () => {
   try {
     const { data } = await InteractionService.getBlockList();
     console.log(`data ${data.data}`)
-    BlocksData.value = [...data.data];
+    if (data.data)
+        BlocksData.value = [...data.data];
+    console.log(BlocksData.value)
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -55,15 +57,22 @@ const socket = useSocketStore();
 
 const blockHandler = (user_id: number) => {
     socket.interactWithUser(user_id, 'block')
+    if (BlocksData.value)
+    BlocksData.value = BlocksData.value?.map((elem) => {
+        if (elem.blocked_id == user_id) elem.unblock = false
+        return elem
+    })
 }
 
 const unblockHandler = (user_id: number) => {
     socket.interactWithUser(user_id, 'unblock')
+    if (BlocksData.value)
+    BlocksData.value = BlocksData.value?.map((elem) => {
+        if (elem.blocked_id == user_id) elem.unblock = true
+        return elem
+    })
 }
 
-const Onclick = (user_id: number) => {
-
-}
 </script>
 
 <template>
@@ -79,7 +88,8 @@ const Onclick = (user_id: number) => {
                    <span>@{{value.username}}</span>
                 </div>
             </div>
-            <Button style="mix-blend-mode: plus-lighter;" text="Unblock" @click="Onclick(value.blocked_id)"></Button>
+            <Button v-if="!value.unblock" style="mix-blend-mode: plus-lighter;" text="Unblock" @click="unblockHandler(value.blocked_id)"></Button>
+            <Button v-if="value.unblock" style="mix-blend-mode: plus-lighter;" text="Block" @click="blockHandler(value.blocked_id)"></Button>
             
         </div>
     </div>

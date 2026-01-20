@@ -25,8 +25,7 @@ const fetchBlocks = async () => {
   isLoading.value = true;
   try {
     const { data } = await InteractionService.getViewsList();
-    console.log(data.data)
-    ViewsData.value = [...data.data];
+    if (data.data) ViewsData.value = [...data.data];
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -50,10 +49,6 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
-const Onclick = (user_id: number) => {
-
-}
-
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
@@ -65,12 +60,12 @@ const OnclickOpenProfile = (user_id: number) => {
 
 <template>
     <div v-if="!isLoading && !isError && !ViewsData" class="contenty">
-        Block list is empty 
+        View list is empty 
     </div>
     <div v-if="!isLoading && !isError && ViewsData" class="contenty">
         <div v-for="value in ViewsData" class="element_list">
             <div class="element_list">
-                <img width="65px" height="65px"  @click="OnclickOpenProfile(value.viewed_id)"  :src="pictures_handler(value.profile_picture_url[0].url)" alt="avatar">
+                <img width="65px" height="65px"  @click="OnclickOpenProfile(value.viewer_id)"  :src="pictures_handler(value.profile_picture_url[0].url)" alt="avatar">
                 <div class="infos">
                     <span style="color: white; font-weight: 600;">{{value.first_name + " " + value.last_name}}</span>
                    <span>@{{value.username}}</span>

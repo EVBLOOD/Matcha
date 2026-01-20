@@ -62,4 +62,5 @@ class UserBlocksRepository(BaseRepository):
         blocker_id = cls.get_user_blocks_existance(blocker_id, blocked_id)
         if not blocker_id :
             return None
-        return cls.delete((blocker_id, blocked_id))
+        query = "DELETE FROM user_blocks WHERE (blocker_id = %s AND blocked_id = %s) OR (blocked_id = %s AND blocker_id = %s) RETURNING blocker_id"
+        return cls._execute(query, (blocker_id, blocked_id, blocker_id, blocked_id))
