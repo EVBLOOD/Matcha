@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
+import Button from '@/components/Button.vue';
 
 import RenderPictures from '@/components/RenderPictures.vue';
 import TagsList from '@/components/TagsList.vue';
@@ -31,6 +32,9 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
+const Onclick = () => {
+
+}
 </script>
 
 <template>
@@ -49,7 +53,12 @@ const pictures_handler = (link: string) => {
 
             <div class="gender_location">
                 <div><img src="/img/maleIcon.svg" alt=""> {{ profileData.user.gender }}</div>
-                <div><img src="/img/locationIcon.svg" alt=""> {{ profileData.user.location }}</div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: nowrap; align-items: center;">
+                    <div>
+                        <img src="/img/locationIcon.svg" alt=""> {{ profileData.user.location }}
+                    </div>
+                    <Button style="mix-blend-mode: plus-lighter;" text="Update" @click="Onclick()"></Button>
+                </div>
             </div>
             <div>
                 {{ profileData.profile.biography }}
