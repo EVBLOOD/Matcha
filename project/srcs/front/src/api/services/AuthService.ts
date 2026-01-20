@@ -10,6 +10,9 @@ export default {
   getProfileStatus() {
     return apiClient.get('/user/protected')
   },
+  getProfileStatusHalfPub() {
+    return apiClient.get('/user/not_protected')
+  },
   rest_password(input: RecoverPassword) {
     return apiClient.post('/auth/forgot_pass', {"user_input": input.email})
   },

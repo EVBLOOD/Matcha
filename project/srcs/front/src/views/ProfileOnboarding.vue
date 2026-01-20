@@ -104,15 +104,39 @@ const handleTags = (tags: string[]) => {
 };
 
 
+import AuthService from '@/api/services/AuthService'
+const userStore = useUserStore();
+
+
+const clickLogOut = async () => {
+    try {
+        const response = await AuthService.logout();
+        console.log(response)
+        userStore.fetchUser()
+        localStorage.removeItem('auth_token');
+
+        userStore.setIsLoaded(false)
+
+        router.push('login')
+    } catch (err) {
+        console.log(err);
+        localStorage.removeItem('auth_token');
+    }
+}
+
 </script>
 
 <template>
+    <div v-on:click="clickLogOut" style="position: absolute; bottom: 10%; left: 5%;">
+        <a class="link log_a"><img src="/img/logOut.svg" alt="" /> <span>Log
+                        out</span></a>
+    </div>
     <Card title="Complete Your Profile">
         <div class="avatar_section">
             <div>
                 <PictureNdIcon :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
             </div>
-            <p class="full_name">Saad AKLLAM</p>
+            <p class="full_name">{{userStore.getUserName}}</p>
         </div>
 
         <div class="gender_div">
@@ -128,7 +152,7 @@ const handleTags = (tags: string[]) => {
 
         <div class="orientation_div">
             <p>Orientation</p>
-            <Select :options="orientation" v-model="selectedOrientation" />
+            <Select :options="orientation" v-model="selectedOrientation" ></Select>
         </div>
 
         <div class="interest_div">
@@ -213,6 +237,27 @@ const handleTags = (tags: string[]) => {
     align-items: center;
     flex-direction: column;
     margin-bottom: 2%;
+}
+
+.link {
+    display: flex;
+    gap: 10px;
+    text-decoration: none;
+    color: $text-color;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    // height: 6%;
+    padding: 6%;
+    align-content: center;
+    cursor: pointer;
+    flex-wrap: wrap;
+}
+
+.link:hover {
+    background: $components-hover-color;
+    border-radius: 8px;
+
 }
 
 @media (max-width: $breakpoint-md) {

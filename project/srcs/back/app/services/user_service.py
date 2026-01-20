@@ -183,3 +183,8 @@ class UserService:
     def get_user_location(user_id: int) :
         user = User(*UserRepository.find_by_id(user_id))
         return {"latitude": user.latitude, "longitude": user.longitude}
+
+    @staticmethod
+    def get_user_full_name(user_id: int) :
+        user = User(*UserRepository.find_by_id(user_id))
+        return user.first_name + " " + user.last_name

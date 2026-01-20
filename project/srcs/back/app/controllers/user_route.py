@@ -63,12 +63,19 @@ def verify_account() :
 @user_bp.route("/protected", methods=["GET", "POST"])
 @Security.auth_guard()
 def protected() :
-    return jsonify({"user_id": request.user_id})
+    user_id = request.user_id
+    full_name = UserService.get_user_full_name(user_id)
+
+    return jsonify({"user_id": request.user_id, "full_name": full_name})
 
 
 @user_bp.route("/not_protected", methods=["GET", "POST"])
+@Security.auth_guard(check_profile=False)
 def not_protected() :
-    return jsonify({"result": "not_protected"})
+    user_id = request.user_id
+    full_name = UserService.get_user_full_name(user_id)
+
+    return jsonify({"user_id": request.user_id, "full_name": full_name})
 
 
 
