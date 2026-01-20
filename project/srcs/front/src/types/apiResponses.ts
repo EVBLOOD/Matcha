@@ -129,7 +129,7 @@ export interface LikesResponse {
 }
 
 export interface ViewsListResponse {
-    viewed_id: number,
+    viewer_id: number,
     username: string,
     first_name: string,
     last_name: string,

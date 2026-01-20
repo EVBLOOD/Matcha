@@ -73,9 +73,6 @@ const unblockHandler = (user_id: number) => {
     })
 }
 
-const Onclick = (e: any) => {
-    console.log(e)
-}
 </script>
 
 <template>

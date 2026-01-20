@@ -39,7 +39,7 @@
         [x] Fame Rating calculation and display (public).
         [x] Visit History logging when viewing profiles.
         [ ] Report Fake Account Feature: Implement report functionality.
-        [ ] Block User Feature: Implement block/unblock functionality.
+        [x] Block User Feature: Implement block/unblock functionality.
     [ ] GPS Location :
         [x] Initial GPS location capture ("without knowledge" if they don't want to).
         [ ] Location modification in profile editing.

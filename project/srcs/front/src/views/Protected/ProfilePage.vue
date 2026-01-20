@@ -97,14 +97,15 @@ const pictures_handler = (link: string) => {
             <div v-if="route.params.id !== userStore.getUserID.toString()" class="interaction_field">
                 <div class="like_messages">
                     <Button
-                        style="width: 182px;" v-if="route.params.id !== userStore.getUserID.toString() && (!profile.activeProfile.interactions.is_connected || profile.activeProfile.interactions.is_connected <= 1) && profile.activeProfile.interactions.interaction_status !== 'liked'"
+                        style="width: 182px;" v-if="(!profile.activeProfile.interactions.is_connected || profile.activeProfile.interactions.is_connected <= 1) && profile.activeProfile.interactions.interaction_status !== 'liked'"
                         @click="likeHandler" text="Like" img="/img/likeIcon@.svg" :color="'#592F6F'" :backgroundColor="'#FEA7FF'">
                     </Button>
                     <Button
-                        style="width: 182px;" v-if="route.params.id !== userStore.getUserID.toString() && profile.activeProfile.interactions.is_connected && profile.activeProfile.interactions.interaction_status === 'liked'"
+                        style="width: 182px;" v-if="profile.activeProfile.interactions.is_connected && profile.activeProfile.interactions.interaction_status === 'liked'"
                         @click="dislikeHandler" text="Dislike" img="/img/likeIcon@.svg" :color="'#592F6F'" :backgroundColor="'#FEA7FF'">
                     </Button>
                     <Button
+                        v-if="profile.activeProfile.interactions.is_connected == 2"
                         :to="`/messages/${profile.activeProfile.interactions.conversation_id}`"
                         img="/img/messageIcon.svg">
                     </Button>
