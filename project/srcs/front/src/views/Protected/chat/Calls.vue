@@ -241,7 +241,7 @@ const endCall = (sendSignal: boolean = true) => {
                     </div>
                 </div>
             </div>
-            <button class="btn">View Profile</button>
+            <button class="btn-call-video" @click="startCall"><img src="/img/videoCall.svg" alt="video call">Video Call</button>
         </div>
         <div v-if="conversationMessages" class="messages" ref="messagesContainer">
             <div v-for="msg in conversationMessages" :key="msg.id"
@@ -252,23 +252,49 @@ const endCall = (sendSignal: boolean = true) => {
         <Teleport to="body">
             <div v-if="isCalling" class="video-call">
                 <div>
-                    <div v-if="callState === 'dialing'">
-                        <div>Calling...</div>
-                        <button @click="endCall()" class="cancel-btn">Cancel</button>
+                    <div v-if="callState === 'dialing'" class="box">
+                        <div class="user">
+                            <div class="avatar">
+                                <img src="/img/profilePictureDemo.png" alt="Avatar">
+                            </div>
+                            <p class="name">Karim Id bouhouch</p>
+                        </div>
+                        <p class="status-call">Calling...</p>
+                        <button @click="endCall()" class="btn-cancel">Cancel</button>
                     </div>
 
-                    <div v-if="callState === 'ringing'">
-                        <h3>Incoming Call...</h3>
-                        <div>
-                            <button @click="acceptCall(pendingOffer!)">Accept</button>
-                            <button @click="endCall()">Decline</button>
+                    <div v-if="callState === 'ringing'" class="box">
+                        <div class="user">
+                            <div class="avatar">
+                                <img src="/img/profilePictureDemo.png" alt="Avatar">
+                            </div>
+                            <p class="name">Karim Id bouhouch</p>
+                        </div>
+                        <p class="status-call">Incoming Call...</p>
+                        <div class="btn-call">
+                            <button class="btn-accept" @click="acceptCall(pendingOffer!)">
+                                <img src="/img/btn-accept-call.svg" alt="Accept">
+                                <p>Accept</p>
+                            </button>
+                            <button class="btn-decline" @click="endCall()">
+                                <img src="/img/btn-decline-call.svg" alt="Decline">
+                                <p>Decline</p>
+                            </button>
                         </div>
                     </div>
 
-                    <div v-show="callState === 'connected'">
-                        <video ref="remoteVideo" autoplay playsinline></video>
-                        <video ref="localVideo" autoplay muted playsinline></video>
-                        <button @click="endCall()">Hang Up</button>
+                    <div v-show="callState === 'connected'" class="box-video-call">
+                        <div class="videos">
+                            <div class="video1">
+                                <video ref="remoteVideo" autoplay playsinline></video>
+                                <p>Karim Id bouhouch</p>
+                            </div>
+                            <div class="video2">
+                                <video ref="localVideo" autoplay muted playsinline></video>
+                                <p>Karim Id bouhouch</p>
+                            </div>
+                        </div>
+                        <div @click="endCall()" class="btn-hang-up"><img src="/img/hang-up.svg"></div>
                     </div>
                 </div>
             </div>
@@ -277,7 +303,7 @@ const endCall = (sendSignal: boolean = true) => {
             <textarea v-model="newMessage" placeholder="Type a message..." rows="1"
                 @keydown.enter.exact.prevent="sendMessage" @keydown.enter.shift.exact.stop></textarea>
             <button @click="sendMessage"><img src="/img/send.svg" alt="Send"></button>
-            <button @click="startCall">Start Call</button>
+            <!-- <button @click="startCall">Start Call</button> -->
         </div>
     </div>
 </template>
@@ -299,12 +325,143 @@ const endCall = (sendSignal: boolean = true) => {
     color: white;
 }
 
+.box{
+    background-color: #E2BDF6;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #592F6F;
+}
+
+.box-video-call{
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background-color: #E2BDF6;
+    padding: 30px;
+    color: #592F6F;
+    .videos{
+        display: flex;
+        gap: 20px;
+        .video1, .video2{
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            font-weight: 600;
+            font-size: 13px;
+            gap: 4px;
+            video{
+                width: 300px;
+                max-height: max-content;
+                background: #333;
+                border-radius: 10px;
+            }
+        }
+    }
+    .btn-hang-up{
+        cursor: pointer;
+        transition: 0.3s;
+        &:hover {
+            transform: scale(1.1);
+            transition: 0.3s;
+        }
+    }
+}
+
+.status-call{
+    font-weight: 500;
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+.btn {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-family: $font-main;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  color: white;
+  background-color: #9566B0;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+
+.btn-accept {
+  @extend .btn;
+  background-color: #9566B0;
+  color: white;
+
+  &:hover {
+    background-color: #7e52a0;
+  }
+}
+
+.btn-decline {
+  @extend .btn;
+  background-color: #E8DCEF;
+  color: #592F6F;
+
+  &:hover {
+    background-color: #d5c1e0;
+  }
+}
+
+.btn-cancel {
+  @extend .btn;
+  width: 100%;
+  background-color: #E8DCEF;
+  color: #592F6F;
+
+  &:hover {
+    background-color: #d5c1e0;
+  }
+}
+
+.btn-call {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 6px;
+}
+
+.btn-call-video {
+    @extend .btn;
+    color: #592F6F;
+    flex-shrink: 0;
+    background-color: #FEA8FF;
+    gap: 8px;
+}
+
+
+.box .user {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.box .user .name{
+    font-weight: 600;
+    font-size: 18px;
+}
+
 video {
     width: 300px;
     background: #333;
 }
-
-
 
 .chat {
     display: flex;
@@ -429,23 +586,6 @@ video {
     justify-content: center;
 }
 
-// .messages::-webkit-scrollbar {
-//     width: 6px;
-// }
-
-// .messages::-webkit-scrollbar-track {
-//     background: transparent;
-// }
-
-// .messages::-webkit-scrollbar-thumb {
-//     background-color: rgba(255, 255, 255, 0.25);
-//     border-radius: 10px;
-// }
-
-// .messages::-webkit-scrollbar-thumb:hover {
-//     background-color: rgba(255, 255, 255, 0.45);
-// }
-
 .status {
     display: flex;
     align-items: center;
@@ -477,28 +617,6 @@ video {
     cursor: pointer;
     margin-right: 8px;
     flex-shrink: 0;
-}
-
-.btn {
-    cursor: pointer;
-    border: none;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    height: fit-content;
-    background-color: #785D86;
-    transition: 0.3s;
-}
-
-.btn:hover {
-    transition: 0.3s;
-    opacity: 0.8;
 }
 
 @media (max-width: $breakpoint-md) {
