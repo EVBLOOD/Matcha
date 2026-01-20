@@ -51,6 +51,16 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
+const socket = useSocketStore();
+
+const blockHandler = (user_id: number) => {
+    socket.interactWithUser(user_id, 'block')
+}
+
+const unblockHandler = (user_id: number) => {
+    socket.interactWithUser(user_id, 'unblock')
+}
+
 const Onclick = (user_id: number) => {
 
 }

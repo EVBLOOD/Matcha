@@ -51,6 +51,20 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
+import { useSocialStore } from '@/stores/profile';
+
+const socket = useSocketStore();
+const profile = useSocialStore()
+
+
+const dislikeHandler = (user_id: number) => {
+    socket.interactWithUser(user_id, 'dislike')
+}
+
+const likeHandler = (user_id: number) => {
+    socket.interactWithUser(user_id, 'like')
+}
+
 const Onclick = (user_id: number) => {
 
 }
@@ -61,6 +75,9 @@ const router = useRouter();
 const OnclickOpenProfile = (user_id: number) => {
     router.push(`/profile/${user_id}`)
 }
+
+
+
 
 </script>
 
