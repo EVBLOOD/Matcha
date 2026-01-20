@@ -1,8 +1,7 @@
 <script setup lang="ts">
-    // import Button from '@/components/Button.vue';
-    // import { RouterLink, RouterView } from 'vue-router';
-import PictureNdIcon from '@/components/PictureNdIcon.vue';
-import BlocksService from '@/api/services/BlocksService'
+import Button from '@/components/Button.vue';
+
+import InteractionService from '@/api/services/InteractionService'
 import type { BlocksResponse } from '@/types/apiResponses'
 
 import { ref, computed, onMounted, watch } from 'vue';
@@ -26,7 +25,7 @@ const BlocksData = ref<BlocksResponse[] | null>(null);
 const fetchBlocks = async () => {
   isLoading.value = true;
   try {
-    const { data } = await BlocksService.getBlocks();
+    const { data } = await InteractionService.getBlockList();
     console.log(`data ${data.data}`)
     BlocksData.value = [...data.data];
   } catch(err : unknown) {
@@ -44,29 +43,6 @@ const fetchBlocks = async () => {
 
 onMounted(fetchBlocks);
 
-const avatarStyle = computed(() => {
-    const image = "/img/avatar.svg";
-    return {
-        backgroundImage: `url(${image})`
-    };
-});
-
-const avatarStyleFun = (value: BlocksResponse) => {
-    let image = "/img/avatar.svg";
-    if (value.type == "like") {
-        image = "likeNotifIcon.svg"
-    } else if (value.type == "view") {
-        image = "/img/viewProfileNotifIcon.svg"
-
-    } else if (value.type == "match") {
-        image = "/img/likeNotifIcon.svg"
-
-    } else if (value.type == "unmatch") {
-        image = "/img/likeNotifIcon.svg" // TO UPDATE
-    }
-    return image;
-};
-
 
 const pictures_handler = (link: string) => {
     if (link.indexOf('/') > 0) {
@@ -75,6 +51,9 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
+const Onclick = (user_id: number) => {
+
+}
 </script>
 
 <template>
@@ -83,10 +62,15 @@ const pictures_handler = (link: string) => {
     </div>
     <div v-if="!isLoading && !isError && BlocksData" class="contenty">
         <div v-for="value in BlocksData" class="element_list">
-            <PictureNdIcon :height="59" :width="59" :readonly="true" :initialImage="pictures_handler(value.picture_url[0].url)" :initialIcon="avatarStyleFun(value)" />
-            <div>
-               {{value.type[0].toUpperCase() + value.type.slice(1)}} from <span>@{{value.username}}</span>
+            <div class="element_list">
+                <img width="70px" height="70px" :src="pictures_handler(value.profile_picture_url[0].url)" alt="avatar">
+                <div class="infos">
+                    <span style="color: white; font-weight: 600;">{{value.first_name + " " + value.last_name}}</span>
+                   <span>@{{value.username}}</span>
+                </div>
             </div>
+            <Button style="mix-blend-mode: plus-lighter;" text="Unblock" @click="Onclick(value.blocked_id)"></Button>
+            
         </div>
     </div>
 </template>
@@ -105,6 +89,17 @@ const pictures_handler = (link: string) => {
         display: flex;
         gap: 2%;
         align-items: center;
+        gap: 2%;
+        margin-bottom: 10px;
+    }
+
+    img {
+        border-radius: 50%;
+    }
+
+    .infos {
+        display: flex;
+        flex-direction: column;
     }
     @media (max-width: $breakpoint-md) {
         .page{

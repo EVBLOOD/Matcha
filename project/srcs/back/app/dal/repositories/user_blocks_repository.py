@@ -20,8 +20,23 @@ class UserBlocksRepository(BaseRepository):
 
     @classmethod
     def get_user_blocked_list(cls, user_id: int) :
-        query = "SELECT blocked_id FROM user_blocks WHERE blocker_id = %s"
-        rows = cls._fetch(query, (user_id,))
+        query = """
+        SELECT 
+            blocked_id,
+            u.username,
+            u.first_name,
+            u.last_name,
+            (
+                SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                FROM user_pictures up
+                WHERE up.user_id = blocked_id AND up.is_profile_picture = TRUE
+            ) AS profile_picture_url
+        FROM user_blocks
+        LEFT JOIN profiles p ON blocked_id = p.user_id
+        LEFT JOIN users u ON blocked_id = u.id
+        WHERE blocker_id = %s
+        """
+        rows = cls._fetch_all(query, (user_id,))
         return rows
 
     @classmethod

@@ -20,14 +20,46 @@ class ProfileViewsRepository(BaseRepository):
 
     @classmethod
     def get_user_liked_list(cls, user_id: int) :
-        query = "SELECT viewed_id FROM profile_views WHERE viewer_id = %s"
-        rows = cls._fetch(query, (user_id,))
+        query = """
+        SELECT
+            viewed_id,
+            u.username,
+            u.first_name,
+            u.last_name,
+            (
+                SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                FROM user_pictures up
+                WHERE up.user_id = viewed_id AND up.is_profile_picture = TRUE
+            ) AS profile_picture_url,
+            viewed_at
+        FROM profile_views 
+        LEFT JOIN profiles p ON viewed_id = p.user_id
+        LEFT JOIN users u ON viewed_id = u.id
+        WHERE viewer_id = %s
+        """
+        rows = cls._fetch_all(query, (user_id,))
         return rows
 
     @classmethod
     def get_user_likers_list(cls, user_id: int) :
-        query = "SELECT viewer_id FROM profile_views WHERE viewed_id = %s"
-        rows = cls._fetch(query, (user_id,))
+        query = """
+        SELECT
+            viewer_id,
+            u.username,
+            u.first_name,
+            u.last_name,
+            (
+                SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                FROM user_pictures up
+                WHERE up.user_id = viewer_id AND up.is_profile_picture = TRUE
+            ) AS profile_picture_url,
+            viewed_at
+        FROM profile_views 
+        LEFT JOIN profiles p ON viewer_id = p.user_id
+        LEFT JOIN users u ON viewer_id = u.id
+        WHERE viewed_id = %s
+        """
+        rows = cls._fetch_all(query, (user_id,))
         return rows
     
     @classmethod

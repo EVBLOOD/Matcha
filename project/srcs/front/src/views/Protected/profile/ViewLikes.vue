@@ -1,9 +1,8 @@
 <script setup lang="ts">
-    // import Button from '@/components/Button.vue';
-    // import { RouterLink, RouterView } from 'vue-router';
-import PictureNdIcon from '@/components/PictureNdIcon.vue';
-import NotificationsService from '@/api/services/NotificationsService'
-import type { NotificationsResponse } from '@/types/apiResponses'
+import Button from '@/components/Button.vue';
+
+import InteractionService from '@/api/services/InteractionService'
+import type { LikesResponse } from '@/types/apiResponses'
 
 import { ref, computed, onMounted, watch } from 'vue';
 
@@ -19,16 +18,16 @@ interface BackendError {
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 
-const NotificationsData = ref<NotificationsResponse[] | null>(null);
+const LikesData = ref<LikesResponse[] | null>(null);
 
 
 
-const fetchNotifications = async () => {
+const fetchBlocks = async () => {
   isLoading.value = true;
   try {
-    const { data } = await NotificationsService.getNotifications();
+    const { data } = await InteractionService.getLikesList();
     console.log(`data ${data.data}`)
-    NotificationsData.value = [...data.data];
+    LikesData.value = [...data.data];
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -42,30 +41,7 @@ const fetchNotifications = async () => {
 };
 
 
-onMounted(fetchNotifications);
-
-const avatarStyle = computed(() => {
-    const image = "/img/avatar.svg";
-    return {
-        backgroundImage: `url(${image})`
-    };
-});
-
-const avatarStyleFun = (value: NotificationsResponse) => {
-    let image = "/img/avatar.svg";
-    if (value.type == "like") {
-        image = "likeNotifIcon.svg"
-    } else if (value.type == "view") {
-        image = "/img/viewProfileNotifIcon.svg"
-
-    } else if (value.type == "match") {
-        image = "/img/likeNotifIcon.svg"
-
-    } else if (value.type == "unmatch") {
-        image = "/img/likeNotifIcon.svg" // TO UPDATE
-    }
-    return image;
-};
+onMounted(fetchBlocks);
 
 
 const pictures_handler = (link: string) => {
@@ -75,18 +51,26 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
+const Onclick = (user_id: number) => {
+
+}
 </script>
 
 <template>
-    <div v-if="!isLoading && !isError && !NotificationsData" class="contenty">
-        No Notifications For You
+    <div v-if="!isLoading && !isError && LikesData && LikesData.length == 1" class="contenty">
+        Likes list is empty 
     </div>
-    <div v-if="!isLoading && !isError && NotificationsData" class="contenty">
-        <div v-for="value in NotificationsData" class="notif">
-            <PictureNdIcon :height="59" :width="59" :readonly="true" :initialImage="pictures_handler(value.picture_url[0].url)" :initialIcon="avatarStyleFun(value)" />
-            <div>
-               {{value.type[0].toUpperCase() + value.type.slice(1)}} from <span>@{{value.username}}</span>
+    <div v-if="!isLoading && !isError && LikesData" class="contenty">
+        <div v-for="value in LikesData" class="element_list">
+            <div class="element_list">
+                <img width="65px" height="65px" :src="pictures_handler(value.profile_picture_url[0].url)" alt="avatar">
+                <div class="infos">
+                    <span style="color: white; font-weight: 600;">{{value.first_name + " " + value.last_name}}</span>
+                   <span>@{{value.username}}</span>
+                </div>
             </div>
+            <Button style="mix-blend-mode: plus-lighter;" text="Unlike" @click="Onclick(value.liked_id)"></Button>
+            
         </div>
     </div>
 </template>
@@ -100,11 +84,20 @@ const pictures_handler = (link: string) => {
         gap: 0.5%;
 
     }
-    .notif {
+    .element_list {
         width: 100%;
         display: flex;
         gap: 2%;
         align-items: center;
+        gap: 2%;
+        margin-bottom: 10px;
+    }
+    img {
+        border-radius: 50%;
+    }
+    .infos {
+        display: flex;
+        flex-direction: column;
     }
     @media (max-width: $breakpoint-md) {
         .page{

@@ -110,6 +110,30 @@ export interface Location {
     longitude: number
 }
 
+export interface BlocksResponse {
+    blocked_id: number,
+    username: string,
+    first_name: string,
+    last_name: string,
+    profile_picture_url: UserProfilePicturesResponse[]
+}
+
+export interface LikesResponse {
+    liked_id: number,
+    username: string,
+    first_name: string,
+    last_name: string,
+    profile_picture_url: UserProfilePicturesResponse[]
+}
+
+export interface ViewsListResponse {
+    viewed_id: number,
+    username: string,
+    first_name: string,
+    last_name: string,
+    profile_picture_url: UserProfilePicturesResponse[],
+    viewed_at: any
+}
 // export interface UserProfile extends User {
 //     bio: string;
 //     interests: string[];
