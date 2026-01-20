@@ -1,7 +1,6 @@
 - Date/Event Scheduling: Implement event/date scheduling feature.
 - check the redis things
 - check view sockets -protections-
-- maybe we should add a search bar
 
 - design:
     errors displaying and loadings
@@ -20,3 +19,51 @@
         - user tags mannagement
         - user tags maybe should be separated than other logic..
         - photos management maybe should be separated than other logic..
+
+
+- Validate the data input for a user : = I think it doesn't work I should check again =
+    - username
+    - first and last names
+    - paragragh of bio
+    - tags
+
+
+- add the birthdate in form creating user
+
+
+- Profile and infos update 
+
+- location profile update!
+
+- Online things to prepare
+
+- front v-if should be updated : message unlike and link report
+
+- font Capitalize should be used
+
+- make notifs clickable to go to user or pages
+
+- chat when no messages update
+
+- chat order list - mark as read - on call view !
+
+
+- date time should be well formated
+
+- when no messages message for that
+
+- loadings add
+
+- suggestion add like in front
+- suggestion Implement sort and filter
+
+- same for explore add like in front
+- explore filter when one is open close the others
+- Implement the full search
+
+- logout to add in pages that doesn't have it
+
+- delete pictues when updating them successfully!
+
+
+- BONUS: pictues + dates.
