@@ -26,7 +26,7 @@
     [ ] User Profile (View) :
         [x] Display your own profile data on a UI page with (Viewers and Likers).
         [x] Display your own profile data on backend.
-        [ ] Display your own Profile visit History logging UI Page.
+        [x] Display your own Profile visit History logging UI Page.
         [x] Display Other User Profile UI Page (show all profile info except email/password + status).
         [x] Online Status & Last Seen.
         [x] "Like"/"Unlike" button/action to profile picture.
@@ -37,7 +37,7 @@
         [x] "Profile Likers" tracking implementation.
         [x] "Profile Viewers" tracking implementation.
         [x] Fame Rating calculation and display (public).
-        [ ] Visit History logging when viewing profiles.
+        [x] Visit History logging when viewing profiles.
         [ ] Report Fake Account Feature: Implement report functionality.
         [ ] Block User Feature: Implement block/unblock functionality.
     [ ] GPS Location :

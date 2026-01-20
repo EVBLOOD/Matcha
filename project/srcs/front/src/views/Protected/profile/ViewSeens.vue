@@ -53,6 +53,14 @@ const pictures_handler = (link: string) => {
 const Onclick = (user_id: number) => {
 
 }
+
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+const OnclickOpenProfile = (user_id: number) => {
+    router.push(`/profile/${user_id}`)
+}
+
 </script>
 
 <template>
@@ -62,7 +70,7 @@ const Onclick = (user_id: number) => {
     <div v-if="!isLoading && !isError && ViewsData" class="contenty">
         <div v-for="value in ViewsData" class="element_list">
             <div class="element_list">
-                <img width="70px" height="70px" :src="pictures_handler(value.profile_picture_url[0].url)" alt="avatar">
+                <img width="65px" height="65px"  @click="OnclickOpenProfile(value.viewed_id)"  :src="pictures_handler(value.profile_picture_url[0].url)" alt="avatar">
                 <div class="infos">
                     <span style="color: white; font-weight: 600;">{{value.first_name + " " + value.last_name}}</span>
                    <span>@{{value.username}}</span>
@@ -94,6 +102,7 @@ const Onclick = (user_id: number) => {
     }
     img {
         border-radius: 50%;
+        cursor: pointer;
     }
     .infos {
         display: flex;
