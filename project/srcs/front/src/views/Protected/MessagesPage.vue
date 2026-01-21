@@ -37,9 +37,12 @@ const fetchConversations = async () => {
     isLoading.value = true;
     try {
         const { data } = await ChatService.getChat();
-        console.log(data)
-        // conversationsData.value = data;
-        conversationsData.value = [...data.data];
+
+        if (data && data.data)
+            conversationsData.value = [...data.data];
+        else
+            conversationsData.value = [] 
+        console.log(conversationsData.value)
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -67,6 +70,7 @@ const pictures_handler = (link: string) => {
 <template>
     <div v-if="!isLoading && !isError && conversationsData" class="contentx">
         <div :class="['sideBar', { hideOnMobile: chatOpen }]">
+            <div class="user" v-if="conversationsData.length == 0">No conversations for you</div>
             <div class="user" v-for="user in conversationsData" :key="user.peer_id" @click="openChat(user.conversation_id)">
                 <div class="avatar">
                     <img :src="pictures_handler(user.profile_picture_url[0].url)" alt="avatar" />
