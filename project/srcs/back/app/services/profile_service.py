@@ -193,3 +193,20 @@ class ProfileService:
         except Exception as e :
             raise Exception(e)
 
+    @staticmethod
+    def get_user_profile_basic(to_find_user_id: int) :
+        try :
+            profile = ProfileRepository.get_user_profile_basic(to_find_user_id)
+
+            if profile is None : 
+                raise ValueError("No such a profile")
+            return {
+                "user": {
+                    "user_id": profile["user_id"],
+                    "username": profile["username"]
+                },
+                "pictures": profile["profile_picture_url"]
+            }
+
+        except Exception as e :
+            raise Exception(e)

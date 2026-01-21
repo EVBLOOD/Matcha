@@ -11,5 +11,8 @@ export interface ToastItem {
     id: number
     type: ToastType
     title: string
-    description: string
+    description: string;
+    avatar: null |string;
+    id_user: null | number;
+    username: null | string;
 }

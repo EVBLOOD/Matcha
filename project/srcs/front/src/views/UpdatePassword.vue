@@ -41,7 +41,7 @@ const handlePasswordNew = async () => {
     router.push('/login')
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
-      error.value = err.response?.data?.errors || err.response?.data?.error || 'Registration failed for unknown reason';
+      error.value = err.response?.data?.errors || err.response?.data?.error || 'Reset Password failed for unknown reason';
     } else {
       error.value = 'Reset Password failed for unknown reason'
     }

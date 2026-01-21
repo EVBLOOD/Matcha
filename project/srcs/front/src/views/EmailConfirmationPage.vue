@@ -8,10 +8,10 @@ import { useRouter } from 'vue-router';
 import useUserStore from '@/stores/user';
 import AuthService from '@/api/services/AuthService';
 import axios, { AxiosError } from 'axios';
+import { toast } from '@/composables/useToast';
 
-interface BackendError {
-    error?: string;
-    errors?: any[];
+interface ValidationErrors {
+  [key: string]: string[];
 }
 
 const router = useRouter();
@@ -34,12 +34,29 @@ const handleResendMail = async () => {
     try {
         const response = await AuthService.resend_verfiy_mail();
         console.log(response)
+        
+        toast('success', 'Resend email success', "Check your email please");
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-            error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Resend email failed for unknown reason';
+            error.value = err.response?.data?.errors || err.response?.data?.error || 'Resend email failed for unknown reason';
         } else {
             error.value = 'Resend email failed for unknown reason'
         }
+         if (Array.isArray(error.value)) {
+      error.value.map((err) => {
+        toast('error', 'Resend email failed', err as string);
+      })
+    } else if (typeof (error.value) === 'string') {
+      toast('error', 'Resend email failed', error.value);
+    } else if (error.value && typeof (error.value) === 'object') {
+      const errorData = error.value as ValidationErrors
+      Object.entries(errorData).map(([field, messages]) => {
+        messages.map((msg) => {
+          toast('error', 'Resend email failed', msg);
+        })
+        return messages.map(msg => msg.toUpperCase());
+      });
+    }
     } finally {
         isLoading.value = false;
     }

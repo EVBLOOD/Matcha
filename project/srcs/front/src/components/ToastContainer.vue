@@ -17,6 +17,26 @@
     return icons[type]
     }
 
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
+}
+
+import { useRouter } from 'vue-router';
+const router = useRouter()
+
+
+const go_to = (id: number | null, type: string) => {
+  if (!id) return
+  if (type == 'view' || type == 'like') {
+    router.push( `/profile/${id}`)
+  } else if (type == 'message') {
+    router.push( `/messages/${id}`)
+  }
+}
+
 </script>
 
 <template>
@@ -27,8 +47,12 @@
             <img :src="icon(toast.type)" alt="" />
         </div>
         <div class="content">
-            <h4>{{ toast.title }}</h4>
-            <p>{{ toast.description }}</p>
+            <h4 @click="go_to(toast.id_user, toast.type)">{{ toast.title }}</h4>
+            <div style="display: flex; align-items: center; gap: 3px;">
+              <img style="border-radius: 50%;" width="20px" height="20px" v-if="toast.avatar" :src="pictures_handler(toast.avatar)" alt="avatar">
+              <h6 v-if="toast.username">{{ toast.username }}</h6>
+              {{ toast.description }}
+            </div>
         </div>
       </div>
       <button class="close" @click="remove(toast.id)">✕</button>
@@ -97,6 +121,8 @@
   font-size: 14px;
   font-weight: 600;
   margin: 0;
+  cursor: pointer;
+  align-items: center;
 }
 
 .toast .content p {

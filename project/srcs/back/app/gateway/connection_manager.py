@@ -10,6 +10,7 @@ from app.core.security import AuthService, Security
 from flask_socketio import emit
 
 from app.services.user_interactions_service import UserInteractionsService
+from app.services.profile_service import ProfileService
 from app.services.notifications_service import NotificationService
 from app.dal.repositories.user_repository import UserRepository
 from app.services.profile_views_service import ProfileViewsService
@@ -119,13 +120,17 @@ class ConnectionManager :
             return
         if block_status :
             return
+        try :
+            user = ProfileService.get_user_profile_basic(user_id)
+        except :
+            return
         if type_response :
             done = NotificationService.create_notification(dst_id, type_response, user_id)
             if done :
                 if conversation_id :
-                    emit('notify', {"source_id": user_id, "dst_id": dst_id, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{dst_id}")
+                    emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{dst_id}")
                 else :
-                    emit('notify', {"source_id": user_id, "dst_id": dst_id, "type": type_response}, room=f"Notifs_user_{dst_id}")
+                    emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": type_response}, room=f"Notifs_user_{dst_id}")
     #     [ ] On Message received.
 
 

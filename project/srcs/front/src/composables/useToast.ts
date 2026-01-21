@@ -20,26 +20,26 @@ export function useToast() {
         const next = queue.value.shift()
         if (!next) return
 
-        addToast(next.type, next.title, next.description)
+        addToast(next.type, next.title, next.description, next.avatar, next.id_user, next.username)
     }
 
-    const addToast = ( type: ToastType, title: string, description: string ) => {
+    const addToast = ( type: ToastType, title: string, description: string, avatar: null |string = null, id_user: null | number = null, username: null |string = null ) => {
         const id = Date.now() + Math.random()
-        toasts.value.push({ id, type, title, description })
+        toasts.value.push({ id, type, title, description, avatar, id_user, username })
         setTimeout(() => remove(id), DURATION)
     }
 
-    const show = ( type: ToastType, title: string, description: string ) => {
+    const show = ( type: ToastType, title: string, description: string, avatar: null |string = null, id_user: null | number = null, username: null |string = null ) => {
         if (toasts.value.length < MAX_TOASTS) {
-            addToast(type, title, description)
+            addToast(type, title, description, avatar, id_user, username)
         } else {
-            queue.value.push({ type, title, description })
+            queue.value.push({ type, title, description, avatar, id_user, username })
         }
     }
 
     return { toasts, show, remove }
 }
 
-export const toast = ( type: ToastType, title: string, description: string) => {
-    useToast().show(type, title, description)
+export const toast = ( type: ToastType, title: string, description: string, avatar: null |string = null, id_user: null | number = null, username: null |string = null) => {
+    useToast().show(type, title, description, avatar, id_user, username)
 }

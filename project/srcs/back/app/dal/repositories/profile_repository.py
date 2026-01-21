@@ -147,3 +147,26 @@ class ProfileRepository(BaseRepository):
             params = (my_acount, my_acount, my_acount, my_acount, my_acount, my_acount, my_acount, user_id,)
 
         return cls._execute(query, params)
+
+    
+    @classmethod
+    def get_user_profile_basic(cls, user_id: str) -> bool :
+        query = """
+            SELECT
+                u.id as user_id,
+                u.username,
+                (
+                    SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                    FROM user_pictures up
+                    WHERE up.user_id = u.id AND is_profile_picture = TRUE
+                ) AS profile_picture_url
+            FROM
+                users AS u
+            JOIN
+                user_pictures AS up ON u.id = up.user_id
+            WHERE
+                u.id = %s;
+        """
+        params = (user_id,)
+
+        return cls._execute(query, params)

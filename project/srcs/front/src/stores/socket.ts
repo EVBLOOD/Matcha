@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { socketChat, socketStatus } from '@/socket/socket';
 import { ref } from 'vue';
 import { useSocialStore } from '@/stores/profile';
+import { toast } from '@/composables/useToast';
 
 
 export const useSocketStore = defineStore('socket', {
@@ -21,16 +22,17 @@ export const useSocketStore = defineStore('socket', {
         this.onlineUsers.set(id, value);
       });
 
-        socketStatus.on('notify', (msg) => {
-          // console.log(msg)
-          this.handleSocialEvent(msg.type, {"userId": msg.dst_id, "conversation_id": msg.conversation_id, "FromId": msg.source_id});
-         this.notifications.push(msg); // waiting for desing to add it in front as pop up
-        });
+      socketStatus.on('notify', (msg) => {
+        console.log(msg)
+        this.handleSocialEvent(msg.type, { "username": msg.user.user.username, "avatar": msg.user.pictures[0].url, "userId": msg.dst_id, "conversation_id": msg.conversation_id, "FromId": msg.source_id });
+        this.notifications.push(msg);
+      });
 
-        socketChat.on('recieved_message', (msg: string) => {
-          console.log(msg)
-         this.new_chats_notifs.push(msg); // this is just a current example to use in future | I should fix backend
-        });
+      socketChat.on('recieved_message', (msg: string) => {
+        console.log(msg)
+        this.new_chats_notifs.push(msg); // this is just a current example to use in future | I should fix backend
+        toast('error', ' sent you a message.', msg);
+      });
     },
     bindChatEvents() {
       if (this.isBound) return;
@@ -65,32 +67,32 @@ export const useSocketStore = defineStore('socket', {
         if (response) {
           const id: string[] = Object.keys(response)
           response.forEach((v) => {
-              const id: string = Object.keys(v)[0];
-              const value: string = Object.values(v)[0] as string;
-              this.onlineUsers.set(id, value);
+            const id: string = Object.keys(v)[0];
+            const value: string = Object.values(v)[0] as string;
+            this.onlineUsers.set(id, value);
           });
         }
       })
     },
     joinChat(id: any) {
-      socketChat.emit('join_chat', {user_id: id}, ((resp: any) => {
+      socketChat.emit('join_chat', { user_id: id }, ((resp: any) => {
         console.log(resp)
       }))
     },
     JoinUser(id: any) {
-      socketChat.emit('join_video_chat', {user_id: id}, ((resp: any) => {
+      socketChat.emit('join_video_chat', { user_id: id }, ((resp: any) => {
         console.log(resp)
       }))
     },
     CallUser(id: string, type: string, args: any) {
-      socketChat.emit('video_call', {user_id: id, type: type, args: args})
+      socketChat.emit('video_call', { user_id: id, type: type, args: args })
     },
     leaveChat(id: string) {
-      socketChat.emit('join_chat', {user_id: id})
+      socketChat.emit('join_chat', { user_id: id })
     },
-    sendMessage(id: string, content: string) : number {
+    sendMessage(id: string, content: string): number {
       let id_message = undefined
-      socketChat.emit('send_message', {user_id: id, text: content}, ((resp: any) => {
+      socketChat.emit('send_message', { user_id: id, text: content }, ((resp: any) => {
         id_message = resp as number
       }))
       return id_message || -1
@@ -118,12 +120,12 @@ export const useSocketStore = defineStore('socket', {
     },
     interactWithUser(user_id: number, type: string) {
       const token = localStorage.getItem('auth_token');
-        socketStatus.io.opts.extraHeaders = {
+      socketStatus.io.opts.extraHeaders = {
         Authorization: `Bearer ${token}`
       };
       console.log(
         socketStatus.emit(type, user_id)
-      ) 
+      )
     },
     handleSocialEvent(type: string, payload: any) {
       const profileStore = useSocialStore();
@@ -135,17 +137,24 @@ export const useSocketStore = defineStore('socket', {
       switch (type) {
         case 'match':
           profileStore.handleNewMatch(payload.FromId);
+          toast('like', 'New match', "matched your profile.", payload.avatar, payload.FromId, payload.username);
           break;
         case 'unmatch':
           profileStore.handleUnMatch(payload.FromId);
+          toast('info', 'New unmatch', "unmatch your profile.", payload.avatar, payload.FromId, payload.username);
+
           break;
         case 'like':
+          toast('info', 'New like', "liked your profile.", payload.avatar, payload.FromId, payload.username);
+
           if (profileStore.activeProfile?.user.user_id === payload.userId) {
             profileStore.fetchProfile(payload.userId);
           }
           break;
 
         case 'view':
+          toast('view', 'Profile New', "viewed your profile.", payload.avatar, payload.FromId, payload.username);
+
           if (profileStore.activeProfile?.user.user_id === payload.userId && profileStore.activeProfile?.interactions.views_count) {
             profileStore.activeProfile.interactions.views_count++;
           }
