@@ -32,7 +32,9 @@ class NotificationService:
     @staticmethod
     def get_notifications(user_id: int) :
         try :
-            return notificationsRepository.get_user_notifications(user_id)
+            data = notificationsRepository.get_user_notifications(user_id)
+            notificationsRepository.update_notifications_all(user_id)
+            return data
         except Exception as e :
             raise Exception(e)
         

@@ -19,6 +19,12 @@ export const useSocketStore = defineStore('socket', {
     getMessagesCount: (state) => state.messages_counter,
   },
   actions: {
+    setNotifsCount(val: number) {
+      this.notifs_counter = val
+    },
+    setMessagesCount(val: number) {
+      this.messages_counter = val
+    },
     bindStatusEvents() {
       if (this.isBound) return;
       socketStatus.on('connected', (response) => {

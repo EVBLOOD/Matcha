@@ -36,6 +36,18 @@ class notificationsRepository(BaseRepository):
             notifications.id
         )
         return cls._execute(query, params)
+
+    @classmethod
+    def update_notifications_all(cls, user_id) -> bool:
+        query = """
+            UPDATE notifications
+            SET
+                is_read = True
+            WHERE user_id = %s AND is_read = False
+            RETURNING id
+        """
+        params = (user_id, )
+        return cls._execute(query, params)
     
     @classmethod
     def get_user_notifications(cls, user_id: str) -> bool :

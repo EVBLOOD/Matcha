@@ -23,6 +23,7 @@ const isError = ref<string | null>(null);
 const NotificationsData = ref<NotificationsResponse[] | null>(null);
 
 
+const socket = useSocketStore()
 
 const fetchNotifications = async () => {
   isLoading.value = true;
@@ -30,6 +31,7 @@ const fetchNotifications = async () => {
     const { data } = await NotificationsService.getNotifications();
     console.log(`data ${data.data}`)
     NotificationsData.value = [...data.data];
+    socket.setNotifsCount(0)
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -89,6 +91,8 @@ const NotSeen = () => {
         color: 'transparent',
     };
 };
+
+
 </script>
 
 <template>
@@ -108,7 +112,7 @@ const NotSeen = () => {
                     </div>
                 </div>
             </div>
-            <div style="background-color: #FEA7FF; height: 18px; width: 18px; border-radius: 50%;">
+            <div v-if="!value.is_read" style="background-color: #FEA7FF; height: 18px; width: 18px; border-radius: 50%;">
 
             </div>
         </div>
