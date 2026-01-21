@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
+import { formatDistanceToNow } from 'date-fns';
 
 import ChatService from '@/api/services/ChatService'
 import type {ConversationsResponse} from '@/types/apiResponses'
@@ -72,7 +73,7 @@ const pictures_handler = (link: string) => {
                 </div>
                 <div class="infos">
                     <p class="name">{{ user.first_name + " " + user.last_name }}</p>
-                    <p class="date">{{ user.created_at }}</p>
+                    <p class="date">{{  formatDistanceToNow(new Date(user.last_active_at)) }}</p>
                 </div>
             </div>
         </div>

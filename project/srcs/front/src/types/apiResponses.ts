@@ -74,7 +74,7 @@ export interface MessagesResponse {
 
 export interface ConversationsResponse {
     conversation_id: number;
-    created_at: string;
+    last_active_at: string;
     first_name: string;
     last_name: string;
     last_online: string;

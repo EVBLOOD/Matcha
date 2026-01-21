@@ -117,6 +117,10 @@ class ChatRepository(BaseRepository):
         query = """
             SELECT
                 c.id AS conversation_id,
+                COALESCE(
+                    (SELECT MAX(m.sent_at) FROM messages m WHERE m.conversation_id = c.id),
+                    c.created_at
+                ) AS last_active_at,
                 c.created_at,
                 u.id AS peer_id,
                 u.username,
@@ -134,7 +138,8 @@ class ChatRepository(BaseRepository):
                     ELSE c.user1_id 
                 END
             )
-            WHERE c.user1_id = %s OR c.user2_id = %s;
+            WHERE c.user1_id = %s OR c.user2_id = %s
+            ORDER BY last_active_at DESC
             """
         params = (user_id, user_id,user_id)
         return cls._fetch_all(query, params)
