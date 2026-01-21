@@ -56,7 +56,7 @@
         [ ] Sortable/Filterable Search Results Display (same as browsing).
     [ ] Chat :
         [x] Chat UI Interface.
-        [ ] Bonus: Video/Audio Chat: Implement video/audio chat feature.
+        [x] Bonus: Video/Audio Chat: Implement video/audio chat feature.
         [x] New message pop-up/notif UI.
         [x] Backend chat implementation.
         [x] New message notif implementation.

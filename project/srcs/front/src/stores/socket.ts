@@ -49,7 +49,8 @@ export const useSocketStore = defineStore('socket', {
       socketStatus.emit('number_of_notifs', (number: number) => {
         this.notifs_counter = number
       })
-      socketChat.emit('number_of_messages', (number: any) => {
+      socketChat.emit('number_of_messages', (number: number) => {
+        console.log(number)
         this.messages_counter = number
       })
     },

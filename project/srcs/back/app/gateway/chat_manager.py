@@ -101,7 +101,9 @@ class ChatManager :
     @staticmethod
     def get_number_of_messages(user_id: int):
         try :
-            return ChatService.get_number_unreaded_messages(user_id)[0]
+            out = ChatService.get_number_unreaded_messages(user_id)[0]
+            print(out, flush=True)
+            return out
         except :
             return 0
 

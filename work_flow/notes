@@ -6,10 +6,7 @@
     errors displaying and loadings
     Explore page
     Suggestions page
-    pop-up/notif UI one for Notifs and another for chat
     profile picture editing.
-    Location modification in profile editing.
-    Video/Audio interface
     Date/Event Scheduling: Implement event/date scheduling feature.
 
 - TO THINK ABOUT :
@@ -30,7 +27,6 @@
 
 - Profile and it's infos update 
 
-- location profile update!
 -> backend =? Password change protect to defeculte pass
 
 
@@ -40,13 +36,9 @@
 profile => 
  
 
-- font Capitalize should be used
 
-- make notifs clickable to go to user or pages
 
-- chat order list - mark as read.
-
-- when no messages message for that
+-  mark as read.
 
 - loadings add
 
@@ -60,4 +52,28 @@ profile =>
 - delete pictues when updating them successfully!
 
 
-- BONUS: pictues + dates.
+- BONUS: pictues
+
+
+
+mark things as read.
+
+
+to do to call it end of project:
+- settings/details : should be integrated with backend and front updated
+- Change password : back check
+- re-check the rigex seems I'm wrong in something
+- View Likes List -> not mine
+
+- event should be coded all to intgrate it to my untested backend!
+
+- suggestion -> like should work - profiles I like shouldn't be suggested - integrate the sort and filter backend
+- Explore -> like should work - profiles I like shouldn't be suggested - integrate the sort and filter backend -> I don't know if I should list all or add pagination tbh
+
+- Notifs -> Trigger is_read when going to the page of them
+- Chats -> Trigger is_read when going to the page of the chat - I may add indicators of none readed messages - video call should be reached from everywhere - last seen should be fixed
+
+
+- Status -  last seen should be fixed in profile - and is online too
+
+- adding the pictues bonus
