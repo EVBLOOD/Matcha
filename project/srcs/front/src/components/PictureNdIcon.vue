@@ -84,7 +84,7 @@ label {
     justify-items: center;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 2%;
+    margin-bottom: 5px;
 }
 
 .avatar {

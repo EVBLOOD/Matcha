@@ -4,6 +4,7 @@
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
 import NotificationsService from '@/api/services/NotificationsService'
 import type { NotificationsResponse } from '@/types/apiResponses'
+import { formatDistanceToNow } from 'date-fns';
 
 import { ref, computed, onMounted, watch } from 'vue';
 
@@ -75,6 +76,19 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+const go_to = (id: number) => {
+    router.push(`/profile/${id}`)
+}
+
+const NotSeen = () => {
+    return {
+        backgroundClip: 'text',
+        color: 'transparent',
+    };
+};
 </script>
 
 <template>
@@ -83,9 +97,19 @@ const pictures_handler = (link: string) => {
     </div>
     <div v-if="!isLoading && !isError && NotificationsData" class="contenty">
         <div v-for="value in NotificationsData" class="notif">
-            <PictureNdIcon :height="59" :width="59" :readonly="true" :initialImage="pictures_handler(value.picture_url[0].url)" :initialIcon="avatarStyleFun(value)" />
-            <div>
-               {{value.type[0].toUpperCase() + value.type.slice(1)}} from <span>@{{value.username}}</span>
+            <div  class="notif" @click="go_to(value.user_id)">
+                <PictureNdIcon :height="59" :width="59" :readonly="true" :initialImage="pictures_handler(value.picture_url[0].url)" :initialIcon="avatarStyleFun(value)" />
+                <div :style="!value.is_read ? {fontWeight: '600'} : {}">
+                    <div>
+                        {{value.type[0].toUpperCase() + value.type.slice(1)}} from <span :style="!value.is_read ? {color: '#BD82DD'} : {}">@{{value.username}}</span>
+                    </div>
+                    <div :style="!value.is_read ? {fontWeight: '500'} : {}">
+                        {{  formatDistanceToNow(new Date(value.created_at), {addSuffix: true}) }}
+                    </div>
+                </div>
+            </div>
+            <div style="background-color: #FEA7FF; height: 18px; width: 18px; border-radius: 50%;">
+
             </div>
         </div>
     </div>
@@ -97,8 +121,9 @@ const pictures_handler = (link: string) => {
         padding: 2%;
         display: flex;
         flex-direction: column;
+        // align-items: center;
         gap: 0.5%;
-
+        cursor: pointer;
     }
     .notif {
         width: 100%;

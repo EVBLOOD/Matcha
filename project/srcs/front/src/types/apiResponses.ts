@@ -54,7 +54,7 @@ export interface UserProfileResponse {
 }
 
 export interface NotificationsResponse {
-    create_at: string;
+    created_at: string;
     is_read: boolean;
     notification_id: number;
     picture_url: UserProfilePicturesResponse[];

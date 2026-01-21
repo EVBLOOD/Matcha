@@ -57,9 +57,9 @@
     [ ] Chat :
         [x] Chat UI Interface.
         [ ] Bonus: Video/Audio Chat: Implement video/audio chat feature.
-        [ ] New message pop-up/notif UI.
+        [x] New message pop-up/notif UI.
         [x] Backend chat implementation.
-        [ ] New message notif implementation.
+        [x] New message notif implementation.
     [ ] Notifications:
         [ ] UI for Unread notification indicator.
         [x] Display UI Notifications Area or maybe Dropdown.
@@ -67,7 +67,7 @@
         [x] Notification system (Real-time notification delivery)
         [x] On "Like" received.
         [x] On Profile viewed.
-        [ ] On Message received.
+        [x] On Message received.
         [x] On "Like" back (connection).
         [x] On "Unlike" (disconnection).
     [ ] Bonus:
