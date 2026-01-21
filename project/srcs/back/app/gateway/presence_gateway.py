@@ -72,6 +72,15 @@ class PresenceGateway(Namespace):
     def error_handler(e):
         disconnect()
 
+    @ConnectionManager.socket_guard()
+    def on_number_of_notifs(self) :
+        try :
+            out = ConnectionManager.get_number_of_notifs(request.user_id)
+            print(out, flush=True)
+            return out
+        except Exception as _:
+            return 0
+
 
     @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):

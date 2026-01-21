@@ -56,8 +56,24 @@ class notificationsRepository(BaseRepository):
                 FROM notifications n
                 LEFT JOIN users s ON n.source_user_id = s.id
                 WHERE
-                    n.user_id = %s;
+                    n.user_id = %s
+                ORDER BY created_at DESC
             """
         params = (user_id, )
 
         return cls._fetch_all(query, params)
+    
+
+    @classmethod
+    def get_number_unreaded_notification(cls, user_id: str) :
+        query = """
+            SELECT
+                COUNT(id)
+            FROM notifications
+            WHERE
+                user_id = %s AND is_read = FALSE
+        """
+        params = (user_id, )
+
+        return cls._fetch_one(query, params)
+    

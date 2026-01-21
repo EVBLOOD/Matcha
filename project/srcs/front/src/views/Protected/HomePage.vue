@@ -3,7 +3,6 @@ import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 
 import AuthService from '@/api/services/AuthService'
 import useUserStore from '@/stores/user';
-import { toast } from '@/composables/useToast';
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -11,7 +10,6 @@ const router = useRouter()
 
 
 import { useSocketStore } from '@/stores/socket';
-import Button from '@/components/Button.vue';
 
 const socket = useSocketStore();
 
@@ -47,11 +45,10 @@ const clickLogOut = async () => {
 
                 <RouterLink class="link" to="/notifications">
                     <div style="position: relative; overflow: visible;">
-
                         <img src="/img/notifMenuIcon.svg" alt="" />
-                        <div
-                            style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 0%; left: 60%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
-                            +9
+                        <div v-if="socket.getNotifsCount"
+                            style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 10%; left: 55%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
+                            {{ socket.getNotifsCount > 9 ? '+9' : socket.getNotifsCount }}
                         </div>
                     </div>
                     <span>Notifications</span>
@@ -60,9 +57,10 @@ const clickLogOut = async () => {
                 <RouterLink class="link" to="/messages">
                     <div style="position: relative; overflow: visible;">
                         <img src="/img/messageMenuIcon.svg" alt="" />
-                        <div
-                            style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 0%; left: 60%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
-                            +9
+                        <div v-if="socket.getMessagesCount"
+                            style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 10%; left: 55%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
+                            {{ socket.getMessagesCount > 9 ? '+9' : socket.getMessagesCount }}
+
                         </div>
                     </div>
                     <span>Messages</span>

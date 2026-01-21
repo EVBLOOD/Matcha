@@ -83,6 +83,21 @@ class ChatRepository(BaseRepository):
         return cls._fetch_all(query, params)
     
     @classmethod
+    def get_number_unreaded_messages(cls, user_id: str) :
+        query = """
+            SELECT COUNT(*) AS unread_count
+            FROM messages m
+            JOIN conversations c ON m.conversation_id = c.id
+            WHERE m.is_read = FALSE
+              AND m.sender_id != %s
+              AND (c.user1_id = %s OR c.user2_id = %s)
+        """
+        params = (user_id, user_id, user_id )
+
+        return cls._fetch_one(query, params)
+    
+
+    @classmethod
     def get_messages(cls, chat_id: int, user_id: int) :
         query = """
             SELECT

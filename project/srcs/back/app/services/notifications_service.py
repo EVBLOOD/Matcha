@@ -35,3 +35,10 @@ class NotificationService:
             return notificationsRepository.get_user_notifications(user_id)
         except Exception as e :
             raise Exception(e)
+        
+    @staticmethod
+    def get_number_unreaded_notification(user_id: int) :
+        try :
+            return notificationsRepository.get_number_unreaded_notification(user_id)
+        except Exception as e :
+            raise Exception(e)

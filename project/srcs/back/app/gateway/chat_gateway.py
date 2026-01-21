@@ -46,6 +46,14 @@ class ChatGateway(Namespace):
         ChatManager.join_call(request.user_id, body, request.sid)
 
     @ConnectionManager.socket_guard()
+    def on_number_of_messages(self) :
+        try :
+            out = ChatManager.get_number_of_messages(request.user_id)[0]
+            return out
+        except Exception as _:
+            return 0
+
+    @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
         ChatManager.disconnect_user_socket(request.user_id, request.sid)
         return

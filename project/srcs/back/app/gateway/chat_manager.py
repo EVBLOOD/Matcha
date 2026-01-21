@@ -97,7 +97,14 @@ class ChatManager :
                 room=notify_room
             )
         return message_id
-    
+
+    @staticmethod
+    def get_number_of_messages(user_id: int):
+        try :
+            return ChatService.get_number_unreaded_messages(user_id)[0]
+        except :
+            return 0
+
     @staticmethod
     def join_call(caller_id: str, reciever_id, socket_id) :
         if not UserInteractionsService.are_users_connected(caller_id, reciever_id["user_id"]) :

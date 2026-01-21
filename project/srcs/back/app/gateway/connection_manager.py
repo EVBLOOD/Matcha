@@ -143,6 +143,13 @@ class ConnectionManager :
         )
 
     @staticmethod
+    def get_number_of_notifs(user_id: int):
+        try :
+            return NotificationService.get_number_unreaded_notification(user_id)
+        except :
+            return 0
+
+    @staticmethod
     def socket_guard(required_roles=None, check_profile=True):
         def decorator(f):
             @wraps(f)
