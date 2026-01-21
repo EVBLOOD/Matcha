@@ -23,7 +23,7 @@ const clickLogOut = async () => {
         const token = localStorage.getItem('auth_token');
         if (token) socket.disconnectAll(token)
         const response = await AuthService.logout();
-        
+
         console.log(response)
         userStore.fetchUser()
         localStorage.removeItem('auth_token');
@@ -45,20 +45,37 @@ const clickLogOut = async () => {
             <nav class="nav">
                 <RouterLink class="link" to="/"><img src="/img/homeIcon.svg" alt="" /> <span>Explore</span></RouterLink>
 
-                <RouterLink class="link" to="/notifications"><img src="/img/notifMenuIcon.svg" alt="" />
+                <RouterLink class="link" to="/notifications">
+                    <img src="/img/notifMenuIcon.svg" alt="" />
                     <span>Notifications</span>
                 </RouterLink>
 
-                <RouterLink class="link" to="/messages"><img src="/img/messageMenuIcon.svg" alt="" /> <span>Messages</span>
+                <RouterLink class="link" to="/messages">
+                    <div style="position: relative;">
+                        <img src="/img/messageMenuIcon.svg" alt="" />
+                        <div style="position: absolute; height: 17px; width: 17px; background-color: red; bottom: 10%; left: 10%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
+                                +9
+                        </div>
+                    </div>
+                    <span>Messages</span>
                 </RouterLink>
 
-                <RouterLink class="link" to="/suggestions"><img src="/img/suggestionMenuIcon.svg" alt="" /> <span>Suggestions</span></RouterLink>
-                
-                <RouterLink class="link" to="/suggestions"><img src="/img/eventMenuIcon.svg" alt="" /> <span>Events</span></RouterLink>
-                
-                <RouterLink class="link" :to="`/profile/${userStore.getUserID}`"><img src="/img/profileMenuIcon.svg" alt="" /> <span>Profile</span>
+                <RouterLink class="link" to="/suggestions">
+                    <img src="/img/suggestionMenuIcon.svg" alt="" />
+                    <span>Suggestions</span>
                 </RouterLink>
-                <a class="link log_a" v-on:click="clickLogOut"><img src="/img/logOut.svg" alt="" /> <span>Log out</span></a>
+
+                <RouterLink class="link" to="/suggestions">
+                    <img src="/img/eventMenuIcon.svg" alt="" />
+                    <span>Events</span>
+                </RouterLink>
+
+                <RouterLink class="link" :to="`/profile/${userStore.getUserID}`">
+                    <img src="/img/profileMenuIcon.svg" alt="" /> <span>Profile</span>
+                </RouterLink>
+                <a class="link log_a" v-on:click="clickLogOut">
+                    <img src="/img/logOut.svg" alt="" /> <span>Log
+                        out</span></a>
             </nav>
         </div>
         <div class="main_div_parent">
@@ -167,7 +184,7 @@ const clickLogOut = async () => {
 
 
     .link {
-    padding: 6%;
+        padding: 6%;
 
         border-style: solid;
         border-width: 0px 1px 0px 0px;
@@ -208,6 +225,7 @@ const clickLogOut = async () => {
 
         width: 100%;
         margin-right: 0%;
+
         .logo {
             display: none;
         }
@@ -216,6 +234,7 @@ const clickLogOut = async () => {
     .main_title {
         height: 6%;
     }
+
     .main_div {
         height: 94%;
     }
