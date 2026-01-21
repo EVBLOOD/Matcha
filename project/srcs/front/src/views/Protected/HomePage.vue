@@ -46,15 +46,23 @@ const clickLogOut = async () => {
                 <RouterLink class="link" to="/"><img src="/img/homeIcon.svg" alt="" /> <span>Explore</span></RouterLink>
 
                 <RouterLink class="link" to="/notifications">
-                    <img src="/img/notifMenuIcon.svg" alt="" />
+                    <div style="position: relative; overflow: visible;">
+
+                        <img src="/img/notifMenuIcon.svg" alt="" />
+                        <div
+                            style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 0%; left: 60%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
+                            +9
+                        </div>
+                    </div>
                     <span>Notifications</span>
                 </RouterLink>
 
                 <RouterLink class="link" to="/messages">
-                    <div style="position: relative;">
+                    <div style="position: relative; overflow: visible;">
                         <img src="/img/messageMenuIcon.svg" alt="" />
-                        <div style="position: absolute; height: 17px; width: 17px; background-color: red; bottom: 10%; left: 10%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
-                                +9
+                        <div
+                            style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 0%; left: 60%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
+                            +9
                         </div>
                     </div>
                     <span>Messages</span>
