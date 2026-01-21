@@ -55,7 +55,7 @@ const avatarStyle = computed(() => {
 const avatarStyleFun = (value: NotificationsResponse) => {
     let image = "/img/avatar.svg";
     if (value.type == "like") {
-        image = "likeNotifIcon.svg"
+        image = "/img/likeNotifIcon.svg"
     } else if (value.type == "view") {
         image = "/img/viewProfileNotifIcon.svg"
 

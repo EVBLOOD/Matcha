@@ -43,14 +43,20 @@ const clickLogOut = async () => {
         <div class="side_bar">
             <img class="logo" style="margin-top: 15px;margin-left: 5%;" src="/img/Logo.svg" width="119px" alt="Logo" />
             <nav class="nav">
-                <RouterLink class="link" to="/"><img src="/img/homeIcon.svg" alt="" /> <span>Home</span></RouterLink>
-                <RouterLink class="link" to="/suggestions"><img src="/img/homeIcon.svg" alt="" /> <span>Suggestions</span></RouterLink>
-                <RouterLink class="link" to="/messages"><img src="/img/messagesIcon.svg" alt="" /> <span>Messages</span>
-                </RouterLink>
-                <RouterLink class="link" to="/notifications"><img src="/img/notificationsIcon.svg" alt="" />
+                <RouterLink class="link" to="/"><img src="/img/homeIcon.svg" alt="" /> <span>Explore</span></RouterLink>
+
+                <RouterLink class="link" to="/notifications"><img src="/img/notifMenuIcon.svg" alt="" />
                     <span>Notifications</span>
                 </RouterLink>
-                <RouterLink class="link" :to="`/profile/${userStore.getUserID}`"><img src="/img/profileIcon.svg" alt="" /> <span>Profile</span>
+
+                <RouterLink class="link" to="/messages"><img src="/img/messageMenuIcon.svg" alt="" /> <span>Messages</span>
+                </RouterLink>
+
+                <RouterLink class="link" to="/suggestions"><img src="/img/suggestionMenuIcon.svg" alt="" /> <span>Suggestions</span></RouterLink>
+                
+                <RouterLink class="link" to="/suggestions"><img src="/img/eventMenuIcon.svg" alt="" /> <span>Events</span></RouterLink>
+                
+                <RouterLink class="link" :to="`/profile/${userStore.getUserID}`"><img src="/img/profileMenuIcon.svg" alt="" /> <span>Profile</span>
                 </RouterLink>
                 <a class="link log_a" v-on:click="clickLogOut"><img src="/img/logOut.svg" alt="" /> <span>Log out</span></a>
             </nav>
