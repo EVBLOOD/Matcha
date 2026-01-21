@@ -46,7 +46,7 @@ class ChatManager :
     @staticmethod
     def join_private_room(user_id: str, other_id: str, socket_id: str):
         if not UserInteractionsService.are_users_connected(other_id, user_id) :
-            return {"You aren't allowd to reach this person!"}
+            return {"error":"You aren't allowed to reach this person!"}
         redis = Config.redis_instence
         room_name = ChatManager._get_canonical_room_name(user_id, other_id)
 
@@ -57,8 +57,8 @@ class ChatManager :
 
     @staticmethod
     def leave_private_room(user_id: str, other_id: str, socket_id: str):
-        if not UserInteractionsService.are_users_connected(other_id, user_id) :
-            return {"You aren't allowd to reach this person!"}
+        # if not UserInteractionsService.are_users_connected(other_id, user_id) :
+        #     return {"error": "You aren't allowed to reach this person!"}
         redis = Config.redis_instence
         room_name = ChatManager._get_canonical_room_name(user_id, other_id)
         
@@ -68,7 +68,7 @@ class ChatManager :
     @staticmethod
     def broadcast_message(sender: str, receiver: str, message: str, socket_id: str):
         if not UserInteractionsService.are_users_connected(sender, receiver) :
-            return {"You aren't allowd to reach this person!"}
+            return {"error":"You aren't allowed to reach this person!"}
 
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
@@ -110,7 +110,7 @@ class ChatManager :
     @staticmethod
     def join_call(caller_id: str, reciever_id, socket_id) :
         if not UserInteractionsService.are_users_connected(caller_id, reciever_id["user_id"]) :
-            return {"You aren't allowd to reach this person!"}
+            return {"error":"You aren't allowed to reach this person!"}
         
         private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
 

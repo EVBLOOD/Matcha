@@ -39,6 +39,7 @@ const fetchConversations = async () => {
         if (conversationData.value[0].messages_list)
             conversationMessages.value = [...conversationData.value[0].messages_list]
         socketStore.joinChat(conversationData.value[0].peer_id.toString())
+        socketStore.setMessagesCount()
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;

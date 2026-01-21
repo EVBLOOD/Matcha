@@ -22,8 +22,11 @@ export const useSocketStore = defineStore('socket', {
     setNotifsCount(val: number) {
       this.notifs_counter = val
     },
-    setMessagesCount(val: number) {
-      this.messages_counter = val
+    setMessagesCount() {
+      socketChat.emit('number_of_messages', (number: number) => {
+        console.log(number)
+        this.messages_counter = number
+      })
     },
     bindStatusEvents() {
       if (this.isBound) return;
@@ -119,6 +122,9 @@ export const useSocketStore = defineStore('socket', {
     sendMessage(id: string, content: string): number {
       let id_message = undefined
       socketChat.emit('send_message', { user_id: id, text: content }, ((resp: any) => {
+        if (typeof(resp) == 'object' && resp.error) {
+          toast('error', 'Send Message fail', resp.error);
+        }
         id_message = resp as number
       }))
       return id_message || -1

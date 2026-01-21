@@ -98,6 +98,19 @@ class ChatRepository(BaseRepository):
     
 
     @classmethod
+    def update_nmessages_all(cls, conversation_id, user_id) -> bool:
+        query = """
+            UPDATE messages
+                SET is_read = TRUE
+                WHERE conversation_id = %s 
+                  AND sender_id != %s 
+                  AND is_read = FALSE
+                RETURNING id;
+        """
+        params = (conversation_id, user_id, )
+        return cls._execute(query, params)
+
+    @classmethod
     def get_messages(cls, chat_id: int, user_id: int) :
         query = """
             SELECT

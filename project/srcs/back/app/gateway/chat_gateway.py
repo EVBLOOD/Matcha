@@ -24,6 +24,7 @@ class ChatGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_send_message(self, user_message):
+        print("con", flush=True)
         try :
             sender = request.user_id
             receiver = user_message.get("user_id")
@@ -37,6 +38,8 @@ class ChatGateway(Namespace):
 
             return ChatManager.broadcast_message(sender=sender, receiver=receiver, message=text, socket_id=request.sid)
         except Exception as e :
+            print(e, flush=True)
+
             return False
         
     @ConnectionManager.socket_guard()
