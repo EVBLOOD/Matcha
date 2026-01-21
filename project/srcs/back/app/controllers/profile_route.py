@@ -37,7 +37,7 @@ def create_profile() :
         try:
             validated_data = schema.load(body)
             if not files :
-                return jsonify({"errors": "No attached files!"}), 400
+                return jsonify({"errors": ["No attached files!"]}), 400
         except Exception as err:
             return jsonify({"errors": err.messages}), 400
 

@@ -2,6 +2,7 @@
 import Button from '@/components/Button.vue';
 import Input from '@/components/Input.vue';
 import Card from '@/components/Card.vue';
+import { toast } from '@/composables/useToast';
 
 import UserService from '@/api/services/UserService'
 import type { UserRegister } from '@/types/user';
@@ -9,6 +10,10 @@ import type { UserRegister } from '@/types/user';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 
+
+interface ValidationErrors {
+  [key: string]: string[];
+}
 
 const router = useRouter()
 const firstName = ref('');
@@ -21,7 +26,7 @@ const confPassWord = ref('');
 
 
 const isLoading = ref(false);
-const error = ref(null);
+const error = ref<null | string | any[]>(null);
 
 
 
@@ -42,8 +47,24 @@ const handleRegister = async () => {
     await UserService.register(payload);
 
     router.push('confirm-email')
+    toast('success', 'Registration success', "Please check your email.");
   } catch (err: any) {
     error.value = err.response?.data?.errors || err.response?.data?.error || 'Registration failed for unknown reason';
+    if (Array.isArray(error.value)) {
+      for (err in error.value) {
+        toast('error', 'Registration failed', err as string);
+      }
+    } else if (typeof(error.value) === 'string') {
+      toast('error', 'Registration failed', error.value);
+    } else if (error.value && typeof(error.value) === 'object') {
+      const errorData = error.value as ValidationErrors
+      Object.entries(errorData).map(([field, messages]) => {
+        messages.map((msg) => {
+          toast('error', 'Registration failed', msg);
+        })
+        return messages.map(msg => msg.toUpperCase());
+      });
+    }
   } finally {
     isLoading.value = false;
   }

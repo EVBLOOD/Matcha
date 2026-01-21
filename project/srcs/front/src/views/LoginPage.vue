@@ -47,13 +47,19 @@ const handleLogin = async () => {
     if (response.data.access_token) router.push('/')
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
-      error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Registration failed for unknown reason';
+      error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Login failed for unknown reason';
     } else {
-      error.value = 'Registration failed for unknown reason'
+      error.value = 'Login failed for unknown reason'
+    }
+    if (Array.isArray(error.value)) {
+      for (err in error.value) {
+        toast('error', 'Login failed', err as string);
+      }
+    } else if (typeof(error.value) === 'string') {
+      toast('error', 'Login failed', error.value);
     }
   } finally {
     isLoading.value = false;
-    toast('error', 'Login failed', 'Invalid login credentials. Please try again.');
   }
 };
 // TODO: we should integrate the Loading and error displaying

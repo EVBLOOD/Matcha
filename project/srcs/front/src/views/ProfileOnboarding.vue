@@ -15,7 +15,11 @@ import UserService from '@/api/services/UserService'
 import { useRouter } from 'vue-router'
 
 import type { PicturesDisplying } from '@/types/helpers'
+import { toast } from '@/composables/useToast';
 
+interface ValidationErrors {
+  [key: string]: string[];
+}
 
 const orientation = [{ value: 'straight', label: 'Straight' }, { value: 'gay', label: 'Gay' }, { value: 'bisexual', label: 'Bisexual' }]
 const availableTags = ref(['art', 'music', 'coding']);
@@ -86,8 +90,25 @@ const handleSubmit = async () => {
         await user.fetchUser();
 
         router.push('/')
-    } catch (error) {
-        console.error("Upload failed", error);
+    } catch (error: any) {
+
+        const error_print = error?.response?.data?.errors || error?.response?.data?.error || 'Profile complete failed for unknown reason';
+
+        if (Array.isArray(error_print)) {
+            error_print.map((err) => {
+                toast('error', 'Reset failed', err as string);
+            })
+        } else if (typeof (error_print) === 'string') {
+            toast('error', 'Reset failed', error_print);
+        } else if (error_print && typeof (error_print) === 'object') {
+            const errorData = error_print as ValidationErrors
+            Object.entries(errorData).map(([field, messages]) => {
+                messages.map((msg) => {
+                    toast('error', 'Reset failed', msg);
+                })
+                return messages.map(msg => msg.toUpperCase());
+            });
+        }
     }
 };
 
@@ -129,14 +150,14 @@ const clickLogOut = async () => {
 <template>
     <div v-on:click="clickLogOut" style="position: absolute; bottom: 10%; left: 5%;">
         <a class="link log_a"><img src="/img/logOut.svg" alt="" /> <span>Log
-                        out</span></a>
+                out</span></a>
     </div>
     <Card title="Complete Your Profile">
         <div class="avatar_section">
             <div>
                 <PictureNdIcon :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
             </div>
-            <p class="full_name">{{userStore.getUserName}}</p>
+            <p class="full_name">{{ userStore.getUserName }}</p>
         </div>
 
         <div class="gender_div">
@@ -152,7 +173,7 @@ const clickLogOut = async () => {
 
         <div class="orientation_div">
             <p>Orientation</p>
-            <Select :options="orientation" v-model="selectedOrientation" ></Select>
+            <Select :options="orientation" v-model="selectedOrientation"></Select>
         </div>
 
         <div class="interest_div">
