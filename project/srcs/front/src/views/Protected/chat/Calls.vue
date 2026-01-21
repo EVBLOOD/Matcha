@@ -7,6 +7,7 @@ import { useSocketStore } from '@/stores/socket'
 import userUserStore from '@/stores/user'
 import axios, { AxiosError } from 'axios';
 import { useSocketListener } from '@/composables/useSocketChat'
+import { formatDistanceToNow } from 'date-fns';
 
 interface BackendError {
     error: string;
@@ -220,13 +221,23 @@ const endCall = (sendSignal: boolean = true) => {
         socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'hangup', null);
     }
 };
+
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+
+const go_to = (id: number) => {
+  router.push( `/profile/${id}`)
+
+}
+
 </script>
 
 <template>
     <div class="chat" v-if="conversationData && !isLoading && !isError">
         <div class="header">
             <button class="back-btn" @click="$router.push('/messages')">←</button>
-            <div class="user">
+            <div class="user" @click="go_to(conversationData[0].peer_id)" style="cursor: pointer;">
                 <div class="avatar">
                     <img :src="pictures_handler(conversationData[0].profile_picture_url[0].url)" alt="avatar" />
                 </div>
@@ -236,7 +247,7 @@ const endCall = (sendSignal: boolean = true) => {
                         <span :class="['dot', conversationData[0].last_online ? 'online' : 'offline']"></span>
                         <span class="text">
                             {{ !conversationData[0].last_online ? 'Online' : `Last seen
-                            ${conversationData[0].last_online}` }}
+                            ${formatDistanceToNow(new Date(conversationData[0].last_online), {addSuffix: true}) }` }}
                         </span>
                     </div>
                 </div>
@@ -309,7 +320,6 @@ const endCall = (sendSignal: boolean = true) => {
 </template>
 
 <style lang="scss" scoped>
-// to update this 1999 styling.
 .video-call {
     position: fixed;
     top: 0;

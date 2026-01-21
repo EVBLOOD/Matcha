@@ -77,7 +77,7 @@ const pictures_handler = (link: string) => {
                 </div>
                 <div class="infos">
                     <p class="name">{{ user.first_name + " " + user.last_name }}</p>
-                    <p class="date">{{  formatDistanceToNow(new Date(user.last_active_at)) }}</p>
+                    <p class="date">{{  formatDistanceToNow(new Date(user.last_active_at), {addSuffix: true}) }}</p>
                 </div>
             </div>
         </div>
