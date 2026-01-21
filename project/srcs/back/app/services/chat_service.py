@@ -8,7 +8,7 @@ class ChatService :
     def send_message(cls, sender: int, reciever : int, message: str) :
         chat_id = cls.create_conversation(sender, reciever)
         id_message = ChatRepository.insert_message(Message(conversation_id=chat_id, sender_id=sender, content=message, is_read=False))
-        return id_message
+        return (chat_id, id_message)
 
     @classmethod
     def create_conversation(cls, user1_id: int, user2_id : int) :

@@ -6,6 +6,7 @@ from flask_socketio import disconnect, join_room, ConnectionRefusedError, leave_
 import json
 from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
+from app.services.profile_service import ProfileService
 from app.services.user_interactions_service import UserInteractionsService
 from app.services.chat_service import ChatService
 from flask_socketio import emit
@@ -71,7 +72,7 @@ class ChatManager :
 
         redis = Config.redis_instence
         private_room = ChatManager._get_canonical_room_name(sender, receiver)
-        message_id = ChatService.send_message(sender, receiver, message)
+        (chat_id, message_id) = ChatService.send_message(sender, receiver, message)
         emit(
             'message_chat', 
             {"text": message, "sender": sender, "id": message_id}, 
@@ -85,9 +86,14 @@ class ChatManager :
         if sockets_needing_notif:
             # TODO: correct this later
             notify_room = ChatManager._get_user_room_name(receiver)
+            # user = payload.avatar, payload.FromId, payload.username
+            try :
+                user = ProfileService.get_user_profile_basic(sender)
+            except:
+                return False
             emit(
                 'new_message_notification', 
-                {"sender": sender, "count_change": 1}, 
+                {"sender": sender, "count_change": 1, 'user_data': user, "conv": chat_id}, 
                 room=notify_room
             )
         return message_id

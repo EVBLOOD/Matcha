@@ -28,10 +28,18 @@ export const useSocketStore = defineStore('socket', {
         this.notifications.push(msg);
       });
 
-      socketChat.on('recieved_message', (msg: string) => {
+      socketChat.on('new_message_notification', (msg) => {
+        // toast('error', ' sent you a message.', msg);
+        console.log(msg.user_data)
+        console.log(msg.user_data.pictures[0].url)
+
+        toast('message', 'New message', "sent you a message.", msg.user_data.pictures[0].url, msg.conv, msg.user_data.user.username);
+
+        console.log('recieved_message')
+        console.log('recieved_message')
         console.log(msg)
         this.new_chats_notifs.push(msg); // this is just a current example to use in future | I should fix backend
-        toast('error', ' sent you a message.', msg);
+
       });
     },
     bindChatEvents() {
