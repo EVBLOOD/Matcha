@@ -18,27 +18,9 @@ const isError = ref<string | null>(null);
 const selectedChoice = ref<string | null>(null);
 // const selectedChoice = ref<string | null>(null);
 interface BackendError {
-  error: string;
+    error: string;
 }
 
-
-const fetchSugestions = async () => {
-  isLoading.value = true;
-  try {
-    const { data } = await SuggestionsService.getSuggestions();
-    console.log(data)
-    suggestionsData.value = data["data"];
-  } catch(err : unknown) {
-    if (axios.isAxiosError(err)) {
-        isError.value = (err.response?.data as BackendError)?.error;
-    }
-    else {
-        isError.value = "Registration failed for unknown reason'";
-    }
-  } finally {
-    isLoading.value = false;
-  }
-};
 
 onMounted(() => {
     fetchSugestions()
@@ -61,8 +43,53 @@ const Onclick = (type: string) => {
     currentType.value = type
 }
 
-watch(selectedChoice, () => {
-    console.log(selectedChoice.value)
+const fetchSugestions = async (params: any = undefined) => {
+    isLoading.value = true;
+    try {
+        const { data } = await SuggestionsService.getSuggestions(params);
+        console.log(data)
+        suggestionsData.value = data["data"];
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            isError.value = (err.response?.data as BackendError)?.error;
+        }
+        else {
+            isError.value = "Registration failed for unknown reason'";
+        }
+    } finally {
+        isLoading.value = false;
+    }
+};
+const selected_order = ref('')
+const selected_filter = ref('')
+const search_query = ref('')
+watch(selectedChoice, async (newValue) => {
+    if (newValue && newValue?.includes('radioby')) {
+        if (newValue.replace('radioby', '') == selected_order.value) {
+            selected_order.value = ''
+        } else {
+            selected_order.value = newValue.replace('radioby', '')
+        }
+    }
+
+    if (newValue && newValue?.includes('Filterby')) {
+        console.log("HELLO")
+        if (newValue.replace('Filterby', '') == selected_filter.value) {
+            selected_filter.value = ''
+        } else {
+            selected_filter.value = newValue.replace('Filterby', '')
+        }
+    }
+    const params = new URLSearchParams();
+    
+    if (selected_order.value) {
+        params.append('sort', selected_order.value.toLowerCase());
+    }
+    if (selected_filter.value) {
+        params.append('filter', selected_filter.value.toLowerCase());
+    }
+    console.log(params.toString())
+    await fetchSugestions(params.toString());
 })
 </script>
 
@@ -74,23 +101,27 @@ watch(selectedChoice, () => {
                 <Button text="Filter" @click="Onclick('Filter')" :img="'/img/sortIcon.svg'"></Button>
             </div>
             <div v-if="currentType" class="inner_search_bar">
-                <SuggestionsbarElem :firstElem="true" elemName="Age" :inputType="currentType == 'Sort' ? 'Filter' : 'radio'" @selected_choice="(value) => {selectedChoice = value}"/>
-                <SuggestionsbarElem elemName="Location" 
-                    :inputType="currentType == 'Sort' ? 'Filter' : 'radio'" @selected_choice="(value) => {selectedChoice = value}"/>
-                <SuggestionsbarElem elemName="Fame" :inputType="currentType == 'Sort' ? 'Filter' : 'radio'" @selected_choice="(value) => {selectedChoice = value}"/>
-                <SuggestionsbarElem elemName="Tags" 
-                    :inputType="currentType == 'Sort' ? 'Filter' : 'radio'" @selected_choice="(value) => {selectedChoice = value}"/>
+                <SuggestionsbarElem :firstElem="true" elemName="Age"
+                    :inputType="currentType == 'Sort' ? 'Filter' : 'radio'"
+                    @selected_choice="(value) => { selectedChoice = value }" />
+                <SuggestionsbarElem elemName="Location" :inputType="currentType == 'Sort' ? 'Filter' : 'radio'"
+                    @selected_choice="(value) => { selectedChoice = value }" />
+                <SuggestionsbarElem elemName="Fame" :inputType="currentType == 'Sort' ? 'Filter' : 'radio'"
+                    @selected_choice="(value) => { selectedChoice = value }" />
+                <SuggestionsbarElem elemName="Tags" :inputType="currentType == 'Sort' ? 'Filter' : 'radio'"
+                    @selected_choice="(value) => { selectedChoice = value }" />
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>
         <div class="body">
-            <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id" :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age" :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)"/>
+            <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id"
+                :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
+                :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
-
 .body {
     padding-bottom: 0px;
 
@@ -100,6 +131,7 @@ watch(selectedChoice, () => {
     gap: 2%;
     flex-wrap: wrap;
 }
+
 .wraper {
     padding: 3%;
     width: 100%;
@@ -148,6 +180,7 @@ watch(selectedChoice, () => {
         justify-content: center;
         width: 100%;
     }
+
     .btn {
         width: 100%;
         margin-left: 0%;

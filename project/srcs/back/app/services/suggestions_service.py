@@ -5,8 +5,10 @@ from app.services.profile_service import ProfileService
 
 class SuggestionsService :
     @classmethod
-    def get_suggestions(cls, user_id: str) :
-        users = SuggestionsRepository.get_suggestions(user_id)
+    def get_suggestions(cls, user_id: str, filter: str, sort: str) :
+        users = SuggestionsRepository.get_suggestions(user_id, filter, sort)
+        if not users :
+            return []
         suggestions = []
         for user in users :
             if user["location_set_by_user"] :

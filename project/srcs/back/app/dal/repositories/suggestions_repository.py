@@ -3,16 +3,18 @@ from app.dal.base_repository import BaseRepository
 class SuggestionsRepository(BaseRepository):
     
     @classmethod
-    def get_suggestions(cls, user_id: int, lastUser = None) :  # TODO: this is worng but keep for now
-        query = """
+    def get_suggestions(cls, user_id: int, filter: str, sort: str):
+        params = [user_id]
+
+        query_base = """
             WITH currentuser AS (
-                SELECT u.id, u.latitude, u.longitude, p.gender, p.sexual_preference
-                FROM users u 
-                JOIN profiles p ON u.id = p.user_id 
-                WHERE u.id = %s
+                SELECT u.id, u.latitude, u.longitude, p.gender, 
+                    COALESCE(p.sexual_preference, 'bisexual') as pref,
+                    EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) as age
+                FROM users u JOIN profiles p ON u.id = p.user_id WHERE u.id = %s
             )
             SELECT 
-                u.id,
+               u.id,
                 u.username,
                 u.fame_rating,
                 u.first_name,
@@ -28,33 +30,45 @@ class SuggestionsRepository(BaseRepository):
             JOIN profiles p ON u.id = p.user_id
             CROSS JOIN currentuser cud
             WHERE u.id != cud.id
-              AND EXISTS (SELECT 1 FROM user_pictures WHERE user_id = cud.id AND is_profile_picture = TRUE)
-              AND (
-                (cud.sexual_preference = 'straight' AND p.gender != cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('straight', 'bisexual')) OR
-                (cud.sexual_preference = 'gay' AND p.gender = cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('gay', 'bisexual')) OR
-                (cud.sexual_preference = 'bisexual' AND (
-                    (p.gender != cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('straight', 'bisexual')) OR
-                    (p.gender = cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('gay', 'bisexual'))
-                ))
-                )
-              AND u.id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = cud.id)
-              AND u.id NOT IN (SELECT blocker_id FROM user_blocks WHERE blocked_id = cud.id)
-              AND (%s IS NULL OR (
-                (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + 
-                sin(radians(cud.latitude)) * sin(radians(u.latitude)))), u.id
-                ) > (%s, %s))
-            ORDER BY 
-                distance ASC,
-                u.id ASC
-            LIMIT 20;
+            AND u.id NOT IN (
+                SELECT liked_id 
+                FROM user_interactions 
+                WHERE liker_id = cud.id
+            )
+                    AND EXISTS (SELECT 1 FROM user_pictures WHERE user_id = u.id AND is_profile_picture = TRUE)
+                    AND u.id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = cud.id)
+                    AND u.id NOT IN (SELECT blocker_id FROM user_blocks WHERE blocked_id = cud.id)
+                    AND (
+                        (cud.pref = 'bisexual') OR
+                        (cud.pref = 'straight' AND p.gender != cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('straight', 'bisexual')) OR
+                        (cud.pref = 'gay' AND p.gender = cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('gay', 'bisexual'))
+                    )
         """
-        if not lastUser :
-            params = (user_id, None , 0, 0, )
-        else :
-            params = (user_id, lastUser["id"], lastUser["distance"], lastUser["id"], )
+    
+        if filter == "location":
+            query_base += """ AND (
+                6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + 
+                sin(radians(cud.latitude)) * sin(radians(u.latitude)))
+            ) < 50 """
+        elif filter == "tags":
+            query_base += " AND EXISTS (SELECT 1 FROM user_interests ui WHERE ui.user_id = u.id AND ui.tag_id IN (SELECT tag_id FROM user_interests WHERE user_id = cud.id))"
+        elif filter == "fame":
+            query_base += " AND u.fame_rating > 50"
+        elif filter == "age":
+            query_base += " AND EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) BETWEEN cud.age - 5 AND cud.age + 5"
 
-        return cls._fetch_all(query, params)
+        sort_map = {
+            "age": "age ASC",
+            "location": "distance ASC",
+            "fame": "u.fame_rating DESC",
+            "tags": "same_tags DESC",
+            "default": "distance ASC, same_tags DESC, u.fame_rating DESC"
+        }
+        order_clause = sort_map.get(sort, sort_map["default"])
+        
+        final_query = f"{query_base} ORDER BY {order_clause} LIMIT 20"
 
+        return cls._fetch_all(final_query, params)
 
     @classmethod
     def get_emptyResearch(cls, user_id: int) :

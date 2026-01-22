@@ -10,7 +10,16 @@ suggestions_bp = Blueprint('suggestions_api', __name__, url_prefix='/suggestions
 @Security.auth_guard()
 def getSuggestions():
     try :
-        return jsonify({"data": SuggestionsService.get_suggestions(request.user_id)})
+        filter = request.args.get('filter')
+        sort = request.args.get('sort')
+
+        if filter not in ["age", "fame", "location", "tags"] :
+            filter = "default"
+
+        if sort not in ["age", "fame", "location", "tags"] :
+            sort = "default"
+
+        return jsonify({"data": SuggestionsService.get_suggestions(request.user_id, filter, sort)})
     except Exception as e:
         return jsonify({"error": str(e)}), 404
 

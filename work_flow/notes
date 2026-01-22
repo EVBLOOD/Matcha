@@ -8,24 +8,6 @@
     Suggestions page
     Date/Event Scheduling: Implement event/date scheduling feature.
 
-- TO THINK ABOUT :
-    ON UPDATE :
-        - user tags mannagement
-        - user tags maybe should be separated than other logic..
-        - photos management maybe should be separated than other logic..
-
-
-- Validate the data input for a user : = I think it doesn't work I should check again =
-    - username
-    - first and last names
-    - paragragh of bio
-    - tags
-
-
-- errors displaying and loadings
-
-- Profile and it's infos update 
-
 -> backend =? Password change protect to defeculte pass
 
 
@@ -33,8 +15,6 @@
 
 
 profile => 
- 
-
 
 
 - loadings add
@@ -46,7 +26,6 @@ profile =>
 - explore filter when one is open close the others
 - Implement the full search
 
-- delete pictues when updating them successfully!
 
 
 - BONUS: pictues
@@ -57,11 +36,14 @@ mark things as read.
 
 
 to do to call it end of project:
+- Explore -> like should work - profiles I like shouldn't be suggested - integrate the sort and filter backend -> I don't know if I should list all or add pagination tbh
+- suggestion -> like should work - profiles I like shouldn't be suggested - integrate the sort and filter backend
+
+
+
 - adding the pictues bonus
 
 - event should be coded all to intgrate it to my untested backend!
-- Explore -> like should work - profiles I like shouldn't be suggested - integrate the sort and filter backend -> I don't know if I should list all or add pagination tbh
-- suggestion -> like should work - profiles I like shouldn't be suggested - integrate the sort and filter backend
 
 
 - Status -  last seen should be fixed in profile - and is online too
