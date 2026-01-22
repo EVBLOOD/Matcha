@@ -65,7 +65,7 @@
                             <p>{{ event.message }}</p>
                         </div>
                     </div>
-                    <div class="status">
+                    <div class="status" v-if="event.type === 'sender'">
                         <span class="pending" v-if="event.status === 'pending'">
                             <img src="/img/MessageEvent.svg" alt="pending" />
                             <p>Pending</p>
@@ -75,9 +75,17 @@
                             <p>Accepted</p>
                         </span>
                         <span class="declined" v-else-if="event.status === 'declined'">
-                            <img src="/img/MessageEvent.svg" alt="pending" />
+                            <img src="/img/MessageEvent.svg" alt="declined" />
                             <p>Declined</p>
                         </span>
+                    </div>
+                    <div class="confirmation" v-if="event.type === 'receiver'">
+                        <button v-if="event.status === 'pending'" class="btn-decline">
+                            <img src="/img/DeclineEvent.svg" alt="decline" />
+                        </button>
+                        <button v-if="event.status === 'pending'" class="btn-accept">
+                            <img src="/img/AcceptEvent.svg" alt="accept" />
+                        </button>
                     </div>
                 </div>
             </div>
@@ -135,14 +143,16 @@
             background: $components-background-color;
             padding: 3rem 2rem;
             border-radius: 8px;
-            display: flex;
+            display: grid;
+            grid-template-columns: max-content 1fr min-content;
             align-items: center;
-            justify-content: space-between;
+            // justify-content: space-between;
 
             .users {
                 display: flex;
                 gap: 0.5rem;
                 align-items: center;
+                
 
                 .user {
                     display: flex;
@@ -157,11 +167,11 @@
             }
 
             .details {
-                flex: 1;
+                // flex: 1;
                 margin-left: 1rem;
                 display: flex;
-                gap: 10px;
-
+                gap: 20%;
+                // width: 100%;
                 .info {
                     display: flex;
                     align-items: center;
@@ -188,6 +198,37 @@
                 .accepted {
                     background: #E2BDF6;
                     color: #382343;
+                }
+            }
+
+            .confirmation {
+                display: flex;
+
+                button{
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    margin-left: 10px;
+                    border-radius: 10px;
+                    height: 60px;
+                    width: 60px;
+                    transition: 0.3s;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .btn-accept {
+                    background-color: #BB85D7;
+                }
+                
+                .btn-decline {
+                    background: $components-background-color;
+                }
+
+                button:hover {
+                    filter: brightness(0.9);
+                    transition: 0.3s;
                 }
             }
         }
