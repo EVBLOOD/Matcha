@@ -71,7 +71,7 @@ const clickLogOut = async () => {
                     <span>Suggestions</span>
                 </RouterLink>
 
-                <RouterLink class="link" to="/suggestions">
+                <RouterLink class="link" to="/events">
                     <img src="/img/eventMenuIcon.svg" alt="" />
                     <span>Events</span>
                 </RouterLink>

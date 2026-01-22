@@ -253,7 +253,10 @@ const go_to = (id: number) => {
                     </div>
                 </div>
             </div>
-            <button class="btn-call-video" @click="startCall"><img src="/img/videoCall.svg" alt="video call">Video Call</button>
+            <div class="buttons">
+                <button class="btn-propose-date"><img src="/img/ProposeDate.svg" alt="video call">Propose a Date</button>
+                <button class="btn-call-video" @click="startCall"><img src="/img/videoCall.svg" alt="video call"></button>
+            </div>
         </div>
         <div v-if="conversationMessages" class="messages" ref="messagesContainer">
             <div v-for="msg in conversationMessages" :key="msg.id"
@@ -447,6 +450,20 @@ const go_to = (id: number) => {
     flex-direction: column;
     width: 100%;
     gap: 6px;
+}
+
+.buttons{
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0
+}
+
+.btn-propose-date {
+    @extend .btn;
+    color: #592F6F;
+    flex-shrink: 0;
+    background-color: #C39FD8;
+    gap: 8px;
 }
 
 .btn-call-video {
