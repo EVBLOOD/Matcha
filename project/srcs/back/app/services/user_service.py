@@ -11,15 +11,32 @@ from app.services.user_interactions_service import UserInteractionsService
 from app.services.user_interests_service import UserInterestsService
 
 from zxcvbn import zxcvbn
-
+import os
 
 class UserService:
+
+    _english_words = set()
+    dict_path = "/usr/share/dict/words"
+    
+    if os.path.exists(dict_path):
+        with open(dict_path, "r") as f:
+            _english_words = {line.strip().lower() for line in f if len(line.strip()) > 3}
 
     @staticmethod
     def validate_password_strength(password: str, user_inputs: list = None) -> None:
         if user_inputs is None:
             user_inputs = []
-            
+        
+        password_lower = password.lower()
+        
+        if password_lower in UserService._english_words:
+            raise ValueError("Password cannot be a single common dictionary word.")
+        
+        # if user_inputs:
+        #     for info in user_inputs:
+        #         if len(info) > 2 and info.lower() in password_lower:
+        #             raise ValueError(f"Password contains personal information")
+        
         result = zxcvbn(password, user_inputs=user_inputs)
         
         if result['score'] < 3:
@@ -104,6 +121,12 @@ class UserService:
     @staticmethod
     def change_password(user_id: int, password: str, session_id: str) :
         # TODO: check password 
+        user = UserService.get_user(user_id)
+        print(user.first_name, flush=True)
+        UserService.validate_password_strength(
+            password, 
+            user_inputs=[user.username, user.email, user.first_name, user.last_name]
+        )
         UserRepository.update_password(user_id=user_id, new_password=password)
         print("done", flush=True)
         AuthService.user_session_changed_role(user_id=user_id, session_id=session_id)
@@ -191,6 +214,11 @@ class UserService:
     def get_user_location(user_id: int) :
         user = User(*UserRepository.find_by_id(user_id))
         return {"latitude": user.latitude, "longitude": user.longitude}
+
+
+    def get_user(user_id: int) :
+        user = User(*UserRepository.find_by_id(user_id))
+        return user
 
     @staticmethod
     def get_user_full_name(user_id: int) :

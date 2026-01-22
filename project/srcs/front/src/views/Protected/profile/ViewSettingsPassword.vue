@@ -5,6 +5,7 @@ import { ref } from 'vue'
 import UserService from '@/api/services/UserService'
 import { useRouter } from 'vue-router'
 import axios, { AxiosError } from 'axios';
+import { toast } from '@/composables/useToast';
 
 const passWord = ref('');
 const passWordConf = ref('');
@@ -15,6 +16,10 @@ interface BackendError {
   errors?: any[];
 }
 
+
+interface ValidationErrors {
+  [key: string]: string[];
+}
 const isLoading = ref(false);
 const error = ref<null | string | any[]>(null);
 
@@ -25,10 +30,25 @@ const clickSave = async (e: Event) => {
        router.push('/')
      } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Registration failed for unknown reason';
+          error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Update password failed for unknown reason';
         } else {
             error.value = 'Change failed for unknown reason'
         }
+        if (Array.isArray(error.value)) {
+      error.value.map((err) => {
+        toast('error', 'Update password failed', err as string);
+      })
+    } else if (typeof (error.value) === 'string') {
+      toast('error', 'Update password failed', error.value);
+    } else if (error.value && typeof (error.value) === 'object') {
+      const errorData = error.value as ValidationErrors
+      Object.entries(errorData).map(([field, messages]) => {
+        messages.map((msg) => {
+          toast('error', 'Update password failed', msg);
+        })
+        return messages.map(msg => msg.toUpperCase());
+      });
+    }
      } finally {
        isLoading.value = false;
      }
