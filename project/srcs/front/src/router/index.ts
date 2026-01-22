@@ -33,6 +33,7 @@ import OauthPage from '@/views/OauthPage.vue';
 
 import useUserStore from '@/stores/user';
 import { useSocketStore } from '@/stores/socket';
+import EventPage from '@/views/Protected/EventPage.vue';
 
 
 const router = createRouter({
@@ -128,6 +129,12 @@ const router = createRouter({
             }
           ]
         },
+        {
+          path: '/events',
+          name: 'Events',
+          component: EventPage,
+          meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Events' },
+        }
       ]
     },
     {
