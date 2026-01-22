@@ -233,6 +233,47 @@ const go_to = (id: number) => {
 
 }
 
+
+
+import EventService from '@/api/services/EventService';
+import type { dateProposing } from '@/types/helpers';
+
+interface BackendError {
+  error: string;
+}
+const partner_id = ref(1);
+const location = ref('');
+const time_str = ref('');
+const datetime_str = ref('');
+const date_str = ref('');
+const description = ref('');
+
+const AddEvents = async () => {
+    if (!conversationData.value) return
+  isLoading.value = true;
+  try {
+    console.log(date_str.value + " " + time_str.value)
+    await EventService.propose_date({
+        partner_id: conversationData.value[0].peer_id || -1,
+        location: location.value,
+        datetime_str:(new Date(date_str.value + " " + time_str.value)).toISOString(),
+        description: description.value
+    });
+  } catch(err : unknown) {
+    if (axios.isAxiosError(err)) {
+        isError.value = (err.response?.data as BackendError)?.error;
+    }
+    else {
+        isError.value = "Registration failed for unknown reason'";
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
+const send_invite = async () => {
+    await AddEvents()
+}
+
 </script>
 
 <template>
@@ -330,15 +371,15 @@ const go_to = (id: number) => {
             </div>
             <div class="content">
                 <div class="date_time">
-                    <Input name="date" variant="popup" label="Select Date" type="date" />
-                    <Input name="time" variant="popup" label="Time" type="time" />
+                    <Input v-model="date_str" name="date" variant="popup" label="Select Date" type="date" />
+                    <Input  v-model="time_str" name="time" variant="popup" label="Time" type="time" />
                 </div>
-                <Input name="location" variant="popup" label="Location" type="text" placeholder="Location" />
-                <Input name="message" variant="popup" label="Message" type="text" placeholder="Message" />
+                <Input v-model="location" name="location" variant="popup" label="Location" type="text" placeholder="Location" />
+                <Input v-model="description" name="description" variant="popup" label="Message" type="text" placeholder="Message" />
             </div>
             <div class="footer">
                 <button class="btn-cancel-invite" @click="ProposeDateVisible = false">Cancel</button>
-                <button class="btn-send-invite">Send Invite</button>
+                <button class="btn-send-invite" @click="send_invite()">Send Invite</button>
             </div>
             
         </div>

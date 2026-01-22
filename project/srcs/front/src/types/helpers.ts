@@ -13,3 +13,11 @@ export interface insertedPictures {
     id: string;
     url: string;
 }
+
+export interface dateProposing {
+    partner_id: number;
+    location: string;
+    datetime_str: string;
+    description: string;
+}
+

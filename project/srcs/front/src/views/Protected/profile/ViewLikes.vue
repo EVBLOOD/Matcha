@@ -87,7 +87,7 @@ const OnclickOpenProfile = (user_id: number) => {
 </script>
 
 <template>
-    <div v-if="!isLoading && !isError && !LikesData" class="contenty">
+    <div v-if="!isLoading && !isError && (!LikesData || LikesData.length == 0)" class="contenty">
         Likes list is empty 
     </div>
     <div v-if="!isLoading && !isError && LikesData" class="contenty">

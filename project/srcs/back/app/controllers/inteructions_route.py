@@ -22,7 +22,7 @@ def getBlockList():
 @Security.auth_guard()
 def getMyLikes():
     try :
-        return jsonify({"data": UserInteractionsService.get_all_ot_likes_given(user_id=request.user_id)})
+        return jsonify({"data": UserInteractionsService.get_all_likes_got(user_id=request.user_id)})
     except Exception as e:
         return jsonify({"error": str(e)}), 404
 

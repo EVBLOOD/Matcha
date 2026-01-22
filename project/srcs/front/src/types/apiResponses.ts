@@ -136,6 +136,22 @@ export interface ViewsListResponse {
     profile_picture_url: UserProfilePicturesResponse[],
     viewed_at: any
 }
+
+
+export interface UserDatesResponse {
+    id: number,
+    proposer_id: number,
+    partner_id: number,
+    proposer_username: string,
+    partner_username: string,
+    proposer_avatar: UserProfilePicturesResponse[],
+    partner_avatar: UserProfilePicturesResponse[],
+    location: string,
+    scheduled_at: any,
+    description: string,
+    status: string,
+}
+
 // export interface UserProfile extends User {
 //     bio: string;
 //     interests: string[];

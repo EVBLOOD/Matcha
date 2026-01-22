@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, computed } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
 
     const activeTab = ref('all');
     const events = ref([
@@ -22,7 +22,40 @@
     function setActive(tab: string) {
         activeTab.value = tab;
     }
-    
+
+import axios, { AxiosError } from 'axios';
+import type { UserDatesResponse } from '@/types/apiResponses'
+
+import EventService from '@/api/services/EventService';
+const isLoading = ref(true);
+const isError = ref<string | null>(null);
+
+interface BackendError {
+  error: string;
+}
+
+const EventsData = ref<UserDatesResponse[] | null>(null);
+const fetchEvents = async () => {
+  isLoading.value = true;
+  try {
+    const { data } = await EventService.get_my_dates();
+
+    console.log(`data ${data.data}`)
+    if (data.data) EventsData.value = [...data.data];
+  } catch(err : unknown) {
+    if (axios.isAxiosError(err)) {
+        isError.value = (err.response?.data as BackendError)?.error;
+    }
+    else {
+        isError.value = "Registration failed for unknown reason'";
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(fetchEvents);    
+
 </script>
 
 <template>
