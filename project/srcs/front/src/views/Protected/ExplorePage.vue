@@ -80,6 +80,25 @@ const get_tags = (value: any) => {
     query_base.tags = value
 }
 
+
+const reset_min_age = () => {
+    delete query_base.age_min
+}
+const reset_max_age = () => {
+    delete query_base.age_max
+}
+const reset_locations = () => {
+    delete query_base.location
+}
+
+const reset_fame = () => {
+    console.log("LOL")
+    delete query_base.fame_min
+}
+const reset_tags = () => {
+    delete query_base.tags
+}
+
 // const PageData = ref<any | null>(null);
 
 const handleSubmit = async () => {
@@ -111,11 +130,11 @@ const handleSubmit = async () => {
         <div class="search_holder">
             <h2 style="margin-bottom: 2%;font-weight: normal;">Filters</h2>
             <div class="inner_search_bar">
-                <SearchBarElem :firstElem="true" elemName="Age" @AgeMin-selected="get_min_age" @AgeMax-selected="get_max_age"/>
+                <SearchBarElem :firstElem="true" elemName="Age" @AgeMin-selected="get_min_age" @AgeMax-selected="get_max_age" @AgeMin-reset="reset_min_age" @AgeMax-reset="reset_max_age"/>
                 <SearchBarElem elemName="Location"
-                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" @DisMax-selected="get_locations"/>
-                <SearchBarElem elemName="Fame" @fame-selected="get_fame" />
-                <SearchBarElem elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" @tags-selected="get_tags"/>
+                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" @DisMax-selected="get_locations" @DisMax-reset="reset_locations"/>
+                <SearchBarElem elemName="Fame" @fame-selected="get_fame" @fame-reset="reset_fame" />
+                <SearchBarElem elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" @tags-selected="get_tags" @tags-reset="reset_tags"/>
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>

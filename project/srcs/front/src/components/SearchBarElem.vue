@@ -13,7 +13,7 @@ const props = defineProps({
     fame: Array
 });
 
-const emit = defineEmits(['AgeMin-selected', 'AgeMax-selected', 'DisMax-selected', 'fame-selected', 'tags-selected']);
+const emit = defineEmits(['AgeMin-selected', 'AgeMax-selected', 'DisMax-selected', 'fame-selected', 'tags-selected', 'AgeMin-reset', 'AgeMax-reset', 'DisMax-reset', 'fame-reset', 'tags-reset']);
 
 const isMenuOpen = ref(false)
 
@@ -188,17 +188,11 @@ const displayCancel = () => {
     selectedIntersts.value = []
     selectedIntersts.value = []
 
-
-    emit('AgeMin-selected', AgeMin.value);
-    emit('AgeMax-selected', AgeMax.value);
-
-    emit('DisMax-selected', DisMax.value);
-    
-    
-    emit('fame-selected', selectedFame.value);
-    
-    emit('tags-selected', selectedIntersts.value);
-
+    emit('AgeMin-reset');
+    emit('AgeMax-reset');
+    emit('DisMax-reset');
+    emit('fame-reset');
+    emit('tags-reset');
 }
 </script>
 
