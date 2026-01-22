@@ -104,6 +104,9 @@ const reset_tags = () => {
 const handleSubmit = async () => {
     isLoading.value = true;
     try {
+        if (selectedChoice.value != '') query_base.sort = selectedChoice.value
+        else delete query_base.sort
+
         const query = new URLSearchParams(query_base as any).toString();
         const { data } = await SuggestionsService.getSearch(query);
         console.log(data)
@@ -122,6 +125,30 @@ const handleSubmit = async () => {
         isLoading.value = false;
     }
 }
+const selectedChoice = ref<string | null>(null);
+
+const sortHandeling = (value: any) => {
+    console.log(value)
+    if (!selectedChoice.value) {
+        selectedChoice.value = value
+        return
+    }
+
+    if (selectedChoice.value == value) selectedChoice.value = ''
+    else selectedChoice.value = value
+}
+
+const openMenuName = ref(null);
+
+const toggleMenu = (name: any) => {
+    openMenuName.value = openMenuName.value === name ? null : name;
+};
+
+const currentSort = ref(null);
+
+const toggleCurrentSort = (name: any) => {
+    currentSort.value = currentSort.value === name ? null : name;
+};
 
 </script>
 
@@ -130,11 +157,11 @@ const handleSubmit = async () => {
         <div class="search_holder">
             <h2 style="margin-bottom: 2%;font-weight: normal;">Filters</h2>
             <div class="inner_search_bar">
-                <SearchBarElem :firstElem="true" elemName="Age" @AgeMin-selected="get_min_age" @AgeMax-selected="get_max_age" @AgeMin-reset="reset_min_age" @AgeMax-reset="reset_max_age"/>
-                <SearchBarElem elemName="Location"
+                <SearchBarElem :sortOrNot="currentSort === 'Age'" @toggle_2="toggleCurrentSort('Age')" :isMenuOpen="openMenuName === 'Age'" @toggle_1="toggleMenu('Age')" @selected_choice="(value) => { sortHandeling(value) }" :firstElem="true" elemName="Age" @AgeMin-selected="get_min_age" @AgeMax-selected="get_max_age" @AgeMin-reset="reset_min_age" @AgeMax-reset="reset_max_age"/>
+                <SearchBarElem :sortOrNot="currentSort === 'Location'" @toggle_2="toggleCurrentSort('Location')"  :isMenuOpen="openMenuName === 'Location'" @toggle_1="toggleMenu('Location')" @selected_choice="(value) => { sortHandeling(value) }" elemName="Location"
                     :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" @DisMax-selected="get_locations" @DisMax-reset="reset_locations"/>
-                <SearchBarElem elemName="Fame" @fame-selected="get_fame" @fame-reset="reset_fame" />
-                <SearchBarElem elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" @tags-selected="get_tags" @tags-reset="reset_tags"/>
+                <SearchBarElem :sortOrNot="currentSort === 'Fame'" @toggle_2="toggleCurrentSort('Fame')"  :isMenuOpen="openMenuName === 'Fame'" @toggle_1="toggleMenu('Fame')" @selected_choice="(value) => { sortHandeling(value) }" elemName="Fame" @fame-selected="get_fame" @fame-reset="reset_fame" />
+                <SearchBarElem :sortOrNot="currentSort === 'Tags'" @toggle_2="toggleCurrentSort('Tags')"  :isMenuOpen="openMenuName === 'Tags'" @toggle_1="toggleMenu('Tags')" @selected_choice="(value) => { sortHandeling(value) }" elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" @tags-selected="get_tags" @tags-reset="reset_tags"/>
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>

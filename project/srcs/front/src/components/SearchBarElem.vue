@@ -10,12 +10,19 @@ const props = defineProps({
     elemName: String, // Age | Location | Fame | Tags
     tagsList: Array<String>,
     locationList: Array<String>,
-    fame: Array
+    fame: Array,
+    isMenuOpen: {
+        type: Boolean,
+        default: false
+    }, sortOrNot: {
+        type: Boolean,
+        default: false
+    }
 });
 
-const emit = defineEmits(['AgeMin-selected', 'AgeMax-selected', 'DisMax-selected', 'fame-selected', 'tags-selected', 'AgeMin-reset', 'AgeMax-reset', 'DisMax-reset', 'fame-reset', 'tags-reset']);
+const emit = defineEmits(['toggle_1', 'toggle_2', 'AgeMin-selected', 'AgeMax-selected', 'DisMax-selected', 'fame-selected', 'tags-selected', 'AgeMin-reset', 'AgeMax-reset', 'DisMax-reset', 'fame-reset', 'tags-reset', 'selected_choice']);
 
-const isMenuOpen = ref(false)
+// const isMenuOpen = ref(false)
 
 
 // if (props.elemName === 'Age') 
@@ -167,7 +174,8 @@ const valueDisplay = computed(
 );
 
 const handleClick = () => { 
-    isMenuOpen.value = !isMenuOpen.value;
+    emit('toggle_1')
+    // isMenuOpen.value = !isMenuOpen.value;
 };
 
 const checkListExists = (lt: String, elemName: string) => {
@@ -194,6 +202,16 @@ const displayCancel = () => {
     emit('fame-reset');
     emit('tags-reset');
 }
+
+// const sortOrNot = ref(false)
+const selectSort = () => {
+    const action = `${props.elemName?.toLowerCase()}`
+    emit('selected_choice', action);
+    emit('toggle_2');
+};
+
+
+
 </script>
 
 <template>
@@ -203,13 +221,19 @@ const displayCancel = () => {
         <div class="search_type">
             <div class="label_input">
                 <h3  @click="handleClick()">{{ elemName || "evblood" }}</h3>
+                <div>
+                    <input :class="sortOrNot ? 'checked' : ''" type="image" src="/img/arrowDownIcon.svg" @click="selectSort"/>
+                </div>
+            </div>
+            <div  class="label_input">
+                
+                <div v-if="elemName !== 'Tags'&& elemName !== 'Fame'">{{ valueDisplay }}</div>
+                <div v-if="elemName === 'Tags'" style="display: flex; gap: 2px;">
+                    <span v-for="val in valueDisplay">{{ elemName === 'Tags' ? `${val}` : val }}</span>
+                </div>
+                <Fame v-if="elemName === 'Fame'" :initialFameScore="selectedFame"/>
                 <input v-if="toggle" type="image" src="/img/removeFilterIcon.svg" @click="displayCancel"/>
             </div>
-            <div v-if="elemName !== 'Tags'&& elemName !== 'Fame'">{{ valueDisplay }}</div>
-            <div v-if="elemName === 'Tags'" style="display: flex; gap: 2px;">
-                <span v-for="val in valueDisplay">{{ elemName === 'Tags' ? `${val}` : val }}</span>
-            </div>
-            <Fame v-if="elemName === 'Fame'" :initialFameScore="selectedFame"/>
         </div>
 
 
@@ -251,6 +275,12 @@ const displayCancel = () => {
 </template>
 
 <style lang="scss" scoped>
+
+.checked {
+    filter: invert(100%);
+    opacity: 0.30;
+}
+
 .div_breaker {
     position: relative;
     display: flex;
