@@ -8,6 +8,7 @@ import userUserStore from '@/stores/user'
 import axios, { AxiosError } from 'axios';
 import { useSocketListener } from '@/composables/useSocketChat'
 import { formatDistanceToNow } from 'date-fns';
+import Input from '@/components/Input.vue';
 
 interface BackendError {
     error: string;
@@ -26,7 +27,7 @@ const conversationMessages = ref<MessagesResponse[] | null>(null);
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 const newMessage = ref('')
-
+const ProposeDateVisible = ref(false);
 
 
 const fetchConversations = async () => {
@@ -254,7 +255,7 @@ const go_to = (id: number) => {
                 </div>
             </div>
             <div class="buttons">
-                <button class="btn-propose-date"><img src="/img/ProposeDate.svg" alt="video call">Propose a Date</button>
+                <button class="btn-propose-date" @click="ProposeDateVisible = !ProposeDateVisible"><img src="/img/ProposeDate.svg" alt="video call">Propose a Date</button>
                 <button class="btn-call-video" @click="startCall"><img src="/img/videoCall.svg" alt="video call"></button>
             </div>
         </div>
@@ -321,9 +322,114 @@ const go_to = (id: number) => {
             <!-- <button @click="startCall">Start Call</button> -->
         </div>
     </div>
+    <div v-if="ProposeDateVisible" class="propose-date">
+        <div class="popup">
+            <div class="header">
+                <h2>Propose a Date</h2>
+                <span class="btn-close">x</span>
+            </div>
+            <div class="content">
+                <div class="date_time">
+                    <Input name="date" variant="popup" label="Select Date" type="date" />
+                    <Input name="time" variant="popup" label="Time" type="time" />
+                </div>
+                <Input name="location" variant="popup" label="Location" type="text" placeholder="Location" />
+                <Input name="message" variant="popup" label="Message" type="text" placeholder="Message" />
+            </div>
+            <div class="footer">
+                <button class="btn-cancel-invite" @click="ProposeDateVisible = false">Cancel</button>
+                <button class="btn-send-invite">Send Invite</button>
+            </div>
+            
+        </div>
+    </div>
 </template>
 
 <style lang="scss" scoped>
+
+.btn {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-family: $font-main;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  color: white;
+  background-color: #9566B0;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+
+.propose-date{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 999;
+    .popup{
+        position: absolute;
+        background-color: #E2BDF6;
+        width: 500px;
+        padding: 30px;
+        border-radius: 10px;
+        // display: flex;
+        // flex-direction: column;
+        // align-items: center;
+        color: #592F6F;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        .header{
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+            border-bottom: 0.4px solid #6E597B;
+            .btn-close{
+                cursor: pointer;
+            }
+                padding-bottom: 15px;
+            
+        }
+        .content{
+            width: 100%;
+            .date_time{
+                display: flex;
+                gap: 10px;
+            }
+        }
+        .footer{
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+            .btn-send-invite {
+                @extend .btn;
+            }
+            .btn-cancel-invite {
+                @extend .btn;
+                background-color: #E8DCEF;
+                color: #592F6F;
+                &:hover {
+                    background-color: #d5c1e0;
+                }
+            }
+        }
+    }
+}
+
 .video-call {
     position: fixed;
     top: 0;
@@ -391,27 +497,6 @@ const go_to = (id: number) => {
     font-weight: 500;
     font-size: 13px;
     margin-bottom: 25px;
-}
-
-.btn {
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-family: $font-main;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  font-weight: 600;
-  color: white;
-  background-color: #9566B0;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    filter: brightness(1.1);
-  }
 }
 
 .btn-accept {

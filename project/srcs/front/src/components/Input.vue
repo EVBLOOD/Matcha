@@ -9,6 +9,10 @@ const props = defineProps({
     type: {
         type: String,
         default: 'text'
+    },
+    variant: {
+        type: String,
+        default: 'default'
     }
 })
 defineEmits(['update:modelValue']);
@@ -17,7 +21,12 @@ defineEmits(['update:modelValue']);
 <template>
     <div>
         <label :for="id"> {{ label }}</label>
-        <input :value="modelValue" :name="name" :type="type" :placeholder="placeholder"
+        <input 
+            :class="`input--${variant}`"
+            :value="modelValue" 
+            :name="name" 
+            :type="type" 
+            :placeholder="placeholder"
             @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)">
     </div>
 </template>
@@ -36,6 +45,17 @@ input {
     font-family: $font-main;
     border: 1px solid $border-color;
 }
+
+.input--popup {
+    background: transparent;
+    color: #592F6F;
+    border-color: #BD82DD;
+}
+
+.input--popup::placeholder {
+    color: #C2A6D2;
+}
+
 div {
     display: flex;
     flex-direction: column;
