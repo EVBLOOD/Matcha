@@ -89,9 +89,30 @@ class SuggestionsService :
         if args.get('age_max'):
             query_body += " AND EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) <= %s"; params.append(args['age_max'])
         if args.get('fame_min'):
-            query_body += " AND u.fame_rating >= %s"; params.append(args['fame_min'])
+            raw_rating = max(0,(float(args['fame_min']) - 1) * (5000 / 4))
+            query_body += " AND u.fame_rating >= %s"; params.append(int(raw_rating))
         if args.get('location'):
             query_body += " AND (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + sin(radians(cud.latitude)) * sin(radians(u.latitude)))) <= %s"; params.append(args['location'])
+        
+        if args.get('tags'):
+            tags = args.get('tags').split(',')
+            print(tags, flush=True)
+
+            placeholders = ", ".join(["%s"] * len(tags))
+            
+            query_body += f""" 
+                AND u.id IN (
+                    SELECT ui.user_id 
+                    FROM user_interests ui 
+                    JOIN tags t ON ui.tag_id = t.id 
+                    WHERE t.name IN ({placeholders})
+                )
+            """
+            print(tags, flush=True)
+
+            params.extend(tags)
+            print(params, flush=True)
+        
         sort_map = {
             "age": "age ASC",
             "location": "distance ASC",

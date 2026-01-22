@@ -153,7 +153,7 @@ const valueDisplay = computed(
         if (props.elemName === 'Age') {
             return `${AgeMin.value} - ${AgeMax.value}`
         } else if (props.elemName === 'Location') {
-            return `${DisMax.value}`
+            return `${DisMax.value} Km`
         } else if (props.elemName === 'Fame') {
             return selectedFame.value.toFixed(1);
         } else if (props.elemName === 'Tags') {

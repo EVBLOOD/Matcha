@@ -131,17 +131,19 @@ const handleSubmit = async () => {
         isLoading.value = false;
     }
 }
-const selectedChoice = ref<string | null>(null);
+const selectedChoice = ref<string>('');
 
-const sortHandeling = (value: any) => {
-    console.log(value)
-    if (!selectedChoice.value) {
+const sortHandeling = async (value: any) => {
+    if (selectedChoice.value == '') {
         selectedChoice.value = value
+        await handleSubmit()
         return
     }
 
     if (selectedChoice.value == value) selectedChoice.value = ''
     else selectedChoice.value = value
+    await handleSubmit()
+
 }
 
 const openMenuName = ref(null);
@@ -152,7 +154,7 @@ const toggleMenu = (name: any) => {
 
 const currentSort = ref(null);
 
-const toggleCurrentSort = (name: any) => {
+const toggleCurrentSort =  (name: any) => {
     currentSort.value = currentSort.value === name ? null : name;
 };
 
