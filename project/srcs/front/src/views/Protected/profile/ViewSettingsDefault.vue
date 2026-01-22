@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 import { useSocialStore } from '@/stores/profile';
 import UserService from '@/api/services/UserService';
 import axios, { AxiosError } from 'axios';
+import { toast } from '@/composables/useToast';
 
 const profile = useSocialStore()
 
@@ -22,8 +23,12 @@ const birthdate = ref(formattedDate);
 const router = useRouter()
 
 interface BackendError {
-  error?: string;
-  errors?: any[];
+    error?: string;
+    errors?: any[];
+}
+
+interface ValidationErrors {
+    [key: string]: string[];
 }
 
 const isLoading = ref(false);
@@ -39,17 +44,38 @@ const clickSave = async (e: Event) => {
             'username': userName.value,
             'birthdate': birthdate.value
         }
-       await UserService.change_infos_top(payload);
-       router.push('/')
-     } catch (err: unknown) {
+        await UserService.change_infos_top(payload);
+        toast('success', 'Personal infos update success', "Personal infos were updated successfuly!");
+        router.push('/')
+    } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Registration failed for unknown reason';
+            error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Registration failed for unknown reason';
         } else {
             error.value = 'Change failed for unknown reason'
         }
-     } finally {
-       isLoading.value = false;
-     }
+        if (axios.isAxiosError(err)) {
+            error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Personal infos update failed for unknown reason';
+        } else {
+            error.value = 'Change failed for unknown reason'
+        }
+        if (Array.isArray(error.value)) {
+            error.value.map((err) => {
+                toast('error', 'Personal infos update failed', err as string);
+            })
+        } else if (typeof (error.value) === 'string') {
+            toast('error', 'Personal infos update failed', error.value);
+        } else if (error.value && typeof (error.value) === 'object') {
+            const errorData = error.value as ValidationErrors
+            Object.entries(errorData).map(([field, messages]) => {
+                messages.map((msg) => {
+                    toast('error', 'Personal infos update failed', msg);
+                })
+                return messages.map(msg => msg.toUpperCase());
+            });
+        }
+    } finally {
+        isLoading.value = false;
+    }
 }
 </script>
 

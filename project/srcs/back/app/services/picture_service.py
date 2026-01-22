@@ -60,6 +60,20 @@ class PictureService:
         file.save(file_path)
         return filename
 
+
+
+    def remove_path(id, url) :
+        print(url, flush=True)
+        try :
+            if PicturesRepository.delete(id) :
+                file_path = os.path.join(Config.UPLOAD_FOLDER, url)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                return True
+            return None
+        except :
+            return None
+
     @classmethod
     def proccess_images(cls, list_files, user_id, injected_cursor = None) :
         profile = False
@@ -75,8 +89,44 @@ class PictureService:
             tmp = cls.save_file(list_files[file])
             tmp = Picture(id=0, user_id=user_id,url=tmp, is_profile_picture=(True if file == "profile" else False))
             PicturesRepository.insert_picture(tmp, injected_cursor)
-        
 
+    @classmethod
+    def update_images(cls, list_files, user_id, injected_cursor = None) :
+        list_tmp = []
+        current_pictures = len(PictureService.find_many_by_user_id(user_id))
+        if len(list_files) + current_pictures > 5:
+            raise ValueError("You can't upload this much of pictures!")
+        profile = False
+        for file in list_files :
+            if file == 'profile' :
+                profile = True
+            cls.validate_image(list_files[file].stream, list_files[file].filename)
+
+        for file in list_files :
+            tmp_file = cls.save_file(list_files[file])
+            tmp = Picture(id=0, user_id=user_id,url=tmp_file, is_profile_picture=(True if file == "profile" else False))
+
+            if file == "profile" :
+                profile_url = tmp_file
+                PicturesRepository.update_picture_profile(tmp_file, user_id, injected_cursor)
+                print("current_pictures", flush=True)
+            else :
+                PicturesRepository.insert_picture(tmp, injected_cursor)
+            list_tmp.append(tmp_file)
+
+        if profile :
+            return {"profile": True, "url": profile_url, "failed": list_tmp} 
+
+        return {"profile": False, "url": "tmp", "failed": list_tmp} 
+
+    @classmethod
+    def find_many_by_user_id(cls, user_id) :
+        return PicturesRepository.find_many_by_user_id(user_id)
+
+
+    @classmethod
+    def find_by_url_nd_user_id(cls, url: str, user_id: str) :
+        return PicturesRepository.find_by_url_nd_user_id(url, user_id)
 
     # def is_malware(file_stream):
     #     file_stream.seek(0)

@@ -180,6 +180,9 @@ class UserService:
                     raise ValueError("You must be at least 18 years old")
 
         user = User(*UserRepository.find_by_id(user_id))
+        user_username = UserRepository.find_by_username(username)
+        if user_username and user_username.id != user.id :
+            raise ValueError ("username Not available!")
         if user.email != email :
             UserService.update_user_email_request(user_id, email, session_id)
         if not (username == user.username and first_name == user.first_name and last_name == user.last_name and birthdate == user.birthdate) :

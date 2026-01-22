@@ -35,12 +35,13 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
-const initialImage =  pictures_handler(profile.activeProfile?.pictures.filter(pic => pic.is_profile_picture)[0].url as string);
+const initialImage = pictures_handler(profile.activeProfile?.pictures.filter(pic => pic.is_profile_picture)[0].url as string);
 const initialpictures = profile.activeProfile?.pictures.filter(img => !img.is_profile_picture).map(img => {
     return {
-    id: img.url,
-    url: pictures_handler(img.url as string)
-}})
+        id: img.url,
+        url: pictures_handler(img.url as string)
+    }
+})
 
 const selectedProfile = ref<File | null>(null);
 const selectedIntersts = ref<string[]>(profile.activeProfile?.interests || []);
@@ -49,38 +50,72 @@ const insertedPictures = ref<PicturesDisplying[]>([]);
 
 
 const router = useRouter()
+import { usePreciseLocation } from '@/composables/usePreciseLocation'
 
+const { getPreciseLocation, coords } = usePreciseLocation()
+import { toast } from '@/composables/useToast';
+
+interface ValidationErrors {
+  [key: string]: string[];
+}
 const handleSubmit = async () => {
-    // add protections
-    const formData = new FormData();
-
-    formData.append('biography', insertedBio.value || "");
-    formData.append('gender', selectedGender.value || "");
-    formData.append('sexual_preference', selectedOrientation.value || "");
-
-
-
-    formData.append('tags', selectedIntersts.value.join(';'));
-    if (selectedProfile.value) {
-        formData.append('profile', selectedProfile.value);
-    }
-
-    insertedPictures.value.forEach((img) => {
-        if (img.file) {
-            formData.append(img.id, img.file);
-        }
-    });
-
-    formData.append('location_set_by_user', `${false}`);
-
     try {
+        const locationResult = await getPreciseLocation();
+        const formData = new FormData();
+
+        formData.append('biography', insertedBio.value || "");
+        formData.append('gender', selectedGender.value || "");
+        formData.append('sexual_preference', selectedOrientation.value || "");
+
+
+
+        formData.append('tags', selectedIntersts.value.join(';'));
+        if (selectedProfile.value) {
+            formData.append('profile', selectedProfile.value);
+        }
+
+        insertedPictures.value.forEach((img) => {
+            if (img.file) {
+                formData.append(img.id, img.file);
+            }
+        });
+
+        if (coords.value.latitude !== null && coords.value.longitude !== null) {
+            formData.append('latitude', coords.value.latitude.toString());
+            formData.append('longitude', coords.value.longitude.toString());
+            formData.append('location_set_by_user', String(true));
+            console.log("locationResult is on")
+        } else {
+            formData.append('location_set_by_user', String(false));
+            console.log("locationResult is off")
+
+        }
         await ProfileService.updateProfile(formData);
         const user = useUserStore();
         await user.fetchUser();
+        
+        toast('success', 'Profile update', "Profile updated successfuly!");
 
         router.push('/')
-    } catch (error) {
-        console.error("Upload failed", error);
+    } catch (error: any) {
+
+        const error_print = error?.response?.data?.errors || error?.response?.data?.error || 'Profile updated failed for unknown reason';
+
+        if (Array.isArray(error_print)) {
+            error_print.map((err) => {
+                toast('error', 'Reset failed', err as string);
+            })
+        } else if (typeof (error_print) === 'string') {
+            toast('error', 'Reset failed', error_print);
+        } else if (error_print && typeof (error_print) === 'object') {
+            const errorData = error_print as ValidationErrors
+            Object.entries(errorData).map(([field, messages]) => {
+                messages.map((msg) => {
+                    toast('error', 'Reset failed', msg);
+                })
+                return messages.map(msg => msg.toUpperCase());
+            });
+        }
     }
 };
 
@@ -101,9 +136,11 @@ const handleTags = (tags: string[]) => {
     <div class="wraper">
         <div class="avatar_section">
             <div>
-                <PictureNdIcon :initialImage="initialImage" :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />
+                <PictureNdIcon :initialImage="initialImage" :height="150" :width="150" :readonly="false"
+                    @file-selected="handleAvatar" />
             </div>
-            <p class="full_name">{{profile.activeProfile?.user.first_name + " " + profile.activeProfile?.user.last_name}}</p>
+            <p class="full_name">{{ profile.activeProfile?.user.first_name + " " +
+                profile.activeProfile?.user.last_name}}</p>
         </div>
 
         <div class="gender_div">
@@ -119,12 +156,12 @@ const handleTags = (tags: string[]) => {
 
         <div class="orientation_div">
             <p>Orientation</p>
-            <Select :options="orientation" v-model="selectedOrientation" ></Select>
+            <Select :options="orientation" v-model="selectedOrientation"></Select>
         </div>
 
         <div class="interest_div">
             <p>Interest</p>
-            <TagsList @tags-selected="handleTags" :initialtags="availableTags" />
+            <TagsList @tags-selected="handleTags" :initialtags="availableTags" :update-mode="true" />
         </div>
 
         <div class="bio_div">
@@ -134,7 +171,7 @@ const handleTags = (tags: string[]) => {
 
         <div class="bio_div">
             <p>Photos</p>
-            <RenderPictures :initialpictures="initialpictures" @files-selected="handlePicures" />
+            <RenderPictures :update-mode="true" :initialpictures="initialpictures" @files-selected="handlePicures" />
         </div>
         <Button @click="handleSubmit" text="Save and Continue"></Button>
     </div>

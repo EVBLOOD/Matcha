@@ -108,11 +108,53 @@ class ProfileService:
     
     @staticmethod
     def update_profile(user_id: int, gender: str, sexual_preference: str,\
-                        biography: str, location_set_by_user: bool, latitude: float, longitude: float) :
-    # TODO: we should update this too location_set_by_user: bool, latitude: float, longitude: float
-        return ProfileRepository.update_profile(
-            Profile(user_id, gender, sexual_preference, biography)
-        )
+                        biography: str, location_set_by_user: bool, files_list, tags: str, latitude: float = 0, longitude: float = 0, ip: str = "") :
+        tags_list = {tag.strip() for tag in tags.split(';') if tag.strip()}    
+        if files_list and len(files_list) > 5 :
+            raise ValueError("Should provide 1-5 pictures")
+        TagsService.check_tag_name_valid(tags_list)
+
+        conn = None
+        injected_cursor = None
+        result_picures = None
+        try :
+            conn = Config.DB_instence.get_connection() 
+            injected_cursor = conn.cursor()
+
+            TagsService.update_tags(tags_list, user_id, injected_cursor)
+            if files_list and len(files_list) > 0:
+                result_picures = PictureService.update_images(files_list, user_id, injected_cursor)
+            print("pictures no please", flush=True)
+            if not location_set_by_user or (not latitude and not longitude) or \
+                not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+                result = ProfileService.initial_location(ip)
+                latitude = result["lat"]
+                longitude = result["lng"]
+            was_done = ProfileRepository.upsert_profile(
+                Profile(user_id, gender, sexual_preference, biography, location_set_by_user), injected_cursor
+            )
+
+            UserRepository.update_location(user_id, latitude, longitude, injected_cursor)
+            conn.commit()
+        except Exception as e:
+            conn.rollback()
+            if result_picures and result_picures['profile'] :
+                print(f"TO DO DELETE {result_picures['url']}", flush=True)
+            raise
+        finally:
+            if injected_cursor:
+                injected_cursor.close()
+            if conn:
+                Config.DB_instence.pool.putconn(conn)
+        return was_done
+    
+    @staticmethod
+    def remove_picture(user_id, filename) :
+        picture = PictureService.find_by_url_nd_user_id(filename, user_id)
+        print (picture, flush=True)
+        if picture and not picture.is_profile_picture:
+            return PictureService.remove_path(picture.id, picture.url)
+        return None
 
     @staticmethod
     def check_profile_filled(user_id: int) :

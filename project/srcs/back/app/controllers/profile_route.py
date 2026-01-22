@@ -15,6 +15,20 @@ profile_bp = Blueprint('profile_api', __name__, url_prefix='/profile')
 def serve_uploaded_image(filename):
     return send_from_directory(Config.UPLOAD_FOLDER, filename)
 
+@profile_bp.route('/remove_picture', methods=['POST'])
+@Security.auth_guard()
+def remove_image():
+    try :
+        body = request.get_json()
+        filename = body.get('filename', '').strip()
+        result = ProfileService.remove_picture(request.user_id, filename)
+
+        if not result :
+            return jsonify({"error": "Operation couldn't be made."}), 404
+        return jsonify({"data": result}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
+
 @profile_bp.route('/<int:user_id>', methods=['GET'])
 @Security.auth_guard()
 def get_profile(user_id) :
@@ -62,20 +76,30 @@ def create_profile() :
 @Security.auth_guard()
 def update_profile() :
     try :
-        body = request.get_json()
         user_id = request.user_id
+        body = request.form
+        files = request.files
+        schema = ProfileSchema()
 
-        schema = UpdateProfileSchema()
         try:
             validated_data = schema.load(body)
         except Exception as err:
             return jsonify({"errors": err.messages}), 400
 
-        was_added = ProfileService.update_profile(user_id=user_id, **validated_data)
-        if was_added :
-            return jsonify({"profile updated for user"}), 201
+        if request.headers.get('X-Forwarded-For'):
+            ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
         else :
-            return jsonify({"server error"}), 500
+            ip = request.remote_addr
+
+        try :
+            was_added = ProfileService.update_profile(user_id=user_id, **validated_data, files_list=files, ip=ip)
+        except Exception as e :
+            return jsonify({"error": str(e)}), 422
+
+        if was_added :
+            return jsonify({"success": "profile created for user"}), 201
+        else :
+            return jsonify({"error": "server error"}), 409
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
 

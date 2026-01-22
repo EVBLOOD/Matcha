@@ -11,7 +11,7 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    maxPicNumber : {
+    maxPicNumber: {
         type: Number,
         default: 4
     },
@@ -23,6 +23,10 @@ const props = defineProps({
         type: Number,
         default: 100
     },
+    updateMode: {
+        type: Boolean,
+        defaut: false
+    }
 });
 const emit = defineEmits(['files-selected']);
 
@@ -30,12 +34,63 @@ const inputId = `pictures-input-${Math.random().toString(36).slice(2, 9)}`;
 
 const insertedPictures = ref<Array<insertedPictures>>(props.initialpictures);
 
+import ProfileService from '@/api/services/ProfileService';
 
-const removeImage = (id: string) => {
-    const index = insertedPictures.value.findIndex(f => f.id === id);
+
+import axios, { AxiosError } from 'axios';
+
+interface BackendError {
+    error?: string;
+    errors?: any[];
+}
+
+interface ValidationErrors {
+    [key: string]: string[];
+}
+import { toast } from '@/composables/useToast';
+
+const error = ref<null | string | any[]>(null);
+
+const removeImage = async (id: string) => {
+    const index = insertedPictures.value.findIndex(f => f.url === id);
     if (index !== -1) {
         URL.revokeObjectURL(insertedPictures.value[index].url);
         insertedPictures.value.splice(index, 1);
+
+        if (props.updateMode && id.indexOf('/') > 0) {
+            try {
+                let path = id.replace(`${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/`, '');
+                console.log(path)
+                await ProfileService.removeProfilePictues(path)
+                toast('success', 'Picture delete', "Picture was deleted successfuly!");
+            } catch (err: unknown) {
+                if (axios.isAxiosError(err)) {
+                    error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Picture delete failed for unknown reason';
+                } else {
+                    error.value = 'Picture delete failed for unknown reason'
+                }
+                if (axios.isAxiosError(err)) {
+                    error.value = (err.response?.data as BackendError).errors || (err.response?.data as BackendError).error || 'Picture delete failed for unknown reason';
+                } else {
+                    error.value = 'Picture delete failed for unknown reason'
+                }
+                if (Array.isArray(error.value)) {
+                    error.value.map((err) => {
+                        toast('error', 'Picture delete failed', err as string);
+                    })
+                } else if (typeof (error.value) === 'string') {
+                    toast('error', 'Picture delete failed', error.value);
+                } else if (error.value && typeof (error.value) === 'object') {
+                    const errorData = error.value as ValidationErrors
+                    Object.entries(errorData).map(([field, messages]) => {
+                        messages.map((msg) => {
+                            toast('error', 'Picture delete failed', msg);
+                        })
+                        return messages.map(msg => msg.toUpperCase());
+                    });
+                }
+            }
+        }
     }
 };
 
@@ -44,7 +99,7 @@ const onFileChange = (event: Event) => {
 
     const remainingSlots = 4 - insertedPictures.value.length;
 
-    const newPics : Array<PicturesDisplying> = recent_pictures.slice(0, remainingSlots).map(file => ({
+    const newPics: Array<PicturesDisplying> = recent_pictures.slice(0, remainingSlots).map(file => ({
         file,
         id: crypto.randomUUID(),
         url: URL.createObjectURL(file)
@@ -61,8 +116,9 @@ const onFileChange = (event: Event) => {
 <template>
     <div class="pictures_view">
         <div v-for="img in insertedPictures" :key="img.id">
-            <div class="image-box" :style="{ backgroundImage: `url(${img.url})`, width: `${width}px`, height: `${height}px` }">
-                <button v-if="!readonly" class="remove-btn" @click="removeImage(img.id)">×</button>
+            <div class="image-box"
+                :style="{ backgroundImage: `url(${img.url})`, width: `${width}px`, height: `${height}px` }">
+                <button v-if="!readonly" class="remove-btn" @click="removeImage(img.url)">×</button>
             </div>
         </div>
 

@@ -9,7 +9,13 @@ export default {
   likeProfile() {
     return [];
   },
-  updateProfile(payload: any) {
-    return apiClient.post(`/profile/update_profile`, payload);
+  updateProfile(payload: FormData) {
+    return apiClient.post(`/profile/update_profile`, payload, {
+      headers: {
+        'Content-Type': undefined
+      }
+    });
+  }, removeProfilePictues(path: string) {
+      return apiClient.post(`/profile/remove_picture`, {"filename": path});
   }
 };

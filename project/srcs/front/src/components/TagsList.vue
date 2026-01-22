@@ -9,6 +9,10 @@ const props = defineProps({
     readonly: {
         type: Boolean,
         default: false
+    },
+    updateMode: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -16,7 +20,7 @@ const emit = defineEmits(['tags-selected']);
 
 
 const availableTags = ref<Array<string>>(props.initialtags as Array<string>);
-const selectedIntersts = ref<Array<string>>([]);
+const selectedIntersts = ref<Array<string>>(props.updateMode ? (props.initialtags as Array<string>) : []);
 
 const tagClick = (tag: string) => {
     if (selectedIntersts.value.includes(tag)) {
