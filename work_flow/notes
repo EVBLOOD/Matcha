@@ -6,7 +6,6 @@
     errors displaying and loadings
     Explore page
     Suggestions page
-    profile picture editing.
     Date/Event Scheduling: Implement event/date scheduling feature.
 
 - TO THINK ABOUT :
@@ -38,8 +37,6 @@ profile =>
 
 
 
--  mark as read.
-
 - loadings add
 
 - suggestion add like in front
@@ -63,7 +60,6 @@ to do to call it end of project:
 - adding the pictues bonus
 
 - event should be coded all to intgrate it to my untested backend!
-- settings/details : should be integrated with backend and front updated
 - Explore -> like should work - profiles I like shouldn't be suggested - integrate the sort and filter backend -> I don't know if I should list all or add pagination tbh
 - suggestion -> like should work - profiles I like shouldn't be suggested - integrate the sort and filter backend
 
@@ -74,6 +70,5 @@ to do to call it end of project:
 - Chats -> I may add indicators of none readed messages - video call should be reached from everywhere - last seen should be fixed - video call names form
 
 
-- Change password : back check
 - re-check the rigex seems I'm wrong in something
 - View Likes List -> not mine
