@@ -42,8 +42,23 @@ class UserInteractionsRepository(BaseRepository):
 
     @classmethod
     def get_user_likers_list(cls, user_id: str) :
-        query = "SELECT liker_id FROM user_interactions WHERE liked_id = %s"
-        rows = cls._fetch(query, (user_id,))
+        query = """
+        SELECT
+            liker_id,
+            u.username,
+            u.first_name,
+            u.last_name,
+            (
+                SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
+                FROM user_pictures up
+                WHERE up.user_id = liker_id AND up.is_profile_picture = TRUE
+            ) AS profile_picture_url
+        FROM user_interactions 
+        LEFT JOIN profiles p ON liker_id = p.user_id
+        LEFT JOIN users u ON liker_id = u.id
+        WHERE liked_id = %s
+        """
+        rows = cls._fetch_all(query, (user_id,))
         return rows
     
     @classmethod

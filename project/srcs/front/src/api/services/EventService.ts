@@ -6,8 +6,8 @@ export default {
   propose_date(userData: dateProposing) {
     return apiClient.post('/dates/propose', userData);
   },
-  respond_to_date(status: string) {
-    return apiClient.post('/respond/<int:date_id>', {"status": status});
+  respond_to_date(event_id: number, status: string) {
+    return apiClient.post(`/dates/respond/${event_id}`, {"status": status});
   }, get_my_dates() {
     return apiClient.get('/dates/my-dates');
   }

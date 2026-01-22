@@ -1,27 +1,32 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
-    const activeTab = ref('all');
-    const events = ref([
-        { type: 'sender', from: '@idkart', to: '@gkleier', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'pending' },
-        { type: 'receiver', from: '@gkleier', to: '@idkart', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'pending' },
-        { type: 'sender', from: '@idkart', to: '@gkleier', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'accepted' },
-        { type: 'receiver', from: '@gkleier', to: '@idkart', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'declined' },
-    ])
+const activeTab = ref('all');
+// const events = ref([
+//     { type: 'sender', from: '@idkart', to: '@gkleier', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'pending' },
+//     { type: 'receiver', from: '@gkleier', to: '@idkart', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'pending' },
+//     { type: 'sender', from: '@idkart', to: '@gkleier', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'accepted' },
+//     { type: 'receiver', from: '@gkleier', to: '@idkart', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'declined' },
+// ])
+const EventsData = ref<UserDatesResponse[] | null>(null);
 
-    const filteredEvents = computed(() => {
-        if (activeTab.value === 'all')
-            return events.value
-        if (activeTab.value === 'sent') 
-            return events.value.filter(e => e.type === 'sender')
-        if (activeTab.value === 'received') 
-            return events.value.filter(e => e.type === 'receiver')
-        return events.value
-    })
+import useUserStore from '@/stores/user';
 
-    function setActive(tab: string) {
-        activeTab.value = tab;
-    }
+const current = useUserStore()
+const filteredEvents = computed(() => {
+    if (!EventsData.value) return EventsData.value
+    if (activeTab.value === 'all')
+        return EventsData.value
+    if (activeTab.value === 'sent')
+        return EventsData.value.filter(e => e.proposer_id === current.getUserID)
+    if (activeTab.value === 'received')
+        return EventsData.value.filter(e => e.proposer_id !== current.getUserID)
+    return EventsData.value
+})
+
+function setActive(tab: string) {
+    activeTab.value = tab;
+}
 
 import axios, { AxiosError } from 'axios';
 import type { UserDatesResponse } from '@/types/apiResponses'
@@ -31,30 +36,47 @@ const isLoading = ref(true);
 const isError = ref<string | null>(null);
 
 interface BackendError {
-  error: string;
+    error: string;
 }
 
-const EventsData = ref<UserDatesResponse[] | null>(null);
 const fetchEvents = async () => {
-  isLoading.value = true;
-  try {
-    const { data } = await EventService.get_my_dates();
+    isLoading.value = true;
+    try {
+        const { data } = await EventService.get_my_dates();
 
-    console.log(`data ${data.data}`)
-    if (data.data) EventsData.value = [...data.data];
-  } catch(err : unknown) {
-    if (axios.isAxiosError(err)) {
-        isError.value = (err.response?.data as BackendError)?.error;
+        console.log(`data ${data.data}`)
+        if (data.data) EventsData.value = [...data.data];
+        console.log(EventsData.value)
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            isError.value = (err.response?.data as BackendError)?.error;
+        }
+        else {
+            isError.value = "Registration failed for unknown reason'";
+        }
+    } finally {
+        isLoading.value = false;
     }
-    else {
-        isError.value = "Registration failed for unknown reason'";
-    }
-  } finally {
-    isLoading.value = false;
-  }
 };
 
-onMounted(fetchEvents);    
+onMounted(fetchEvents);
+
+
+const actionDate = async (id: number, status: string) => {
+    isLoading.value = true;
+    try {
+        await EventService.respond_to_date(id, status)
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            isError.value = (err.response?.data as BackendError)?.error;
+        }
+        else {
+            isError.value = "Registration failed for unknown reason'";
+        }
+    } finally {
+        isLoading.value = false;
+    }
+}
 
 </script>
 
@@ -64,29 +86,32 @@ onMounted(fetchEvents);
             <nav class="tab">
                 <div class="link" :class="{ active: activeTab == 'all' }" @click="setActive('all')">All Events</div>
                 <div class="link" :class="{ active: activeTab == 'sent' }" @click="setActive('sent')">Event sent</div>
-                <div class="link" :class="{ active: activeTab == 'received' }" @click="setActive('received')">Event received</div>
+                <div class="link" :class="{ active: activeTab == 'received' }" @click="setActive('received')">Event
+                    received</div>
             </nav>
 
             <div class="events">
                 <div v-for="(event, index) in filteredEvents" :key="index" class="event-card">
                     <div class="users">
                         <span class="user">
-                            <img src="/img/profilePictureDemo.png" :alt="event.from" width="45" height="45" />
-                            <p>{{ event.from }}</p>
+                            <img src="/img/profilePictureDemo.png" :alt="event.proposer_username" width="45"
+                                height="45" />
+                            <p>{{ event.proposer_username }}</p>
                         </span>
                         <span>
-                            <img src="/img/arrow.svg"/>
+                            <img src="/img/arrow.svg" />
                         </span>
                         <span class="user">
-                            <img src="/img/profilePictureDemo.png" :alt="event.to" width="45" height="45" />
-                            <p>{{ event.to }}</p>
+                            <img src="/img/profilePictureDemo.png" :alt="event.partner_username" width="45"
+                                height="45" />
+                            <p>{{ event.partner_username }}</p>
                         </span>
                     </div>
                     <div class="details">
                         <div class="date_location">
                             <div class="info">
                                 <img src="/img/CalendarEvent.svg" alt="date" />
-                                <p>{{ event.date }}</p>
+                                <p>{{ event.scheduled_at }}</p>
                             </div>
                             <div class="info">
                                 <img src="/img/MapEvent.svg" alt="location" />
@@ -95,10 +120,10 @@ onMounted(fetchEvents);
                         </div>
                         <div class="info">
                             <img src="/img/MessageEvent.svg" alt="message" />
-                            <p>{{ event.message }}</p>
+                            <p>{{ event.description }}</p>
                         </div>
                     </div>
-                    <div class="status" v-if="event.type === 'sender'">
+                    <div class="status" v-if="event.proposer_id === current.getUserID">
                         <span class="pending" v-if="event.status === 'pending'">
                             <img src="/img/PendingEvent.svg" alt="pending" />
                             <p>Pending</p>
@@ -112,15 +137,15 @@ onMounted(fetchEvents);
                             <p>Declined</p>
                         </span>
                     </div>
-                    <div class="confirmation" v-if="event.type === 'receiver'">
+                    <div class="confirmation" v-if="event.proposer_id !== current.getUserID">
                         <button v-if="event.status === 'pending'" class="btn-decline">
-                            <img src="/img/DeclineEvent.svg" alt="decline" />
+                            <img src="/img/DeclineEvent.svg" alt="decline" @click="actionDate(event.id, 'declined')" />
                         </button>
                         <button v-if="event.status === 'pending'" class="btn-accept">
-                            <img src="/img/AcceptEventDark.svg" alt="accept" />
+                            <img src="/img/AcceptEventDark.svg" alt="accept" @click="actionDate(event.id,'accepted')" />
                         </button>
                         <div class="status" v-if="event.status === 'declined'">
-                            <span class="declined" >
+                            <span class="declined">
                                 <img src="/img/DeclineEvent.svg" alt="declined" />
                                 <p>Declined</p>
                             </span>
@@ -133,7 +158,7 @@ onMounted(fetchEvents);
 </template>
 
 <style lang="scss" scoped>
-.page{
+.page {
     padding: 30px;
     display: flex;
     flex-direction: column;
@@ -151,7 +176,7 @@ nav {
     margin-bottom: 30px;
 }
 
-.tab{
+.tab {
     width: 100%;
 }
 
@@ -161,11 +186,13 @@ nav {
     color: $text-color;
     padding-bottom: 5px;
     font-weight: 600;
+
     &:hover {
         border-style: solid;
         border-width: 0px 0px 5px 0px;
         border-color: $border-color-hover;
     }
+
     &.active {
         border-style: solid;
         border-width: 0px 0px 5px 0px;
@@ -185,25 +212,30 @@ nav {
         background: $components-background-color;
         padding: 3rem 2rem;
         border-radius: 8px;
+
         .users {
             display: flex;
             gap: 0.5rem;
             align-items: center;
+
             .user {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 gap: 0.25rem;
+
                 img {
                     border-radius: 50%;
                 }
             }
         }
+
         .details {
             // flex: 1;
             margin-left: 1rem;
             display: flex;
             gap: 40px;
+
             // width: 100%;
             .info {
                 display: flex;
@@ -213,7 +245,7 @@ nav {
                 gap: 8px;
             }
 
-            .date_location{
+            .date_location {
                 display: flex;
                 flex-direction: column;
                 gap: 6px;
@@ -231,13 +263,16 @@ nav {
                 gap: 5px;
                 font-weight: 600;
             }
+
             .accepted {
                 background: #e2bdf697;
                 color: #382343;
             }
+
             .pending {
                 color: #E2BDF6;
             }
+
             .declined {
                 color: #E2BDF6;
             }
@@ -246,7 +281,7 @@ nav {
         .confirmation {
             display: flex;
 
-            button{
+            button {
                 background: none;
                 border: none;
                 cursor: pointer;
@@ -263,7 +298,7 @@ nav {
             .btn-accept {
                 background-color: #E2BDF6;
             }
-            
+
             .btn-decline {
                 background: $components-background-color;
             }
@@ -283,20 +318,24 @@ nav {
             gap: 1.5rem;
             padding: 2rem 2rem;
             font-size: 13px;
+
             .details {
                 flex-direction: column;
                 margin-left: 0;
                 gap: 10px;
             }
+
             .status {
                 width: fit-content;
                 justify-content: flex-end;
             }
+
             .confirmation {
                 justify-content: flex-end;
             }
+
             .confirmation {
-                button{
+                button {
                     height: 40px;
                     width: 40px;
                 }
@@ -304,5 +343,4 @@ nav {
         }
     }
 }
-
 </style>

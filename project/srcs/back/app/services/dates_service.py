@@ -42,11 +42,13 @@ class DatesService:
                 
         query = "SELECT partner_id FROM dates WHERE id = %s"
         date_info = BaseRepository._fetch_one(query, (date_id,))
+        print("date_info", flush=True)
         
         if not date_info or date_info[0] != responder_id:
             raise ValueError("Unauthorized")
+        print("date_info", flush=True)
         
-        update_query = "UPDATE dates SET status = %s WHERE id = %s"
+        update_query = "UPDATE dates SET status = %s WHERE id = %s RETURNING id"
         BaseRepository._execute(update_query, (status, date_id))
     
     @staticmethod
