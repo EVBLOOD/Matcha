@@ -104,8 +104,8 @@ const reset_tags = () => {
 const handleSubmit = async () => {
     isLoading.value = true;
     try {
-        if (selectedChoice.value != '') query_base.sort = selectedChoice.value
-        else delete query_base.sort
+        if (selectedChoice.value != '') query_base.sort_by = selectedChoice.value
+        else delete query_base.sort_by
 
         const query = new URLSearchParams(query_base as any).toString();
         const { data } = await SuggestionsService.getSearch(query);
