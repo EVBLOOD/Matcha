@@ -4,40 +4,22 @@
 
 - design:
     errors displaying and loadings
-    Explore page
-    Suggestions page
     Date/Event Scheduling: Implement event/date scheduling feature.
-
--> backend =? Password change protect to defeculte pass
 
 
 - Online things to re-check
 
 
 profile => 
-
-
 - loadings add
-
-- suggestion add like in front
-- suggestion Implement sort and filter
-
-- same for explore add like in front
-- explore filter when one is open close the others
-- Implement the full search
 
 
 
 - BONUS: pictues
 
-
-
-mark things as read.
-
-
 to do to call it end of project:
-- Explore -> like should work  -> I don't know if I should list all or add pagination tbh
-- suggestion -> like should work 
+
+- Explore -> I don't know if I should list all or add pagination tbh
 
 - adding the pictues bonus
 
@@ -51,4 +33,5 @@ to do to call it end of project:
 
 
 - re-check the rigex seems I'm wrong in something
+
 - View Likes List -> not mine
