@@ -87,7 +87,10 @@ const handleSubmit = async () => {
     try {
         const query = new URLSearchParams(query_base as any).toString();
         const { data } = await SuggestionsService.getSearch(query);
-        ExploreData.value = data["data"]['data'];
+        console.log(data)
+        console.log(data["data"])
+        ExploreData.value = data["data"];
+        
         // PageData.value = data["data"]['page'];
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -110,7 +113,7 @@ const handleSubmit = async () => {
             <div class="inner_search_bar">
                 <SearchBarElem :firstElem="true" elemName="Age" @AgeMin-selected="get_min_age" @AgeMax-selected="get_max_age"/>
                 <SearchBarElem elemName="Location"
-                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" @location-selected="get_locations"/>
+                    :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" @DisMax-selected="get_locations"/>
                 <SearchBarElem elemName="Fame" @fame-selected="get_fame" />
                 <SearchBarElem elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" @tags-selected="get_tags"/>
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>

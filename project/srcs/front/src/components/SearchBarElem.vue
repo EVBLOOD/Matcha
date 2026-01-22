@@ -13,7 +13,7 @@ const props = defineProps({
     fame: Array
 });
 
-const emit = defineEmits(['AgeMin-selected', 'AgeMax-selected', 'location-selected', 'fame-selected', 'tags-selected']);
+const emit = defineEmits(['AgeMin-selected', 'AgeMax-selected', 'DisMax-selected', 'fame-selected', 'tags-selected']);
 
 const isMenuOpen = ref(false)
 
@@ -52,21 +52,42 @@ const minus_age = (type: string) => {
 };
 
 // else if (props.elemName === 'Location') 
-const selectedLocation = ref<Array<string>>([])
+// const selectedLocation = ref<Array<string>>([])
 
-const selection_location = (city: string) => {
-    const index = selectedLocation.value.indexOf(city);
-    if (index > -1) {
-        selectedLocation.value.splice(index, 1);
-        if (!toggle.value) toggle.value = true
-    } else {
-        selectedLocation.value.push(city);
-        if (!toggle.value) toggle.value = true
-    }
-    emit('location-selected', selectedLocation.value);
-    if (!selectedLocation.value.length) toggle.value = false
+// const selection_location = (city: string) => {
+//     const index = selectedLocation.value.indexOf(city);
+//     if (index > -1) {
+//         selectedLocation.value.splice(index, 1);
+//         if (!toggle.value) toggle.value = true
+//     } else {
+//         selectedLocation.value.push(city);
+//         if (!toggle.value) toggle.value = true
+//     }
+//     emit('location-selected', selectedLocation.value);
+//     if (!selectedLocation.value.length) toggle.value = false
     
     
+// };
+
+
+const DisMax = ref(20)
+const DISMAX = 100 
+const DISMIN = 20
+
+const add_dst = () => {
+    if (DisMax.value < DISMAX) DisMax.value += 5;
+        emit('DisMax-selected', DisMax.value);
+    if (!toggle.value) toggle.value = true
+    if (DisMax.value == DISMAX) toggle.value = false
+
+};
+const minus_dst = () => {
+    if (DisMax.value > DISMIN) DisMax.value -= 5;
+    emit('DisMax-selected', DisMax.value);
+
+    if (!toggle.value) toggle.value = true
+    if (DisMax.value == DISMIN) toggle.value = false
+
 };
 
 // else if (props.elemName === 'Fame') 
@@ -115,7 +136,7 @@ const listClick = (lt: String, elemName: string) => {
     if (elemName == "Tags") {
         tagClick(lt as string);
     } else {
-        selection_location(lt as string);
+        // selection_location(lt as string);
     }
 }
 
@@ -125,16 +146,7 @@ const valueDisplay = computed(
         if (props.elemName === 'Age') {
             return `${AgeMin.value} - ${AgeMax.value}`
         } else if (props.elemName === 'Location') {
-
-            if (selectedLocation.value.length >= 3) {
-                return [`${selectedLocation.value[0]},`, `${selectedLocation.value[1]}...`]
-            } else if (selectedLocation.value.length >= 2) {
-                return [`${selectedLocation.value[0]},`, selectedLocation.value[1]]
-            } else if (selectedLocation.value.length == 1) {
-                return [selectedLocation.value[0]]
-            }
-            return ["-"]
-
+            return `${DisMax.value}`
         } else if (props.elemName === 'Fame') {
             return selectedFame.value.toFixed(1);
         } else if (props.elemName === 'Tags') {
@@ -162,7 +174,7 @@ const checkListExists = (lt: String, elemName: string) => {
     if (elemName == "Tags") {
         return selectedIntersts.value.includes(lt as string)
     }
-    return selectedLocation.value.includes(lt as string)
+    return false
 }
 
 const toggle = ref(false)
@@ -171,7 +183,7 @@ const displayCancel = () => {
 
     AgeMin.value = AGEMIN
     AgeMax.value = AGEMAX
-    selectedLocation.value = []
+    // selectedLocation.value = []
     selectedFame.value = 4.0
     selectedIntersts.value = []
     selectedIntersts.value = []
@@ -180,7 +192,8 @@ const displayCancel = () => {
     emit('AgeMin-selected', AgeMin.value);
     emit('AgeMax-selected', AgeMax.value);
 
-    emit('location-selected', selectedLocation.value);
+    emit('DisMax-selected', DisMax.value);
+    
     
     emit('fame-selected', selectedFame.value);
     
@@ -198,14 +211,21 @@ const displayCancel = () => {
                 <h3  @click="handleClick()">{{ elemName || "evblood" }}</h3>
                 <input v-if="toggle" type="image" src="/img/removeFilterIcon.svg" @click="displayCancel"/>
             </div>
-            <div v-if="elemName !== 'Tags' && elemName !== 'Location' && elemName !== 'Fame'">{{ valueDisplay }}</div>
-            <div v-if="elemName === 'Tags' || elemName === 'Location'" style="display: flex; gap: 2px;">
+            <div v-if="elemName !== 'Tags'&& elemName !== 'Fame'">{{ valueDisplay }}</div>
+            <div v-if="elemName === 'Tags'" style="display: flex; gap: 2px;">
                 <span v-for="val in valueDisplay">{{ elemName === 'Tags' ? `${val}` : val }}</span>
             </div>
             <Fame v-if="elemName === 'Fame'" :initialFameScore="selectedFame"/>
         </div>
 
 
+
+        <div v-if="elemName === 'Location'" class="search_menu_age" v-show="isMenuOpen">
+            <div>
+                <input @click="minus_dst()" type="image" src="/img/lessIcon.svg"> {{ DisMax }}
+                <input @click="add_dst()" type="image" src="/img/plusIcon.svg">
+            </div>
+        </div>
 
         <div v-if="elemName === 'Age'" class="search_menu_age" v-show="isMenuOpen">
             <div>
@@ -226,7 +246,7 @@ const displayCancel = () => {
             </div>
         </div>
 
-        <div  v-show="isMenuOpen"  v-if="elemName === 'Location' || elemName === 'Tags'" class="search_menu_location" style="flex-direction: column;">
+        <div  v-show="isMenuOpen"  v-if="elemName === 'Tags'" class="search_menu_location" style="flex-direction: column;">
             <div @click="listClick(lt, elemName)" v-for="lt in (locationList || tagsList)" :class="{ active: checkListExists(lt, elemName)}">
                 {{ lt }}
             </div>

@@ -53,97 +53,90 @@ class SuggestionsService :
 
 
     @classmethod
-    def get_Research(cls, user_id: str, filters, sort_by: str, curent_page) :
-        search_query = """
-                u.id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = cud.id)
-                AND u.id NOT IN (SELECT blocker_id FROM user_blocks WHERE blocked_id = cud.id)
-                AND (
-                    (cud.sexual_preference = 'straight' AND p.gender != cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('straight', 'bisexual')) OR
-                    (cud.sexual_preference = 'gay' AND p.gender = cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('gay', 'bisexual')) OR
-                    (cud.sexual_preference = 'bisexual' AND (
-                        (p.gender != cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('straight', 'bisexual')) OR
-                        (p.gender = cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('gay', 'bisexual'))
-                    ))
-                )
-            """
+    def get_Research(cls, user_id: int, args: dict, sort_by: str):
         params = [user_id]
-        if filters.get('age_min'):
-            search_query += " AND EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) >= %s"
-            params.append(filters['age_min'])
 
-        if filters.get('age_max'):
-            search_query += " AND EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) <= %s"
-            params.append(filters['age_max'])
+        query_body = """
+            WITH currentuser AS (
+                SELECT u.id, u.latitude, u.longitude, p.gender, 
+                    COALESCE(p.sexual_preference, 'bisexual') as pref
+                FROM users u JOIN profiles p ON u.id = p.user_id WHERE u.id = %s
+            )
+            SELECT 
+                u.id, u.username, u.first_name, u.last_name, u.fame_rating,
+                u.latitude, u.longitude, p.location_set_by_user,
+                EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) AS age,
+                (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + sin(radians(cud.latitude)) * sin(radians(u.latitude)))) AS distance,
+                (SELECT COUNT(*) FROM user_interests ui WHERE ui.user_id = u.id AND ui.tag_id IN (SELECT tag_id FROM user_interests WHERE user_id = cud.id)) as same_tags,
+                (SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture)) FROM user_pictures up WHERE up.user_id = u.id AND up.is_profile_picture = TRUE) AS profile_picture_url
+            FROM users u
+            JOIN profiles p ON u.id = p.user_id
+            CROSS JOIN currentuser cud
+            WHERE u.id != cud.id
+            AND u.id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = cud.id)
+            AND u.id NOT IN (SELECT blocker_id FROM user_blocks WHERE blocked_id = cud.id)
+            AND u.id NOT IN (SELECT liked_id FROM user_interactions WHERE liker_id = cud.id)
+            AND EXISTS (SELECT 1 FROM user_pictures WHERE user_id = u.id AND is_profile_picture = TRUE)
+            AND (
+                    (cud.pref = 'bisexual') OR
+                    (cud.pref = 'straight' AND p.gender != cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('straight', 'bisexual')) OR
+                    (cud.pref = 'gay' AND p.gender = cud.gender AND COALESCE(p.sexual_preference, 'bisexual') IN ('gay', 'bisexual'))
+            )
+        """
 
-        if filters.get('fame_min'):
-            search_query += " AND u.fame_rating >= %s"
-            fame_min = int((float(filters.get('fame_min')) * 5000) / 5)
-            params.append(fame_min)
-
-        # if filters.get('location'):
-        #     tmp = []
-        #     for city in filters['location']:
-        #         bounds = {'min_lat': 0, 'max_lng': 0} # I should find a way to get the cords of cities
-        #         if bounds:
-        #             tmp.append(
-        #                 "(u.latitude BETWEEN %s AND %s AND u.longitude BETWEEN %s AND %s)"
-        #             )
-        #             params.extend([
-        #                 bounds['min_lat'], bounds['max_lat'], 
-        #                 bounds['min_lng'], bounds['max_lng']
-        #             ])
-        #     if tmp:
-        #         search_query += f" AND ({' OR '.join(tmp)})"
-
-        if filters.getlist('tags') and len(filters.getlist('tags')) and len(filters.getlist('tags')[0]) :
-            tmp = ', '.join(['%s'] * len(filters.getlist('tags')))
-            search_query += f""" AND u.id IN (
-                SELECT ui.user_id FROM user_interests ui 
-                JOIN tags t ON ui.tag_id = t.id 
-                WHERE t.name IN ({tmp})
-            )"""
-            params.extend(filters.getlist('tags'))
-        
-        sort_options = {
-            "age": "EXTRACT(YEAR FROM AGE(NOW(), u.birthdate))",
-            "fame": "u.fame_rating",
-            "location": "distance",
-            "tags": "same_tags"
+        if args.get('age_min'):
+            query_body += " AND EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) >= %s"; params.append(args['age_min'])
+        if args.get('age_max'):
+            query_body += " AND EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) <= %s"; params.append(args['age_max'])
+        if args.get('fame_min'):
+            query_body += " AND u.fame_rating >= %s"; params.append(args['fame_min'])
+        if args.get('location'):
+            query_body += " AND (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + sin(radians(cud.latitude)) * sin(radians(u.latitude)))) <= %s"; params.append(args['location'])
+        sort_map = {
+            "age": "age ASC",
+            "location": "distance ASC",
+            "fame": "u.fame_rating DESC", 
+            "tags": "same_tags DESC",
+            "default": "distance ASC, same_tags DESC, u.fame_rating DESC"
         }
-        if curent_page and curent_page.get('last_val') is not None and curent_page.get('last_id'):
-            current_sort = sort_options.get(sort_by, "u.fame_rating")            
-            operator = ">" if sort_by in ["age", "location"] else "<"            
-            search_query += f" AND ({current_sort}, u.id) {operator} (%s, %s)"
+        order_clause = sort_map.get(sort_by, sort_map["default"])
+        
 
-            params.extend([curent_page['last_val'], curent_page['last_id']])
+        # if args.get('last_id') and args.get('last_val'):
+        #     col = order_clause.split(' ')[0]
+        #     op = ">" if "ASC" in order_clause else "<"
+        #     query_body += f" AND ({col}, u.id) {op} (%s, %s)"
+        #     params.extend([args['last_val'], args['last_id']])
 
-        order_clause = sort_options.get(sort_by, "distance ASC")
-        search_query += f" ORDER BY {order_clause}, u.id ASC"
+        users = SuggestionsRepository._fetch_all(f"{query_body} ORDER BY {order_clause}, u.id ASC LIMIT 20", params)
 
-        data = SuggestionsRepository.get_Research(search_query, params)
-
-        print(data, flush=True)
-
-        users = data.get("data")
         if not users :
             users = []
 
         research = []
-        for user in users :
-            print(user, flush=True)
-            if user["location_set_by_user"] :
-                city, country = ProfileService.get_user_address(user["latitude"], user["longitude"])
-            else :
-                Address = "Not Shared!"
-            tmp = {
+        for user in users:
+            address = "Not Shared!"
+            if user["location_set_by_user"]:
+                try:
+                    city, country = ProfileService.get_user_address(user["latitude"], user["longitude"])
+                    address = f"{city}, {country}"
+                except:
+                    address = "Unknown Location"
+            
+            fame_score = round(min(5, max(0, (user["fame_rating"] / 5000) * 4 + 1)), 1)
+            
+            research.append({
                 "user_id": user["id"],
                 "username": user["username"],
                 "first_name": user["first_name"],
                 "last_name": user["last_name"],
-                "profile_picture_url": user["profile_picture"],
+                "profile_picture_url": user["profile_picture_url"],
                 "age": user["age"],
-                "fame_rating": round(min(5, max(0, (user["fame_rating"] / 5000) * 4 + 1)), 1),
-                "location": Address if not user["location_set_by_user"] else f"{city}, {country}"
-            }
-            research.append(tmp)
-        return {"data": research, "page": data["page"]}
+                "fame_rating": fame_score,
+                "location": address,
+                "distance": round(user["distance"], 2)
+            })
+
+        return research
+        
+
