@@ -107,7 +107,7 @@ class UserRepository(BaseRepository):
     ) -> bool:
         query = """
             UPDATE users 
-            SET latitude = %s,longitude = %s 
+            SET latitude = %s,longitude = %s
             WHERE id = %s
             RETURNING id
         """

@@ -25,7 +25,7 @@ export function usePreciseLocation() {
           resolve(coords.value);
         },
         (err) => {
-          console.warn("User denied or error:", err.message);
+          // console.warn("User denied or error:", err.message);
           resolve(null);
         },
         { enableHighAccuracy: true }

@@ -36,14 +36,38 @@ import { usePreciseLocation } from '@/composables/usePreciseLocation'
 import UserService from '@/api/services/UserService';
 const { getPreciseLocation, coords } = usePreciseLocation()
 
+
+import { toast } from '@/composables/useToast';
+
+interface ValidationErrors {
+  [key: string]: string[];
+}
+
 const OnclickUpdateLocal = async () => {
     try {
-        await getPreciseLocation();
+        const result = await getPreciseLocation();
+        if (!result) toast('error', 'Update location failed', 'GPS wasn\'t activated.');
 
         await UserService.update_location_lt_lng((coords.value.latitude || "").toString(),
         (coords.value.longitude || "").toString())
-      } catch(err : unknown) {
-        console.info("GPS isn't active!") 
+        toast('success', 'Update location success', 'Your location was updated.');
+      } catch(err : any) {
+        const error = err.response?.data?.errors || err.response?.data?.error || 'GPS wasn\'t activated.';
+        if (Array.isArray(error.value)) {
+            for (err in error.value) {
+                toast('error', 'Update location failed', err as string);
+            }
+        } else if (typeof (error.value) === 'string') {
+            toast('error', 'Update location failed', error.value);
+        } else if (error.value && typeof (error.value) === 'object') {
+            const errorData = error.value as ValidationErrors
+            Object.entries(errorData).map(([field, messages]) => {
+                messages.map((msg) => {
+                    toast('error', 'Update location failed', msg);
+                })
+                return messages.map(msg => msg.toUpperCase());
+            });
+        }
       }
 }
 </script>

@@ -67,6 +67,9 @@ class ProfileService:
     @staticmethod
     def update_location(user_id, latitude, longitude):
         try:
+            result = ProfileRepository.update_location_status(user_id)
+            if not result :
+                raise ValueError("couldn't update your location, please try again.")
             return UserRepository.update_location(user_id, latitude, longitude)
         except ValueError:
             return False

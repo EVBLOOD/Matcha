@@ -31,6 +31,18 @@ class ProfileRepository(BaseRepository):
         return cls._execute(query, params, injected_cursor)
 
     @classmethod
+    def update_location_status(cls, user_id: int) -> bool:
+        query = """
+            UPDATE profiles 
+            SET
+                location_set_by_user = TRUE
+            WHERE user_id = %s
+            RETURNING user_id
+        """
+        params = (user_id,)
+        return cls._execute(query, params)
+
+    @classmethod
     def update_profile(cls, profile: Profile) -> bool:
         query = """
             UPDATE profiles 
@@ -48,7 +60,6 @@ class ProfileRepository(BaseRepository):
             profile.biography
         )
         return cls._execute(query, params)
-
 
     @classmethod
     def find_profile_exists(cls, user_id: str) -> bool :
