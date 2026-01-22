@@ -107,7 +107,6 @@ def update_profile() :
 @profile_bp.route('/report/<int:user_id>', methods=['POST'])
 @Security.auth_guard()
 def report_user(user_id):
-    """Report a user as fake account"""
     try:
         body = request.get_json()
         reason = body.get('reason', '').strip()
@@ -123,5 +122,14 @@ def report_user(user_id):
         
         return jsonify({"success": "User reported"}), 201
         
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    
+
+@profile_bp.route('/top_tags', methods=['GET'])
+@Security.auth_guard(check_profile=False)
+def top_tags():
+    try:
+        return ProfileService.top_tags()        
     except ValueError as e:
         return jsonify({"error": str(e)}), 400

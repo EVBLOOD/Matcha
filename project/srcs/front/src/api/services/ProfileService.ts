@@ -17,5 +17,7 @@ export default {
     });
   }, removeProfilePictues(path: string) {
       return apiClient.post(`/profile/remove_picture`, {"filename": path});
+  }, get_top_10_used_tags() {
+      return apiClient.get(`/profile/top_tags`);
   }
 };

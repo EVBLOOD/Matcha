@@ -7,6 +7,21 @@ from typing import Set
 # from typing import Optional
 import re
 class TagsService:
+
+
+    @staticmethod
+    def top_tags() :
+        query = """
+            SELECT 
+                t.name, 
+                COUNT(ui.tag_id) AS usage_count
+            FROM tags t
+            JOIN user_interests ui ON t.id = ui.tag_id
+            GROUP BY t.id, t.name
+            ORDER BY usage_count DESC
+            LIMIT 10;
+        """
+        return TagsRepository._fetch_all(query)
     @staticmethod
     def insert_tags(tags: Set[str], user_id: str, injected_cursor = None) :
 

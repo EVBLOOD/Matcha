@@ -75,6 +75,12 @@ class ProfileService:
             return False
 
 
+    @staticmethod
+    def top_tags():
+        try:
+            return TagsService.top_tags()
+        except ValueError:
+            return []
 
     @staticmethod
     def is_public_ip(ip):

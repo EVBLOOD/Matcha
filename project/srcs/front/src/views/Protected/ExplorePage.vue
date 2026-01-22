@@ -18,11 +18,17 @@ const isError = ref<string | null>(null);
 interface BackendError {
     error: string;
 }
+const tagsList = ref<string[]>([]);
 
-
+import ProfileService from '@/api/services/ProfileService';
 const fetchExplores = async () => {
     isLoading.value = true;
     try {
+        {
+            const { data } = await ProfileService.get_top_10_used_tags()
+            tagsList.value = data.map((elem: any) => elem.name)
+
+        }
         const { data } = await SuggestionsService.getExplore();
         console.log(data)
         ExploreData.value = data["data"];
@@ -161,7 +167,7 @@ const toggleCurrentSort = (name: any) => {
                 <SearchBarElem :sortOrNot="currentSort === 'Location'" @toggle_2="toggleCurrentSort('Location')"  :isMenuOpen="openMenuName === 'Location'" @toggle_1="toggleMenu('Location')" @selected_choice="(value) => { sortHandeling(value) }" elemName="Location"
                     :locationList="['Tiznit', 'Agadir', 'Mirleft', 'Khouribga', 'Oujda', 'Casablaca']" @DisMax-selected="get_locations" @DisMax-reset="reset_locations"/>
                 <SearchBarElem :sortOrNot="currentSort === 'Fame'" @toggle_2="toggleCurrentSort('Fame')"  :isMenuOpen="openMenuName === 'Fame'" @toggle_1="toggleMenu('Fame')" @selected_choice="(value) => { sortHandeling(value) }" elemName="Fame" @fame-selected="get_fame" @fame-reset="reset_fame" />
-                <SearchBarElem :sortOrNot="currentSort === 'Tags'" @toggle_2="toggleCurrentSort('Tags')"  :isMenuOpen="openMenuName === 'Tags'" @toggle_1="toggleMenu('Tags')" @selected_choice="(value) => { sortHandeling(value) }" elemName="Tags" :tagsList="['Sport', 'Coding', 'Cars', 'Sience', 'IT', 'Art']" @tags-selected="get_tags" @tags-reset="reset_tags"/>
+                <SearchBarElem :sortOrNot="currentSort === 'Tags'" @toggle_2="toggleCurrentSort('Tags')"  :isMenuOpen="openMenuName === 'Tags'" @toggle_1="toggleMenu('Tags')" @selected_choice="(value) => { sortHandeling(value) }" elemName="Tags" :tagsList="tagsList" @tags-selected="get_tags" @tags-reset="reset_tags"/>
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>
