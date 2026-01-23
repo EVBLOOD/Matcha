@@ -9,6 +9,7 @@ import axios, { AxiosError } from 'axios';
 import { useSocketListener } from '@/composables/useSocketChat'
 import { formatDistanceToNow } from 'date-fns';
 import Input from '@/components/Input.vue';
+import { toast } from '@/composables/useToast';
 
 interface BackendError {
     error: string;
@@ -259,6 +260,7 @@ const AddEvents = async () => {
         datetime_str:(new Date(date_str.value + " " + time_str.value)).toISOString(),
         description: description.value
     });
+    return true;
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;
@@ -266,12 +268,22 @@ const AddEvents = async () => {
     else {
         isError.value = "Registration failed for unknown reason'";
     }
+    return false;
   } finally {
     isLoading.value = false;
   }
 };
 const send_invite = async () => {
-    await AddEvents()
+    if (!date_str.value || !time_str.value || !location.value) {
+        toast("error", "Incomplete Data", "Please fill in all the fields to send a date invite.")
+        return;
+    }
+
+    const add_event = await AddEvents()
+    if (add_event){
+        toast("success", "Date Invite Sent", "Your date invite has been sent successfully!")
+        ProposeDateVisible.value = false;
+    }
 }
 
 
@@ -371,7 +383,7 @@ import Loading from '@/components/Loading.vue';
         <div class="popup">
             <div class="header">
                 <h2>Propose a Date</h2>
-                <span class="btn-close">x</span>
+                <span class="btn-close" @click="ProposeDateVisible = false">x</span>
             </div>
             <div class="content">
                 <div class="date_time">
@@ -385,7 +397,6 @@ import Loading from '@/components/Loading.vue';
                 <button class="btn-cancel-invite" @click="ProposeDateVisible = false">Cancel</button>
                 <button class="btn-send-invite" @click="send_invite()">Send Invite</button>
             </div>
-            
         </div>
     </div>
 </template>
@@ -393,24 +404,24 @@ import Loading from '@/components/Loading.vue';
 <style lang="scss" scoped>
 
 .btn {
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-family: $font-main;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  font-weight: 600;
-  color: white;
-  background-color: #9566B0;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    filter: brightness(1.1);
-  }
+    cursor: pointer;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-family: $font-main;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    color: white;
+    background-color: #9566B0;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        filter: brightness(1.1);
+    }
 }
 
 .propose-date{
@@ -424,16 +435,18 @@ import Loading from '@/components/Loading.vue';
     .popup{
         position: absolute;
         background-color: #E2BDF6;
-        width: 500px;
+        width: 50%;
+        height: 50%;
         padding: 30px;
         border-radius: 10px;
-        // display: flex;
-        // flex-direction: column;
-        // align-items: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         color: #592F6F;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        justify-content: space-between;
         .header{
             font-size: 12px;
             display: flex;
@@ -441,11 +454,23 @@ import Loading from '@/components/Loading.vue';
             justify-content: space-between;
             width: 100%;
             margin-bottom: 20px;
-            border-bottom: 0.4px solid #6E597B;
+            border-bottom: 0.4px solid #6e597b5e;
             .btn-close{
                 cursor: pointer;
+                font-size: 20px;
+                background-color: #9566B0;
+                color: white;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                &:hover {
+                    background-color: #7e52a0;
+                }
             }
-                padding-bottom: 15px;
+            padding-bottom: 15px;
             
         }
         .content{
@@ -458,15 +483,22 @@ import Loading from '@/components/Loading.vue';
         .footer{
             display: flex;
             justify-content: flex-end;
-            margin-top: 20px;
+            // margin-top: 20px;
             gap: 10px;
+            width: 100%;
             .btn-send-invite {
                 @extend .btn;
+                font-size: 15px;
+                padding: 15px 30px;
+                flex: 1;
             }
             .btn-cancel-invite {
                 @extend .btn;
+                padding: 15px 30px;
+                font-size: 15px;
                 background-color: #E8DCEF;
                 color: #592F6F;
+                flex: 1;
                 &:hover {
                     background-color: #d5c1e0;
                 }
