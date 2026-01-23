@@ -62,15 +62,9 @@ const handleLogin = async () => {
     isLoading.value = false;
   }
 };
-// TODO: we should integrate the Loading and error displaying
-
-// const startOAuth = () => {
-//   const authUrl = "http://localhost:8081/api/auth/oauth/github";
-//   window.open(authUrl);
-// };
 
 const startOAuth = () => {
-  const url = "http://localhost:8081/api/auth/oauth/github";
+  const url = `${import.meta.env.VITE_BACKEND_LINK}/auth/oauth/github`;
 
   const width = 600;
   const height = 700;

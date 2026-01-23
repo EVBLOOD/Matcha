@@ -42,7 +42,7 @@ const clickLogOut = async () => {
                 <RouterLink class="link" to="/"><img src="/img/homeIcon.svg" alt="" /> <span>Explore</span></RouterLink>
 
                 <RouterLink class="link" to="/notifications">
-                    <div style="position: relative; overflow: visible;">
+                    <div class="_link" style="position: relative; overflow: visible;">
                         <img src="/img/notifMenuIcon.svg" alt="" />
                         <div v-if="socket.getNotifsCount"
                             style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 10%; left: 55%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
@@ -53,7 +53,7 @@ const clickLogOut = async () => {
                 </RouterLink>
 
                 <RouterLink class="link" to="/messages">
-                    <div style="position: relative; overflow: visible;">
+                    <div class="_link" style="position: relative; overflow: visible;">
                         <img src="/img/messageMenuIcon.svg" alt="" />
                         <div v-if="socket.getMessagesCount"
                             style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 10%; left: 55%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
@@ -186,10 +186,18 @@ const clickLogOut = async () => {
         background-color: $components-background-color;
     }
 
-
+._link {
+        padding: 3%;
+        // border-style: solid;
+        // border-width: 0px 1px 0px 0px;
+        border-color: $border-color;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+}
     .link {
-        padding: 6%;
-
+        padding: 3%;
         border-style: solid;
         border-width: 0px 1px 0px 0px;
         border-color: $border-color;

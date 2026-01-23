@@ -89,7 +89,11 @@ const clickUnike = () => {
 
 @media (max-width: $breakpoint-md) {
     .user_card {
-        min-width: 185px;
+        min-width: 150px;
+    }
+    img {
+        width: 100px;
+        height: 100px;
     }
 }
 

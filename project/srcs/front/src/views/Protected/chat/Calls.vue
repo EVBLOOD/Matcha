@@ -242,6 +242,9 @@ import type { dateProposing } from '@/types/helpers';
 interface BackendError {
   error: string;
 }
+interface ValidationErrors {
+  [key: string]: string[];
+}
 const partner_id = ref(1);
 const location = ref('');
 const time_str = ref('');
@@ -260,15 +263,30 @@ const AddEvents = async () => {
         datetime_str:(new Date(date_str.value + " " + time_str.value)).toISOString(),
         description: description.value
     });
-    return true;
+    toast("success", "Date Invite Sent", "Your date invite has been sent successfully!")
+    ProposeDateVisible.value = false;
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
-        isError.value = (err.response?.data as BackendError)?.error;
+      isError.value = err.response?.data?.errors || err.response?.data?.error || 'Date Invite failed for unknown reason';
+    } else {
+      isError.value = 'Date Invite failed for unknown reason'
     }
-    else {
-        isError.value = "Registration failed for unknown reason'";
+    if (Array.isArray(isError.value)) {
+      for (err in isError.value) {
+        toast('error', 'Date Invite failed', err as string);
+      }
+    } else if (typeof (isError.value) === 'string') {
+      toast('error', 'Date Invite failed', isError.value);
+    } else if (isError.value && typeof (isError.value) === 'object') {
+      const errorData = isError.value as ValidationErrors
+      Object.entries(errorData).map(([field, messages]) => {
+        messages.map((msg) => {
+          toast('error', 'Date Invite failed', msg);
+        })
+        return messages.map(msg => msg.toUpperCase());
+      });
     }
-    return false;
+    
   } finally {
     isLoading.value = false;
   }
@@ -279,11 +297,11 @@ const send_invite = async () => {
         return;
     }
 
-    const add_event = await AddEvents()
-    if (add_event){
-        toast("success", "Date Invite Sent", "Your date invite has been sent successfully!")
-        ProposeDateVisible.value = false;
-    }
+    await AddEvents()
+    // if (add_event){
+    //     toast("success", "Date Invite Sent", "Your date invite has been sent successfully!")
+    //     ProposeDateVisible.value = false;
+    // }
 }
 
 

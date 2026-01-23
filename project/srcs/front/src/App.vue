@@ -21,4 +21,9 @@ import { RouterLink, RouterView } from 'vue-router';
     align-items: center;
     justify-content: center;
   }
+// @media (max-width: $breakpoint-md) {
+//     .container{
+//     margin: auto;
+//   }
+// }
 </style>
