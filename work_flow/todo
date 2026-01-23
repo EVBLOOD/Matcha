@@ -18,7 +18,7 @@
     [ ] User Profile (Edit/Create) :
         [x] Profile first time UI Page (form for -> gender, sexual preferences, bio interests with tags, 5 pictures as profile, location).
         [o] Bonus: Social Media Picture Import: Allow picture import from social platforms. // this was changed
-        [ ] Bonus: Pictures Drag and Drop with editing manipulations. // this is the new one
+        [x] Bonus: Pictures Drag and Drop with editing manipulations. // this is the new one
         [x] Profile Edit UI Page (form for -> all previuos feilds + first name, last name, email, LOCATION).
         [x] Backend profile add/update logic.
         [x] Image upload functionality.
