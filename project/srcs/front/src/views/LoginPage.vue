@@ -93,10 +93,15 @@ authChannel.onmessage = (event) => {
   router.push('/')
   // }
 };
+
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
-  <Card title="Welcome back">
+    <Loading v-if="isLoading" @finished="isLoading = false" />
+  
+  <Card v-if="!isLoading" title="Welcome back">
     <p class="description">Sign in to continue to your account</p>
     <button class="btn-github" v-on:click="startOAuth">
       <img src="/img/github-white-icon.png" alt="GitHub" class="github-icon" />

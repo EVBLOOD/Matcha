@@ -70,6 +70,8 @@ const handleRegister = async () => {
   }
 };
 
+import Loading from '@/components/Loading.vue';
+
 
 // TODO: we should integrate the Loading and error displaying
 </script>
@@ -77,7 +79,8 @@ const handleRegister = async () => {
 
 
 <template>
-        <Card title="Create Your Account">
+  <Loading v-if="isLoading" @finished="isLoading = false" />
+        <Card v-if="!isLoading" title="Create Your Account">
             <div class="two-inputs">
                 <Input name="fname" label="First name" id="fname" v-model="firstName" />
                 <Input name="lname" label="Last name" id="lname" v-model="lastName" />

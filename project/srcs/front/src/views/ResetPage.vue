@@ -60,12 +60,15 @@ const handleReset = async () => {
     isLoading.value = false;
   }
 };
+import Loading from '@/components/Loading.vue';
 
 
 </script>
 
 <template>
-  <Card title="Reset Password">
+
+  <Loading v-if="isLoading" @finished="isLoading = false" />
+  <Card title="Reset Password"  v-if="!isLoading">
     <Input name="unameoremail" label="Email" id="unameoremail" v-model="userEmail" />
     <div class="btn" style="display: flex;flex-direction: column; gap: 2px;padding: 6px;">
       <Button text="Reset Password" @click="handleReset" style="background-color: #9566B0;"></Button>

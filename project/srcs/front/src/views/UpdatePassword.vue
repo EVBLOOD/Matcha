@@ -65,11 +65,13 @@ const handlePasswordNew = async () => {
   }
 };
 
+import Loading from '@/components/Loading.vue';
 
 </script>
 
 <template>
-  <Card title="New Password">
+  <Loading v-if="isLoading" @finished="isLoading = false" />
+  <Card title="New Password" v-if="!isLoading">
     <Input type="password" name="passwrod_new" label="New password" id="passwrod_new" v-model="userPassword" />
     <Input type="password" name="password_conf" label="Confirm password" id="password_conf"
       v-model="userPasswordConf" />

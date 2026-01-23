@@ -274,9 +274,13 @@ const send_invite = async () => {
     await AddEvents()
 }
 
+
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
+    <Loading v-if="isLoading" />
     <div class="chat" v-if="conversationData && !isLoading && !isError">
         <div class="header">
             <button class="back-btn" @click="$router.push('/messages')">←</button>

@@ -184,7 +184,7 @@ const toggleCurrentSort =  (name: any) => {
                 :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
                 :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
         </div>
-        <div v-if="currentType == 'Map'">
+        <div v-if="currentType == 'Map' && !isLoading">
             <InteractionMap />
         </div>
     </div>

@@ -91,9 +91,13 @@ watch(selectedChoice, async (newValue) => {
     console.log(params.toString())
     await fetchSugestions(params.toString());
 })
+
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
+
     <div class="wraper">
         <div class="search_holder">
             <div style="display: flex; gap: 10px; justify-content: flex-end; margin: 5px;">
@@ -113,7 +117,9 @@ watch(selectedChoice, async (newValue) => {
                 <Button class="btn" @click="handleSubmit" text="Search"></Button>
             </div>
         </div>
-        <div class="body">
+        <Loading v-if="isLoading" @finished="isLoading = false" />
+
+        <div v-if="!isLoading" class="body">
             <UserExploreCard v-for="value in suggestionsData" :userID="value.user_id"
                 :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
                 :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />

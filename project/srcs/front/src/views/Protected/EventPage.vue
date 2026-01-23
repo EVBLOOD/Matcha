@@ -85,10 +85,14 @@ const pictures_handler = (link: string) => {
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
 
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
-    <div class="page">
+    <Loading v-if="isLoading" @finished="isLoading = false" />
+
+    <div  v-if="!isLoading && !isError" class="page">
         <div class="content">
             <nav class="tab">
                 <div class="link" :class="{ active: activeTab == 'all' }" @click="setActive('all')">All Events</div>

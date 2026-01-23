@@ -43,13 +43,19 @@ interface ValidationErrors {
   [key: string]: string[];
 }
 
+// const isLoading = ref(true);
+
+const isLoading = ref(false);
+
 const OnclickUpdateLocal = async () => {
+    isLoading.value = true
     try {
         const result = await getPreciseLocation();
         if (!result) toast('error', 'Update location failed', 'GPS wasn\'t activated.');
 
         await UserService.update_location_lt_lng((coords.value.latitude || "").toString(),
         (coords.value.longitude || "").toString())
+        profile.fetchProfile(parseInt(route.params.id as string))
         toast('success', 'Update location success', 'Your location was updated.');
       } catch(err : any) {
         const error = err.response?.data?.errors || err.response?.data?.error || 'GPS wasn\'t activated.';
@@ -68,12 +74,19 @@ const OnclickUpdateLocal = async () => {
                 return messages.map(msg => msg.toUpperCase());
             });
         }
+      } finally {
+        isLoading.value = false
       }
 }
+import Loading from '@/components/Loading.vue';
+import { ref } from 'vue';
+
 </script>
 
 <template>
-    <div v-if="profileData" class="wraper">
+    <Loading v-if="isLoading" />
+    
+    <div  v-if="profileData && !isLoading" class="wraper">
         <div style="width: 100%;display: flex; justify-content: flex-end; flex-shrink: 0; gap: 2%;">
             <RouterLink v-if="route.params.id === userStore.getUserID.toString()" class="link"
                 :to="`${route.params.id}/interactions`">

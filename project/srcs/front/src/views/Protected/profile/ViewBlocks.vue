@@ -73,9 +73,13 @@ const unblockHandler = (user_id: number) => {
     })
 }
 
+
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
+    <Loading v-if="isLoading" />
     <div v-if="!isLoading && !isError && !BlocksData" class="contenty">
         Block list is empty 
     </div>

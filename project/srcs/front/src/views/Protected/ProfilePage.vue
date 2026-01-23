@@ -77,10 +77,12 @@ const pictures_handler = (link: string) => {
     }
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
+import Loading from '@/components/Loading.vue';
 
 </script>
 
 <template>
+    <Loading v-if="profile.loading" @finished="profile.loading = false" />
     <div v-if="!profile.loading && !profile.error && profile.activeProfile" class="contentz">
         <div class="sideBar">
             <div class="sideBar_personal_info">

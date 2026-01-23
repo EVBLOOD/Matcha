@@ -128,8 +128,11 @@ const handleTags = (tags: string[]) => {
 import AuthService from '@/api/services/AuthService'
 const userStore = useUserStore();
 
+const isLoading = ref(false);
 
 const clickLogOut = async () => {
+  isLoading.value = true;
+
     try {
         const response = await AuthService.logout();
         console.log(response)
@@ -142,17 +145,22 @@ const clickLogOut = async () => {
     } catch (err) {
         console.log(err);
         localStorage.removeItem('auth_token');
+    } finally {
+        isLoading.value = false;
     }
 }
+
+import Loading from '@/components/Loading.vue';
 
 </script>
 
 <template>
-    <div v-on:click="clickLogOut" style="position: absolute; bottom: 10%; left: 5%;">
+    <Loading v-if="isLoading" @finished="isLoading = false" />
+    <div v-if="!isLoading" v-on:click="clickLogOut" style="position: absolute; bottom: 10%; left: 5%;">
         <a class="link log_a"><img src="/img/logOut.svg" alt="" /> <span>Log
                 out</span></a>
     </div>
-    <Card title="Complete Your Profile">
+    <Card v-if="!isLoading" title="Complete Your Profile">
         <div class="avatar_section">
             <div>
                 <PictureNdIcon :height="150" :width="150" :readonly="false" @file-selected="handleAvatar" />

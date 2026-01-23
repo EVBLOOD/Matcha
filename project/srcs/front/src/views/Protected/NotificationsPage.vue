@@ -92,10 +92,13 @@ const NotSeen = () => {
     };
 };
 
+import Loading from '@/components/Loading.vue';
 
 </script>
 
 <template>
+    <Loading v-if="isLoading" @finished="isLoading = false" />
+
     <div v-if="!isLoading && !isError && !NotificationsData" class="contenty">
         No Notifications For You
     </div>

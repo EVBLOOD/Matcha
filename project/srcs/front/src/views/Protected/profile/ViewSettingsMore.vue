@@ -58,8 +58,13 @@ import { toast } from '@/composables/useToast';
 interface ValidationErrors {
   [key: string]: string[];
 }
+const isLoading = ref(false);
+
 const handleSubmit = async () => {
+
     try {
+        isLoading.value = true;
+        
         const locationResult = await getPreciseLocation();
         const formData = new FormData();
 
@@ -116,6 +121,8 @@ const handleSubmit = async () => {
                 return messages.map(msg => msg.toUpperCase());
             });
         }
+    } finally {
+        isLoading.value = false;
     }
 };
 
@@ -130,10 +137,14 @@ const handlePicures = (files: PicturesDisplying[]) => {
 const handleTags = (tags: string[]) => {
     selectedIntersts.value = [...tags];
 };
+
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
-    <div class="wraper">
+    <Loading v-if="isLoading" />
+    <div  v-if="!isLoading" class="wraper">
         <div class="avatar_section">
             <div>
                 <PictureNdIcon :initialImage="initialImage" :height="150" :width="150" :readonly="false"

@@ -33,9 +33,9 @@ const clickLogOut = async () => {
 }
 </script>
 
+<!-- <Loading v-if="loading" :duration="600" @finished="loading = false" /> -->
 <template>
-    <Loading v-if="loading" :duration="600" @finished="loading = false" />
-    <div v-else class="content">
+    <div class="content">
         <div class="side_bar">
             <img class="logo" style="margin-top: 15px;margin-left: 5%;" src="/img/Logo.svg" width="119px" alt="Logo" />
             <nav class="nav">

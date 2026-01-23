@@ -81,15 +81,19 @@ const clickLogOut = async () => {
     }
 }
 
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 
 <template>
-    <div v-on:click="clickLogOut" style="position: absolute; bottom: 10%; left: 5%;">
+    <Loading v-if="isLoading" @finished="isLoading = false" />
+    
+    <div  v-if="!isLoading" v-on:click="clickLogOut" style="position: absolute; bottom: 10%; left: 5%;">
         <a class="link log_a"><img src="/img/logOut.svg" alt="" /> <span>Log
                 out</span></a>
     </div>
-    <Card title="An email has been sent to your address.">
+    <Card  v-if="!isLoading" title="An email has been sent to your address.">
         <Button class="btn" @click="handleResendMail" text="Resend Email"></Button>
         <div class="extra">Went to the wrong place? <Button class="just_btn" to="login" text="Back to Sign In"
                 backgroundColor="rgba(255, 255, 255, 0)"></Button></div>

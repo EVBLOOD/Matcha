@@ -77,10 +77,13 @@ const clickSave = async (e: Event) => {
         isLoading.value = false;
     }
 }
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
-    <div class="wraper">
+    <Loading v-if="isLoading" />
+    <div v-if="!isLoading" class="wraper">
         <div class="two_inputs">
             <Input name="uname" label="Username" id="uname" v-model="userName" type="text" />
             <Input name="fname" label="First Name" id="fname" v-model="firstName" type="text" />

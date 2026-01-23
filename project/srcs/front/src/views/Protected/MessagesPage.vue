@@ -65,11 +65,15 @@ const pictures_handler = (link: string) => {
     }
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
+
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
-    <div v-if="!isLoading && !isError && conversationsData" class="contentx">
-        <div :class="['sideBar', { hideOnMobile: chatOpen }]">
+    <div class="contentx">
+        <Loading :class="['sideBar', { hideOnMobile: chatOpen }]" v-if="isLoading" @finished="isLoading = false" />
+        <div v-if="!isLoading && !isError && conversationsData"  :class="['sideBar', { hideOnMobile: chatOpen }]">
             <div class="user" v-if="conversationsData.length == 0">No conversations for you</div>
             <div class="user" v-for="user in conversationsData" :key="user.peer_id" @click="openChat(user.conversation_id)">
                 <div class="avatar">

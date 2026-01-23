@@ -25,6 +25,7 @@ const error = ref<null | string | any[]>(null);
 
 
 const clickSave = async (e: Event) => {
+    isLoading.value = true;
     try {
         await UserService.changePassword(passWord.value);
         toast('success', 'Update password success', "The password was updated successfuly!");
@@ -54,10 +55,14 @@ const clickSave = async (e: Event) => {
         isLoading.value = false;
     }
 }
+
+import Loading from '@/components/Loading.vue';
+
 </script>
 
 <template>
-    <div class="wraper">
+    <Loading v-if="isLoading" @finished="isLoading = false" />
+    <div v-if="!isLoading"  class="wraper">
         <div class="two_inputs">
 
             <Input name="pass" label="Password" id="pass" v-model="passWord" type="password" />

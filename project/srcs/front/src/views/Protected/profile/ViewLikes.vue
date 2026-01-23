@@ -82,11 +82,13 @@ const OnclickOpenProfile = (user_id: number) => {
     router.push(`/profile/${user_id}`)
 }
 
+import Loading from '@/components/Loading.vue';
 
 
 </script>
 
 <template>
+    <Loading v-if="isLoading" />
     <div v-if="!isLoading && !isError && (!LikesData || LikesData.length == 0)" class="contenty">
         Likes list is empty 
     </div>
