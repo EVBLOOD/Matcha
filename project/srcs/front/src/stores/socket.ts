@@ -125,14 +125,14 @@ export const useSocketStore = defineStore('socket', {
     disconnectAll(token: string) {
       if (!this.isBound) return;
 
-      socketStatus.io.opts.extraHeaders = {
-        Authorization: `Bearer ${token}`
-      };
+      // socketStatus.io.opts.extraHeaders = {
+      //   Authorization: `Bearer ${token}`
+      // };
       if (socketStatus.connected) socketStatus.disconnect();
 
-      socketChat.io.opts.extraHeaders = {
-        Authorization: `Bearer ${token}`
-      };
+      // socketChat.io.opts.extraHeaders = {
+      //   Authorization: `Bearer ${token}`
+      // };
       if (socketChat.connected) socketChat.disconnect();
 
       socketChat.off();

@@ -103,7 +103,7 @@ import Loading from '@/components/Loading.vue';
                 <Input name="cpword" label="Confirm Password" id="cpword" v-model="confPassWord" type="password" />
             </div>
             <Button class="btn" text="Register" @click="handleRegister"></Button>
-            <div class="div_center">Already have an account? <Button class="just_btn" to="signin" backgroundColor="rgba(255, 255, 255, 0)"
+            <div class="div_center">Already have an account? <Button class="just_btn" to="login" backgroundColor="rgba(255, 255, 255, 0)"
                     text="Sign in"></Button></div>
         </Card>
 </template>
