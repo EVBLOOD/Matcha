@@ -7,8 +7,11 @@ import json
 class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_connect(self):
-        ConnectionManager.connect_user(user_id=request.user_id, sid=str(request.sid))
-        return True
+        try :
+            ConnectionManager.connect_user(user_id=request.user_id, sid=str(request.sid))
+            return True
+        except :
+            return False
 
 
     @ConnectionManager.socket_guard()
@@ -84,6 +87,9 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
-        print(f"End call - Reason: {reason}", flush=True)
-        ConnectionManager.disconnect_user(sid=request.sid)
+        try :
+            print(f"End call - Reason: {reason}", flush=True)
+            ConnectionManager.disconnect_user(sid=request.sid)
+        except :
+            return False
         

@@ -9,18 +9,25 @@ class ChatGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_connect(self):
-
-        ChatManager.connect_user_socket(request.user_id, request.sid)
-        
-        return True
+        try :
+            ChatManager.connect_user_socket(request.user_id, request.sid)
+            return True
+        except :
+            return False
     
     @ConnectionManager.socket_guard()
     def on_join_chat(self, body) :
-        ChatManager.join_private_room(request.user_id, body["user_id"], request.sid)
+        try :
+            ChatManager.join_private_room(request.user_id, body["user_id"], request.sid)
+        except :
+            return False
 
     @ConnectionManager.socket_guard()
     def on_leave_chat(self, body) :
-        ChatManager.leave_private_room(request.user_id, body["user_id"], request.sid)
+        try :
+            ChatManager.leave_private_room(request.user_id, body["user_id"], request.sid)
+        except :
+            return False
 
     @ConnectionManager.socket_guard()
     def on_send_message(self, user_message):
@@ -44,9 +51,12 @@ class ChatGateway(Namespace):
         
     @ConnectionManager.socket_guard()
     def on_video_call(self,  body):
-        if request.user_id == body["user_id"] :
-            return
-        ChatManager.join_call(request.user_id, body, request.sid)
+        try :
+            if request.user_id == body["user_id"] :
+                return
+            ChatManager.join_call(request.user_id, body, request.sid)
+        except :
+            return False
 
     @ConnectionManager.socket_guard()
     def on_number_of_messages(self) :
@@ -58,5 +68,8 @@ class ChatGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
-        ChatManager.disconnect_user_socket(request.user_id, request.sid)
-        return
+        try :
+            ChatManager.disconnect_user_socket(request.user_id, request.sid)
+            return
+        except :
+            return False

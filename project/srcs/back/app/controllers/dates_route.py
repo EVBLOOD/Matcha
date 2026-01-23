@@ -30,16 +30,20 @@ def propose_date():
 @dates_bp.route('/respond/<int:date_id>', methods=['POST'])
 @Security.auth_guard()
 def respond_to_date(date_id):
-    body = request.get_json()
-    status = body.get('status')
-    
-    DatesService.respond_to_date(
-        date_id=date_id,
-        responder_id=request.user_id,
-        status=status
-    )
-    
-    return jsonify({"success": True}), 200
+    try :
+
+        body = request.get_json()
+        status = body.get('status')
+        
+        DatesService.respond_to_date(
+            date_id=date_id,
+            responder_id=request.user_id,
+            status=status
+        )
+        
+        return jsonify({"success": True}), 200
+    except :
+        return jsonify({"error": "unexpected error!"}), 400
 
 @dates_bp.route('/my-dates', methods=['GET'])
 @Security.auth_guard()

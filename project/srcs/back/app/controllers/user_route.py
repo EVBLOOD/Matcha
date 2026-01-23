@@ -18,11 +18,12 @@ def create_usergeg() :
 
 @user_bp.route('/create_user', methods=['POST'])
 def create_user() :
-    data = request.get_json()
-
-    schema = UserRegisterSchema()
 
     try:
+        data = request.get_json()
+
+        schema = UserRegisterSchema()
+
         validated_data = schema.load(data)
     except ValidationError as err:
         return jsonify({"errors": err.messages}), 400
@@ -64,19 +65,25 @@ def verify_account() :
 @user_bp.route("/protected", methods=["GET", "POST"])
 @Security.auth_guard()
 def protected() :
-    user_id = request.user_id
-    full_name = UserService.get_user_full_name(user_id)
+    try :
+        user_id = request.user_id
+        full_name = UserService.get_user_full_name(user_id)
 
-    return jsonify({"user_id": request.user_id, "full_name": full_name})
+        return jsonify({"user_id": request.user_id, "full_name": full_name})
+    except :
+        return jsonify({"error": "unexpected error!"}), 400
 
 
 @user_bp.route("/not_protected", methods=["GET", "POST"])
 @Security.auth_guard(check_profile=False)
 def not_protected() :
-    user_id = request.user_id
-    full_name = UserService.get_user_full_name(user_id)
+    try :
+        user_id = request.user_id
+        full_name = UserService.get_user_full_name(user_id)
 
-    return jsonify({"user_id": request.user_id, "full_name": full_name})
+        return jsonify({"user_id": request.user_id, "full_name": full_name})
+    except :
+        return jsonify({"error": "unexpected error!"}), 400
 
 
 
@@ -178,13 +185,13 @@ def get_user_location():
 @user_bp.route('/update-location',  methods=['POST'])
 @Security.auth_guard()
 def update_user_location():
-        try:
-            body = request.get_json()
-            schema = UpdateLocation()
+    try:
+        body = request.get_json()
+        schema = UpdateLocation()
 
-            validated_data = schema.load(body)
-            user = ProfileService.update_location(request.user_id, **validated_data)
-            return jsonify({"data": user})
-        except Exception as err:
-            return jsonify({"errors": err.messages}), 400
+        validated_data = schema.load(body)
+        user = ProfileService.update_location(request.user_id, **validated_data)
+        return jsonify({"data": user})
+    except Exception as err:
+        return jsonify({"errors": err.messages}), 400
     
