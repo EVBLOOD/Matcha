@@ -78,6 +78,13 @@ const actionDate = async (id: number, status: string) => {
     }
 }
 
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
+}
+
 </script>
 
 <template>
@@ -94,7 +101,7 @@ const actionDate = async (id: number, status: string) => {
                 <div v-for="(event, index) in filteredEvents" :key="index" class="event-card">
                     <div class="users">
                         <span class="user">
-                            <img src="/img/profilePictureDemo.png" :alt="event.proposer_username" width="45"
+                            <img :src="pictures_handler(event.proposer_avatar[0].url)" :alt="event.proposer_username" width="45"
                                 height="45" />
                             <p>{{ event.proposer_username }}</p>
                         </span>
@@ -102,7 +109,7 @@ const actionDate = async (id: number, status: string) => {
                             <img src="/img/arrow.svg" />
                         </span>
                         <span class="user">
-                            <img src="/img/profilePictureDemo.png" :alt="event.partner_username" width="45"
+                            <img :src="pictures_handler(event.partner_avatar[0].url)" :alt="event.partner_username" width="45"
                                 height="45" />
                             <p>{{ event.partner_username }}</p>
                         </span>

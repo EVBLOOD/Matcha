@@ -87,7 +87,7 @@ class DatesService:
                     SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
                     FROM user_pictures up
                     WHERE up.user_id = u2.id AND is_profile_picture = TRUE
-                ) AS proposer_avatar
+                ) AS partner_avatar
             FROM dates d
             JOIN users u1 ON d.proposer_id = u1.id
             JOIN users u2 ON d.partner_id = u2.id
