@@ -31,7 +31,6 @@ const fetchExplores = async () => {
 
         }
         const { data } = await SuggestionsService.getExplore();
-        console.log(data)
         ExploreData.value = data["data"];
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -66,24 +65,19 @@ const Onclick = (type: string) => {
 }
 
 const get_min_age = (value: any) => {
-    console.log(value)
     query_base.age_min = value
 }
 const get_max_age = (value: any) => {
-    console.log(value)
     query_base.age_max = value
 }
 const get_locations = (value: any) => {
-    console.log(value)
     query_base.location = value
 }
 
 const get_fame = (value: any) => {
-    console.log(value)
     query_base.fame_min = value
 }
 const get_tags = (value: any) => {
-    console.log(value)
     query_base.tags = value
 }
 
@@ -99,7 +93,6 @@ const reset_locations = () => {
 }
 
 const reset_fame = () => {
-    console.log("LOL")
     delete query_base.fame_min
 }
 const reset_tags = () => {
@@ -116,8 +109,6 @@ const handleSubmit = async () => {
 
         const query = new URLSearchParams(query_base as any).toString();
         const { data } = await SuggestionsService.getSearch(query);
-        console.log(data)
-        console.log(data["data"])
         ExploreData.value = data["data"];
         
         // PageData.value = data["data"]['page'];

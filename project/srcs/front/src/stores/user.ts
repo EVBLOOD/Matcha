@@ -29,7 +29,6 @@ const useUserStore = defineStore('user', {
     async fetchUser() {
       try {
         const { data } = await AuthService.getProfileStatusHalfPub();
-        console.log(data)
         this.user = {
           id: data.user_id,
           full_name: data.full_name,

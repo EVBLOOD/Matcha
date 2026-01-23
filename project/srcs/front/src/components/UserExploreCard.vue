@@ -35,7 +35,6 @@ const socket = useSocketStore();
 const isLiked = ref(false)
 const clickLike = () => {
     if (!props.userID) return
-    console.log("clickLike")
     isLiked.value = true
     socket.interactWithUser(props.userID, 'like')
 }

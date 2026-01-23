@@ -32,7 +32,6 @@ const handleReset = async () => {
       email: userEmail.value,
     };
     const response = await AuthService.rest_password(payload);
-    console.log(response)
     router.push('/login')
     toast('success', 'Reset success', "Please check your email.");
   } catch (err: unknown) {

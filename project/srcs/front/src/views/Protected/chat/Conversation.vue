@@ -33,7 +33,6 @@
         isLoading.value = true;
         try {
             const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
-            console.log(data)
             // conversationData.value = data;
             conversationData.value = [...data.data];
             if (conversationData.value[0].messages_list)
@@ -84,8 +83,6 @@
 
          if (conversationMessages.value )
                 conversationMessages.value.push({id: params.id, content: params.text, is_read: true, sender_id: params.sender as number, sent_at: "Now"})
-
-        console.log(params)
     })
 
     const messagesContainer = ref<HTMLElement | null>(null);

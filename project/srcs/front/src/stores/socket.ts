@@ -24,21 +24,18 @@ export const useSocketStore = defineStore('socket', {
     },
     setMessagesCount() {
       socketChat.emit('number_of_messages', (number: number) => {
-        console.log(number)
         this.messages_counter = number
       })
     },
     bindStatusEvents() {
       if (this.isBound) return;
       socketStatus.on('connected', (response) => {
-        console.log(response);
         const id: string = Object.keys(response)[0];
         const value: string = Object.values(response)[0] as string;
         this.onlineUsers.set(id, value);
       });
 
       socketStatus.on('notify', (msg) => {
-        console.log(msg)
         this.notifs_counter++
         this.handleSocialEvent(msg.type, { "username": msg.user.user.username, "avatar": msg.user.pictures[0].url, "userId": msg.dst_id, "conversation_id": msg.conversation_id, "FromId": msg.source_id });
         this.notifications.push(msg);
@@ -48,9 +45,6 @@ export const useSocketStore = defineStore('socket', {
         // toast('error', ' sent you a message.', msg);
         this.messages_counter++
 
-        console.log(msg.user_data)
-        console.log(msg.user_data.pictures[0].url)
-
         toast('message', 'New message', "sent you a message.", msg.user_data.pictures[0].url, msg.conv, msg.user_data.user.username);
         this.new_chats_notifs.push(msg); // this is just a current example to use in future | I should fix backend
 
@@ -59,7 +53,6 @@ export const useSocketStore = defineStore('socket', {
         this.notifs_counter = number
       })
       socketChat.emit('number_of_messages', (number: number) => {
-        console.log(number)
         this.messages_counter = number
       })
     },
@@ -86,7 +79,6 @@ export const useSocketStore = defineStore('socket', {
     reachStausOneUser(id: string) {
       socketStatus.emit("check_user_connect", id, (response: any) => {
         if (response) {
-          console.log(response)
           this.onlineUsers.set(id, response.status ? "Online" : response.status);
         }
       })
@@ -105,12 +97,10 @@ export const useSocketStore = defineStore('socket', {
     },
     joinChat(id: any) {
       socketChat.emit('join_chat', { user_id: id }, ((resp: any) => {
-        console.log(resp)
       }))
     },
     JoinUser(id: any) {
       socketChat.emit('join_video_chat', { user_id: id }, ((resp: any) => {
-        console.log(resp)
       }))
     },
     CallUser(id: string, type: string, args: any) {
@@ -155,9 +145,6 @@ export const useSocketStore = defineStore('socket', {
       socketStatus.io.opts.extraHeaders = {
         Authorization: `Bearer ${token}`
       };
-      console.log(
-        socketStatus.emit(type, user_id)
-      )
     },
     handleSocialEvent(type: string, payload: any) {
       const profileStore = useSocialStore();

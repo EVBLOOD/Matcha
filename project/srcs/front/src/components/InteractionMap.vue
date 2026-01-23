@@ -52,9 +52,7 @@ const fetchRangeLocation = async (query: string) => {
     isLoading.value = true;
     try {
         const { data } = await UserService.get_range_user_locations(query);
-        console.log(data)
         users.value = data['data'];
-        console.log(data)
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;

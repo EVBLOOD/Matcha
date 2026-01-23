@@ -43,6 +43,16 @@ const handleRegister = async () => {
         last_name: lastName.value,
         birthdate: birthdate.value
     };
+
+    if (!firstName.value || !email.value || !passWord.value || !confPassWord.value || !firstName.value || !lastName.value || !birthdate.value || !userName.value) {
+      toast('error', 'Registration failed', 'All fields are required');
+      return
+    }
+
+    if (passWord.value !== confPassWord.value) {
+      toast('error', 'Registration failed', 'Passwords do not match');
+      return
+    }
     
     await UserService.register(payload);
 

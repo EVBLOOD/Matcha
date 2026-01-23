@@ -13,13 +13,11 @@ const socket = useSocketStore();
 const loading = ref(true);
 
 const clickLogOut = async () => {
-    console.log("Logout")
     try {
         const token = localStorage.getItem('auth_token');
         if (token) socket.disconnectAll(token)
         const response = await AuthService.logout();
 
-        console.log(response)
         userStore.fetchUser()
         localStorage.removeItem('auth_token');
 
@@ -27,7 +25,6 @@ const clickLogOut = async () => {
 
         router.push('login')
     } catch (err) {
-        console.log(err);
         localStorage.removeItem('auth_token');
     }
 }

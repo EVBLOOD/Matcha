@@ -42,11 +42,6 @@ const handleSubmit = async () => {
     // add protections for inputs:
     try {
         const locationResult = await getPreciseLocation();
-        console.log((coords.value.latitude || "").toString())
-        console.log((coords.value.longitude || "").toString())
-        console.log(locationResult)
-
-        console.log("Wait!")
         const formData = new FormData();
 
         formData.append('biography', insertedBio.value);
@@ -66,24 +61,14 @@ const handleSubmit = async () => {
             }
         });
 
-        console.log(locationResult)
-        console.log((coords.value.latitude || "").toString())
-        console.log((coords.value.longitude || "").toString())
-
         if (coords.value.latitude !== null && coords.value.longitude !== null) {
             formData.append('latitude', coords.value.latitude.toString());
             formData.append('longitude', coords.value.longitude.toString());
             formData.append('location_set_by_user', String(true));
-            console.log("locationResult is on")
         } else {
             formData.append('location_set_by_user', String(false));
-            console.log("locationResult is off")
 
         }
-
-        console.log(coords.value)
-        console.log(locationResult)
-
 
         await UserService.completeProfile(formData);
         const user = useUserStore();
@@ -135,7 +120,6 @@ const clickLogOut = async () => {
 
     try {
         const response = await AuthService.logout();
-        console.log(response)
         userStore.fetchUser()
         localStorage.removeItem('auth_token');
 
@@ -143,7 +127,6 @@ const clickLogOut = async () => {
 
         router.push('login')
     } catch (err) {
-        console.log(err);
         localStorage.removeItem('auth_token');
     } finally {
         isLoading.value = false;

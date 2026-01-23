@@ -29,7 +29,6 @@ const fetchNotifications = async () => {
   isLoading.value = true;
   try {
     const { data } = await NotificationsService.getNotifications();
-    console.log(`data ${data.data}`)
     NotificationsData.value = [...data.data];
     socket.setNotifsCount(0)
   } catch(err : unknown) {

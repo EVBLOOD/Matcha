@@ -42,7 +42,6 @@ const fetchConversations = async () => {
             conversationsData.value = [...data.data];
         else
             conversationsData.value = [] 
-        console.log(conversationsData.value)
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;

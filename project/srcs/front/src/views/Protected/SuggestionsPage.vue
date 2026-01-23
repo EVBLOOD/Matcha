@@ -4,7 +4,6 @@ import SuggestionsbarElem from '@/components/SuggestionsbarElem.vue';
 import UserExploreCard from '@/components/UserExploreCard.vue';
 
 const handleSubmit = () => {
-    console.log("SEARCH!")
 }
 
 import SuggestionsService from '@/api/services/SuggestionsService'
@@ -47,7 +46,6 @@ const fetchSugestions = async (params: any = undefined) => {
     isLoading.value = true;
     try {
         const { data } = await SuggestionsService.getSuggestions(params);
-        console.log(data)
         suggestionsData.value = data["data"];
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -73,7 +71,6 @@ watch(selectedChoice, async (newValue) => {
     }
 
     if (newValue && newValue?.includes('Filterby')) {
-        console.log("HELLO")
         if (newValue.replace('Filterby', '') == selected_filter.value) {
             selected_filter.value = ''
         } else {
@@ -88,7 +85,6 @@ watch(selectedChoice, async (newValue) => {
     if (selected_filter.value) {
         params.append('filter', selected_filter.value.toLowerCase());
     }
-    console.log(params.toString())
     await fetchSugestions(params.toString());
 })
 

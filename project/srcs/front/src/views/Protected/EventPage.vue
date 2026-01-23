@@ -44,9 +44,7 @@ const fetchEvents = async () => {
     try {
         const { data } = await EventService.get_my_dates();
 
-        console.log(`data ${data.data}`)
         if (data.data) EventsData.value = [...data.data];
-        console.log(EventsData.value)
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;

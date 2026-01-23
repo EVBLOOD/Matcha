@@ -60,7 +60,6 @@ const removeImage = async (id: string) => {
         if (props.updateMode && id.indexOf('/') > 0) {
             try {
                 let path = id.replace(`${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/`, '');
-                console.log(path)
                 await ProfileService.removeProfilePictues(path)
                 toast('success', 'Picture delete', "Picture was deleted successfuly!");
             } catch (err: unknown) {

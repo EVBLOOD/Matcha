@@ -36,5 +36,12 @@ const props = defineProps({
         display: flex;
         flex-direction: column;
     }
+    .content {
+        max-width: 90%;
+        min-width: 90%;
+    }
+    .title {
+        font-size: 24px;
+    }
 }
 </style>

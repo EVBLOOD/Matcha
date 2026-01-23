@@ -28,7 +28,6 @@ const selectedOrientation = ref(profile.activeProfile?.user.sexual_preference);
 const selectedGender = ref(profile.activeProfile?.user.gender);
 
 const pictures_handler = (link: string) => {
-    console.log(link)
     if (link && link.indexOf('/') > 0) {
         return link
     }
@@ -89,11 +88,8 @@ const handleSubmit = async () => {
             formData.append('latitude', coords.value.latitude.toString());
             formData.append('longitude', coords.value.longitude.toString());
             formData.append('location_set_by_user', String(true));
-            console.log("locationResult is on")
         } else {
             formData.append('location_set_by_user', String(false));
-            console.log("locationResult is off")
-
         }
         await ProfileService.updateProfile(formData);
         const user = useUserStore();

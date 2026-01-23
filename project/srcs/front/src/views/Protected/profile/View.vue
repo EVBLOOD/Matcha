@@ -13,11 +13,7 @@ const profile = useSocialStore()
 
 const route = useRoute();
 const userStore = useUserStore();
-
 const profileData = profile.activeProfile;
-
-console.log(profileData)
-
 const socketStore = useSocketStore()
 
 

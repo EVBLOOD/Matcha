@@ -26,10 +26,8 @@ const fetchBlocks = async () => {
   isLoading.value = true;
   try {
     const { data } = await InteractionService.getBlockList();
-    console.log(`data ${data.data}`)
     if (data.data)
         BlocksData.value = [...data.data];
-    console.log(BlocksData.value)
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {
         isError.value = (err.response?.data as BackendError)?.error;

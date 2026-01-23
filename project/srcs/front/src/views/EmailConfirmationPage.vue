@@ -22,8 +22,6 @@ onMounted(() => {
     router.push('/profile-onboarding');
 });
 
-
-
 const isLoading = ref(false);
 const error = ref<null | string | any[]>(null);
 
@@ -33,7 +31,6 @@ const handleResendMail = async () => {
 
     try {
         const response = await AuthService.resend_verfiy_mail();
-        console.log(response)
         
         toast('success', 'Resend email success', "Check your email please");
     } catch (err: unknown) {
@@ -68,7 +65,6 @@ const userStore = useUserStore();
 const clickLogOut = async () => {
     try {
         const response = await AuthService.logout();
-        console.log(response)
         userStore.fetchUser()
         localStorage.removeItem('auth_token');
 
@@ -76,7 +72,6 @@ const clickLogOut = async () => {
 
         router.push('login')
     } catch (err) {
-        console.log(err);
         localStorage.removeItem('auth_token');
     }
 }

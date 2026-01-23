@@ -37,7 +37,6 @@ const handlePasswordNew = async () => {
       token: token as string
     };
     const response = await AuthService.rest_new_password(payload);
-    console.log(response)
     router.push('/login')
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {

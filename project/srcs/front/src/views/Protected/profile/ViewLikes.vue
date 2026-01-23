@@ -26,7 +26,6 @@ const fetchBlocks = async () => {
   isLoading.value = true;
   try {
     const { data } = await InteractionService.getLikesList();
-    console.log(`data ${data.data}`)
     if (data.data) LikesData.value = [...data.data];
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {

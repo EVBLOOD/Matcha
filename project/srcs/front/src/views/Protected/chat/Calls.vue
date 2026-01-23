@@ -256,7 +256,6 @@ const AddEvents = async () => {
     if (!conversationData.value) return
   isLoading.value = true;
   try {
-    console.log(date_str.value + " " + time_str.value)
     await EventService.propose_date({
         partner_id: conversationData.value[0].peer_id || -1,
         location: location.value,
