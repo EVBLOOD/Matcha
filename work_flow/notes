@@ -1,10 +1,8 @@
-- Date/Event Scheduling: Implement event/date scheduling feature.
 - check the redis things
 - check view sockets -protections-
 
 - design:
     errors displaying and loadings
-    Date/Event Scheduling: Implement event/date scheduling feature.
 
 
 - Online things to re-check
@@ -20,11 +18,6 @@ profile =>
 to do to call it end of project:
 
 - Explore -> I don't know if I should list all or add pagination tbh
-
-- adding the pictues bonus
-
-- event should be coded all to intgrate it to my untested backend!
-
 
 - Status -  last seen should be fixed in profile - and is online too
 

@@ -9,13 +9,13 @@
         [x] Login UI Page (form with -> username and password + forgot the password).
         [x] Backend login logic.
         [x] Bonus: Omniauth Integration: Implement social login (Google, Facebook, etc.). 
-    [ ] Password Reset :
+    [x] Password Reset :
         [x] "Reset Password" UI page (form with -> email address).
         [x] "Forgot Password" UI link redirect page (form with -> new password).
         [x] Password reset request logic (send the unique email link).
     [x] Logout :
         [x] Logout logic.
-    [ ] User Profile (Edit/Create) :
+    [x] User Profile (Edit/Create) :
         [x] Profile first time UI Page (form for -> gender, sexual preferences, bio interests with tags, 5 pictures as profile, location).
         [o] Bonus: Social Media Picture Import: Allow picture import from social platforms. // this was changed
         [x] Bonus: Pictures Drag and Drop with editing manipulations. // this is the new one
@@ -23,7 +23,7 @@
         [x] Backend profile add/update logic.
         [x] Image upload functionality.
         [x] Interest tags implementation (reusable tags).
-    [ ] User Profile (View) :
+    [x] User Profile (View) :
         [x] Display your own profile data on a UI page with (Viewers and Likers).
         [x] Display your own profile data on backend.
         [x] Display your own Profile visit History logging UI Page.
@@ -43,25 +43,25 @@
     [x] GPS Location :
         [x] Initial GPS location capture ("without knowledge" if they don't want to).
         [x] Location modification in profile editing.
-    [ ] Browsing :
+    [x] Browsing :
         [x] Browse Profiles UI Page (display suggested profiles -> Sorting and Filtering included).
         [x] Bonus: Interactive Map: Develop user map interface.
-        [ ] Suggestions that match their profile.
-        [ ] Algorithm for generating "interesting" profile suggestions based on criteria (orientation, location, tags, fame).
-        [ ] Sorting for Browse Page (age, location, fame, tags).
-        [ ] Filtering for Browse Page (age, location, fame, tags).
-    [ ] Advanced Search :
-        [ ] Advanced Search UI Page (form for search criteria such as -> age gap, fame gap, location, tags).
-        [ ] Backend search query logic (using search criteria).
-        [ ] Sortable/Filterable Search Results Display (same as browsing).
-    [ ] Chat :
+        [x] Suggestions that match their profile.
+        [x] Algorithm for generating "interesting" profile suggestions based on criteria (orientation, location, tags, fame).
+        [x] Sorting for Browse Page (age, location, fame, tags).
+        [x] Filtering for Browse Page (age, location, fame, tags).
+    [x] Advanced Search :
+        [x] Advanced Search UI Page (form for search criteria such as -> age gap, fame gap, location, tags).
+        [x] Backend search query logic (using search criteria).
+        [x] Sortable/Filterable Search Results Display (same as browsing).
+    [x] Chat :
         [x] Chat UI Interface.
         [x] Bonus: Video/Audio Chat: Implement video/audio chat feature.
         [x] New message pop-up/notif UI.
         [x] Backend chat implementation.
         [x] New message notif implementation.
-    [ ] Notifications:
-        [ ] UI for Unread notification indicator.
+    [x] Notifications:
+        [x] UI for Unread notification indicator.
         [x] Display UI Notifications Area or maybe Dropdown.
         [x] Notification system in database
         [x] Notification system (Real-time notification delivery)
@@ -70,5 +70,5 @@
         [x] On Message received.
         [x] On "Like" back (connection).
         [x] On "Unlike" (disconnection).
-    [ ] Bonus:
-        [ ] Date/Event Scheduling: Implement event/date scheduling feature.
+    [x] Bonus:
+        [x] Date/Event Scheduling: Implement event/date scheduling feature.
