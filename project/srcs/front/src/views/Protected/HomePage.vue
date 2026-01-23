@@ -1,19 +1,16 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
-
+import { useSocketStore } from '@/stores/socket';
+import { ref } from 'vue';
 import AuthService from '@/api/services/AuthService'
 import useUserStore from '@/stores/user';
+import Loading from '@/components/Loading.vue';
 
 const userStore = useUserStore();
 const route = useRoute();
-const router = useRouter()
-
-
-import { useSocketStore } from '@/stores/socket';
-
+const router = useRouter();
 const socket = useSocketStore();
-
-
+const loading = ref(true);
 
 const clickLogOut = async () => {
     console.log("Logout")
@@ -37,7 +34,8 @@ const clickLogOut = async () => {
 </script>
 
 <template>
-    <div class="content">
+    <Loading v-if="loading" :duration="600" @finished="loading = false" />
+    <div v-else class="content">
         <div class="side_bar">
             <img class="logo" style="margin-top: 15px;margin-left: 5%;" src="/img/Logo.svg" width="119px" alt="Logo" />
             <nav class="nav">

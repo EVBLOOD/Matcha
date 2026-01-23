@@ -10,6 +10,7 @@ import axios, { AxiosError } from 'axios';
 import SuggestionsService from '@/api/services/SuggestionsService'
 import type { SuggestionsResponse } from '@/types/apiResponses'
 import { toast } from '@/composables/useToast';
+import Loading from '@/components/Loading.vue';
 
 const ExploreData = ref<SuggestionsResponse[] | null>(null);
 const isLoading = ref(true);
@@ -177,7 +178,8 @@ const toggleCurrentSort =  (name: any) => {
             <Button text="List" @click="Onclick('List')" :img="'/img/listIcon.svg'"></Button>
             <Button text="Map" @click="Onclick('Map')" :img="'/img/mapIcon.svg'"></Button>
         </div>
-        <div v-if="currentType == 'List'" class="body">
+        <Loading v-if="isLoading" />
+        <div v-if="currentType == 'List' && !isLoading" class="body">
             <UserExploreCard v-for="value in ExploreData" :userID="value.user_id"
                 :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
                 :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
@@ -187,7 +189,6 @@ const toggleCurrentSort =  (name: any) => {
         </div>
     </div>
 </template>
-
 
 
 <style lang="scss" scoped>
