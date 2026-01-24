@@ -52,26 +52,36 @@ class ConnectionManager :
             return
             
         user_id = int(user_id_bytes)
-        
+
         pipe = redis.pipeline()
         pipe.hdel("ws:connections", f"sid:{sid}")
         pipe.srem(f"ws:user:{user_id}:sockets", sid)
         pipe.execute()
-
-        leave_room(f"Notifs_user_{user_id}", sid=sid)
         
 
         remaining_sockets = redis.scard(f"ws:user:{user_id}:sockets")
+
+        print(f"remaining_sockets: {remaining_sockets}", flush=True)
         
         if remaining_sockets == 0:
+            from datetime import datetime
+            last_seen = datetime.utcnow().isoformat() 
+        
             redis.delete(f"ws:user:{user_id}:online")
             UserRepository.update_last_online(user_id)
             
-            emit('connected', 
-                 {"user_id": user_id, "status": "Offline"}, 
+
+            emit('user_status_change', 
+                 {"user_id": user_id, "status": str(last_seen)}, 
                  room=f"online_user_{user_id}")
+            
 
         leave_room(f"online_user_{user_id}", sid=sid)
+        leave_room(f"Notifs_user_{user_id}", sid=sid)
+
+
+    
+
 
     @staticmethod
     def is_user_online(user_id: int, current_id: int) -> bool:

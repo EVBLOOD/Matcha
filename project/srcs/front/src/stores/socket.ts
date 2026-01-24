@@ -31,10 +31,18 @@ export const useSocketStore = defineStore('socket', {
     bindStatusEvents() {
       if (this.isBound) return;
       socketStatus.on('connected', (response) => {
+        console.log('connected :')
         console.log(response)
-        console.log('connected')
         const id: string = Object.keys(response)[0];
         const value: string = Object.values(response)[0] as string;
+        this.onlineUsers.set(id, value);
+      });
+
+      socketStatus.on('user_status_change', (response) => {
+        console.log('user_status_change: ')
+        console.log(response)
+        const id: string = response.user_id;
+        const value: string = response.status;
         this.onlineUsers.set(id, value);
       });
 
