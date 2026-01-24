@@ -21,9 +21,7 @@ import ViewSeens from '@/views/Protected/profile/ViewSeens.vue';
 import VueInteractions from '@/views/Protected/profile/VueInteractions.vue';
 import ViewLikes from '@/views/Protected/profile/ViewLikes.vue';
 import ViewSettingsPassword from '@/views/Protected/profile/ViewSettingsPassword.vue';
-
-
-
+import NotFoundPage from '@/views/NotFoundPage.vue';
 
 // import Conversation from '@/views/Protected//chat/Conversation.vue';
 import Conversation from '@/views/Protected/chat/Calls.vue';
@@ -136,6 +134,12 @@ const router = createRouter({
           meta: { requiresVerification: true, requiresAuth: true, requiresCompleteProfile: true, title: 'Events' },
         }
       ]
+    },    
+    {
+      path: '/404',
+      name: '404 Not Found page',
+      component: NotFoundPage,
+      meta: { public: true }
     },
     {
       path: '/landing',
