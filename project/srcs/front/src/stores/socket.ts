@@ -3,6 +3,7 @@ import { socketChat, socketStatus } from '@/socket/socket';
 import { ref } from 'vue';
 import { useSocialStore } from '@/stores/profile';
 import { toast } from '@/composables/useToast';
+import { formatDistanceToNow } from 'date-fns';
 
 
 export const useSocketStore = defineStore('socket', {
@@ -77,9 +78,11 @@ export const useSocketStore = defineStore('socket', {
       this.isBound = true;
     },
     reachStausOneUser(id: string) {
+
       socketStatus.emit("check_user_connect", id, (response: any) => {
         if (response) {
-          this.onlineUsers.set(id, response.status ? "Online" : response.status);
+          console.log(response)
+          this.onlineUsers.set(id, response.status === "Online" ? "Online" : formatDistanceToNow(new Date(response.status), {addSuffix: true}) );
         }
       })
     },
@@ -120,6 +123,7 @@ export const useSocketStore = defineStore('socket', {
       return id_message || -1
     },
     UserStatus(id: string) {
+      console.log(this.onlineUsers.get(id))
       return this.onlineUsers.get(id)
     },
     disconnectAll(token: string) {
@@ -130,8 +134,8 @@ export const useSocketStore = defineStore('socket', {
 
       if (socketChat.connected) socketChat.disconnect();
 
-      // socketChat.off();
-      // socketStatus.off();
+      socketChat.off();
+      socketStatus.off();
 
       this.isBound = false;
     },

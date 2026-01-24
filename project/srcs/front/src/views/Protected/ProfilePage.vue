@@ -59,15 +59,15 @@ const reportHandler = async () => {
 
 onMounted(() => {
     profile.fetchProfile(parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id))
-    if (profile.activeProfile)
-        socket.reachStausOneUser(profile.activeProfile.user.user_id.toString())
+    // if (profile.activeProfile)
+    //     socket.reachStausOneUser(profile.activeProfile.user.user_id.toString())
 });
 
 
 const statusColor = computed(() => {
     if (profile.activeProfile)
         return {
-            background: socket.UserStatus(profile.activeProfile.user.user_id.toString()) == "Online" ? "rgb(6, 201, 6)" : "red"
+            background: socket.UserStatus(profile.activeProfile.user.user_id.toString()) === "Online" ? "rgb(6, 201, 6)" : "red"
         };
 });
 

@@ -18,7 +18,6 @@ class PresenceGateway(Namespace):
     def on_check_user_connect(self, id):
         try :
             online = ConnectionManager.is_user_online(int(id), request.user_id)
-            # here check friendship status!
             return {"status": online}
         except Exception as _:
             return False
@@ -41,8 +40,10 @@ class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_like(self, id):
         try :
+            print("LOLO", flush=True)
             ConnectionManager.interact_with_user(request.user_id, int(id), "Like")
         except Exception as _:
+            print("Hello wold !", flush=True)
             return False
 
     @ConnectionManager.socket_guard()
@@ -55,6 +56,7 @@ class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_view(self, id):
         try :
+            print("LOLO", flush=True)
             ConnectionManager.interact_with_user(request.user_id, int(id), "View")
         except Exception as _:
             return False

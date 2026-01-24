@@ -84,7 +84,7 @@ class ConnectionManager :
         )
         if not is_online :
             response = UserRepository.find_by_id(user_id, 'last_online')
-            return response[0]
+            return str(response[0])
         return is_online
 
     @staticmethod
@@ -166,6 +166,7 @@ class ConnectionManager :
                     if not AuthService.check_profile_completion(decoded_token["user_id"]) :
                         raise Exception("profile completion required")
                     request.user_id = decoded_token["user_id"]
+                    print(f"socket_guard: user id is : {request.user_id}", flush=True)
                 except Exception as e:
                     print(f"Socket authentication failed: {str(e)}", flush=True)
                     if f.__name__ == 'on_connect' :
