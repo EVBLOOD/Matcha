@@ -166,7 +166,6 @@ class ConnectionManager :
                     if not AuthService.check_profile_completion(decoded_token["user_id"]) :
                         raise Exception("profile completion required")
                     request.user_id = decoded_token["user_id"]
-                    print(f"socket_guard: user id is : {request.user_id}", flush=True)
                 except Exception as e:
                     print(f"Socket authentication failed: {str(e)}", flush=True)
                     if f.__name__ == 'on_connect' :

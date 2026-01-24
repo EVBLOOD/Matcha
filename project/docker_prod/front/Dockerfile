@@ -1,7 +1,19 @@
-FROM node:20-bullseye-slim
+FROM node:20-bullseye-slim as building-stage
 
-RUN apt update -y && apt upgrade -y && apt install git -y 
+WORKDIR /app
 
-COPY script.sh .
+COPY package*.json ./
 
-ENTRYPOINT ["sh", "script.sh"]
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+FROM nginx:stable-alpine
+
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
