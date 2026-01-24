@@ -12,7 +12,7 @@ services:
       - database
 
   front:
-    build: docker/front
+    build: docker_prod/front
     image: matcha_front
     container_name: matcha_front
     env_file: .env
