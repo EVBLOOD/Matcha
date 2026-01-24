@@ -1,3 +1,4 @@
 cd /var/www/html
 npm install
-exec npm run dev
+npm run build
+npm run preview -- --port 3000
