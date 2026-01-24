@@ -16,9 +16,9 @@ const clickLogOut = async () => {
     try {
         const token = localStorage.getItem('auth_token');
         if (token) socket.disconnectAll(token)
-        const response = await AuthService.logout();
+        await AuthService.logout();
 
-        userStore.fetchUser()
+        await userStore.fetchUser()
         localStorage.removeItem('auth_token');
 
         userStore.setIsLoaded(false)

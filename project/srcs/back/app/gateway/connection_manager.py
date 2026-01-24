@@ -163,9 +163,8 @@ class ConnectionManager :
                     message, status = AuthService.validate_token(decoded_token["user_id"], decoded_token["sub"])
                     if status != 200 :
                         raise Exception(message)
-                    # This maybe will be moved down when working with the admin role
-                    # if check_profile and not AuthService.check_profile_completion(decoded_token["user_id"]) :
-                    #     raise Exception("profile completion required")
+                    if not AuthService.check_profile_completion(decoded_token["user_id"]) :
+                        raise Exception("profile completion required")
                     request.user_id = decoded_token["user_id"]
                 except Exception as e:
                     print(f"Socket authentication failed: {str(e)}", flush=True)

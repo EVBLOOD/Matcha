@@ -123,20 +123,15 @@ export const useSocketStore = defineStore('socket', {
       return this.onlineUsers.get(id)
     },
     disconnectAll(token: string) {
+      console.log(token)
       if (!this.isBound) return;
 
-      // socketStatus.io.opts.extraHeaders = {
-      //   Authorization: `Bearer ${token}`
-      // };
       if (socketStatus.connected) socketStatus.disconnect();
 
-      // socketChat.io.opts.extraHeaders = {
-      //   Authorization: `Bearer ${token}`
-      // };
       if (socketChat.connected) socketChat.disconnect();
 
-      socketChat.off();
-      socketStatus.off();
+      // socketChat.off();
+      // socketStatus.off();
 
       this.isBound = false;
     },
