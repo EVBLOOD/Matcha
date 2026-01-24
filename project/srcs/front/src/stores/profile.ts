@@ -31,8 +31,10 @@ export const useSocialStore = defineStore('profile', {
       try {
         const { data } = await ProfileService.getProfile(id.toString());
         this.activeProfile = data;
-        if (this.activeProfile?.user)
+        if (this.activeProfile?.user){
+          console.log(this.activeProfile.user.user_id.toString())
             socket.reachStausOneUser(this.activeProfile.user.user_id.toString())
+          }
       } catch(err : unknown) {
         if (axios.isAxiosError(err)) {
             this.error = (err.response?.data as BackendError)?.error;

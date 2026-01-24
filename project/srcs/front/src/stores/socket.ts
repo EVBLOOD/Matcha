@@ -31,6 +31,8 @@ export const useSocketStore = defineStore('socket', {
     bindStatusEvents() {
       if (this.isBound) return;
       socketStatus.on('connected', (response) => {
+        console.log(response)
+        console.log('connected')
         const id: string = Object.keys(response)[0];
         const value: string = Object.values(response)[0] as string;
         this.onlineUsers.set(id, value);
@@ -82,7 +84,7 @@ export const useSocketStore = defineStore('socket', {
       socketStatus.emit("check_user_connect", id, (response: any) => {
         if (response) {
           console.log(response)
-          this.onlineUsers.set(id, response.status === "Online" ? "Online" : formatDistanceToNow(new Date(response.status), {addSuffix: true}) );
+          this.onlineUsers.set(id, (response.status === "Online" || response.status === true) ? "Online" : formatDistanceToNow(new Date(response.status), {addSuffix: true}) );
         }
       })
     },
@@ -123,6 +125,7 @@ export const useSocketStore = defineStore('socket', {
       return id_message || -1
     },
     UserStatus(id: string) {
+      console.log(id)
       console.log(this.onlineUsers.get(id))
       return this.onlineUsers.get(id)
     },

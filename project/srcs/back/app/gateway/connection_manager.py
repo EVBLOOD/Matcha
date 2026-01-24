@@ -37,40 +37,41 @@ class ConnectionManager :
             "1"
         )
         join_room(f"Notifs_user_{user_id}")
+        
+        join_room(f"online_user_{user_id}")
+        
         emit('connected', {user_id: "Online"}, room=f"online_user_{user_id}")
 
     
     @staticmethod
     def disconnect_user(sid: str):
-        redis = Config.redis_instence
-        user_id = redis.hget("ws:connections", f"sid:{sid}")
-        if not user_id:
+        redis = Config.redis_instance
+        
+        user_id_bytes = redis.hget("ws:connections", f"sid:{sid}")
+        if not user_id_bytes:
             return
             
-        user_id = int(user_id)
+        user_id = int(user_id_bytes)
         
-        redis.hdel("ws:connections", f"sid:{sid}")
-        redis.srem(f"ws:user:{user_id}:sockets", sid)
-        
-        leave_room(f"Notifs_user_{user_id}", sid=sid)
-        leave_room(f"online_user_{user_id}", sid=sid)
+        pipe = redis.pipeline()
+        pipe.hdel("ws:connections", f"sid:{sid}")
+        pipe.srem(f"ws:user:{user_id}:sockets", sid)
+        pipe.execute()
 
-        cursor = 0
-        pattern = "chat:private_rooms:*"
-        while True:
-            cursor, keys = redis.scan(cursor, match=pattern, count=100)
-            for key in keys:
-                if redis.sismember(key, sid):
-                    redis.srem(key, sid)
-                    room_name = key.decode().replace("chat:private_rooms:", "")
-                    leave_room(room_name, sid=sid)
-            if cursor == 0:
-                break
-        if redis.scard(f"ws:user:{user_id}:sockets") == 0:
+        leave_room(f"Notifs_user_{user_id}", sid=sid)
+        
+
+        remaining_sockets = redis.scard(f"ws:user:{user_id}:sockets")
+        
+        if remaining_sockets == 0:
             redis.delete(f"ws:user:{user_id}:online")
             UserRepository.update_last_online(user_id)
+            
+            emit('connected', 
+                 {"user_id": user_id, "status": "Offline"}, 
+                 room=f"online_user_{user_id}")
 
-        emit('connected', {user_id: "Disconnected"}, room=f"online_user_{user_id}")
+        leave_room(f"online_user_{user_id}", sid=sid)
 
     @staticmethod
     def is_user_online(user_id: int, current_id: int) -> bool:
@@ -78,6 +79,7 @@ class ConnectionManager :
         if block_status :
             return False
         redis = Config.redis_instence
+        print(f"online_user_{user_id}", flush=True)
         join_room(f"online_user_{user_id}")
         is_online = bool(
             redis.exists(f"ws:user:{user_id}:online")
@@ -131,7 +133,6 @@ class ConnectionManager :
                     emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{dst_id}")
                 else :
                     emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": type_response}, room=f"Notifs_user_{dst_id}")
-    #     [ ] On Message received.
 
 
 
