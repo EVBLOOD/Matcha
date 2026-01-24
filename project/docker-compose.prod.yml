@@ -1,12 +1,12 @@
 services:
   front:
-    build: docker/front
+    build: 
+      context: .
+      dockerfile: docker_prod/front/Dockerfile
     image: matcha_front
     container_name: matcha_front
     env_file: .env
     restart: on-failure
-    volumes:
-      - ${PWD}/srcs/front:/var/www/html
     expose:
       - 3000
     networks:
@@ -24,9 +24,8 @@ services:
       - GEOIP_DB_PATH=/var/www/html/app/data/maxmind/GeoLite2-City.mmdb
     env_file: .env
     restart: on-failure
-    volumes:
-      - ${PWD}/srcs/back:/var/www/html
-      # - geoip-data:/var/www/html/app/data/maxmind:ro
+    # volumes:
+      # - geoip-data:/app/app/data/maxmind:ro
     expose:
       - 8080
     networks:

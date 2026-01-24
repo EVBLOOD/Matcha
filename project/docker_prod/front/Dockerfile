@@ -1,19 +1,13 @@
-FROM node:20-bullseye-slim as building-stage
+FROM node:20-bullseye-slim AS build
+
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY srcs/front/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY srcs/front/. .
+COPY docker_prod/front/script.sh .
 
-RUN npm run build
-
-FROM nginx:stable-alpine
-
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["sh", "script.sh"]
