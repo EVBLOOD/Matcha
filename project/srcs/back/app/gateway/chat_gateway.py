@@ -70,6 +70,6 @@ class ChatGateway(Namespace):
     def on_disconnect(self, reason):
         try :
             ChatManager.disconnect_user_socket(request.user_id, request.sid)
-            return
+            return True
         except :
             return False

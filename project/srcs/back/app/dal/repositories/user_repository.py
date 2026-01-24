@@ -93,7 +93,7 @@ class UserRepository(BaseRepository):
         query = """
             UPDATE users 
             SET last_online = CURRENT_TIMESTAMP 
-            WHERE id = %s
+            WHERE id = %s RETURNING id
         """
         cls._execute(query, (user_id,))
 

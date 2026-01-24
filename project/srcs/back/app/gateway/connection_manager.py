@@ -154,6 +154,8 @@ class ConnectionManager :
         def decorator(f):
             @wraps(f)
             def wrapped(*args, **kwargs):
+                if f.__name__ == 'on_disconnect':
+                    return f(*args, **kwargs)
                 try :
                     token = (request.headers.get('Authorization') and 
                                     request.headers.get('Authorization').split(' ')[1])
@@ -167,15 +169,15 @@ class ConnectionManager :
                         raise Exception("profile completion required")
                     request.user_id = decoded_token["user_id"]
                 except Exception as e:
-                    print(f"Socket authentication failed: {str(e)}", flush=True)
                     if f.__name__ == 'on_connect' :
-                        raise ConnectionRefusedError(str(e))
-                    elif f.__name__ == 'on_disconnect' :
-                        return
+                        return False
                     else :
-                        emit('auth_error', {'message': str(e)})
-                        disconnect()
-                    return
+                        try :
+                            emit('auth_error', {'message': str(e)})
+                            disconnect()
+                        except :
+                            pass
+                    return None
                 return f(*args, **kwargs)
             return wrapped
         return decorator

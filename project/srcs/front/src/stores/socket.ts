@@ -127,15 +127,13 @@ export const useSocketStore = defineStore('socket', {
       return this.onlineUsers.get(id)
     },
     disconnectAll(token: string) {
-      console.log(token)
       if (!this.isBound) return;
 
-      if (socketStatus.connected) socketStatus.disconnect();
-
-      if (socketChat.connected) socketChat.disconnect();
-
+      
       socketChat.off();
       socketStatus.off();
+
+      if (socketStatus.connected) socketStatus.disconnect();
 
       this.isBound = false;
     },

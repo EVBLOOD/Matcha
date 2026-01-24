@@ -40,7 +40,6 @@ class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_like(self, id):
         try :
-            print("LOLO", flush=True)
             ConnectionManager.interact_with_user(request.user_id, int(id), "Like")
         except Exception as _:
             print("Hello wold !", flush=True)
