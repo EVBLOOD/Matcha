@@ -1,49 +1,24 @@
-all_prod : 
-	docker compose -f docker-compose.prod.yml up --build -d 
+ENV ?= dev
 
-up_prod :
-	docker compose -f docker-compose.prod.yml up -d
+COMPOSE = docker compose -f docker-compose.$(ENV).yml
 
-down_prod:
-	docker compose -f docker-compose.prod.yml down
+all:
+	$(COMPOSE) up --build -d
 
-clean_prod:
-	docker compose -f docker-compose.prod.yml down -v
+up:
+	$(COMPOSE) up -d
 
-fclean_prod: clean_prod
-	docker system -f docker-compose.prod.yml prune --all -f --volumes
+down:
+	$(COMPOSE) down
 
-history_prod:
-	docker compose -f docker-compose.prod.yml logs
+clean:
+	$(COMPOSE) down -v
 
-list_prod: ls_prod
-	docker compose -f docker-compose.prod.yml top
+fclean: clean
+	docker system prune --all -f --volumes
 
-ls_prod:
-	docker compose -f docker-compose.prod.yml ps -a
+ps:
+	$(COMPOSE) ps -a
 
-
-
-all_dev : 
-	docker compose -f docker-compose.dev.yml up --build -d 
-
-up_dev :
-	docker compose -f docker-compose.dev.yml up -d
-
-down_dev:
-	docker compose -f docker-compose.dev.yml down
-
-clean_dev:
-	docker compose -f docker-compose.dev.yml down -v
-
-fclean_dev: clean_dev
-	docker system -f docker-compose.dev.yml prune --all -f --volumes
-
-history_dev:
-	docker compose -f docker-compose.dev.yml logs
-
-list_dev: ls_dev
-	docker compose -f docker-compose.dev.yml top
-
-ls_dev:
-	docker compose -f docker-compose.dev.yml ps -a
+history:
+	$(COMPOSE) logs -f
