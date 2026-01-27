@@ -40,6 +40,7 @@ const fetchConversations = async () => {
         conversationData.value = [...data.data];
         if (conversationData.value[0].messages_list)
             conversationMessages.value = [...conversationData.value[0].messages_list]
+        socketStore.reachStausOneUser(conversationData.value[0].peer_id.toString())
         socketStore.joinChat(conversationData.value[0].peer_id.toString())
         socketStore.setMessagesCount()
     } catch (err: unknown) {
@@ -305,6 +306,15 @@ const send_invite = async () => {
 
 
 import Loading from '@/components/Loading.vue';
+import {  computed } from 'vue';
+
+const statusUser = computed(() => {
+    if (conversationData.value) {
+        const userId = conversationData.value[0].peer_id;
+        if (!userId) return 'Offline';
+        return socketStore.UserStatus(userId.toString());
+    }
+});
 
 </script>
 
@@ -322,8 +332,7 @@ import Loading from '@/components/Loading.vue';
                     <div class="status">
                         <span :class="['dot', conversationData[0].last_online ? 'online' : 'offline']"></span>
                         <span class="text">
-                            {{ !conversationData[0].last_online ? 'Online' : `Last seen
-                            ${formatDistanceToNow(new Date(conversationData[0].last_online), {addSuffix: true}) }` }}
+                            {{ statusUser }}
                         </span>
                     </div>
                 </div>
@@ -345,9 +354,9 @@ import Loading from '@/components/Loading.vue';
                     <div v-if="callState === 'dialing'" class="box">
                         <div class="user">
                             <div class="avatar">
-                                <img src="/img/profilePictureDemo.png" alt="Avatar">
+                                <img :src="pictures_handler(conversationData[0].profile_picture_url[0].url)" alt="Avatar">
                             </div>
-                            <p class="name">Karim Id bouhouch</p>
+                            <p class="name">{{conversationData[0].first_name + " " + conversationData[0].last_name}}</p>
                         </div>
                         <p class="status-call">Calling...</p>
                         <button @click="endCall()" class="btn-cancel">Cancel</button>
@@ -356,9 +365,9 @@ import Loading from '@/components/Loading.vue';
                     <div v-if="callState === 'ringing'" class="box">
                         <div class="user">
                             <div class="avatar">
-                                <img src="/img/profilePictureDemo.png" alt="Avatar">
+                                <img :src="pictures_handler(conversationData[0].profile_picture_url[0].url)" alt="Avatar">
                             </div>
-                            <p class="name">Karim Id bouhouch</p>
+                            <p class="name">{{conversationData[0].first_name + " " + conversationData[0].last_name}}</p>
                         </div>
                         <p class="status-call">Incoming Call...</p>
                         <div class="btn-call">
@@ -377,11 +386,11 @@ import Loading from '@/components/Loading.vue';
                         <div class="videos">
                             <div class="video1">
                                 <video ref="remoteVideo" autoplay playsinline></video>
-                                <p>Karim Id bouhouch</p>
+                                <p>{{conversationData[0].first_name + " " + conversationData[0].last_name}}</p>
                             </div>
                             <div class="video2">
                                 <video ref="localVideo" autoplay muted playsinline></video>
-                                <p>Karim Id bouhouch</p>
+                                <p>{{userStore.getUserName}}</p>
                             </div>
                         </div>
                         <div @click="endCall()" class="btn-hang-up"><img src="/img/hang-up.svg"></div>

@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { useSocialStore } from '@/stores/profile';
 import { toast } from '@/composables/useToast';
 import { formatDistanceToNow } from 'date-fns';
-import AuthService from '@/api/services/AuthService';
+
 import useUserStore from '@/stores/user';
 
 export const useSocketStore = defineStore('socket', {
