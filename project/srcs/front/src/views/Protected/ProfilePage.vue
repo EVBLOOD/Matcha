@@ -14,9 +14,17 @@ const route = useRoute();
 
 const profile = useSocialStore()
 
-watch(() => route.params.id, () => {
-    profile.fetchProfile(parseInt(route.params.id as string))
+const statusUser = computed(() => {
+    const userId = profile.activeProfile?.user.user_id.toString();
+    if (!userId) return 'Offline';
+
+    return socket.UserStatus(userId);
 });
+watch(() => route.params.id, async () => {
+    await profile.fetchProfile(parseInt(route.params.id as string))
+});
+
+
 
 const userStore = useUserStore();
 
@@ -52,22 +60,20 @@ const reportHandler = async () => {
     try {
         await InteractionService.sendReport("I want to block him", profile.activeProfile.user.user_id);
         blockHandler()
-    } catch(err : unknown) {
-        console.info("GPS isn't active!") 
-    }   
+    } catch (err: unknown) {
+        console.info("GPS isn't active!")
+    }
 }
 
-onMounted(() => {
-    profile.fetchProfile(parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id))
-    // if (profile.activeProfile)
-    //     socket.reachStausOneUser(profile.activeProfile.user.user_id.toString())
+onMounted(async () => {
+    await profile.fetchProfile(parseInt(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id))
 });
 
 
 const statusColor = computed(() => {
     if (profile.activeProfile)
         return {
-            background: socket.UserStatus(profile.activeProfile.user.user_id.toString()) === "Online" ? "rgb(6, 201, 6)" : "red"
+            background: statusUser.value === "Online" ? "rgb(6, 201, 6)" : "red"
         };
 });
 
@@ -90,34 +96,33 @@ import Loading from '@/components/Loading.vue';
                     :src="pictures_handler(profile.activeProfile.pictures.find(obj => obj.is_profile_picture == true)?.url as string)"
                     alt="">
                 <div style="font-weight:500; font-size: 26px;">{{ profile.activeProfile.user.first_name + " " +
-                    profile.activeProfile.user.last_name}}</div>
+                    profile.activeProfile.user.last_name }}</div>
                 <div class="status_bar">
                     <div class="status" :style="statusColor"></div>
-                    {{ socket.UserStatus(profile.activeProfile.user.user_id.toString()) }}
+                    {{ statusUser }}
                 </div>
             </div>
             <div v-if="route.params.id !== userStore.getUserID.toString()" class="interaction_field">
                 <div class="like_messages">
-                    <Button
-                        style="width: 182px;" v-if="(!profile.activeProfile.interactions.is_connected || profile.activeProfile.interactions.is_connected <= 1) && profile.activeProfile.interactions.interaction_status !== 'liked'"
-                        @click="likeHandler" text="Like" img="/img/likeIcon@.svg" :color="'#592F6F'" :backgroundColor="'#FEA7FF'">
+                    <Button style="width: 182px;"
+                        v-if="(!profile.activeProfile.interactions.is_connected || profile.activeProfile.interactions.is_connected <= 1) && profile.activeProfile.interactions.interaction_status !== 'liked'"
+                        @click="likeHandler" text="Like" img="/img/likeIcon@.svg" :color="'#592F6F'"
+                        :backgroundColor="'#FEA7FF'">
                     </Button>
-                    <Button
-                        style="width: 182px;" v-if="profile.activeProfile.interactions.is_connected && profile.activeProfile.interactions.interaction_status === 'liked'"
-                        @click="dislikeHandler" text="Dislike" img="/img/likeIcon@.svg" :color="'#592F6F'" :backgroundColor="'#FEA7FF'">
+                    <Button style="width: 182px;"
+                        v-if="profile.activeProfile.interactions.is_connected && profile.activeProfile.interactions.interaction_status === 'liked'"
+                        @click="dislikeHandler" text="Dislike" img="/img/likeIcon@.svg" :color="'#592F6F'"
+                        :backgroundColor="'#FEA7FF'">
                     </Button>
-                    <Button
-                        v-if="profile.activeProfile.interactions.is_connected == 2"
+                    <Button v-if="profile.activeProfile.interactions.is_connected == 2"
                         :to="`/messages/${profile.activeProfile.interactions.conversation_id}`"
                         img="/img/messageIcon.svg">
                     </Button>
                 </div>
                 <div class="like_messages">
-                    <Button
-                        style="width: 120px;" @click="blockHandler" text="Block">
+                    <Button style="width: 120px;" @click="blockHandler" text="Block">
                     </Button>
-                    <Button
-                        style="width: 120px;" @click="reportHandler" text="Report">
+                    <Button style="width: 120px;" @click="reportHandler" text="Report">
                     </Button>
                 </div>
 

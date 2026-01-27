@@ -8,6 +8,7 @@ from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
 # from app.services.user_service import get_user_contacts
 from flask_socketio import emit
+from datetime import datetime, timezone
 
 from app.services.user_interactions_service import UserInteractionsService
 from app.services.profile_service import ProfileService
@@ -18,70 +19,85 @@ from app.services.user_blocks_service import UserBlocksService
 from app.services.chat_service import ChatService
 
 class ConnectionManager :
+    DISCONNECT_RUN = """
+        redis.call('HDEL', KEYS[1], 'sid:' .. ARGV[1])
+        redis.call('SREM', KEYS[2], ARGV[1])
+        local remaining = redis.call('SCARD', KEYS[2])
+        if remaining == 0 then
+            redis.call('DEL', KEYS[3])
+        end
+        return remaining
+        """
+
+    CONNECT_RUN = """
+        redis.call('HSET', KEYS[1], 'sid:' .. ARGV[1], ARGV[2])
+        local is_new_to_set = redis.call('SADD', KEYS[2], ARGV[1])
+        local already_online = redis.call('EXISTS', KEYS[3])
+        redis.call('SETEX', KEYS[3], ARGV[3], '1')
+        return (already_online == 0) and 1 or 0
+        """
+
+    TTL = 60
 
     @staticmethod
     def connect_user(user_id: int, sid: str):
-        redis = Config.redis_instence
-        redis.hset(
-            f"ws:connections", 
-            f"sid:{sid}", 
-            user_id
-        )
-        redis.sadd(
-            f"ws:user:{user_id}:sockets", 
-            sid
-        )
-        
-        redis.set(
-            f"ws:user:{user_id}:online", 
-            "1"
-        )
-        join_room(f"Notifs_user_{user_id}")
-        
-        join_room(f"online_user_{user_id}")
-        
-        emit('connected', {user_id: "Online"}, room=f"online_user_{user_id}")
 
+        redis = Config.redis_instence
+
+        is_first_connection = redis.eval(
+            ConnectionManager.CONNECT_RUN, 3, 
+            "ws:connections",
+            f"ws:user:{user_id}:sockets",
+            f"ws:user:{user_id}:online",
+            sid, user_id, ConnectionManager.TTL
+        )
+
+        join_room(f"online_user_{user_id}")
+        join_room(f"Notifs_user_{user_id}")
+
+        if is_first_connection:
+            emit('user_status_change', 
+                 {"user_id": user_id, "status": "online"}, 
+                 room=f"online_user_{user_id}", 
+                 include_self=False)
     
     @staticmethod
     def disconnect_user(sid: str):
-        redis = Config.redis_instance
+        print("Disconnecting this ~", flush=True)
+        redis = Config.redis_instence
+        print("Disconnecting this ~ pass", flush=True)
         
         user_id_bytes = redis.hget("ws:connections", f"sid:{sid}")
+        print(f"what is the response {user_id_bytes}", flush=True)
         if not user_id_bytes:
             return
-            
+
         user_id = int(user_id_bytes)
 
-        pipe = redis.pipeline()
-        pipe.hdel("ws:connections", f"sid:{sid}")
-        pipe.srem(f"ws:user:{user_id}:sockets", sid)
-        pipe.execute()
-        
-
-        remaining_sockets = redis.scard(f"ws:user:{user_id}:sockets")
-
+        remaining_sockets = redis.eval(
+            ConnectionManager.DISCONNECT_RUN, 3,
+            "ws:connections",
+            f"ws:user:{user_id}:sockets",
+            f"ws:user:{user_id}:online",
+            sid
+        )
         print(f"remaining_sockets: {remaining_sockets}", flush=True)
-        
-        if remaining_sockets == 0:
-            from datetime import datetime
-            last_seen = datetime.utcnow().isoformat() 
-        
-            redis.delete(f"ws:user:{user_id}:online")
-            UserRepository.update_last_online(user_id)
-            
 
+        if remaining_sockets == 0:
+            last_seen = datetime.now(timezone.utc).isoformat()
+            UserRepository.update_last_online(user_id)
             emit('user_status_change', 
-                 {"user_id": user_id, "status": str(last_seen)}, 
+                 {"user_id": user_id, "status": last_seen}, 
                  room=f"online_user_{user_id}")
-            
 
         leave_room(f"online_user_{user_id}", sid=sid)
         leave_room(f"Notifs_user_{user_id}", sid=sid)
-
-
     
-
+    @staticmethod
+    def heartbeat(user_id: int):
+        redis = Config.redis_instence
+        redis.expire(f"ws:user:{user_id}:online", ConnectionManager.TTL)
+        redis.expire(f"ws:user:{user_id}:sockets", ConnectionManager.TTL)
 
     @staticmethod
     def is_user_online(user_id: int, current_id: int) -> bool:

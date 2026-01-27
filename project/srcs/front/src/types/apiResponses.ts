@@ -58,7 +58,7 @@ export interface NotificationsResponse {
     is_read: boolean;
     notification_id: number;
     picture_url: UserProfilePicturesResponse[];
-    sourse_user_id: number;
+    source_user_id: number;
     type: string;
     user_id: number;
     username: string;

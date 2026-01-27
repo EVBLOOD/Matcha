@@ -13,6 +13,9 @@ class PresenceGateway(Namespace):
         except :
             return False
 
+    @ConnectionManager.socket_guard()
+    def on_ping(self):
+        ConnectionManager.heartbeat(request.user_id)
 
     @ConnectionManager.socket_guard()
     def on_check_user_connect(self, id):
@@ -73,6 +76,7 @@ class PresenceGateway(Namespace):
             ConnectionManager.interact_with_user(request.user_id, int(id), "Unblock")
         except Exception as _:
             return False
+    
     def error_handler(e):
         disconnect()
 
@@ -86,11 +90,12 @@ class PresenceGateway(Namespace):
             return 0
 
 
-    @ConnectionManager.socket_guard()
+    # @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
         try :
             print(f"End call - Reason: {reason}", flush=True)
             ConnectionManager.disconnect_user(sid=request.sid)
-        except :
+        except Exception as e:
+            print(f"exception is hole {e}", flush=True)
             return False
         

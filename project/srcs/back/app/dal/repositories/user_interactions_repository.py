@@ -53,7 +53,7 @@ class UserInteractionsRepository(BaseRepository):
                 FROM user_pictures up
                 WHERE up.user_id = liker_id AND up.is_profile_picture = TRUE
             ) AS profile_picture_url,
-            (SELECT COUNT(*) FROM user_interactions WHERE liked_id = u.id AND liker_id = %s) as liked_back
+            (SELECT COUNT(liked_id) FROM user_interactions WHERE liked_id = u.id AND liker_id = %s) as liked_back
         FROM user_interactions 
         LEFT JOIN profiles p ON liker_id = p.user_id
         LEFT JOIN users u ON liker_id = u.id

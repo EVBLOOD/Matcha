@@ -103,7 +103,7 @@ import Loading from '@/components/Loading.vue';
     </div>
     <div v-if="!isLoading && !isError && NotificationsData" class="contenty">
         <div v-for="value in NotificationsData" class="notif">
-            <div  class="notif" @click="go_to(value.sourse_user_id)">
+            <div  class="notif" @click="go_to(value.source_user_id)">
                 <PictureNdIcon :height="59" :width="59" :readonly="true" :initialImage="pictures_handler(value.picture_url[0].url)" :initialIcon="avatarStyleFun(value)" />
                 <div :style="!value.is_read ? {fontWeight: '600'} : {}">
                     <div>

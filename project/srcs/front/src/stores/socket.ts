@@ -8,7 +8,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
-    onlineUsers: new Map<string, string>(),
+    onlineUsers: {} as Record<string, string>,
     notifications: ref<string[]>([]),
     new_chats_notifs: ref<string[]>([]),
     notifs_counter: ref(0),
@@ -18,6 +18,7 @@ export const useSocketStore = defineStore('socket', {
   getters: {
     getNotifsCount: (state) => state.notifs_counter,
     getMessagesCount: (state) => state.messages_counter,
+    getAllOnliners: (state) => state.onlineUsers,
   },
   actions: {
     setNotifsCount(val: number) {
@@ -27,23 +28,29 @@ export const useSocketStore = defineStore('socket', {
       socketChat.emit('number_of_messages', (number: number) => {
         this.messages_counter = number
       })
-    },
+    },startsocket(heartbeatInterval: any) {
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      heartbeatInterval = setInterval(() => {
+                    if (socketStatus.connected) {
+                        socketStatus.emit('ping');
+                      }
+                }, 20000); 
+    }
+    ,
     bindStatusEvents() {
       if (this.isBound) return;
-      socketStatus.on('connected', (response) => {
-        console.log('connected :')
-        console.log(response)
-        const id: string = Object.keys(response)[0];
-        const value: string = Object.values(response)[0] as string;
-        this.onlineUsers.set(id, value);
-      });
+
+      let heartbeatInterval;
+      this.startsocket(heartbeatInterval)
 
       socketStatus.on('user_status_change', (response) => {
         console.log('user_status_change: ')
         console.log(response)
+
         const id: string = response.user_id;
         const value: string = response.status;
-        this.onlineUsers.set(id, value);
+
+        this.onlineUsers[id] = value === "online" ? "Online" : formatDistanceToNow(new Date(value), {addSuffix: true});
       });
 
       socketStatus.on('notify', (msg) => {
@@ -53,11 +60,10 @@ export const useSocketStore = defineStore('socket', {
       });
 
       socketChat.on('new_message_notification', (msg) => {
-        // toast('error', ' sent you a message.', msg);
         this.messages_counter++
 
         toast('message', 'New message', "sent you a message.", msg.user_data.pictures[0].url, msg.conv, msg.user_data.user.username);
-        this.new_chats_notifs.push(msg); // this is just a current example to use in future | I should fix backend
+        this.new_chats_notifs.push(msg);
 
       });
       socketStatus.emit('number_of_notifs', (number: number) => {
@@ -92,7 +98,7 @@ export const useSocketStore = defineStore('socket', {
       socketStatus.emit("check_user_connect", id, (response: any) => {
         if (response) {
           console.log(response)
-          this.onlineUsers.set(id, (response.status === "Online" || response.status === true) ? "Online" : formatDistanceToNow(new Date(response.status), {addSuffix: true}) );
+          this.onlineUsers[id] = (response.status === "Online" || response.status === true) ? "Online" : formatDistanceToNow(new Date(response.status), {addSuffix: true})
         }
       })
     },
@@ -103,7 +109,7 @@ export const useSocketStore = defineStore('socket', {
           response.forEach((v) => {
             const id: string = Object.keys(v)[0];
             const value: string = Object.values(v)[0] as string;
-            this.onlineUsers.set(id, value);
+            this.onlineUsers[id] = value;
           });
         }
       })
@@ -133,9 +139,7 @@ export const useSocketStore = defineStore('socket', {
       return id_message || -1
     },
     UserStatus(id: string) {
-      console.log(id)
-      console.log(this.onlineUsers.get(id))
-      return this.onlineUsers.get(id)
+      return this.onlineUsers[id]
     },
     disconnectAll(token: string) {
       if (!this.isBound) return;
