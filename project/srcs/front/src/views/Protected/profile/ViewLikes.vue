@@ -60,7 +60,7 @@ const dislikeHandler = (user_id: number) => {
     socket.interactWithUser(user_id, 'dislike')
     if (LikesData.value)
     LikesData.value = LikesData.value?.map((elem) => {
-        if (elem.liker_id == user_id) elem.unlike = true
+        if (elem.liker_id == user_id) elem.liked_back = 0
         return elem
     })
 }
@@ -69,7 +69,7 @@ const likeHandler = (user_id: number) => {
     socket.interactWithUser(user_id, 'like')
     if (LikesData.value)
     LikesData.value = LikesData.value?.map((elem) => {
-        if (elem.liker_id == user_id) elem.unlike = false
+        if (elem.liker_id == user_id) elem.liked_back = 1
         return elem
     })
 }
@@ -100,8 +100,8 @@ import Loading from '@/components/Loading.vue';
                    <span>@{{value.username}}</span>
                 </div>
             </div>
-            <Button v-if="!value.unlike" style="mix-blend-mode: plus-lighter;" text="Unlike" @click="dislikeHandler(value.liker_id)"></Button>
-            <Button v-if="value.unlike" style="mix-blend-mode: plus-lighter;" text="Like" @click="likeHandler(value.liker_id)"></Button>
+            <Button v-if="(value.liked_back >= 1)" style="mix-blend-mode: plus-lighter;" text="Unlike" @click="dislikeHandler(value.liker_id)"></Button>
+            <Button v-if="(value.liked_back < 1)" style="mix-blend-mode: plus-lighter;" text="Like" @click="likeHandler(value.liker_id)"></Button>
             
         </div>
     </div>

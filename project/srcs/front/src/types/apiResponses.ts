@@ -125,6 +125,7 @@ export interface LikesResponse {
     first_name: string,
     last_name: string,
     profile_picture_url: UserProfilePicturesResponse[],
+    liked_back: number,
     unlike?: boolean
 }
 
