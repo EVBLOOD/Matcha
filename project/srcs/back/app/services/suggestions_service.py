@@ -39,6 +39,7 @@ class SuggestionsService :
                 Address = "Not Shared!"
             tmp = {
                 "user_id": user["id"],
+                "is_liked": user["is_liked"],
                 "username": user["username"],
                 "first_name": user["first_name"],
                 "last_name": user["last_name"],
@@ -66,6 +67,7 @@ class SuggestionsService :
                 u.id, u.username, u.first_name, u.last_name, u.fame_rating,
                 u.latitude, u.longitude, p.location_set_by_user,
                 EXTRACT(YEAR FROM AGE(NOW(), u.birthdate)) AS age,
+                (SELECT COUNT(*) FROM user_interactions ui WHERE ui.liker_id = cud.id AND ui.liked_id = u.id) as is_liked,
                 (6371 * acos(cos(radians(cud.latitude)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(cud.longitude)) + sin(radians(cud.latitude)) * sin(radians(u.latitude)))) AS distance,
                 (SELECT COUNT(*) FROM user_interests ui WHERE ui.user_id = u.id AND ui.tag_id IN (SELECT tag_id FROM user_interests WHERE user_id = cud.id)) as same_tags,
                 (SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture)) FROM user_pictures up WHERE up.user_id = u.id AND up.is_profile_picture = TRUE) AS profile_picture_url
@@ -75,7 +77,6 @@ class SuggestionsService :
             WHERE u.id != cud.id
             AND u.id NOT IN (SELECT blocked_id FROM user_blocks WHERE blocker_id = cud.id)
             AND u.id NOT IN (SELECT blocker_id FROM user_blocks WHERE blocked_id = cud.id)
-            AND u.id NOT IN (SELECT liked_id FROM user_interactions WHERE liker_id = cud.id)
             AND EXISTS (SELECT 1 FROM user_pictures WHERE user_id = u.id AND is_profile_picture = TRUE)
             AND (
                     (cud.pref = 'bisexual') OR
@@ -155,7 +156,8 @@ class SuggestionsService :
                 "age": user["age"],
                 "fame_rating": fame_score,
                 "location": address,
-                "distance": round(user["distance"], 2)
+                "distance": round(user["distance"], 2),
+                "is_liked": user["is_liked"]
             })
 
         return research

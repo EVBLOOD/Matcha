@@ -173,7 +173,7 @@ const toggleCurrentSort =  (name: any) => {
         <div v-if="currentType == 'List' && !isLoading" class="body">
             <UserExploreCard v-for="value in ExploreData" :userID="value.user_id"
                 :full-name="value.first_name + ' ' + value.last_name" :location="value.location" :age="value.age"
-                :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" />
+                :fame-score="value.fame_rating" :avatar="pictures_handler(value.profile_picture_url[0].url)" :isLiked="value.is_liked ? true : false"/>
         </div>
         <div v-if="currentType == 'Map' && !isLoading">
             <InteractionMap />

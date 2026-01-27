@@ -22,6 +22,9 @@ const props = defineProps({
     fameScore: {
         type: Number,
         default: 2
+    }, isLiked : {
+        type: Boolean,
+        default: false
     },
     userID: Number
 });
@@ -32,15 +35,15 @@ import { ref } from 'vue';
 import { useSocketStore } from '@/stores/socket';
 
 const socket = useSocketStore();
-const isLiked = ref(false)
+const isLiked_ = ref(props.isLiked)
 const clickLike = () => {
     if (!props.userID) return
-    isLiked.value = true
+    isLiked_.value = true
     socket.interactWithUser(props.userID, 'like')
 }
 const clickUnike = () => {
     if (!props.userID) return
-    isLiked.value = false
+    isLiked_.value = false
     socket.interactWithUser(props.userID, 'dislike')
 }
 
@@ -57,8 +60,8 @@ const clickUnike = () => {
             <span>{{ location }}</span>
         </div>
         <Fame :initialFameScore="fameScore"/>
-        <Button  v-if="!isLiked" style="background-color: #BC80DC;color: #592F6F;mix-blend-mode: plus-lighter;" class="user_card_btn" text="Like" @click="clickLike"></Button>
-        <Button  v-if="isLiked" style="background-color: #BC80DC;color: #592F6F;" class="user_card_btn" text="Unlike" @click="clickUnike"></Button>
+        <Button  v-if="!isLiked_" style="background-color: #BC80DC;color: #592F6F;mix-blend-mode: plus-lighter;" class="user_card_btn" text="Like" @click="clickLike"></Button>
+        <Button  v-if="isLiked_" style="background-color: #BC80DC;color: #592F6F;" class="user_card_btn" text="Unlike" @click="clickUnike"></Button>
         <Button  class="user_card_btn" text="View Profile" :to="`/profile/${userID}`"></Button>
 
     </div>

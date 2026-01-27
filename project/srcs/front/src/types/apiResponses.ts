@@ -92,6 +92,7 @@ export interface SuggestionsResponse {
     first_name: string;
     username: string;
     location: string;
+    is_liked: number;
     profile_picture_url: UserProfilePicturesResponse[];
 }
 
