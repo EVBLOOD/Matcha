@@ -338,7 +338,7 @@ const statusUser = computed(() => {
                 </div>
             </div>
             <div class="buttons">
-                <button class="btn-propose-date" @click="ProposeDateVisible = !ProposeDateVisible"><img src="/img/ProposeDate.svg" alt="video call">Propose a Date</button>
+                <button class="btn-propose-date" @click="ProposeDateVisible = !ProposeDateVisible"><img src="/img/ProposeDate.svg" alt="video call"><p>Propose a Date</p></button>
                 <button class="btn-call-video" @click="startCall"><img src="/img/videoCall.svg" alt="video call"></button>
             </div>
         </div>
@@ -707,6 +707,8 @@ video {
 .user .avatar {
     height: 50px;
     width: 50px;
+    min-height: 50px;
+    min-width: 50px;
     border-radius: 50%;
     overflow: hidden;
 }
@@ -808,11 +810,14 @@ video {
     gap: 6px;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
+    min-width: fit-content;
 }
 
 .dot {
     width: 8px;
     height: 8px;
+    min-width: 8px;
+    min-height: 8px;
     border-radius: 50%;
 }
 
@@ -843,6 +848,20 @@ video {
     .chat .header {
         display: flex;
         align-items: center;
+    }
+
+    .btn{
+        padding: 8px;
+    }
+
+    .box .user .name{
+        font-size: 14px;
+    }
+
+    .btn-propose-date {
+        p {
+            display: none;
+        }
     }
 }
 </style>

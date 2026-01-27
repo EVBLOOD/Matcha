@@ -86,50 +86,52 @@ import Loading from '@/components/Loading.vue';
     <div v-if="!profile.loading && !profile.error && profile.activeProfile" class="contentz">
         <div class="sideBar">
             <div class="sideBar_personal_info">
-                <img width="250px" height="250px" style="margin-bottom: 22px;"
+                <img class="avatar"
                     :src="pictures_handler(profile.activeProfile.pictures.find(obj => obj.is_profile_picture == true)?.url as string)"
                     alt="">
-                <div style="font-weight:500; font-size: 26px;">{{ profile.activeProfile.user.first_name + " " +
-                    profile.activeProfile.user.last_name }}</div>
+                <div class="name">{{ profile.activeProfile.user.first_name + " " + profile.activeProfile.user.last_name }}</div>
                 <div class="status_bar">
                     <div class="status" :style="statusColor"></div>
                     {{ statusUser }}
                 </div>
             </div>
             <div v-if="route.params.id !== userStore.getUserID.toString()" class="interaction_field">
-                <div class="like_messages">
-                    <Button style="width: 182px;"
+                <div class="btn-like-msg">
+                    <Button class="btn-like"
                         v-if="(!profile.activeProfile.interactions.is_connected || profile.activeProfile.interactions.is_connected <= 1) && profile.activeProfile.interactions.interaction_status !== 'liked'"
                         @click="likeHandler" text="Like" img="/img/likeIcon@.svg" :color="'#592F6F'"
                         :backgroundColor="'#FEA7FF'">
                     </Button>
-                    <Button style="width: 182px;"
+                    <Button class="btn-dislike"
                         v-if="profile.activeProfile.interactions.is_connected && profile.activeProfile.interactions.interaction_status === 'liked'"
                         @click="dislikeHandler" text="Dislike" img="/img/likeIcon@.svg" :color="'#592F6F'"
                         :backgroundColor="'#FEA7FF'">
                     </Button>
-                    <Button v-if="profile.activeProfile.interactions.is_connected == 2 && conversationId"
+                    <Button class="btn-msg"
+                        v-if="profile.activeProfile.interactions.is_connected == 2 && conversationId"
                         :to="`/messages/${conversationId}`"
                         img="/img/messageIcon.svg">
                     </Button>
                 </div>
-                <div class="like_messages">
-                    <Button style="width: 120px;" @click="blockHandler" text="Block">
-                    </Button>
-                    <Button style="width: 120px;" @click="reportHandler" text="Report">
-                    </Button>
+                <div class="btn-block-report">
+                    <Button class="btn-block" @click="blockHandler" text="Block"></Button>
+                    <Button class="btn-report" @click="reportHandler" text="Report"></Button>
                 </div>
-
             </div>
             <div class="stats_holder">
-                <div class="stats_count"> <img src="/img/viewIcon.svg" alt=""> Profile Views : <span
-                        style="font-weight: bold;">{{ profile.activeProfile.interactions.views_count }}</span></div>
-                <div class="stats_count"> <img src="/img/likesIcon.svg" alt=""> Likes Received : <span
-                        style="font-weight: bold;">{{ profile.activeProfile.interactions.likes_count }}</span></div>
+                <div class="stats_count"> 
+                    <img src="/img/viewIcon.svg" alt=""> Profile Views : 
+                    <span style="font-weight: bold;">{{ profile.activeProfile.interactions.views_count }}
+                    </span>
+                </div>
+                <div class="stats_count"> 
+                    <img src="/img/likesIcon.svg" alt=""> Likes Received : 
+                    <span style="font-weight: bold;">{{ profile.activeProfile.interactions.likes_count }}</span>
+                </div>
             </div>
-            <div style="flex-shrink: 0;">
+            <div class="fame">
                 <p>Fame Rating 🔥</p>
-                <Fame :initialFameScore="profile.activeProfile.profile.fame_rating" />
+                <Fame :initialFameScore="profile.activeProfile.profile.fame_rating" class="starts" />
             </div>
         </div>
         <div class="profile_vue">
@@ -141,72 +143,105 @@ import Loading from '@/components/Loading.vue';
 <style lang="scss" scoped>
 .contentz {
     color: $text-color;
-    display: flex;
+    // display: flex;
+    display: grid;
+    grid-template-columns: 25% 75%;
     align-items: center;
-
     height: 100%;
     width: 100%;
 }
 
 .sideBar {
-    padding: 2%;
+    padding: 25px;
     height: 100%;
-    gap: 5%;
+    gap: 20px;
     border-color: $border-color;
-    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     border-style: solid;
     border-width: 0px 1px 0px 0px;
 }
 
-.status_bar {
-    display: flex;
-    align-items: center;
-    gap: 3%;
-    font-weight: normal;
+.profile_vue {
+    height: 100%;
+    // width: 75%;
+    padding: 2%;
 }
+
 
 .sideBar_personal_info {
     display: flex;
     flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
-    flex-shrink: 0;
+    width: 100%;
+    min-height: fit-content;
+    .avatar{
+        max-width: 250px;
+        max-height: 250px;
+        margin-bottom: 22px;
+        // width: clamp(120px, 25vw, 250px);
+        // height: clamp(120px, 25vw, 250px);
+
+    }
+    .name{
+        font-weight: 500;
+        font-size: 1.4rem; 
+    }
+    .status_bar {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: normal;
+        font-size: 13px;
+        font-size: 0.85rem;
+
+    }
+    .status {
+        height: 6px;
+        width: 6px;
+        border-radius: 50%;
+        background-color: rgb(6, 201, 6);
+        font-size: 0.95rem;
+    }
 }
 
 .interaction_field {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    flex-shrink: 0;
+    gap: 6px;
+    min-height: fit-content;
+    min-width: fit-content;
+    // flex-shrink: 0;
     width: 100%;
+    .btn-block-report{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+        .btn-block, .btn-report {
+            // padding: 10px 0;
+            max-height: fit-content;
+            min-width: fit-content;
+            // font-size: 11px;
+            // height: auto;
+        }
+    }
+    .btn-like-msg{
+        display: grid;
+        grid-template-columns: auto min-content;
+        gap: 5px;
+        .btn-like, .btn-dislike {
+            // padding: 10px 0;
+            min-width: fit-content;
+            min-height: fit-content;
+        }
+    }
 }
 
 .like_messages {
     display: flex;
-    justify-content: center;
-    gap: 5px;
-    flex-shrink: 0;
-    width: 100%;
-}
-
-// .link {
-//     width:inherit;
-// }
-
-.status {
-    height: 8px;
-    width: 8px;
-    border-radius: 50%;
-    background-color: rgb(6, 201, 6);
-}
-
-.stats_count {
-    display: flex;
-    gap: 5px;
     align-items: center;
-    flex-wrap: wrap;
+    // justify-content: center;
+    // gap: 5px;
+    // flex-shrink: 0;
 }
 
 .stats_holder {
@@ -214,18 +249,37 @@ import Loading from '@/components/Loading.vue';
     flex-direction: column;
     gap: 5px;
     flex-shrink: 0;
+    font-size: 15px;
+    min-height: fit-content;
+    min-width: fit-content;
+    .stats_count {
+        width: auto;
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+        gap: 5px;
+        // overflow: hidden; 
+        // text-overflow: ellipsis;
+
+        // flex-wrap: wrap;
+    }
 }
 
-.profile_vue {
-    height: 100%;
-    width: 100%;
-    padding: 2%;
+.fame{
+    // flex-shrink: 0;
+    width: max-content;
+    .starts{
+        min-height: fit-content;
+        min-width: fit-content;
+    }
 }
+
 
 @media (max-width: $breakpoint-md) {
     .contentz {
-        flex-direction: column;
+        // flex-direction: column;
         height: fit-content;
+        grid-template-columns: 100%;
     }
 
     .sideBar {
@@ -235,6 +289,10 @@ import Loading from '@/components/Loading.vue';
         border-style: none;
         align-items: center;
         gap: 25px;
+    }
+
+    .interaction_field{
+        width: 2em;
     }
 
     .sideBar_personal_info {
