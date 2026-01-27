@@ -165,10 +165,12 @@ export const useSocketStore = defineStore('socket', {
       // notifStore.addNotification(type + payload); // this is for later
       // notifStore.unreadCount++;
 
+      console.log(type)
+      console.log(payload.conversation_id)
 
       switch (type) {
         case 'match':
-          profileStore.handleNewMatch(payload.FromId);
+          profileStore.handleNewMatch(payload.FromId, payload.conversation_id);
           toast('like', 'New match', "matched your profile.", payload.avatar, payload.FromId, payload.username);
           break;
         case 'unmatch':

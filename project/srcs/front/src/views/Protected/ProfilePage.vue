@@ -25,7 +25,14 @@ watch(() => route.params.id, async () => {
 });
 
 
+import { storeToRefs } from 'pinia';
 
+
+const { activeProfile } = storeToRefs(profile);
+
+
+const conversationId = computed(() => activeProfile.value?.interactions?.conversation_id);
+// const isConnected = computed(() => profile.value?.interactions?.is_connected);
 const userStore = useUserStore();
 
 const socket = useSocketStore();
@@ -115,7 +122,7 @@ import Loading from '@/components/Loading.vue';
                         :backgroundColor="'#FEA7FF'">
                     </Button>
                     <Button v-if="profile.activeProfile.interactions.is_connected == 2"
-                        :to="`/messages/${profile.activeProfile.interactions.conversation_id}`"
+                        :to="`/messages/${conversationId}`"
                         img="/img/messageIcon.svg">
                     </Button>
                 </div>

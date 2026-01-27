@@ -157,6 +157,7 @@ class ConnectionManager :
             if done :
                 if conversation_id :
                     emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{dst_id}")
+                    emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{user_id}")
                 else :
                     emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": type_response}, room=f"Notifs_user_{dst_id}")
 
