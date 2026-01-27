@@ -120,7 +120,7 @@ export interface BlocksResponse {
 }
 
 export interface LikesResponse {
-    liked_id: number,
+    liker_id: number,
     username: string,
     first_name: string,
     last_name: string,

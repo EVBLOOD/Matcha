@@ -60,7 +60,7 @@ const dislikeHandler = (user_id: number) => {
     socket.interactWithUser(user_id, 'dislike')
     if (LikesData.value)
     LikesData.value = LikesData.value?.map((elem) => {
-        if (elem.liked_id == user_id) elem.unlike = true
+        if (elem.liker_id == user_id) elem.unlike = true
         return elem
     })
 }
@@ -69,7 +69,7 @@ const likeHandler = (user_id: number) => {
     socket.interactWithUser(user_id, 'like')
     if (LikesData.value)
     LikesData.value = LikesData.value?.map((elem) => {
-        if (elem.liked_id == user_id) elem.unlike = false
+        if (elem.liker_id == user_id) elem.unlike = false
         return elem
     })
 }
@@ -94,14 +94,14 @@ import Loading from '@/components/Loading.vue';
     <div v-if="!isLoading && !isError && LikesData" class="contenty">
         <div v-for="value in LikesData" class="element_list">
             <div class="element_list">
-                <img width="65px" height="65px"  @click="OnclickOpenProfile(value.liked_id)" :src="pictures_handler(value.profile_picture_url[0].url)" alt="avatar">
+                <img width="65px" height="65px"  @click="OnclickOpenProfile(value.liker_id)" :src="pictures_handler(value.profile_picture_url[0].url)" alt="avatar">
                 <div class="infos">
                     <span style="color: white; font-weight: 600;">{{value.first_name + " " + value.last_name}}</span>
                    <span>@{{value.username}}</span>
                 </div>
             </div>
-            <Button v-if="!value.unlike" style="mix-blend-mode: plus-lighter;" text="Unlike" @click="dislikeHandler(value.liked_id)"></Button>
-            <Button v-if="value.unlike" style="mix-blend-mode: plus-lighter;" text="Like" @click="likeHandler(value.liked_id)"></Button>
+            <Button v-if="!value.unlike" style="mix-blend-mode: plus-lighter;" text="Unlike" @click="dislikeHandler(value.liker_id)"></Button>
+            <Button v-if="value.unlike" style="mix-blend-mode: plus-lighter;" text="Like" @click="likeHandler(value.liker_id)"></Button>
             
         </div>
     </div>
