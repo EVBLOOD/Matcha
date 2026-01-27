@@ -133,6 +133,7 @@ class ConnectionManager :
             done = UserInteractionsService.remove_user_interactions(dst_id, user_id)
             if done and is_connection :
                 type_response = "unmatch"
+                conversation_id = 1
         elif not block_status and type == "Block" :
             if is_connection :
                 UserInteractionsService.remove_user_interactions(dst_id, user_id)

@@ -19,7 +19,6 @@ interface BackendError {
 export const useSocialStore = defineStore('profile', {
   state: () => ({
     activeProfile: null as UserProfileResponse | null,
-    isMatch: false,
     loading: false,
     error: null as string | null
   }),
@@ -49,31 +48,29 @@ export const useSocialStore = defineStore('profile', {
       }
     },
 
-    handleNewMatch(partnerId: number, conversation_id: number) {
-      if (this.activeProfile?.user.user_id === partnerId) {
-        this.activeProfile = {
-          ...this.activeProfile,
-          interactions: {
-            ...this.activeProfile.interactions,
-            is_connected: 2,
-            conversation_id: conversation_id
-          }
-        };
-        this.isMatch = true;
+    handleNewMatch(partnerId: number, secondId: number, conversation_id: number) {
+
+      if (this.activeProfile?.user.user_id == partnerId || this.activeProfile?.user.user_id == secondId) {
+        this.activeProfile.interactions.conversation_id = conversation_id
+        if (this.activeProfile.interactions.is_connected) this.activeProfile.interactions.is_connected++
+        else this.activeProfile.interactions.is_connected = 1
+        this.activeProfile.interactions.likes_count++
+        this.activeProfile.interactions.interaction_status = 'liked'
         console.log("Store updated with ID:", conversation_id);
       }
     },
-    handleUnMatch(partnerId: number) {
+    handleUnMatch(partnerId: number, secondId: number) {
 
-      if (this.activeProfile?.user.user_id === partnerId) {
-        this.activeProfile.interactions = {
-          ...this.activeProfile.interactions,
-          is_connected: (this.activeProfile.interactions.is_connected || 1) - 1
-        };
+      if (this.activeProfile?.user.user_id == partnerId || this.activeProfile?.user.user_id == secondId) {
+        if (this.activeProfile.interactions.is_connected) this.activeProfile.interactions.is_connected--
+        else this.activeProfile.interactions.is_connected = 0
+        this.activeProfile.interactions.likes_count--
+        this.activeProfile.interactions.interaction_status = undefined
       }
     },
-    handleBlock(userId: number) {
-      if (this.activeProfile?.user.user_id === userId) {
+    handleBlock(userId: number, secondId: number) {
+
+      if (this.activeProfile?.user.user_id == userId || this.activeProfile?.user.user_id == secondId) {
 
         this.activeProfile = null;
       }
@@ -81,7 +78,6 @@ export const useSocialStore = defineStore('profile', {
 
     clearActiveProfile() {
       this.activeProfile = null;
-      this.isMatch = false;
     }
   }
 });

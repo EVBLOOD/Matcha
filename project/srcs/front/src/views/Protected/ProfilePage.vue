@@ -20,38 +20,25 @@ const statusUser = computed(() => {
 
     return socket.UserStatus(userId);
 });
+
+
+const conversationId = computed(() => profile.activeProfile?.interactions?.conversation_id);
+
 watch(() => route.params.id, async () => {
     await profile.fetchProfile(parseInt(route.params.id as string))
 });
 
-
-import { storeToRefs } from 'pinia';
-
-
-const { activeProfile } = storeToRefs(profile);
-
-
-const conversationId = computed(() => activeProfile.value?.interactions?.conversation_id);
-// const isConnected = computed(() => profile.value?.interactions?.is_connected);
 const userStore = useUserStore();
 
 const socket = useSocketStore();
 
 const likeHandler = () => {
     if (!profile.activeProfile) return
-    if (profile.activeProfile.interactions.is_connected) profile.activeProfile.interactions.is_connected++
-    else profile.activeProfile.interactions.is_connected = 1
-    profile.activeProfile.interactions.likes_count++
-    profile.activeProfile.interactions.interaction_status = 'liked'
     socket.interactWithUser(profile.activeProfile.user.user_id, 'like')
 }
 
 const dislikeHandler = () => {
     if (!profile.activeProfile) return
-    if (profile.activeProfile.interactions.is_connected) profile.activeProfile.interactions.is_connected--
-    else profile.activeProfile.interactions.is_connected = 0
-    profile.activeProfile.interactions.likes_count--
-    profile.activeProfile.interactions.interaction_status = undefined
     socket.interactWithUser(profile.activeProfile.user.user_id, 'dislike')
 }
 
@@ -121,7 +108,7 @@ import Loading from '@/components/Loading.vue';
                         @click="dislikeHandler" text="Dislike" img="/img/likeIcon@.svg" :color="'#592F6F'"
                         :backgroundColor="'#FEA7FF'">
                     </Button>
-                    <Button v-if="profile.activeProfile.interactions.is_connected == 2"
+                    <Button v-if="profile.activeProfile.interactions.is_connected == 2 && conversationId"
                         :to="`/messages/${conversationId}`"
                         img="/img/messageIcon.svg">
                     </Button>

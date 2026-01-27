@@ -4,7 +4,8 @@ import { ref } from 'vue';
 import { useSocialStore } from '@/stores/profile';
 import { toast } from '@/composables/useToast';
 import { formatDistanceToNow } from 'date-fns';
-
+import AuthService from '@/api/services/AuthService';
+import useUserStore from '@/stores/user';
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
@@ -170,11 +171,13 @@ export const useSocketStore = defineStore('socket', {
 
       switch (type) {
         case 'match':
-          profileStore.handleNewMatch(payload.FromId, payload.conversation_id);
+          profileStore.handleNewMatch(payload.FromId, payload.userId, payload.conversation_id);
+          if ( payload.FromId != useUserStore().getUserID)
           toast('like', 'New match', "matched your profile.", payload.avatar, payload.FromId, payload.username);
           break;
         case 'unmatch':
-          profileStore.handleUnMatch(payload.FromId);
+          profileStore.handleUnMatch(payload.FromId, payload.userId,);
+          if ( payload.FromId != useUserStore().getUserID)
           toast('info', 'New unmatch', "unmatch your profile.", payload.avatar, payload.FromId, payload.username);
 
           break;
@@ -195,7 +198,7 @@ export const useSocketStore = defineStore('socket', {
           break;
 
         case 'block':
-          profileStore.handleBlock(payload.userId);
+          profileStore.handleBlock(payload.userId, payload.userId);
           break;
       }
     }
