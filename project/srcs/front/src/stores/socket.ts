@@ -56,7 +56,7 @@ export const useSocketStore = defineStore('socket', {
 
       socketStatus.on('notify', (msg) => {
         if (msg.type != 'dislike' && msg.source_id != useUserStore().getUserID)
-        this.notifs_counter++
+          this.notifs_counter++
         this.handleSocialEvent(msg.type, { "username": msg.user.user.username, "avatar": msg.user.pictures[0].url, "userId": msg.dst_id, "conversation_id": msg.conversation_id, "FromId": msg.source_id });
         this.notifications.push(msg);
       });
