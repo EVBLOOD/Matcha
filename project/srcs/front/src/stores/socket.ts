@@ -29,13 +29,13 @@ export const useSocketStore = defineStore('socket', {
       socketChat.emit('number_of_messages', (number: number) => {
         this.messages_counter = number
       })
-    },startsocket(heartbeatInterval: any) {
+    }, startsocket(heartbeatInterval: any) {
       if (heartbeatInterval) clearInterval(heartbeatInterval);
       heartbeatInterval = setInterval(() => {
-                    if (socketStatus.connected) {
-                        socketStatus.emit('ping');
-                      }
-                }, 20000); 
+        if (socketStatus.connected) {
+          socketStatus.emit('ping');
+        }
+      }, 20000);
     }
     ,
     bindStatusEvents() {
@@ -51,10 +51,11 @@ export const useSocketStore = defineStore('socket', {
         const id: string = response.user_id;
         const value: string = response.status;
 
-        this.onlineUsers[id] = value === "online" ? "Online" : formatDistanceToNow(new Date(value), {addSuffix: true});
+        this.onlineUsers[id] = value === "online" ? "Online" : formatDistanceToNow(new Date(value), { addSuffix: true });
       });
 
       socketStatus.on('notify', (msg) => {
+        if (msg.type != 'dislike' && msg.source_id != useUserStore().getUserID)
         this.notifs_counter++
         this.handleSocialEvent(msg.type, { "username": msg.user.user.username, "avatar": msg.user.pictures[0].url, "userId": msg.dst_id, "conversation_id": msg.conversation_id, "FromId": msg.source_id });
         this.notifications.push(msg);
@@ -99,7 +100,7 @@ export const useSocketStore = defineStore('socket', {
       socketStatus.emit("check_user_connect", id, (response: any) => {
         if (response) {
           console.log(response)
-          this.onlineUsers[id] = (response.status === "Online" || response.status === true) ? "Online" : formatDistanceToNow(new Date(response.status), {addSuffix: true})
+          this.onlineUsers[id] = (response.status === "Online" || response.status === true) ? "Online" : formatDistanceToNow(new Date(response.status), { addSuffix: true })
         }
       })
     },
@@ -132,7 +133,7 @@ export const useSocketStore = defineStore('socket', {
     sendMessage(id: string, content: string): number {
       let id_message = undefined
       socketChat.emit('send_message', { user_id: id, text: content }, ((resp: any) => {
-        if (typeof(resp) == 'object' && resp.error) {
+        if (typeof (resp) == 'object' && resp.error) {
           toast('error', 'Send Message fail', resp.error);
         }
         id_message = resp as number
@@ -145,7 +146,7 @@ export const useSocketStore = defineStore('socket', {
     disconnectAll(token: string) {
       if (!this.isBound) return;
 
-      
+
       socketChat.off();
       socketStatus.off();
 
@@ -172,23 +173,23 @@ export const useSocketStore = defineStore('socket', {
       switch (type) {
         case 'match':
           profileStore.handleNewMatch(payload.FromId, payload.userId, payload.conversation_id);
-          if ( payload.FromId != useUserStore().getUserID)
-          toast('like', 'New match', "matched your profile.", payload.avatar, payload.FromId, payload.username);
+          if (payload.FromId != useUserStore().getUserID)
+            toast('like', 'New match', "matched your profile.", payload.avatar, payload.FromId, payload.username);
           break;
         case 'unmatch':
           profileStore.handleUnMatch(payload.FromId, payload.userId,);
-          if ( payload.FromId != useUserStore().getUserID)
-          toast('info', 'New unmatch', "unmatch your profile.", payload.avatar, payload.FromId, payload.username);
-
+          if (payload.FromId != useUserStore().getUserID)
+            toast('info', 'New unmatch', "unmatch your profile.", payload.avatar, payload.FromId, payload.username);
           break;
         case 'like':
+          if (payload.FromId != useUserStore().getUserID)
           toast('info', 'New like', "liked your profile.", payload.avatar, payload.FromId, payload.username);
-
-          if (profileStore.activeProfile?.user.user_id === payload.userId) {
-            profileStore.fetchProfile(payload.userId);
-          }
+          profileStore.handleNewMatch(payload.FromId, payload.userId,0);
           break;
-
+        case 'dislike':
+          console.log("LOLE")
+          profileStore.handleUnMatch(payload.FromId, payload.userId,);
+          break;
         case 'view':
           toast('view', 'Profile New', "viewed your profile.", payload.avatar, payload.FromId, payload.username);
 

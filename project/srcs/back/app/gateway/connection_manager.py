@@ -126,14 +126,18 @@ class ConnectionManager :
         if not block_status and type == "Like" :
             UserInteractionsService.insert_user_interactions(dst_id, user_id)
             type_response = "like"
+            conversation_id = 1
             if is_connection :
                 type_response = "match"
                 conversation_id = ChatService.create_conversation(dst_id, user_id)
         elif not block_status and type == "Dislike" :
+            print("LOL type", flush=True)
             done = UserInteractionsService.remove_user_interactions(dst_id, user_id)
+            if done: 
+                conversation_id = -1
+                type_response = "dislike"
             if done and is_connection :
                 type_response = "unmatch"
-                conversation_id = 1
         elif not block_status and type == "Block" :
             if is_connection :
                 UserInteractionsService.remove_user_interactions(dst_id, user_id)
@@ -149,12 +153,16 @@ class ConnectionManager :
             return
         if block_status :
             return
+        
         try :
             user = ProfileService.get_user_profile_basic(user_id)
         except :
             return
         if type_response :
-            done = NotificationService.create_notification(dst_id, type_response, user_id)
+            if type_response != 'dislike' :
+                done = NotificationService.create_notification(dst_id, type_response, user_id)
+            else :
+                done = 1
             if done :
                 if conversation_id :
                     emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": type_response, "conversation_id": conversation_id}, room=f"Notifs_user_{dst_id}")
