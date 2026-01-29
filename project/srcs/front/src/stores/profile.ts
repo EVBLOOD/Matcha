@@ -47,24 +47,67 @@ export const useSocialStore = defineStore('profile', {
         this.loading = false;
       }
     },
-
     handleNewMatch(partnerId: number, secondId: number, conversation_id: number) {
 
-      if (this.activeProfile?.user.user_id == partnerId || this.activeProfile?.user.user_id == secondId) {
-        this.activeProfile.interactions.conversation_id = conversation_id
+      if (this.activeProfile?.user.user_id == partnerId) {
+        this.activeProfile.interactions.is_connected = 2
+        this.activeProfile.interactions.interaction_status = 'liked'
+
+      } else if (this.activeProfile?.user.user_id == secondId) {
+
+        this.activeProfile.interactions.is_connected = 2
+
+        this.activeProfile.interactions.interaction_status = 'liked'
+        this.activeProfile.interactions.likes_count++
+
+      }
+    },
+    handleDislike(partnerId: number, secondId: number, conversation_id: number) {
+
+      if (this.activeProfile?.user.user_id == partnerId) {
+
+        if (this.activeProfile.interactions.is_connected) this.activeProfile.interactions.is_connected--
+        else this.activeProfile.interactions.is_connected = 0
+        
+      }  else if (this.activeProfile?.user.user_id == secondId) {
+
+        if (this.activeProfile.interactions.is_connected) this.activeProfile.interactions.is_connected--
+        else this.activeProfile.interactions.is_connected = 0
+        this.activeProfile.interactions.likes_count--
+
+        this.activeProfile.interactions.interaction_status = undefined
+      }
+    },
+    handleLike(partnerId: number, secondId: number, conversation_id: number) {
+
+      if (this.activeProfile?.user.user_id == partnerId) {
         if (this.activeProfile.interactions.is_connected) this.activeProfile.interactions.is_connected++
         else this.activeProfile.interactions.is_connected = 1
-        this.activeProfile.interactions.likes_count++
+
+      } else if (this.activeProfile?.user.user_id == secondId) {
+
+        if (this.activeProfile.interactions.is_connected) this.activeProfile.interactions.is_connected++
+        else this.activeProfile.interactions.is_connected = 1
+
         this.activeProfile.interactions.interaction_status = 'liked'
-        console.log("Store updated with ID:", conversation_id);
+        this.activeProfile.interactions.likes_count++
+
       }
     },
     handleUnMatch(partnerId: number, secondId: number) {
 
-      if (this.activeProfile?.user.user_id == partnerId || this.activeProfile?.user.user_id == secondId) {
+
+      if (this.activeProfile?.user.user_id == partnerId) {
+
+        if (this.activeProfile.interactions.is_connected) this.activeProfile.interactions.is_connected--
+        else this.activeProfile.interactions.is_connected = 0
+        
+      }  else if (this.activeProfile?.user.user_id == secondId) {
+
         if (this.activeProfile.interactions.is_connected) this.activeProfile.interactions.is_connected--
         else this.activeProfile.interactions.is_connected = 0
         this.activeProfile.interactions.likes_count--
+
         this.activeProfile.interactions.interaction_status = undefined
       }
     },
