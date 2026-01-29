@@ -24,7 +24,8 @@ const userStore = userUserStore()
 
 
 const conversationData = ref<ConversationsResponse[] | null>(null);
-const conversationMessages = ref<MessagesResponse[] | null>(null);
+const conversationMessages = ref<MessagesResponse[]>([]);
+
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 const newMessage = ref('')
@@ -342,8 +343,12 @@ const statusUser = computed(() => {
                 <button class="btn-call-video" @click="startCall"><img src="/img/videoCall.svg" alt="video call"></button>
             </div>
         </div>
-        <div v-if="conversationMessages" class="messages" ref="messagesContainer">
-            <div v-for="msg in conversationMessages" :key="msg.id"
+        <div class="messages" ref="messagesContainer">
+            <div v-if="!conversationMessages.length" class="empty-state">
+                <h3>No messages yet.</h3>
+                <p>Start the conversation.</p>
+            </div>
+            <div v-else v-for="msg in conversationMessages" :key="msg.id"
                 :class="['message', msg.sender_id == userStore.getUserID ? 'sent' : 'received']">
                 {{ msg.content }}
             </div>
@@ -682,6 +687,10 @@ video {
 .chat {
     display: flex;
     flex-direction: column;
+    // display: grid;
+    // grid-template-rows: auto 1fr auto;
+    // height: 100vh;
+
     width: 100%;
     height: 100%;
 }
@@ -730,8 +739,9 @@ video {
 }
 
 .messages {
-    flex: 1;
-    overflow-y: scroll;
+    // flex: 1;
+    flex: 1 1 auto;
+    overflow-y: auto;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -740,6 +750,7 @@ video {
     width: 100%;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+    min-height: 0;
 }
 
 .message {
@@ -763,6 +774,14 @@ video {
     align-self: flex-end;
     background: #785D86;
     border-bottom-right-radius: 0;
+}
+
+.empty-state{
+    margin: auto;
+    opacity: 0.6;
+    font-size: 17px;
+    text-align: center;
+    
 }
 
 .inputBar {
