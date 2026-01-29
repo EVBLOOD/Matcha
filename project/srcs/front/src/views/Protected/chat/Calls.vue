@@ -44,6 +44,7 @@ const fetchConversations = async () => {
         socketStore.reachStausOneUser(conversationData.value[0].peer_id.toString())
         socketStore.joinChat(conversationData.value[0].peer_id.toString())
         socketStore.setMessagesCount()
+        socketStore.setCurrentConversation(conversationData.value[0].conversation_id)
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -74,6 +75,7 @@ function sendMessage() {
 onUnmounted(() => {
     if (conversationData.value)
         socketStore.leaveChat(conversationData.value[0].peer_id.toString())
+    socketStore.setCurrentConversation()
 })
 
 

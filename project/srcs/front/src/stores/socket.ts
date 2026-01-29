@@ -15,6 +15,7 @@ export const useSocketStore = defineStore('socket', {
     notifs_counter: ref(0),
     messages_counter: ref(0),
     isBound: false,
+    currentConversation: null as null | number
   }),
   getters: {
     getNotifsCount: (state) => state.notifs_counter,
@@ -22,6 +23,9 @@ export const useSocketStore = defineStore('socket', {
     getAllOnliners: (state) => state.onlineUsers,
   },
   actions: {
+    setCurrentConversation(val: number | null = null) {
+      this.currentConversation = val
+    },
     setNotifsCount(val: number) {
       this.notifs_counter = val
     },
@@ -62,11 +66,10 @@ export const useSocketStore = defineStore('socket', {
       });
 
       socketChat.on('new_message_notification', (msg) => {
+        if (this.currentConversation && msg.conv == this.currentConversation) return
         this.messages_counter++
-
         toast('message', 'New message', "sent you a message.", msg.user_data.pictures[0].url, msg.conv, msg.user_data.user.username);
         this.new_chats_notifs.push(msg);
-
       });
       socketStatus.emit('number_of_notifs', (number: number) => {
         this.notifs_counter = number
@@ -184,11 +187,11 @@ export const useSocketStore = defineStore('socket', {
         case 'like':
           if (payload.FromId != useUserStore().getUserID)
           toast('info', 'New like', "liked your profile.", payload.avatar, payload.FromId, payload.username);
-          profileStore.handleNewMatch(payload.FromId, payload.userId,0);
+          profileStore.handleLike(payload.FromId, payload.userId,0);
           break;
         case 'dislike':
           console.log("LOLE")
-          profileStore.handleUnMatch(payload.FromId, payload.userId,);
+          profileStore.handleDislike(payload.FromId, payload.userId,0);
           break;
         case 'view':
           toast('view', 'Profile New', "viewed your profile.", payload.avatar, payload.FromId, payload.username);
