@@ -40,7 +40,7 @@ const clickLogOut = async () => {
 
                 <RouterLink class="link" to="/notifications">
                     <div class="_link" style="position: relative; overflow: visible;">
-                        <img src="/img/notifMenuIcon.svg" alt="" />
+                        <div class="icon"><img src="/img/notifMenuIcon.svg" alt="" /></div>
                         <div v-if="socket.getNotifsCount"
                             style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 10%; left: 55%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
                             {{ socket.getNotifsCount > 9 ? '+9' : socket.getNotifsCount }}
@@ -51,7 +51,7 @@ const clickLogOut = async () => {
 
                 <RouterLink class="link" to="/messages">
                     <div class="_link" style="position: relative; overflow: visible;">
-                        <img src="/img/messageMenuIcon.svg" alt="" />
+                        <div class="icon"><img src="/img/messageMenuIcon.svg" alt="" /></div>
                         <div v-if="socket.getMessagesCount"
                             style="position: absolute; height: 17px; width: 17px; background-color: #EC4B2F; bottom: 10%; left: 55%; font-weight: 600; border-radius: 50%; font-size: x-small; display: flex; justify-content: center; align-items: center;">
                             {{ socket.getMessagesCount > 9 ? '+9' : socket.getMessagesCount }}
@@ -62,22 +62,28 @@ const clickLogOut = async () => {
                 </RouterLink>
 
                 <RouterLink class="link" to="/suggestions">
-                    <img src="/img/suggestionMenuIcon.svg" alt="" />
+                    <div class="icon"><img src="/img/suggestionMenuIcon.svg" alt="" /></div>
                     <span>Suggestions</span>
                 </RouterLink>
 
                 <RouterLink class="link" to="/events">
-                    <img src="/img/eventMenuIcon.svg" alt="" />
+                    <div class="icon"><img src="/img/eventMenuIcon.svg" alt="" /></div>
                     <span>Events</span>
                 </RouterLink>
 
                 <RouterLink class="link" :to="`/profile/${userStore.getUserID}`">
-                    <img src="/img/profileMenuIcon.svg" alt="" /> <span>Profile</span>
+                    <div class="icon"><img src="/img/profileMenuIcon.svg" alt="" /> </div>
+                    <span>Profile</span>
                 </RouterLink>
-                <a class="link log_a" v-on:click="clickLogOut">
-                    <img src="/img/logOut.svg" alt="" /> <span>Log
-                        out</span></a>
+                <a class="link mobile" v-on:click="clickLogOut">
+                    <div class="icon"><img src="/img/logOut.svg" alt="" /> </div>
+                    <span>Logout</span>
+                </a>
             </nav>
+            <a class="link desktop" v-on:click="clickLogOut">
+                <div class="icon"><img src="/img/logOut.svg" alt="" /> </div>
+                <span>Logout</span>
+            </a>
         </div>
         <div class="main_div_parent">
             <div class="main_title">
@@ -110,7 +116,6 @@ const clickLogOut = async () => {
     width: 100%;
     border-style: solid;
     border-color: $border-color;
-    ;
     border-width: 0px 0px 1px 0px;
     padding-left: 3%;
     align-content: center;
@@ -130,44 +135,71 @@ const clickLogOut = async () => {
     display: flex;
     flex-direction: column;
     gap: 33px;
-    height: 100%;
+    // height: 100%;
     width: 20%;
-    margin-right: 1%;
+    padding: 10px 10px 40px 10px;
+    // margin-right: 1%;
 }
-
 
 .nav {
     display: flex;
     flex-direction: column;
     position: relative;
     // gap: 1px;
+    gap: 5px;
     height: 100%;
 }
 
 .log_a {
-    position: absolute;
-    bottom: 10%;
+    // position: absolute;
+    // bottom: 10%;
 }
 
 .link {
-    display: flex;
-    gap: 10px;
-    text-decoration: none;
-    color: $text-color;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    // height: 6%;
-    padding: 6%;
-    align-content: center;
     cursor: pointer;
-    flex-wrap: wrap;
+    display: flex;
+    align-content: center;
+    text-decoration: none;
+    gap: 10px;
+    color: $text-color;
+    padding: 12px;
+    width: 100%;
+    // flex-wrap: wrap;
+    // justify-content: flex-start;
+    align-items: center;
+    // height: 6%;
+    min-height: max-content;
+
+    
+    span{
+        max-width: auto;
+        // white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+.mobile{ display: none;}
+// .desktop{ display: block; }
+
+
+.icon{
+    height: 20px;
+    width: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+    }
 }
 
 .link:hover {
     background: $components-hover-color;
     border-radius: 8px;
-
 }
 
 @media (max-width: $breakpoint-md) {
@@ -183,16 +215,16 @@ const clickLogOut = async () => {
         background-color: $components-background-color;
     }
 
-._link {
-        padding: 3%;
-        // border-style: solid;
-        // border-width: 0px 1px 0px 0px;
-        border-color: $border-color;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-}
+    ._link {
+            padding: 3%;
+            // border-style: solid;
+            // border-width: 0px 1px 0px 0px;
+            border-color: $border-color;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+    }
     .link {
         padding: 3%;
         border-style: solid;
@@ -203,12 +235,13 @@ const clickLogOut = async () => {
         align-items: center;
         flex-wrap: wrap;
 
-
         span {
             // overflow: hidden; // OR
             display: none;
         }
     }
+    .mobile{ display: block;}
+    .desktop{ display: none;}
 
     .link:hover {
         border-radius: 0px;
@@ -234,6 +267,8 @@ const clickLogOut = async () => {
 
         width: 100%;
         margin-right: 0%;
+
+        padding: 0px;
 
         .logo {
             display: none;
