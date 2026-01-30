@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useSocketListener } from '@/composables/useSocketChat'
 import Input from '@/components/Input.vue';
 import { toast } from '@/composables/useToast';
+import Alert from '@/components/Alert.vue';
 
 interface BackendError {
     error: string;
@@ -249,26 +250,29 @@ const statusUser = computed(() => {
             <!-- <button @click="startCall">Start Call</button> -->
         </div>
     </div>
-    <div v-if="ProposeDateVisible" class="propose-date">
-        <div class="popup">
-            <div class="header">
-                <h2>Propose a Date</h2>
-                <span class="btn-close" @click="ProposeDateVisible = false">x</span>
+
+    <Alert 
+        v-model="ProposeDateVisible" 
+        title="Propose a Date"
+        @confirm="send_invite"
+        confirm-text="Send Invite"
+        size="medium"
+    >
+        <div class="content">
+            <div class="date_time">
+                <Input v-model="date_str" variant="popup" label="Select Date" type="date" />
+                <Input v-model="time_str" variant="popup" label="Time" type="time" />
             </div>
-            <div class="content">
-                <div class="date_time">
-                    <Input v-model="date_str" name="date" variant="popup" label="Select Date" type="date" />
-                    <Input  v-model="time_str" name="time" variant="popup" label="Time" type="time" />
-                </div>
-                <Input v-model="location" name="location" variant="popup" label="Location" type="text" placeholder="Location" />
-                <Input v-model="description" name="description" variant="popup" label="Message" type="text" placeholder="Message" />
-            </div>
+            <Input v-model="location" variant="popup" label="Location" />
+            <Input v-model="description" variant="popup" label="Message" />
+        </div>
+        <!-- <template #footer>
             <div class="footer">
                 <button class="btn-cancel-invite" @click="ProposeDateVisible = false">Cancel</button>
-                <button class="btn-send-invite" @click="send_invite()">Send Invite</button>
+                <button class="btn-send-invite" @click="send_invite">Send Invite</button>
             </div>
-        </div>
-    </div>
+        </template> -->
+    </Alert>
 </template>
 
 <style lang="scss" scoped>
@@ -294,88 +298,38 @@ const statusUser = computed(() => {
     }
 }
 
-.propose-date{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 999;
-    .popup{
-        position: absolute;
-        background-color: #E2BDF6;
-        width: 50%;
-        height: 50%;
-        padding: 30px;
-        border-radius: 10px;
+.content{
+    width: 100%;
+    .date_time{
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        gap: 10px;
+    }
+}
+.footer{
+    display: flex;
+    justify-content: flex-end;
+    // margin-top: 20px;
+    gap: 10px;
+    width: 100%;
+    .btn-send-invite {
+        @extend .btn;
+        font-size: 15px;
+        padding: 15px 30px;
+        flex: 1;
+    }
+    .btn-cancel-invite {
+        @extend .btn;
+        padding: 15px 30px;
+        font-size: 15px;
+        background-color: #E8DCEF;
         color: #592F6F;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        justify-content: space-between;
-        .header{
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 20px;
-            border-bottom: 0.4px solid #6e597b5e;
-            .btn-close{
-                cursor: pointer;
-                font-size: 20px;
-                background-color: #9566B0;
-                color: white;
-                border-radius: 50%;
-                width: 30px;
-                height: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                &:hover {
-                    background-color: #7e52a0;
-                }
-            }
-            padding-bottom: 15px;
-            
-        }
-        .content{
-            width: 100%;
-            .date_time{
-                display: flex;
-                gap: 10px;
-            }
-        }
-        .footer{
-            display: flex;
-            justify-content: flex-end;
-            // margin-top: 20px;
-            gap: 10px;
-            width: 100%;
-            .btn-send-invite {
-                @extend .btn;
-                font-size: 15px;
-                padding: 15px 30px;
-                flex: 1;
-            }
-            .btn-cancel-invite {
-                @extend .btn;
-                padding: 15px 30px;
-                font-size: 15px;
-                background-color: #E8DCEF;
-                color: #592F6F;
-                flex: 1;
-                &:hover {
-                    background-color: #d5c1e0;
-                }
-            }
+        flex: 1;
+        &:hover {
+            background-color: #d5c1e0;
         }
     }
 }
+
 
 .video-call {
     position: fixed;

@@ -31,6 +31,12 @@ const clickLogOut = async () => {
     }
 }
 
+const isActive = (path: string) => {
+    if (path === '/') return route.path === '/'
+    return route.path.startsWith(path)
+}
+
+
 
 
 const callStore = useCallStore()
@@ -156,15 +162,17 @@ const endCall = (sendSignal: boolean = true) => {
 
 </script>
 
+
+
 <!-- <Loading v-if="loading" :duration="600" @finished="loading = false" /> -->
 <template>
     <div class="content">
         <div class="side_bar">
             <img class="logo" style="margin-top: 15px;margin-left: 5%;" src="/img/Logo.svg" width="119px" alt="Logo" />
             <nav class="nav">
-                <RouterLink class="link" to="/"><img src="/img/homeIcon.svg" alt="" /> <span>Explore</span></RouterLink>
+                <RouterLink class="link" to="/" :class="{ selected: isActive('/')}"><img src="/img/homeIcon.svg" alt="" /> <span>Explore</span></RouterLink>
 
-                <RouterLink class="link" to="/notifications">
+                <RouterLink class="link" to="/notifications" :class="{ selected: isActive('/notifications')}">
                     <div class="_link" style="position: relative; overflow: visible;">
                         <div class="icon"><img src="/img/notifMenuIcon.svg" alt="" /></div>
                         <div v-if="socket.getNotifsCount"
@@ -175,7 +183,7 @@ const endCall = (sendSignal: boolean = true) => {
                     <span>Notifications</span>
                 </RouterLink>
 
-                <RouterLink class="link" to="/messages">
+                <RouterLink class="link" to="/messages" :class="{ selected: isActive('/messages')}">
                     <div class="_link" style="position: relative; overflow: visible;">
                         <div class="icon"><img src="/img/messageMenuIcon.svg" alt="" /></div>
                         <div v-if="socket.getMessagesCount"
@@ -187,17 +195,17 @@ const endCall = (sendSignal: boolean = true) => {
                     <span>Messages</span>
                 </RouterLink>
 
-                <RouterLink class="link" to="/suggestions">
+                <RouterLink class="link" to="/suggestions" :class="{ selected: isActive('/suggestions')}">
                     <div class="icon"><img src="/img/suggestionMenuIcon.svg" alt="" /></div>
                     <span>Suggestions</span>
                 </RouterLink>
 
-                <RouterLink class="link" to="/events">
+                <RouterLink class="link" to="/events" :class="{ selected: isActive('/events')}">
                     <div class="icon"><img src="/img/eventMenuIcon.svg" alt="" /></div>
                     <span>Events</span>
                 </RouterLink>
 
-                <RouterLink class="link" :to="`/profile/${userStore.getUserID}`">
+                <RouterLink class="link" :to="`/profile/${userStore.getUserID}`" :class="{ selected: isActive('/profile')}">
                     <div class="icon"><img src="/img/profileMenuIcon.svg" alt="" /> </div>
                     <span>Profile</span>
                 </RouterLink>
@@ -326,11 +334,6 @@ const endCall = (sendSignal: boolean = true) => {
     height: 100%;
 }
 
-.log_a {
-    // position: absolute;
-    // bottom: 10%;
-}
-
 .link {
     cursor: pointer;
     display: flex;
@@ -340,23 +343,16 @@ const endCall = (sendSignal: boolean = true) => {
     color: $text-color;
     padding: 12px;
     width: 100%;
-    // flex-wrap: wrap;
-    // justify-content: flex-start;
     align-items: center;
-    // height: 6%;
     min-height: max-content;
 
-    
     span{
         max-width: auto;
-        // white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 }
 .mobile{ display: none;}
-// .desktop{ display: block; }
-
 
 .icon{
     height: 20px;
@@ -377,6 +373,12 @@ const endCall = (sendSignal: boolean = true) => {
     background: $components-hover-color;
     border-radius: 8px;
 }
+
+.selected {
+    background: $components-hover-color;
+    border-radius: 8px;
+}
+
 
 @media (max-width: $breakpoint-md) {
     .content {
