@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { onMounted, watch, computed } from 'vue';
-import { RouterView, useRoute } from 'vue-router';
+import { RouterView, useRoute, useRouter } from 'vue-router';
 import Button from '@/components/Button.vue';
-
+import { ref } from 'vue';
 import Fame from '@/components/Fame.vue';
-
 import useUserStore from '@/stores/user';
-
 import { useSocialStore } from '@/stores/profile';
 import { useSocketStore } from '@/stores/socket';
+import Loading from '@/components/Loading.vue';
+import Alert from '@/components/Alert.vue';
+import InteractionService from '@/api/services/InteractionService'
 
 const route = useRoute();
-
+const router = useRouter();
 const profile = useSocialStore()
 
 const statusUser = computed(() => {
@@ -20,7 +21,6 @@ const statusUser = computed(() => {
 
     return socket.UserStatus(userId);
 });
-
 
 const conversationId = computed(() => profile.activeProfile?.interactions?.conversation_id);
 
@@ -47,7 +47,6 @@ const blockHandler = () => {
     socket.interactWithUser(profile.activeProfile.user.user_id, 'block')
     profile.clearActiveProfile()
 }
-import InteractionService from '@/api/services/InteractionService'
 
 const reportHandler = async () => {
     if (!profile.activeProfile) return
@@ -77,7 +76,9 @@ const pictures_handler = (link: string) => {
     }
     return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
 }
-import Loading from '@/components/Loading.vue';
+
+const showReportUser = ref(false)
+const showBlockUser = ref(false)
 
 </script>
 
@@ -114,8 +115,8 @@ import Loading from '@/components/Loading.vue';
                     </Button>
                 </div>
                 <div class="btn-block-report">
-                    <Button class="btn-block" @click="blockHandler" text="Block"></Button>
-                    <Button class="btn-report" @click="reportHandler" text="Report"></Button>
+                    <Button class="btn-block" @click="showBlockUser = !showBlockUser" text="Block"></Button>
+                    <Button class="btn-report" @click="showReportUser = !showReportUser" text="Report"></Button>
                 </div>
             </div>
             <div class="stats_holder">
@@ -138,6 +139,17 @@ import Loading from '@/components/Loading.vue';
             <RouterView />
         </div>
     </div>
+    <Alert v-model="showBlockUser" title="Block User" confirmText="Block" confirmVariant="danger" size="small" @confirm="blockHandler">
+        <div class="alert-block">
+            <p>Are you sure you want to block this user?</p>
+        </div>
+    </Alert>
+    <Alert v-model="showReportUser" title="Report User" confirmText="Report" confirmVariant="danger" size="small" @confirm="reportHandler" >
+        <div class="alert-block">
+            <p>Are you sure you want to report this user?</p>
+        </div>
+    </Alert>
+
 </template>
 
 <style lang="scss" scoped>
@@ -272,6 +284,13 @@ import Loading from '@/components/Loading.vue';
         min-height: fit-content;
         min-width: fit-content;
     }
+}
+
+.alert-block{
+    display: grid;
+    font-size: 18px;
+    font-weight: 500;
+    gap: 4px;
 }
 
 
