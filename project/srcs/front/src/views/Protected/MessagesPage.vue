@@ -27,6 +27,10 @@ function openChat(userId: number) {
     router.push(`/messages/${userId}`);
 }
 
+const isSelected = (conversationId: number) => {
+    return Number(route.params.id) === conversationId
+}
+
 
 const conversationsData = ref<ConversationsResponse[] | null>(null);
 
@@ -74,7 +78,8 @@ import Loading from '@/components/Loading.vue';
         <Loading :class="['sideBar', { hideOnMobile: chatOpen }]" v-if="isLoading" @finished="isLoading = false" />
         <div v-if="!isLoading && !isError && conversationsData"  :class="['sideBar', { hideOnMobile: chatOpen }]">
             <div class="user" v-if="conversationsData.length == 0">No conversations for you</div>
-            <div class="user" v-for="user in conversationsData" :key="user.peer_id" @click="openChat(user.conversation_id)">
+            <div class="user" v-for="user in conversationsData" :key="user.peer_id" @click="openChat(user.conversation_id)"
+            :class="{ selected: isSelected(user.conversation_id) }">
                 <div class="avatar">
                     <img :src="pictures_handler(user.profile_picture_url[0].url)" alt="avatar" />
                 </div>
@@ -115,13 +120,13 @@ import Loading from '@/components/Loading.vue';
     display: flex;
     transition: 0.3s;
     align-items: center;
-    padding: 4px;
+    padding: 5px 10px;
     gap: 7px;
     user-select: none;
     overflow: hidden;
 }
 
-.sideBar .selected {
+.selected {
     background-color: #ffffff1c;
     border-radius: 6px;
 }
@@ -132,6 +137,7 @@ import Loading from '@/components/Loading.vue';
     transition: 0.3s;
     border-radius: 6px;
 }
+
 
 .user .avatar {
     height: 50px;
