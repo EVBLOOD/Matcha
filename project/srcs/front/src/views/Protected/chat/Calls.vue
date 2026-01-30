@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick, onUnmounted, useTemplateRef } from 'vue';
+import { ref, onMounted, watch, nextTick, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import type { ConversationsResponse, MessagesResponse } from '@/types/apiResponses'
 import ChatService from '@/api/services/ChatService'
 import { useSocketStore } from '@/stores/socket'
 import userUserStore from '@/stores/user'
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useSocketListener } from '@/composables/useSocketChat'
-import { formatDistanceToNow } from 'date-fns';
 import Input from '@/components/Input.vue';
 import { toast } from '@/composables/useToast';
 
@@ -109,124 +108,11 @@ async function scrollToBottom() {
     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
 }
 
-
-
-const rtcConfig: RTCConfiguration = {
-    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-};
-
-let pc: RTCPeerConnection | null = null;
-let localStream: MediaStream | null = null;
-
-
-const localVideo = ref<HTMLVideoElement | null>(null);
-const remoteVideo = ref<HTMLVideoElement | null>(null);
-const isCalling = ref(false);
-
-const callState = ref<'dialing' | 'ringing' | 'connected'>('dialing');
-
-const createPeerConnection = () => {
-    pc = new RTCPeerConnection(rtcConfig);
-
-    pc.ontrack = (event: RTCTrackEvent) => {
-        if (remoteVideo.value) {
-            remoteVideo.value.srcObject = event.streams[0];
-            callState.value = 'connected';
-        }
-    };
-
-    pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
-        if (event.candidate && conversationData.value) {
-            socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'candidate', event.candidate);
-        }
-    };
-};
-
-const setupWebRTC = async () => {
-    createPeerConnection();
-
-    try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        if (localVideo.value) localVideo.value.srcObject = localStream;
-
-        localStream.getTracks().forEach(track => {
-            if (pc && localStream) pc.addTrack(track, localStream);
-        });
-    } catch (err) {
-        console.error("Access denied for camera/mic:", err);
-    }
-};
+const callStore = useCallStore()
 
 const startCall = async () => {
-    isCalling.value = true;
-    callState.value = 'dialing';
-
-    await setupWebRTC();
-
-    if (!pc) return;
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    if (conversationData.value)
-        socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'offer', offer);
-};
-
-const acceptCall = async (offer: RTCSessionDescriptionInit) => {
-    isCalling.value = true;
-    callState.value = 'connected';
-
-    await setupWebRTC();
-
-    if (!pc) return;
-    await pc.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    if (conversationData.value)
-        socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'answer', answer);
-};
-
-useSocketListener('video_signal', async (data) => {
-    if (data.type === 'offer') {
-        isCalling.value = true;
-        callState.value = 'ringing';
-
-        pendingOffer.value = data.args;
-    }
-    else if (data.type === 'answer') {
-        if (pc) {
-            await pc.setRemoteDescription(new RTCSessionDescription(data.args));
-            callState.value = 'connected';
-        }
-    }
-    else if (data.type === 'candidate') {
-        if (pc) {
-            await pc.addIceCandidate(new RTCIceCandidate(data.args));
-        }
-    } else if (data.type === 'hangup') {
-        endCall(false);
-    }
-});
-
-const pendingOffer = ref<RTCSessionDescriptionInit | null>(null);
-
-const endCall = (sendSignal: boolean = true) => {
-    if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-        localStream = null;
-    }
-    if (pc) {
-        pc.close();
-        pc = null;
-    }
-    isCalling.value = false;
-    pendingOffer.value = null;
-
-    isCalling.value = false;
-    callState.value = 'dialing';
-
-    if (sendSignal) {
-        if (conversationData.value)
-        socketStore.CallUser(conversationData.value[0].peer_id.toString(), 'hangup', null);
-    }
+    if (!conversationData.value) return
+    callStore.initiateCall(conversationData.value[0].peer_id.toString(), conversationData.value[0].first_name + " " + conversationData.value[0].last_name, conversationData.value[0].profile_picture_url[0].url)
 };
 
 import { useRouter } from 'vue-router';
@@ -310,6 +196,7 @@ const send_invite = async () => {
 
 import Loading from '@/components/Loading.vue';
 import {  computed } from 'vue';
+import { useCallStore } from '@/stores/call';
 
 const statusUser = computed(() => {
     if (conversationData.value) {
@@ -355,56 +242,6 @@ const statusUser = computed(() => {
                 {{ msg.content }}
             </div>
         </div>
-        <Teleport to="body">
-            <div v-if="isCalling" class="video-call">
-                <div>
-                    <div v-if="callState === 'dialing'" class="box">
-                        <div class="user">
-                            <div class="avatar">
-                                <img :src="pictures_handler(conversationData[0].profile_picture_url[0].url)" alt="Avatar">
-                            </div>
-                            <p class="name">{{conversationData[0].first_name + " " + conversationData[0].last_name}}</p>
-                        </div>
-                        <p class="status-call">Calling...</p>
-                        <button @click="endCall()" class="btn-cancel">Cancel</button>
-                    </div>
-
-                    <div v-if="callState === 'ringing'" class="box">
-                        <div class="user">
-                            <div class="avatar">
-                                <img :src="pictures_handler(conversationData[0].profile_picture_url[0].url)" alt="Avatar">
-                            </div>
-                            <p class="name">{{conversationData[0].first_name + " " + conversationData[0].last_name}}</p>
-                        </div>
-                        <p class="status-call">Incoming Call...</p>
-                        <div class="btn-call">
-                            <button class="btn-accept" @click="acceptCall(pendingOffer!)">
-                                <img src="/img/btn-accept-call.svg" alt="Accept">
-                                <p>Accept</p>
-                            </button>
-                            <button class="btn-decline" @click="endCall()">
-                                <img src="/img/btn-decline-call.svg" alt="Decline">
-                                <p>Decline</p>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div v-show="callState === 'connected'" class="box-video-call">
-                        <div class="videos">
-                            <div class="video1">
-                                <video ref="remoteVideo" autoplay playsinline></video>
-                                <p>{{conversationData[0].first_name + " " + conversationData[0].last_name}}</p>
-                            </div>
-                            <div class="video2">
-                                <video ref="localVideo" autoplay muted playsinline></video>
-                                <p>{{userStore.getUserName}}</p>
-                            </div>
-                        </div>
-                        <div @click="endCall()" class="btn-hang-up"><img src="/img/hang-up.svg"></div>
-                    </div>
-                </div>
-            </div>
-        </Teleport>
         <div class="inputBar">
             <textarea v-model="newMessage" placeholder="Type a message..." rows="1"
                 @keydown.enter.exact.prevent="sendMessage" @keydown.enter.shift.exact.stop></textarea>

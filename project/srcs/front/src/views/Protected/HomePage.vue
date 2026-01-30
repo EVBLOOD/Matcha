@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import { useSocketStore } from '@/stores/socket';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import AuthService from '@/api/services/AuthService'
 import useUserStore from '@/stores/user';
 import Loading from '@/components/Loading.vue';
+import { useCallStore } from '@/stores/call';
+import { useSocketListener } from '@/composables/useSocketChat';
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -28,6 +30,130 @@ const clickLogOut = async () => {
         localStorage.removeItem('auth_token');
     }
 }
+
+
+
+const callStore = useCallStore()
+const pictures_handler = (link: string) => {
+    if (link.indexOf('/') > 0) {
+        return link
+    }
+    return `${import.meta.env.VITE_BACKEND_LINK}/profile/pictures/${link}`
+}
+
+
+const rtcConfig: RTCConfiguration = {
+    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+};
+
+let pc: RTCPeerConnection | null = null;
+let localStream: MediaStream | null = null;
+
+
+const localVideo = ref<HTMLVideoElement | null>(null);
+const remoteVideo = ref<HTMLVideoElement | null>(null);
+
+
+const createPeerConnection = () => {
+    pc = new RTCPeerConnection(rtcConfig);
+
+    pc.ontrack = (event: RTCTrackEvent) => {
+        if (remoteVideo.value) {
+            remoteVideo.value.srcObject = event.streams[0];
+        }
+    };
+
+    pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
+        if (event.candidate) {
+            callStore.sendSignal('candidate', event.candidate);
+        }
+    };
+};
+
+const setupWebRTC = async () => {
+    createPeerConnection();
+
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        if (localVideo.value) localVideo.value.srcObject = localStream;
+
+        localStream.getTracks().forEach(track => {
+            if (pc && localStream) pc.addTrack(track, localStream);
+        });
+    } catch (err) {
+        console.error("Access denied for camera/mic:", err);
+    }
+};
+
+
+const startCall = async () => {
+    await setupWebRTC();
+
+    console.log(`calling starter: ${pc}`)
+    if (!pc) return;
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    callStore.sendSignal('offer', offer);
+};
+
+watch(() => callStore.isCalling, async (isCalling) => {
+
+    if (callStore.callState === 'dialing' && !pc && isCalling) {
+        await startCall()
+    }
+});
+
+const acceptCall = async (offer: RTCSessionDescriptionInit) => {
+
+    await setupWebRTC();
+
+    if (!pc) return;
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    callStore.sendSignal('answer', answer);
+    callStore.setConnected();
+};
+
+useSocketListener('video_signal', async (data) => {
+    if (data.type === 'offer') {
+        callStore.receiveIncoming(data.sender_id, data.sender_name, data.sender_avatar, data.args);
+    }
+    else if (data.type === 'answer') {
+        if (pc) {
+            await pc.setRemoteDescription(new RTCSessionDescription(data.args));
+            callStore.setConnected();
+        }
+    }
+    else if (data.type === 'candidate') {
+        if (pc) {
+            await pc.addIceCandidate(new RTCIceCandidate(data.args));
+        }
+    } else if (data.type === 'hangup') {
+        endCall(false);
+    }
+});
+
+const pendingOffer = ref<RTCSessionDescriptionInit | null>(null);
+
+const endCall = (sendSignal: boolean = true) => {
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+    }
+    if (pc) {
+        pc.close();
+        pc = null;
+    }
+    pendingOffer.value = null;
+
+    if (sendSignal) {
+        callStore.sendSignal('hangup', null);
+        callStore.reset();
+    }
+}
+
 </script>
 
 <!-- <Loading v-if="loading" :duration="600" @finished="loading = false" /> -->
@@ -93,6 +219,56 @@ const clickLogOut = async () => {
                 <RouterView />
             </div>
         </div>
+                <Teleport to="body">
+            <div v-if="callStore.isCalling" class="video-call">
+                <div>
+                    <div v-if="callStore.callState === 'dialing'" class="box">
+                        <div class="user">
+                            <div class="avatar">
+                                <img :src="pictures_handler(callStore.activePeer?.avatar || '')" alt="Avatar">
+                            </div>
+                            <p class="name">{{callStore.activePeer?.name}}</p>
+                        </div>
+                        <p class="status-call">Calling...</p>
+                        <button @click="endCall()" class="btn-cancel">Cancel</button>
+                    </div>
+
+                    <div v-if="callStore.callState === 'ringing'" class="box">
+                        <div class="user">
+                            <div class="avatar">
+                                <img :src="pictures_handler(callStore.activePeer?.avatar || '')" alt="Avatar">
+                            </div>
+                            <p class="name">{{callStore.activePeer?.name}}</p>
+                        </div>
+                        <p class="status-call">Incoming Call...</p>
+                        <div class="btn-call">
+                            <button class="btn-accept" @click="acceptCall(pendingOffer!)">
+                                <img src="/img/btn-accept-call.svg" alt="Accept">
+                                <p>Accept</p>
+                            </button>
+                            <button class="btn-decline" @click="endCall()">
+                                <img src="/img/btn-decline-call.svg" alt="Decline">
+                                <p>Decline</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div v-show="callStore.callState === 'connected'" class="box-video-call">
+                        <div class="videos">
+                            <div class="video1">
+                                <video ref="remoteVideo" autoplay playsinline></video>
+                                <p>{{callStore.activePeer?.name}}</p>
+                            </div>
+                            <div class="video2">
+                                <video ref="localVideo" autoplay muted playsinline></video>
+                                <p>{{userStore.getUserName}}</p>
+                            </div>
+                        </div>
+                        <div @click="endCall()" class="btn-hang-up"><img src="/img/hang-up.svg"></div>
+                    </div>
+                </div>
+            </div>
+        </Teleport>
     </div>
 </template>
 
@@ -282,5 +458,210 @@ const clickLogOut = async () => {
     .main_div {
         height: 94%;
     }
+}
+
+.btn {
+    cursor: pointer;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-family: $font-main;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    color: white;
+    background-color: #9566B0;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        filter: brightness(1.1);
+    }
+}
+
+.video-call {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.box{
+    background-color: #E2BDF6;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #592F6F;
+}
+
+.box-video-call{
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background-color: #E2BDF6;
+    padding: 30px;
+    color: #592F6F;
+    .videos{
+        display: flex;
+        gap: 20px;
+        .video1, .video2{
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            font-weight: 600;
+            font-size: 13px;
+            gap: 4px;
+            video{
+                width: 300px;
+                max-height: max-content;
+                background: #333;
+                border-radius: 10px;
+            }
+        }
+    }
+    .btn-hang-up{
+        cursor: pointer;
+        transition: 0.3s;
+        &:hover {
+            transform: scale(1.1);
+            transition: 0.3s;
+        }
+    }
+}
+
+.status-call{
+    font-weight: 500;
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+.btn-accept {
+  @extend .btn;
+  background-color: #9566B0;
+  color: white;
+
+  &:hover {
+    background-color: #7e52a0;
+  }
+}
+
+.btn-decline {
+  @extend .btn;
+  background-color: #E8DCEF;
+  color: #592F6F;
+
+  &:hover {
+    background-color: #d5c1e0;
+  }
+}
+
+.btn-cancel {
+  @extend .btn;
+  width: 100%;
+  background-color: #E8DCEF;
+  color: #592F6F;
+
+  &:hover {
+    background-color: #d5c1e0;
+  }
+}
+
+.btn-call {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 6px;
+}
+
+.btn-call-video {
+    @extend .btn;
+    color: #592F6F;
+    flex-shrink: 0;
+    background-color: #FEA8FF;
+    gap: 8px;
+}
+
+
+.box .user {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.box .user .name{
+    font-weight: 600;
+    font-size: 18px;
+}
+
+video {
+    width: 300px;
+    background: #333;
+}
+
+.user {
+    display: flex;
+    transition: 0.3s;
+    align-items: center;
+    padding: 4px;
+    gap: 7px;
+    user-select: none;
+    width: 100%;
+}
+
+.user .avatar {
+    height: 50px;
+    width: 50px;
+    min-height: 50px;
+    min-width: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user .avatar img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.user .name {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.user {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: $breakpoint-md) {
+    .back-btn {
+        display: block;
+    }
+
+
+    .btn{
+        padding: 8px;
+    }
+
+    .box .user .name{
+        font-size: 14px;
+    }
+
+
 }
 </style>
