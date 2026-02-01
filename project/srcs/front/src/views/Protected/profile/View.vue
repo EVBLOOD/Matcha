@@ -94,24 +94,25 @@ import { ref } from 'vue';
             </RouterLink>
         </div>
         <div class="user_infos">
-
             <div class="gender_location">
-                <div><img src="/img/maleIcon.svg" alt=""> {{ profileData.user.gender }}</div>
-                <div style="display: flex; justify-content: space-between; flex-wrap: nowrap; align-items: center;">
-                    <div>
-                        <img src="/img/locationIcon.svg" alt=""> {{ profileData.user.location }}
+                <div class="textIcon">
+                    <div><img src="/img/maleIcon.svg" alt="gender"></div>
+                    <p>{{ profileData.user.gender.charAt(0).toUpperCase() + profileData.user.gender.slice(1) }}</p>
+                </div>
+                <div class="location">
+                    <div class="textIcon">
+                        <div><img src="/img/locationIcon.svg" alt="location"></div>
+                        <p>{{ profileData.user.location }}</p>
                     </div>
-                    <Button v-if="route.params.id === userStore.getUserID.toString()" style="mix-blend-mode: plus-lighter;" text="Update" @click="OnclickUpdateLocal()"></Button>
+                    <Button v-if="route.params.id === userStore.getUserID.toString()" style="font-size: 12px; font-weight: 700; padding: 6px; mix-blend-mode: plus-lighter; color: #1E1E1E;" text="Update" @click="OnclickUpdateLocal()"></Button>
                 </div>
             </div>
             <div>
                 {{ profileData.profile.biography }}
             </div>
             <TagsList :readonly="true" :initialtags="profileData.interests" />
-
             <RenderPictures :width="230" :height="230" :readonly="true"
                 :initialpictures="profileData.pictures.filter(obj => !obj.is_profile_picture).map(obj => { return { id: obj.url, url: pictures_handler(obj.url) } })" />
-
         </div>
         <div>
         </div>
@@ -143,8 +144,6 @@ import { ref } from 'vue';
     color: $text-color;
     justify-content: flex-end;
     align-items: center;
-    // width: 20%;
-    // height: 20px;
     padding: 1% 2% 1% 2%;
     cursor: pointer;
     background: $components-background-color;
@@ -153,7 +152,42 @@ import { ref } from 'vue';
 
 .link:hover {
     background: $menu-background-color-hover;
+}
 
+.textIcon{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    div{
+        height: 20px;
+        width: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+}
+
+.gender_location{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+// .location{
+//     display: flex; 
+//     justify-content: space-between; 
+//     flex-wrap: nowrap; 
+//     align-items: center;
+// }
+
+.location{
+    display: flex;
+    gap: 12px;
 }
 
 @media (max-width: $breakpoint-md) {
@@ -163,29 +197,14 @@ import { ref } from 'vue';
     }
 
     .user_infos {
-        // width: 100%;
-        // gap: 10px;
         gap: 25px;
-
         align-items: center;
-
     }
 
     .gender_location {
-        width: 100%;
         display: flex;
-    flex-shrink: 0;
-
         justify-content: center;
         align-items: center;
-        gap: 3%;
-
-        div {
-            display: flex;
-    flex-shrink: 0;
-
-            gap: 2px;
-        }
     }
 }
 </style>

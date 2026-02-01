@@ -97,26 +97,23 @@ import Loading from '@/components/Loading.vue';
 
 <template>
     <Loading v-if="isLoading" @finished="isLoading = false" />
-
     <div v-if="!isLoading && !isError && !NotificationsData" class="contenty">
         No Notifications For You
     </div>
     <div v-if="!isLoading && !isError && NotificationsData" class="contenty">
-        <div v-for="value in NotificationsData" class="notif">
-            <div  class="notif" @click="go_to(value.source_user_id)">
-                <PictureNdIcon :height="59" :width="59" :readonly="true" :initialImage="pictures_handler(value.picture_url[0].url)" :initialIcon="avatarStyleFun(value)" />
-                <div :style="!value.is_read ? {fontWeight: '600'} : {}">
-                    <div>
+        <div class="notif" v-for="value in NotificationsData">
+            <div class="content" @click="go_to(value.source_user_id)">
+                <PictureNdIcon :height="50" :width="50" :readonly="true" :initialImage="pictures_handler(value.picture_url[0].url)" :initialIcon="avatarStyleFun(value)" />
+                <div :style="!value.is_read ? {fontWeight: '600'} : {color: '#bdbdbd'}">
+                    <div class="title">
                         {{value.type[0].toUpperCase() + value.type.slice(1)}} from <span :style="!value.is_read ? {color: '#BD82DD'} : {}">@{{value.username}}</span>
                     </div>
-                    <div :style="!value.is_read ? {fontWeight: '500'} : {}">
+                    <div class="date" :style="!value.is_read ? {fontWeight: '500'} : {}">
                         {{  formatDistanceToNow(new Date(value.created_at), {addSuffix: true}) }}
                     </div>
                 </div>
             </div>
-            <div v-if="!value.is_read" style="background-color: #FEA7FF; height: 18px; width: 18px; border-radius: 50%;">
-
-            </div>
+            <div v-if="!value.is_read" style="background-color: #FEA7FF; height: 18px; width: 18px; border-radius: 50%;"></div>
         </div>
     </div>
 </template>
@@ -124,7 +121,7 @@ import Loading from '@/components/Loading.vue';
 <style lang="scss" scoped>
 
     .contenty{
-        padding: 2%;
+        padding: 16px;
         display: flex;
         flex-direction: column;
         // align-items: center;
@@ -132,11 +129,28 @@ import Loading from '@/components/Loading.vue';
         cursor: pointer;
     }
     .notif {
-        width: 100%;
         display: flex;
-        gap: 2%;
         align-items: center;
+        padding: 8px 16px;
+        .content{
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 6px;
+            .title{
+                font-size: 0.9em;
+            }
+            .date{
+                font-size: 0.7em;
+                color: #bdbdbd;
+            }
+        }
     }
+    .notif:hover{
+        background: $components-hover-color;
+        border-radius: 8px;
+    }
+
     @media (max-width: $breakpoint-md) {
         .page{
             display: flex;
