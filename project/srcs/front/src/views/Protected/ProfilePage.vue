@@ -26,6 +26,7 @@ const conversationId = computed(() => profile.activeProfile?.interactions?.conve
 
 watch(() => route.params.id, async () => {
     await profile.fetchProfile(parseInt(route.params.id as string))
+
 });
 
 const userStore = useUserStore();
@@ -46,7 +47,19 @@ const blockHandler = () => {
     if (!profile.activeProfile) return
     socket.interactWithUser(profile.activeProfile.user.user_id, 'block')
     profile.clearActiveProfile()
+
 }
+
+watch (() => profile.activeProfile, (current) => {
+    if (!current) {
+        router.push({ name: 'not-found' });
+    }
+})
+watch (() => profile.error, (current) => {
+    if (current?.length) {
+        router.push({ name: 'not-found' });
+    }
+})
 
 const reportHandler = async () => {
     if (!profile.activeProfile) return

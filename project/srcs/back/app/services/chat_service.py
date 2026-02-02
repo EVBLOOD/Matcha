@@ -21,6 +21,8 @@ class ChatService :
     @classmethod
     def get_messages(cls, user_id: int, chat_id: int) :
         chat = ChatRepository.get_messages(chat_id,user_id)
+        if not chat :
+            raise ValueError("chat isn't valid!")
         ChatRepository.update_nmessages_all(chat_id,user_id)
         return chat
 

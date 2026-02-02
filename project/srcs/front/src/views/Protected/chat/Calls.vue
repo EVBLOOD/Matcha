@@ -34,6 +34,7 @@ const ProposeDateVisible = ref(false);
 
 const fetchConversations = async () => {
     if (!route.params.id) return;
+    isError.value = ""
     isLoading.value = true;
     try {
         const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
@@ -52,6 +53,8 @@ const fetchConversations = async () => {
         else {
             isError.value = "Registration failed for unknown reason'";
         }
+        router.push({ name: 'not-found' });
+
     } finally {
         isLoading.value = false;
     }

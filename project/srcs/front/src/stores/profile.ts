@@ -29,6 +29,7 @@ export const useSocialStore = defineStore('profile', {
   actions: {
     async fetchProfile(id: number) {
       this.loading = true;
+      this.error = ""
       const socket = useSocketStore();
       try {
         const { data } = await ProfileService.getProfile(id.toString());

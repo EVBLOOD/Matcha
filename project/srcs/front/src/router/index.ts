@@ -136,10 +136,10 @@ const router = createRouter({
       ]
     },    
     {
-      path: '/404',
-      name: '404 Not Found page',
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
       component: NotFoundPage,
-      meta: { public: true }
+      meta: { skipCheck: true }
     },
     {
       path: '/landing',
@@ -193,6 +193,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  if (to.meta.skipCheck) return next()
   const user = useUserStore();
   const socketStore = useSocketStore();
   const token = localStorage.getItem('auth_token');
