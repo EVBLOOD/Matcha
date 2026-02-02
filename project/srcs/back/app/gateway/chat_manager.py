@@ -112,8 +112,14 @@ class ChatManager :
         if not UserInteractionsService.are_users_connected(caller_id, reciever_id["user_id"]) :
             return {"error":"You aren't allowed to reach this person!"}
         
-        private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
-
+        # private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
+        caller_room_status = f"user_{reciever_id['user_id']}_notify"
         # redis again
-        emit('video_signal', reciever_id, room=private_room, include_self=False)
+        data = ProfileService.get_user_profile_basic(caller_id, True)
+        print(f"data: {data}", flush=True)
+        reciever_id["sender_id"] = caller_id
+        reciever_id["sender_name"] = data['user']['name']
+        reciever_id["sender_avatar"] = data['pictures'][0]['url']
+        print(f"reciever_id: {reciever_id}", flush=True)
+        emit('video_signal', reciever_id, room=caller_room_status, include_self=False)
 

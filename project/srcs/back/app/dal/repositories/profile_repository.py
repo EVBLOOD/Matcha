@@ -166,6 +166,8 @@ class ProfileRepository(BaseRepository):
             SELECT
                 u.id as user_id,
                 u.username,
+                u.first_name,
+                u.last_name,
                 (
                     SELECT json_agg(json_build_object('url', up.url, 'is_profile_picture', up.is_profile_picture))
                     FROM user_pictures up

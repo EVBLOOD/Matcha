@@ -25,6 +25,7 @@ export const useCallStore = defineStore('call', {
         receiveIncoming(id: string, name: string, avatar: string, offer: RTCSessionDescriptionInit) {
             this.activePeer = { id, name, avatar };
             this.pendingOffer = offer;
+            this.isCalling = false;
             this.isCalling = true;
             this.callState = 'ringing';
         },

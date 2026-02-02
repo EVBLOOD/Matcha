@@ -110,16 +110,18 @@ watch(() => callStore.isCalling, async (isCalling) => {
     }
 });
 
-const acceptCall = async (offer: RTCSessionDescriptionInit) => {
+
+const acceptCall = async () => {
 
     await setupWebRTC();
-
-    if (!pc) return;
-    await pc.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    callStore.sendSignal('answer', answer);
-    callStore.setConnected();
+    if (callStore.pendingOffer) {
+        await pc?.setRemoteDescription(new RTCSessionDescription(callStore.pendingOffer));
+        const answer = await pc?.createAnswer();
+        await pc?.setLocalDescription(answer);
+        
+        callStore.sendSignal('answer', answer);
+        callStore.setConnected();
+    }
 };
 
 useSocketListener('video_signal', async (data) => {
@@ -141,23 +143,16 @@ useSocketListener('video_signal', async (data) => {
     }
 });
 
-const pendingOffer = ref<RTCSessionDescriptionInit | null>(null);
 
 const endCall = (sendSignal: boolean = true) => {
-    if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-        localStream = null;
-    }
-    if (pc) {
-        pc.close();
-        pc = null;
-    }
-    pendingOffer.value = null;
-
     if (sendSignal) {
         callStore.sendSignal('hangup', null);
-        callStore.reset();
     }
+    localStream?.getTracks().forEach(t => t.stop());
+    pc?.close();
+    pc = null;
+    localStream = null;
+    callStore.reset();
 }
 
 </script>
