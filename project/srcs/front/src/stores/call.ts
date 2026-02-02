@@ -13,6 +13,7 @@ export const useCallStore = defineStore('call', {
         callState: 'dialing' as 'dialing' | 'ringing' | 'connected',
         activePeer: null as ActivePeer | null,
         pendingOffer: null as RTCSessionDescriptionInit | null,
+        heartbeatInterval: null as number | null,
     }),
     actions: {
         initiateCall(id: string, name: string, avatar: string) {
@@ -40,12 +41,28 @@ export const useCallStore = defineStore('call', {
         },
         setConnected() {
             this.callState = 'connected';
+            this.startHeartbeat();
         },
         reset() {
+            this.stopHeartbeat();
             this.isCalling = false;
             this.callState = 'dialing';
             this.activePeer = null;
             this.pendingOffer = null;
-        }
+        },
+        startHeartbeat() {
+            if (this.heartbeatInterval) return;
+
+            this.heartbeatInterval = window.setInterval(() => {
+                this.sendSignal('heartbeat_callers', {});
+            }, 20000); 
+        },
+
+        stopHeartbeat() {
+            if (this.heartbeatInterval) {
+                clearInterval(this.heartbeatInterval);
+                this.heartbeatInterval = null;
+            }
+        },
     }
 });

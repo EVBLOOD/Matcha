@@ -65,6 +65,14 @@ class ChatGateway(Namespace):
             return out
         except Exception as _:
             return 0
+        
+    @ConnectionManager.socket_guard()
+    def on_heartbeat_callers(self) :
+        try :
+            ChatManager.handle_heartbeat(request.user_id)
+            return 1
+        except Exception as _:
+            return 0
 
     @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):

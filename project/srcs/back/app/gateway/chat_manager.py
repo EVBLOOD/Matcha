@@ -11,7 +11,8 @@ from app.services.user_interactions_service import UserInteractionsService
 from app.services.chat_service import ChatService
 from flask_socketio import emit
 from typing import Set
-
+import uuid
+import time
 
 from app.services.user_blocks_service import UserBlocksService
 
@@ -39,7 +40,8 @@ class ChatManager :
     def disconnect_user_socket(user_id: str, socket_id: str):
         redis = Config.redis_instence
         room_name = ChatManager._get_user_room_name(user_id)
-        
+        ChatManager.cleanup_call(user_id)
+
         leave_room(room_name)
         redis.srem(f"chat:user_sockets:{user_id}", socket_id)
 
@@ -106,20 +108,127 @@ class ChatManager :
             return out
         except :
             return 0
+    
+    @staticmethod
+    def cleanup_call(user_id):
+        redis = Config.redis_instence
+        
+        call_id = redis.get(f"call:user:{user_id}")
+        if not call_id:
+            return
+
+        call_data = redis.hgetall(f"call:{call_id}")
+        if not call_data:
+            redis.delete(f"call:user:{user_id}")
+            return
+
+        caller_id = call_data.get("caller")
+        receiver_id = call_data.get("receiver")
+        other_id = receiver_id if caller_id == str(user_id) else caller_id
+
+        emit("video_signal", {"type": "hangup"}, room=f"user_{other_id}_notify")
+
+        pipe = redis.pipeline()
+        pipe.delete(f"call:{call_id}")
+        pipe.delete(f"call:user:{caller_id}")
+        pipe.delete(f"call:user:{receiver_id}")
+        pipe.execute()
 
     @staticmethod
-    def join_call(caller_id: str, reciever_id, socket_id) :
-        if not UserInteractionsService.are_users_connected(caller_id, reciever_id["user_id"]) :
-            return {"error":"You aren't allowed to reach this person!"}
+    def handle_heartbeat(user_id):
+        redis = Config.redis_instence
+        call_id = redis.get(f"call:user:{user_id}")
         
-        # private_room = ChatManager._get_canonical_room_name(reciever_id["user_id"], caller_id)
-        caller_room_status = f"user_{reciever_id['user_id']}_notify"
-        # redis again
-        data = ProfileService.get_user_profile_basic(caller_id, True)
-        print(f"data: {data}", flush=True)
-        reciever_id["sender_id"] = caller_id
-        reciever_id["sender_name"] = data['user']['name']
-        reciever_id["sender_avatar"] = data['pictures'][0]['url']
-        print(f"reciever_id: {reciever_id}", flush=True)
-        emit('video_signal', reciever_id, room=caller_room_status, include_self=False)
+        if call_id:
+            pipe = redis.pipeline()
+            pipe.expire(f"call:{call_id}", 60)
+            pipe.expire(f"call:user:{user_id}", 60)
+            
+            call = redis.hgetall(f"call:{call_id}")
+            if call:
+                other = call["receiver"] if call["caller"] == str(user_id) else call["caller"]
+                pipe.expire(f"call:user:{other}", 60)
+                
+            pipe.execute()
 
+    @staticmethod
+    def join_call(caller_id: str, data, socket_id):
+        receiver_id = data.get('user_id')
+        redis = Config.redis_instence
+        
+        # if not UserInteractionsService.are_users_connected(caller_id, receiver_id):
+        #     return {"status": "error", "message": "Connection required"}
+        # ChatManager.cleanup_call(caller_id)
+        # ChatManager.cleanup_call(receiver_id)
+        # return
+        if data.get('type') == 'hangup':
+            ChatManager.cleanup_call(caller_id)
+            return
+
+        if data.get('type') == 'candidate':
+            emit('video_signal', data, room=f"user_{receiver_id}_notify", include_self=False)
+            return
+
+        existing_call_id = redis.get(f"call:user:{caller_id}")
+        existing_called_id = redis.get(f"call:user:{receiver_id}")
+
+        print(f"existing_call_id {existing_call_id}", flush=True)
+        if existing_call_id:
+            call_data = redis.hgetall(f"call:{existing_call_id}")
+            is_same_call = (
+                call_data.get("caller") == str(caller_id) and 
+                call_data.get("receiver") == str(receiver_id)
+            )
+            
+            if is_same_call:
+                emit('video_signal', data, room=f"user_{receiver_id}_notify", include_self=False)
+                return
+
+            if redis.exists(f"call:user:{receiver_id}"):
+                emit("video_signal", {"type": "busy"}, room=f"user_{caller_id}_notify")
+                return
+
+        if existing_called_id:
+            call_data = redis.hgetall(f"call:{existing_call_id}")
+            is_same_call = (
+                call_data.get("caller") == str(caller_id) and 
+                call_data.get("receiver") == str(receiver_id)
+            )
+            
+            if is_same_call:
+                emit('video_signal', data, room=f"user_{receiver_id}_notify", include_self=False)
+                return
+
+            if redis.exists(f"call:user:{receiver_id}"):
+                emit("video_signal", {"type": "busy"}, room=f"user_{caller_id}_notify")
+                return
+        if not redis.exists(f"ws:user:{receiver_id}:online"):
+            emit("video_signal", {"type": "offline"}, room=f"user_{caller_id}_notify")
+            return
+
+        call_id = uuid.uuid4().hex
+        
+        signal_payload = data
+        profile = ProfileService.get_user_profile_basic(caller_id, True)
+        signal_payload.update({
+                "sender_id": caller_id,
+                "sender_name": profile['user']['name'],
+                "sender_avatar": profile['pictures'][0]['url'] if profile['pictures'] else None
+            })
+
+        pipe = redis.pipeline()
+        pipe.hset(f"call:{call_id}", mapping={
+            "caller": caller_id,
+            "receiver": receiver_id,
+            "status": "ringing",
+            "started_at": int(time.time())
+        })
+        pipe.set(f"call:user:{caller_id}", call_id)
+        pipe.set(f"call:user:{receiver_id}", call_id)
+        
+        for key in [f"call:{call_id}", f"call:user:{caller_id}", f"call:user:{receiver_id}"]:
+            pipe.expire(key, 300)
+        
+        pipe.execute()
+
+        emit('video_signal', signal_payload, room=f"user_{receiver_id}_notify", include_self=False)

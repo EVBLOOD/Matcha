@@ -140,6 +140,12 @@ useSocketListener('video_signal', async (data) => {
         }
     } else if (data.type === 'hangup') {
         endCall(false);
+    } else if (data.type === 'busy') {
+        console.log("He is busy!")
+        endCall(false);
+    } else if (data.type === 'offline') {
+        console.log("He is offline!")
+        endCall(false);
     }
 });
 
@@ -245,7 +251,7 @@ const endCall = (sendSignal: boolean = true) => {
                         </div>
                         <p class="status-call">Incoming Call...</p>
                         <div class="btn-call">
-                            <button class="btn-accept" @click="acceptCall(pendingOffer!)">
+                            <button class="btn-accept" @click="acceptCall()">
                                 <img src="/img/btn-accept-call.svg" alt="Accept">
                                 <p>Accept</p>
                             </button>
