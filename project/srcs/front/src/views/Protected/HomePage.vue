@@ -146,6 +146,9 @@ useSocketListener('video_signal', async (data) => {
     } else if (data.type === 'offline') {
         console.log("He is offline!")
         endCall(false);
+    } else if (data.type === 'timeout') {
+        console.log("it's a timeout!")
+        endCall(false);
     }
 });
 

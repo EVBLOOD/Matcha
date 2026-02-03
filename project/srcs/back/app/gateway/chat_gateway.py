@@ -54,8 +54,9 @@ class ChatGateway(Namespace):
         try :
             if request.user_id == body["user_id"] :
                 return
-            ChatManager.join_call(request.user_id, body, request.sid)
-        except :
+            ChatManager.handle_calls(request.user_id, body, request.sid)
+        except Exception as e:
+            print(e, flush=True)
             return False
 
     @ConnectionManager.socket_guard()

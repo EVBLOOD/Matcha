@@ -90,21 +90,18 @@ class AuthService :
 
         current_auth_version = redis.get(f"user:{user_id}:auth_version")
 
-        if current_auth_version:
-            current_auth_version = current_auth_version.decode()
-
         session_key = f"session:{session_id}"
         session_data = redis.hgetall(session_key)
         if not session_data:
             return False, []
         
-        session_user_id = session_data.get(b"user_id")
-        session_auth_version = session_data.get(b"auth_version")
+        session_user_id = session_data.get("user_id")
+        session_auth_version = session_data.get("auth_version")
 
-        if not session_user_id or session_user_id.decode() != str(user_id):
+        if not session_user_id or session_user_id != str(user_id):
             return False, []
 
-        if session_auth_version is None or session_auth_version.decode() != current_auth_version:
+        if session_auth_version is None or session_auth_version != current_auth_version:
             return True, []
 
         return False, [1]
@@ -170,7 +167,7 @@ class AuthService :
         redis = Config.redis_instence
 
         profile_complete = redis.get(f"user:{user_id}:profile_complete")
-        if profile_complete and profile_complete.decode() == "1":
+        if profile_complete and profile_complete == "1":
             return True
         else :
             return False

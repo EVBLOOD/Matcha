@@ -195,7 +195,7 @@ class UserService:
         key = f"email_change:{email}"
         data = redis.hgetall(key)
 
-        if not data or data.get(b"token").decode('utf-8') != token or data.get(b"user_id").decode('utf-8') != user_id:
+        if not data or data.get("token") != token or data.get("user_id") != user_id:
             return False
         UserRepository.update_email(user_id, email)
         

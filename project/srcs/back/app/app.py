@@ -24,7 +24,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 app.config.from_object(Config)
 Config.DB_instence = Database(app=app)
-Config.redis_instence = FlaskRedis(app=app)
+Config.redis_instence = FlaskRedis(app=app, decode_responses=True)
 CORS(app)
 Security().init_jwt(app)
 Config.mail = Mail(app)
