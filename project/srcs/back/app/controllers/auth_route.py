@@ -51,10 +51,12 @@ def proxy_to(provider):
         headers = dict(request.headers)
         headers['Host'] = Config.PUBLIC_HOST
         headers['X-Forwarded-Proto'] = 'http'
+        print("oauth/github", flush=True)
 
         cookies = request.cookies
 
         data = request.get_data() if request.method == 'POST' else None
+        print("oauth/github", flush=True)
 
         upstream_resp = requests.request(
             method='POST',
@@ -66,6 +68,9 @@ def proxy_to(provider):
             allow_redirects=False,
             stream=True
         )
+        print("oauth/github", flush=True)
+
+        print(upstream_resp, flush=True)
 
         response_headers = []
         for k, v in upstream_resp.headers.items():
@@ -74,6 +79,7 @@ def proxy_to(provider):
             elif k.lower() == 'location':
                 v = v.replace("omni_auth:4567", Config.PUBLIC_HOST)
             response_headers.append((k, v))
+        print("oauth/github", flush=True)
 
         return Response(
             upstream_resp.raw,
@@ -83,6 +89,7 @@ def proxy_to(provider):
         )
 
     except Exception as e:
+        print(e, flush=True)
         return jsonify({"error": "unexpected error!"}), 400
 
 
