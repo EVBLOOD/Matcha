@@ -45,18 +45,15 @@ def login() :
 @auth_bp.route('/oauth/<string:provider>', methods=['GET', 'POST'])
 def proxy_to(provider):
     try :
-        print("oauth/github", flush=True)
         upstream_url = f"http://omni_auth:4567/auth/{provider}"
 
         headers = dict(request.headers)
         headers['Host'] = Config.PUBLIC_HOST
         headers['X-Forwarded-Proto'] = 'http'
-        print("oauth/github", flush=True)
 
         cookies = request.cookies
 
         data = request.get_data() if request.method == 'POST' else None
-        print("oauth/github", flush=True)
 
         upstream_resp = requests.request(
             method='POST',
@@ -68,9 +65,6 @@ def proxy_to(provider):
             allow_redirects=False,
             stream=True
         )
-        print("oauth/github", flush=True)
-
-        print(upstream_resp, flush=True)
 
         response_headers = []
         for k, v in upstream_resp.headers.items():
@@ -79,7 +73,6 @@ def proxy_to(provider):
             elif k.lower() == 'location':
                 v = v.replace("omni_auth:4567", Config.PUBLIC_HOST)
             response_headers.append((k, v))
-        print("oauth/github", flush=True)
 
         return Response(
             upstream_resp.raw,
@@ -117,7 +110,6 @@ def handle_github_callback():
             allow_redirects=False,
             stream=True
         )
-        resp_data = upstream_resp.json()
 
         oauth_user = upstream_resp.json()["infos"]
 
@@ -160,10 +152,12 @@ def handle_github_callback():
                 first_name=first_name,
                 last_name=last_name)
             )
-
+        
         access_token, refresh_token = AuthService.generate_token(id=user_id, username=user_id, request=request)
+
         return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
-    except :
+    except Exception as e:
+        print (e, flush=True)
         return jsonify({"error": "unexpected error!"}), 400
 
 @auth_bp.route('/logout', methods=['POST'])

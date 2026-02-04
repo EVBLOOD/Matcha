@@ -20,7 +20,7 @@ class UserRepository(BaseRepository):
     ]
 
     _columns_insertion_oauth = [
-        "username", "first_name", "last_name", "email", "is_verified", "birthdate"
+        "username", "first_name", "last_name", "email", "is_verified"#, "birthdate"
     ]
 
     @classmethod
@@ -150,7 +150,6 @@ class UserRepository(BaseRepository):
             WHERE id = %s
             RETURNING id
         """
-        print(query, flush=True)
         return cls._execute(query, (first_name, last_name ,username, birthdate,user_id))
 
     @classmethod
@@ -162,7 +161,9 @@ class UserRepository(BaseRepository):
             'email' : user_data.email,
             'is_verified' : True
         }
+
         user_id = cls.insert(table_name=cls._table_name, columns=cls._columns_insertion_oauth, data=norm_data)
+
         return user_id    
     
     @classmethod

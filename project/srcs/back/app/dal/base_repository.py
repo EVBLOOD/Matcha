@@ -68,9 +68,11 @@ class BaseRepository:
         columns: List[str],
         data: Dict[str, Any],
     ) -> Tuple[Optional[sql.Composed], Optional[List[Any]]]:
-
+        print(f"Starting ?", flush=True)
+        
         if not isinstance(data, dict) or set(data.keys()) != set(columns):
             return None, None
+        print(f"Starting ?S", flush=True)
         
         ordered_values = [data[col] for col in columns]
         
@@ -92,7 +94,10 @@ class BaseRepository:
         columns: List[str],
         data: Dict[str, Any],
         returning="id", injected_cursor = None) :
+        print(f"table_name: {table_name},columns: {columns}", flush=True)
         query, _values = cls._build_insert_query(table_name=table_name, columns=columns, data=data)
+        print(f"query: {query},_values: {_values}", flush=True)
+
         if returning :
             query += sql.SQL(" RETURNING {}").format(sql.Identifier(returning))
 
