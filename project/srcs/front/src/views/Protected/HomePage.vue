@@ -142,15 +142,12 @@ useSocketListener('video_signal', async (data) => {
     } else if (data.type === 'hangup') {
         endCall(false);
     } else if (data.type === 'busy') {
-        // console.log("He is busy!")
         toast('call', 'Busy', 'User is on another call.')
         endCall(false);
     } else if (data.type === 'offline') {
-        // console.log("He is offline!")
         toast('call', 'Offline', 'User is not connected.')
         endCall(false);
     } else if (data.type === 'timeout') {
-        // console.log("it's a timeout!")
         toast('call', 'No answer', 'Call timed out.')
         endCall(false);
     }

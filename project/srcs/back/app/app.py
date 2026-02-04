@@ -45,9 +45,7 @@ try:
 except Exception:
     Config.PUBLIC_IP = "8.8.8.8"
 
-print(f"Config->PUBLIC_IP: {Config.PUBLIC_IP}", flush=True)
-
-Config.socket_instence = SocketIO(app, cors_allowed_origins="*",resource_path='/socket.io')
+Config.socket_instence = SocketIO(app, cors_allowed_origins="*", resource_path='/socket.io')
 Config.socket_instence.on_namespace(PresenceGateway('/status'))
 Config.socket_instence.on_namespace(ChatGateway('/chat'))
 

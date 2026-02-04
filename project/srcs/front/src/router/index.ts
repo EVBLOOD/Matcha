@@ -181,7 +181,7 @@ const router = createRouter({
       path: '/auth-success',
       name: 'oauth',
       component: OauthPage,
-      meta: { public: true }
+      meta: { skipCheck: true }
     },
     {
       path: '/profile-onboarding',
