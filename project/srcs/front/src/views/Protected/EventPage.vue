@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { useSocketStore } from '@/stores/socket'
 
 const activeTab = ref('all');
 // const events = ref([
@@ -60,10 +61,22 @@ const fetchEvents = async () => {
 onMounted(fetchEvents);
 
 
+const socketStore = useSocketStore()
+
+
 const actionDate = async (id: number, status: string) => {
     isLoading.value = true;
     try {
-        await EventService.respond_to_date(id, status)
+        const success = socketStore.respond_to_date(id, status)
+        // await EventService.respond_to_date(id, status)
+        if (success && EventsData.value) {
+            EventsData.value = EventsData.value?.map((event) => {
+                if (event.id == id) {
+                    event.status = status;
+                }
+                return event
+            })
+        }
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;

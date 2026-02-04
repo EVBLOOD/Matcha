@@ -40,7 +40,7 @@ class DatesService:
         if status not in ['accepted', 'declined']:
             raise ValueError("Invalid status")
                 
-        query = "SELECT partner_id FROM dates WHERE id = %s"
+        query = "SELECT partner_id, proposer_id FROM dates WHERE id = %s"
         date_info = BaseRepository._fetch_one(query, (date_id,))
         print("date_info", flush=True)
         
@@ -50,6 +50,7 @@ class DatesService:
         
         update_query = "UPDATE dates SET status = %s WHERE id = %s RETURNING id"
         BaseRepository._execute(update_query, (status, date_id))
+        return date_info[1]
     
     @staticmethod
     def get_user_dates(user_id: int):

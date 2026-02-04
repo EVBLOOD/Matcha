@@ -150,13 +150,19 @@ const AddEvents = async () => {
     if (!conversationData.value) return
   isLoading.value = true;
   try {
-    await EventService.propose_date({
+    const with_success = socketStore.propose_date({
         partner_id: conversationData.value[0].peer_id || -1,
         location: location.value,
         datetime_str:(new Date(date_str.value + " " + time_str.value)).toISOString(),
         description: description.value
-    });
-    toast("success", "Date Invite Sent", "Your date invite has been sent successfully!")
+    })
+    // await EventService.propose_date({
+    //     partner_id: conversationData.value[0].peer_id || -1,
+    //     location: location.value,
+    //     datetime_str:(new Date(date_str.value + " " + time_str.value)).toISOString(),
+    //     description: description.value
+    // });
+    if (with_success) toast("success", "Date Invite Sent", "Your date invite has been sent successfully!")
     ProposeDateVisible.value = false;
   } catch(err : unknown) {
     if (axios.isAxiosError(err)) {

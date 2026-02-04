@@ -6,6 +6,7 @@ import { toast } from '@/composables/useToast';
 import { formatDistanceToNow } from 'date-fns';
 
 import useUserStore from '@/stores/user';
+import type { dateProposing } from '@/types/helpers';
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
@@ -146,6 +147,22 @@ export const useSocketStore = defineStore('socket', {
     UserStatus(id: string) {
       return this.onlineUsers[id]
     },
+    propose_date(userData: dateProposing) {
+      let rtrn = false
+
+      socketStatus.emit('propose_date', userData, ((resp: any) => {
+        rtrn = resp
+      }))
+      return rtrn
+    },
+    respond_to_date(event_id: number, status: string) {
+      let rtrn = false
+
+      socketStatus.emit('respond_to_date', {"event_id": event_id, "status": status }, ((resp: any) => {
+        rtrn = resp
+      }))
+      return rtrn
+    },
     disconnectAll(token: string) {
       if (!this.isBound) return;
 
@@ -186,12 +203,12 @@ export const useSocketStore = defineStore('socket', {
           break;
         case 'like':
           if (payload.FromId != useUserStore().getUserID)
-          toast('info', 'New like', "liked your profile.", payload.avatar, payload.FromId, payload.username);
-          profileStore.handleLike(payload.FromId, payload.userId,0);
+            toast('info', 'New like', "liked your profile.", payload.avatar, payload.FromId, payload.username);
+          profileStore.handleLike(payload.FromId, payload.userId, 0);
           break;
         case 'dislike':
           console.log("LOLE")
-          profileStore.handleDislike(payload.FromId, payload.userId,0);
+          profileStore.handleDislike(payload.FromId, payload.userId, 0);
           break;
         case 'view':
           toast('view', 'Profile New', "viewed your profile.", payload.avatar, payload.FromId, payload.username);
@@ -204,6 +221,9 @@ export const useSocketStore = defineStore('socket', {
         case 'block':
           profileStore.handleBlock(payload.userId, payload.userId);
           break;
+        default :
+          toast('view', type, type, payload.avatar, payload.FromId, payload.username);
+          break
       }
     }
   }

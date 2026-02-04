@@ -4,6 +4,9 @@ from app.gateway.connection_manager import ConnectionManager
 from flask_socketio import disconnect, emit
 import json
 
+# from app.services.dates_service import DatesService
+
+
 class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_connect(self):
@@ -76,7 +79,26 @@ class PresenceGateway(Namespace):
             ConnectionManager.interact_with_user(request.user_id, int(id), "Unblock")
         except Exception as _:
             return False
-    
+
+    @ConnectionManager.socket_guard()
+    def on_propose_date(self, body):
+        try :
+            date_id = ConnectionManager.propose_date(request.user_id, body)
+            return date_id
+        except Exception as e :
+            print (e, flush=True)
+            return False
+
+
+    @ConnectionManager.socket_guard()
+    def on_respond_to_date(self, body):
+        try :
+            ConnectionManager.respond_to_date(request.user_id, body)
+            return True
+        except Exception as e :
+            print (e, flush=True)
+            return False
+
     def error_handler(e):
         disconnect()
 
