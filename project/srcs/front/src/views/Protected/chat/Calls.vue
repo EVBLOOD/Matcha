@@ -199,7 +199,7 @@ const send_invite = async () => {
 
 
 import Loading from '@/components/Loading.vue';
-import {  computed } from 'vue';
+import { computed } from 'vue';
 import { useCallStore } from '@/stores/call';
 
 const statusUser = computed(() => {

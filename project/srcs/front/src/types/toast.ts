@@ -6,6 +6,7 @@ export type ToastType =
     | 'message'
     | 'like'
     | 'view'
+    | 'call'
 
 export interface ToastItem {
     id: number

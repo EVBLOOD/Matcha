@@ -12,9 +12,10 @@
         info: '/img/toast/info.svg',
         message: '/img/toast/message.svg',
         like: '/img/toast/like.svg',
-        view: '/img/toast/view.svg'
+        view: '/img/toast/view.svg',
+        call: '/img/btn-accept-call.svg'
     }
-    return icons[type]
+      return icons[type]
     }
 
 const pictures_handler = (link: string) => {
@@ -25,8 +26,8 @@ const pictures_handler = (link: string) => {
 }
 
 import { useRouter } from 'vue-router';
-const router = useRouter()
 
+const router = useRouter()
 
 const go_to = (id: number | null, type: string) => {
   if (!id) return
@@ -175,6 +176,7 @@ const go_to = (id: number | null, type: string) => {
 .icon.warning { background-color: $toast-warning; }
 .icon.success { background-color: $toast-success; }
 .icon.info { background-color: $toast-info; }
+.icon.call,
 .icon.message,
 .icon.like,
 .icon.view { background-color: $toast-social; }
@@ -189,6 +191,7 @@ const go_to = (id: number | null, type: string) => {
 .toast.warning { border-bottom: 4px solid $toast-warning; }
 .toast.success { border-bottom: 4px solid $toast-success; }
 .toast.info { border-bottom: 4px solid $toast-info; }
+.toast.call,
 .toast.message,
 .toast.like,
 .toast.view { border-bottom: 4px solid $toast-social; }

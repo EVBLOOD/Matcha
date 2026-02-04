@@ -7,6 +7,7 @@ import useUserStore from '@/stores/user';
 import Loading from '@/components/Loading.vue';
 import { useCallStore } from '@/stores/call';
 import { useSocketListener } from '@/composables/useSocketChat';
+import { toast } from '@/composables/useToast';
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -141,13 +142,16 @@ useSocketListener('video_signal', async (data) => {
     } else if (data.type === 'hangup') {
         endCall(false);
     } else if (data.type === 'busy') {
-        console.log("He is busy!")
+        // console.log("He is busy!")
+        toast('call', 'Busy', 'User is on another call.')
         endCall(false);
     } else if (data.type === 'offline') {
-        console.log("He is offline!")
+        // console.log("He is offline!")
+        toast('call', 'Offline', 'User is not connected.')
         endCall(false);
     } else if (data.type === 'timeout') {
-        console.log("it's a timeout!")
+        // console.log("it's a timeout!")
+        toast('call', 'No answer', 'Call timed out.')
         endCall(false);
     }
 });
@@ -231,7 +235,7 @@ const endCall = (sendSignal: boolean = true) => {
                 <RouterView />
             </div>
         </div>
-                <Teleport to="body">
+        <Teleport to="body">
             <div v-if="callStore.isCalling" class="video-call">
                 <div>
                     <div v-if="callStore.callState === 'dialing'" class="box">
@@ -647,6 +651,7 @@ video {
 .user .name {
     font-weight: 500;
     font-size: 14px;
+    color: #592F6F;
 }
 
 .user {
