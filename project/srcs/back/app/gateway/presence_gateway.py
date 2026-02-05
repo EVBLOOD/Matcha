@@ -48,7 +48,6 @@ class PresenceGateway(Namespace):
         try :
             ConnectionManager.interact_with_user(request.user_id, int(id), "Like")
         except Exception as _:
-            print("Hello wold !", flush=True)
             return False
 
     @ConnectionManager.socket_guard()
@@ -61,7 +60,6 @@ class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
     def on_view(self, id):
         try :
-            print("LOLO", flush=True)
             ConnectionManager.interact_with_user(request.user_id, int(id), "View")
         except Exception as _:
             return False
@@ -86,7 +84,6 @@ class PresenceGateway(Namespace):
             date_id = ConnectionManager.propose_date(request.user_id, body)
             return date_id
         except Exception as e :
-            print (e, flush=True)
             return False
 
 
@@ -96,7 +93,6 @@ class PresenceGateway(Namespace):
             ConnectionManager.respond_to_date(request.user_id, body)
             return True
         except Exception as e :
-            print (e, flush=True)
             return False
 
     def error_handler(e):
@@ -106,7 +102,6 @@ class PresenceGateway(Namespace):
     def on_number_of_notifs(self) :
         try :
             out = ConnectionManager.get_number_of_notifs(request.user_id)
-            print(out, flush=True)
             return out
         except Exception as _:
             return 0
@@ -115,9 +110,7 @@ class PresenceGateway(Namespace):
     # @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
         try :
-            print(f"End call - Reason: {reason}", flush=True)
             ConnectionManager.disconnect_user(sid=request.sid)
         except Exception as e:
-            print(f"exception is hole {e}", flush=True)
             return False
         

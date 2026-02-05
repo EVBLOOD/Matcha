@@ -21,7 +21,7 @@ class NotifyGateway(Namespace):
     #     user
 
 
-    @ConnectionManager.socket_guard()
+    # @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
         try :
             if request.sid:
