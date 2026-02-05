@@ -7,6 +7,9 @@ import { formatDistanceToNow } from 'date-fns';
 
 import useUserStore from '@/stores/user';
 import type { dateProposing } from '@/types/helpers';
+import type { UserDatesResponse } from '@/types/apiResponses'
+import { th } from 'date-fns/locale';
+
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
@@ -16,14 +19,19 @@ export const useSocketStore = defineStore('socket', {
     notifs_counter: ref(0),
     messages_counter: ref(0),
     isBound: false,
-    currentConversation: null as null | number
+    currentConversation: null as null | number,
+    EventsData: null as UserDatesResponse[] | null
   }),
   getters: {
     getNotifsCount: (state) => state.notifs_counter,
     getMessagesCount: (state) => state.messages_counter,
     getAllOnliners: (state) => state.onlineUsers,
+    getEventsData: (state) => state.EventsData,
   },
   actions: {
+    setEventsData(vals: UserDatesResponse[] | null = null) {
+      this.EventsData = vals
+    },
     setCurrentConversation(val: number | null = null) {
       this.currentConversation = val
     },
@@ -62,7 +70,7 @@ export const useSocketStore = defineStore('socket', {
       socketStatus.on('notify', (msg) => {
         if (msg.type != 'dislike' && msg.source_id != useUserStore().getUserID)
           this.notifs_counter++
-        this.handleSocialEvent(msg.type, { "username": msg.user.user.username, "avatar": msg.user.pictures[0].url, "userId": msg.dst_id, "conversation_id": msg.conversation_id, "FromId": msg.source_id });
+        this.handleSocialEvent(msg.type, { "username": msg.user.user.username, "avatar": msg.user.pictures[0].url, "userId": msg.dst_id, "conversation_id": msg.conversation_id, "FromId": msg.source_id, "date_id": msg.date_id });
         this.notifications.push(msg);
       });
 
@@ -156,12 +164,11 @@ export const useSocketStore = defineStore('socket', {
       return rtrn
     },
     respond_to_date(event_id: number, status: string) {
-      let rtrn = false
 
       socketStatus.emit('respond_to_date', {"event_id": event_id, "status": status }, ((resp: any) => {
-        rtrn = resp
+        console.log(resp)
+
       }))
-      return rtrn
     },
     disconnectAll(token: string) {
       if (!this.isBound) return;
@@ -222,7 +229,15 @@ export const useSocketStore = defineStore('socket', {
           profileStore.handleBlock(payload.userId, payload.userId);
           break;
         default :
-          toast('view', type, type, payload.avatar, payload.FromId, payload.username);
+          if (this.EventsData)
+            this.EventsData = this.EventsData?.map((evnt) => {
+                    if (evnt.id == payload.date_id) {
+                        evnt.status = type.split(' ')[1];
+                    }
+                    return evnt
+          })
+          if (payload.FromId != useUserStore().getUserID)
+            toast('view', type, type, payload.avatar, payload.FromId, payload.username);
           break
       }
     }

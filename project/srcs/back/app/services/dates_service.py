@@ -7,11 +7,11 @@ class DatesService:
     @staticmethod
     def propose_date(proposer_id: int, partner_id: int, location: str, 
                      datetime_str: str, description: str):
+        
+        print("propose_date", flush=True)
 
         if not UserInteractionsService.are_users_connected(proposer_id, partner_id):
-            raise ValueError("You must be matched to propose a date")
-        
-        print(datetime_str, flush=True)
+            raise ValueError("You must be matched to propose a date")        
         try:
             scheduled_at = datetime.fromisoformat(datetime_str)
             if scheduled_at.tzinfo is None:
@@ -21,6 +21,7 @@ class DatesService:
         
         if scheduled_at < datetime.now(timezone.utc):
             raise ValueError("Cannot schedule dates in the past")
+        print("propose_date", flush=True)
         
         query = """
             INSERT INTO dates (proposer_id, partner_id, location, scheduled_at, description)
@@ -31,7 +32,7 @@ class DatesService:
             proposer_id, partner_id, location, scheduled_at, description
         ))
 
-        # I should notif and save it
+        print("propose_date", flush=True)
         
         return result['id']
     

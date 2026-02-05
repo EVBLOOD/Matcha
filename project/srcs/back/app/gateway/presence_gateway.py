@@ -92,7 +92,7 @@ class PresenceGateway(Namespace):
 
     @ConnectionManager.socket_guard()
     def on_respond_to_date(self, body):
-        try :
+        try :            
             ConnectionManager.respond_to_date(request.user_id, body)
             return True
         except Exception as e :

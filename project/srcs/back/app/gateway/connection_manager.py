@@ -182,33 +182,36 @@ class ConnectionManager :
         )
 
     def propose_date(user_id, body):
-        print(body, flush=True)
-        date_id = DatesService.propose_date(
-            proposer_id=user_id,
-            partner_id=body.partner_id,
-            location=body.location,
-            datetime_str=body.datetime_str,
-            description=body.description
-        )
         try :
-            user = ProfileService.get_user_profile_basic(body.partner_id)
-            emit('notify', {"source_id": user_id, "dst_id": body.partner_id, "user": user, "type": "Date Propose"}, room=f"Notifs_user_{body.partner_id}")
-        except :
-            return
+
+            date_id = DatesService.propose_date(
+                proposer_id=user_id,
+                partner_id=body['partner_id'],
+                location=body['location'],
+                datetime_str=body['datetime_str'],
+                description=body['description']
+            )
+            user = ProfileService.get_user_profile_basic(body['partner_id'])
+            emit('notify', {"date_id": date_id, "source_id": user_id, "dst_id": body['partner_id'], "user": user, "type": "Date Propose"}, room=f"Notifs_user_{user_id}")
+            emit('notify', {"date_id": date_id, "source_id": user_id, "dst_id": body['partner_id'], "user": user, "type": "Date Propose"}, room=f"Notifs_user_{body['partner_id']}")
+        except Exception as e:
+            print(e, flush=True)
+            return False
         return date_id
 
 
     def respond_to_date(user_id, body):
-        dst_id = DatesService.respond_to_date(
-            date_id=body.event_id,
-            responder_id=user_id,
-            status=body.status
-        )
         try :
+            dst_id = DatesService.respond_to_date(
+                date_id=body['event_id'],
+                responder_id=user_id,
+                status=body['status']
+            )
             user = ProfileService.get_user_profile_basic(dst_id)
-            emit('notify', {"source_id": user_id, "dst_id": dst_id, "user": user, "type": f"Date {body.status}"}, room=f"Notifs_user_{body.partner_id}")
+            emit('notify', {"date_id": body['event_id'], "source_id": user_id, "dst_id": dst_id, "user": user, "type": f"Date {body['status']}"}, room=f"Notifs_user_{dst_id}")
+            emit('notify', {"date_id": body['event_id'], "source_id": user_id, "dst_id": dst_id, "user": user, "type": f"Date {body['status']}"}, room=f"Notifs_user_{user_id}")
         except :
-            return
+            return False
         return True
 
 

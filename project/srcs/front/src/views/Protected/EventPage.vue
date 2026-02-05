@@ -9,20 +9,20 @@ const activeTab = ref('all');
 //     { type: 'sender', from: '@idkart', to: '@gkleier', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'accepted' },
 //     { type: 'receiver', from: '@gkleier', to: '@idkart', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'declined' },
 // ])
-const EventsData = ref<UserDatesResponse[] | null>(null);
+// const EventsData = ref<UserDatesResponse[] | null>(null);
 
 import useUserStore from '@/stores/user';
 
 const current = useUserStore()
 const filteredEvents = computed(() => {
-    if (!EventsData.value) return EventsData.value
+    if (!socketStore.getEventsData) return socketStore.getEventsData
     if (activeTab.value === 'all')
-        return EventsData.value
+        return socketStore.getEventsData
     if (activeTab.value === 'sent')
-        return EventsData.value.filter(e => e.proposer_id === current.getUserID)
+        return socketStore.getEventsData.filter(e => e.proposer_id === current.getUserID)
     if (activeTab.value === 'received')
-        return EventsData.value.filter(e => e.proposer_id !== current.getUserID)
-    return EventsData.value
+        return socketStore.getEventsData.filter(e => e.proposer_id !== current.getUserID)
+    return socketStore.getEventsData
 })
 
 function setActive(tab: string) {
@@ -44,8 +44,8 @@ const fetchEvents = async () => {
     isLoading.value = true;
     try {
         const { data } = await EventService.get_my_dates();
-
-        if (data.data) EventsData.value = [...data.data];
+        if (data.data) socketStore.setEventsData([...data.data])
+        // if (data.data) socketStore.getEventsData = [...data.data];
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -67,16 +67,7 @@ const socketStore = useSocketStore()
 const actionDate = async (id: number, status: string) => {
     isLoading.value = true;
     try {
-        const success = socketStore.respond_to_date(id, status)
-        // await EventService.respond_to_date(id, status)
-        if (success && EventsData.value) {
-            EventsData.value = EventsData.value?.map((event) => {
-                if (event.id == id) {
-                    event.status = status;
-                }
-                return event
-            })
-        }
+        socketStore.respond_to_date(id, status)
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
