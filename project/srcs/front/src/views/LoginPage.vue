@@ -40,6 +40,7 @@ const handleLogin = async () => {
     const response = await AuthService.login(payload);
     if (response.data.access_token) {
       localStorage.setItem('auth_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
       await user.fetchUser();
       router.push({ name: 'home' });
     }

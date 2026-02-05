@@ -7,6 +7,7 @@ import requests
 
 from app.dal.repositories.user_repository import UserRepository
 from app.dal.models.user import User
+# from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 
 
 auth_bp = Blueprint('auth_api', __name__, url_prefix='/auth')
@@ -172,12 +173,14 @@ def logout() :
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
  
-# @auth_bp.route('/refresh', methods=['POST']) # this will be implemented for the refresh token
+# @auth_bp.route('/refresh', methods=['POST'])
 # @Security.auth_guard(refresh=True)
 # def refresh():
 #     current_user = get_jwt_identity()
 #     new_token = create_access_token(identity=current_user)
 #     return jsonify(access_token=new_token), 200
+
+
 
 
 @auth_bp.route('/forgot_pass', methods=['POST'])
