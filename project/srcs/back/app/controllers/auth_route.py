@@ -7,7 +7,7 @@ import requests
 
 from app.dal.repositories.user_repository import UserRepository
 from app.dal.models.user import User
-# from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 
 
 auth_bp = Blueprint('auth_api', __name__, url_prefix='/auth')
@@ -173,14 +173,29 @@ def logout() :
     except ValueError as e :
         return jsonify({"error": str(e)}), 400
  
-# @auth_bp.route('/refresh', methods=['POST'])
-# @Security.auth_guard(refresh=True)
-# def refresh():
-#     current_user = get_jwt_identity()
-#     new_token = create_access_token(identity=current_user)
-#     return jsonify(access_token=new_token), 200
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    user_id = get_jwt_identity()
+    access_token = AuthService.refresh_access_token(user_id, request)
+    if not access_token:
+        return jsonify({"error": "Invalid refresh attempt"}), 401
+        
+    return jsonify({"access_token": access_token}), 200
 
-
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True) # Looks for the Refresh Token specifically
+def refresh():
+    user_id = get_jwt_identity() # Identity in refresh token was user.id
+    
+    # Generate new access token & session
+    # We pass 'request' to create a new session in Redis via create_session
+    access_token = AuthService.refresh_access_token(user_id, request)
+    
+    if not access_token:
+        return jsonify({"error": "Invalid refresh attempt"}), 401
+        
+    return jsonify({"access_token": access_token}), 200
 
 
 @auth_bp.route('/forgot_pass', methods=['POST'])

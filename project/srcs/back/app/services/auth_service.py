@@ -41,6 +41,26 @@ class AuthService :
         cls.create_session(session_id, id, username, request)
         return access_token, refresh_token
 
+    @classmethod
+    def refresh_access_token(cls, user_id, request):
+        redis = Config.redis_instence
+
+        new_session_id = str(uuid.uuid4())
+        
+        user_version = redis.get(f"user:{user_id}:auth_version")
+        if not user_version:
+            return None
+            
+        access_token = create_access_token(
+            identity=str(new_session_id),
+            additional_claims={
+                "user_id": user_id, 
+                "username": user_id
+            }
+        )
+        cls.create_session(new_session_id, user_id, user_id, request)
+        
+        return access_token
 
     @classmethod
     def create_session(cls, session_id, user_id, username, request):
