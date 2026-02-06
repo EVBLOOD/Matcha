@@ -25,6 +25,9 @@ apiClient.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refresh_token');
+
+        if (!refreshToken)
+          return Promise.reject(error);
         const { data } =  await axios.post(`${import.meta.env.VITE_BACKEND_LINK}/auth/refresh`, {}, {
                     headers: { Authorization: `Bearer ${refreshToken}` }
                 });
