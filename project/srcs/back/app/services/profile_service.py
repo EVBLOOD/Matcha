@@ -168,7 +168,7 @@ class ProfileService:
     
     @staticmethod
     def get_user_address(latitude: float, longitude: float) :
-        city = "Tiznit"
+        city = "Khouribga"
         country = "Morroco"
         try :
 
