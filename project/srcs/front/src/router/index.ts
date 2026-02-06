@@ -203,6 +203,7 @@ router.beforeEach(async (to, from, next) => {
       await user.fetchUser();
     } catch (err) {
       localStorage.removeItem('auth_token');
+      localStorage.removeItem('refresh_token');
       user.resetStore();
     }
   }

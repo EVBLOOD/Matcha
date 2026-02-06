@@ -177,26 +177,13 @@ def logout() :
 @jwt_required(refresh=True)
 def refresh():
     user_id = get_jwt_identity()
+
     access_token = AuthService.refresh_access_token(user_id, request)
+
     if not access_token:
         return jsonify({"error": "Invalid refresh attempt"}), 401
-        
-    return jsonify({"access_token": access_token}), 200
 
-@auth_bp.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True) # Looks for the Refresh Token specifically
-def refresh():
-    user_id = get_jwt_identity() # Identity in refresh token was user.id
-    
-    # Generate new access token & session
-    # We pass 'request' to create a new session in Redis via create_session
-    access_token = AuthService.refresh_access_token(user_id, request)
-    
-    if not access_token:
-        return jsonify({"error": "Invalid refresh attempt"}), 401
-        
     return jsonify({"access_token": access_token}), 200
-
 
 @auth_bp.route('/forgot_pass', methods=['POST'])
 def forgot_pass() :

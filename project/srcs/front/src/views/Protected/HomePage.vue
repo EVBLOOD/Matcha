@@ -18,17 +18,19 @@ const loading = ref(true);
 const clickLogOut = async () => {
     try {
         const token = localStorage.getItem('auth_token');
-        if (token) socket.disconnectAll(token)
+        if (token) socket.disconnectAll()
         await AuthService.logout();
 
         await userStore.fetchUser()
         localStorage.removeItem('auth_token');
+        localStorage.removeItem('refresh_token');
 
         userStore.setIsLoaded(false)
 
         router.push('login')
     } catch (err) {
         localStorage.removeItem('auth_token');
+        localStorage.removeItem('refresh_token');
     }
 }
 

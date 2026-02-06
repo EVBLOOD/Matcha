@@ -67,12 +67,14 @@ const clickLogOut = async () => {
         const response = await AuthService.logout();
         userStore.fetchUser()
         localStorage.removeItem('auth_token');
+        localStorage.removeItem('refresh_token');
 
         userStore.setIsLoaded(false)
 
         router.push('login')
     } catch (err) {
         localStorage.removeItem('auth_token');
+        localStorage.removeItem('refresh_token');
     }
 }
 

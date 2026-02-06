@@ -8,8 +8,6 @@ import { formatDistanceToNow } from 'date-fns';
 import useUserStore from '@/stores/user';
 import type { dateProposing } from '@/types/helpers';
 import type { UserDatesResponse } from '@/types/apiResponses'
-import { th } from 'date-fns/locale';
-
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
@@ -145,6 +143,7 @@ export const useSocketStore = defineStore('socket', {
     sendMessage(id: string, content: string): number {
       let id_message = undefined
       socketChat.emit('send_message', { user_id: id, text: content }, ((resp: any) => {
+        console.log(resp)
         if (typeof (resp) == 'object' && resp.error) {
           toast('error', 'Send Message fail', resp.error);
         }
@@ -170,7 +169,7 @@ export const useSocketStore = defineStore('socket', {
 
       }))
     },
-    disconnectAll(token: string) {
+    disconnectAll() {
       if (!this.isBound) return;
 
 

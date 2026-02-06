@@ -1,5 +1,6 @@
 import axios from 'axios';
 import router from '@/router';
+// import { useSocketStore } from '@/stores/socket';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_LINK,
@@ -24,14 +25,17 @@ apiClient.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refresh_token');
-        
-        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_LINK}/auth/refresh`, {
-          refresh_token: refreshToken
-        });
+        const { data } =  await axios.post(`${import.meta.env.VITE_BACKEND_LINK}/auth/refresh`, {}, {
+                    headers: { Authorization: `Bearer ${refreshToken}` }
+                });
 
-        localStorage.setItem('access_token', data.accessToken);
+        localStorage.setItem('auth_token', data.access_token);
 
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
+
+        // const socketStore = useSocketStore();
+        // socketStore.connectAll();
+
         return apiClient(originalRequest);
         
       } catch (refreshError) {
