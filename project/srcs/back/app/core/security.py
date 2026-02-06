@@ -12,7 +12,6 @@ class Security :
         self.jwt.init_app(app)
 
     @staticmethod
-    # def auth_guard(refresh=True, required_roles=None):
     def auth_guard(required_roles=None, check_profile=True, require_verify_mail=True) :
         def decorator(fn):
             @wraps(fn)
@@ -27,7 +26,6 @@ class Security :
                         raise Exception(message)
                     if require_verify_mail and not AuthService.verify_is_verified(claims["user_id"]) :
                         return jsonify({"error": "account isn't verified!"}), 401
-                    # This maybe will be moved down when working with the admin role
                     if check_profile and not AuthService.check_profile_completion(claims["user_id"]) :
                         return jsonify({"error": "profile completion required"}), 401
                 except Exception as e:

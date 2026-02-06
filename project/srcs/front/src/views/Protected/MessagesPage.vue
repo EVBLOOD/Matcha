@@ -58,7 +58,6 @@ const fetchConversations = async () => {
     }
 };
 
-// watch(() => route.params.id, fetchConversations);
 
 onMounted(fetchConversations);
 

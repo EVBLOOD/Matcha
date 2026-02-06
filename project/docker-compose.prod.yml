@@ -8,7 +8,7 @@ services:
         - VITE_SOCKET_LINK=${VITE_SOCKET_LINK}
     image: matcha_prod_front
     container_name: matcha_prod_front
-    env_file: .env.prod
+    env_file: .env
     restart: on-failure
     expose:
       - 80
@@ -25,7 +25,7 @@ services:
     container_name: matcha_prod_back
     environment:
       - GEOIP_DB_PATH=/var/www/html/app/data/maxmind/GeoLite2-City.mmdb
-    env_file: .env.prod
+    env_file: .env
     restart: on-failure
     # volumes:
       # - geoip-data:/app/app/data/maxmind:ro
@@ -51,7 +51,7 @@ services:
           timeout: 5s
           retries: 5
           start_period: 30s
-    env_file: .env.prod
+    env_file: .env
     volumes:
       - vol_database_prod:/var/lib/postgresql/18/data
     restart: on-failure
@@ -92,7 +92,7 @@ services:
   #     dockerfile: docker/omni_auth/Dockerfile
   #   image: matcha_prod_omni_auth
   #   container_name: matcha_prod_omni_auth
-    # env_file: .env.prod
+    # env_file: .env
   #   restart: on-failure
   #   volumes:
   #     - ${PWD}/srcs/omni_auth:/var/www/html

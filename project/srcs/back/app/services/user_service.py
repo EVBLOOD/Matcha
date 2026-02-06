@@ -32,11 +32,6 @@ class UserService:
         if password_lower in UserService._english_words:
             raise ValueError("Password cannot be a single common dictionary word.")
         
-        # if user_inputs:
-        #     for info in user_inputs:
-        #         if len(info) > 2 and info.lower() in password_lower:
-        #             raise ValueError(f"Password contains personal information")
-        
         result = zxcvbn(password, user_inputs=user_inputs)
         
         if result['score'] < 3:
@@ -88,7 +83,6 @@ class UserService:
                 EmailingService.send_email_welcoming(user_data.email, user_data.username, token_verify)
             except Exception as e :
                 UserRepository.delete(user_id)
-                # TODO: remove email from redis record
                 raise ValueError ("Email Not VALID!")
         return user_id
     
@@ -120,15 +114,12 @@ class UserService:
 
     @staticmethod
     def change_password(user_id: int, password: str, session_id: str) :
-        # TODO: check password 
         user = UserService.get_user(user_id)
-        print(user.first_name, flush=True)
         UserService.validate_password_strength(
             password, 
             user_inputs=[user.username, user.email, user.first_name, user.last_name]
         )
         UserRepository.update_password(user_id=user_id, new_password=password)
-        print("done", flush=True)
         AuthService.user_session_changed_role(user_id=user_id, session_id=session_id)
         return 1
     
@@ -137,7 +128,7 @@ class UserService:
         try :
             UserRepository.update_user_infos(user_id, first_name, last_name , username, birthdate)
         except Exception as e :
-            raise ValueError(str(e)) # unique username
+            raise ValueError(str(e))
     
     @staticmethod
     def update_user_email_request(user_id: int, email: str, session_id: str ) :
@@ -158,14 +149,10 @@ class UserService:
         redis.sadd(f"user_email_change:{user_id}:emails", email)
         user = User(*UserRepository.find_by_id(user_id))
 
-        # TODO: here we should check if the email is valid or reject it
         try :
             EmailingService.send_email_change_confirming(email, user.username, token, session_id, user_id)
         except Exception as e :
-            print(e, flush=True)
-            # TODO: delete the email change from redis
             raise ValueError ("Email Not VALID!")
-            raise ValueError(str(e))
 
     @staticmethod
     def update_user_email_request_and_infos(user_id: int, username: str, first_name: str, last_name: str, email: str, birthdate, session_id: str) :
@@ -210,7 +197,6 @@ class UserService:
     @staticmethod
     def get_range_users(user_id: int, min_lat: int, max_lat: int, min_lng: int, max_lng: int) :
         users = UserRepository.find_by_location(user_id, min_lat, max_lat, min_lng, max_lng)
-        print(users, flush=True)
         return users
     
     @staticmethod

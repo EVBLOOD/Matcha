@@ -97,7 +97,6 @@ class SuggestionsService :
         
         if args.get('tags'):
             tags = args.get('tags').split(',')
-            print(tags, flush=True)
 
             placeholders = ", ".join(["%s"] * len(tags))
             
@@ -109,10 +108,8 @@ class SuggestionsService :
                     WHERE t.name IN ({placeholders})
                 )
             """
-            print(tags, flush=True)
 
             params.extend(tags)
-            print(params, flush=True)
         
         sort_map = {
             "age": "age ASC",
@@ -122,13 +119,6 @@ class SuggestionsService :
             "default": "distance ASC, same_tags DESC, u.fame_rating DESC"
         }
         order_clause = sort_map.get(sort_by, sort_map["default"])
-        
-
-        # if args.get('last_id') and args.get('last_val'):
-        #     col = order_clause.split(' ')[0]
-        #     op = ">" if "ASC" in order_clause else "<"
-        #     query_body += f" AND ({col}, u.id) {op} (%s, %s)"
-        #     params.extend([args['last_val'], args['last_id']])
 
         users = SuggestionsRepository._fetch_all(f"{query_body} ORDER BY {order_clause}, u.id ASC LIMIT 20", params)
 

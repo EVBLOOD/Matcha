@@ -40,7 +40,7 @@ class ChatRepository(BaseRepository):
         return id
 
 
-    @classmethod # TODO: this is worng but keep for now
+    @classmethod
     def mark_read(cls, profile_data: Message) :
         norm_data = {
             'conversation_id' : profile_data.conversation_id,
@@ -141,7 +141,7 @@ class ChatRepository(BaseRepository):
         return cls._fetch_all(query, params)
     
     @classmethod
-    def get_chats(cls, user_id: int) :  # TODO: this is worng but keep for now
+    def get_chats(cls, user_id: int) :
         query = """
             SELECT
                 c.id AS conversation_id,

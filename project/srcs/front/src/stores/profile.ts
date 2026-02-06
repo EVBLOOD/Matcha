@@ -6,7 +6,6 @@ import axios, { AxiosError } from 'axios';
 import ProfileService from '@/api/services/ProfileService'
 import type { UserProfileResponse } from '@/types/apiResponses'
 
-// this will cause problems if I keep it 
 import { useSocketStore } from '@/stores/socket';
 
 

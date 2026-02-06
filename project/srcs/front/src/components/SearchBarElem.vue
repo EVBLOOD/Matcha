@@ -7,7 +7,7 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    elemName: String, // Age | Location | Fame | Tags
+    elemName: String,
     tagsList: Array<String>,
     locationList: Array<String>,
     fame: Array,
@@ -22,10 +22,6 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle_1', 'toggle_2', 'AgeMin-selected', 'AgeMax-selected', 'DisMax-selected', 'fame-selected', 'tags-selected', 'AgeMin-reset', 'AgeMax-reset', 'DisMax-reset', 'fame-reset', 'tags-reset', 'selected_choice']);
 
-// const isMenuOpen = ref(false)
-
-
-// if (props.elemName === 'Age') 
 const AGEMIN = 18
 const AGEMAX = 24
 
@@ -58,24 +54,6 @@ const minus_age = (type: string) => {
 
 };
 
-// else if (props.elemName === 'Location') 
-// const selectedLocation = ref<Array<string>>([])
-
-// const selection_location = (city: string) => {
-//     const index = selectedLocation.value.indexOf(city);
-//     if (index > -1) {
-//         selectedLocation.value.splice(index, 1);
-//         if (!toggle.value) toggle.value = true
-//     } else {
-//         selectedLocation.value.push(city);
-//         if (!toggle.value) toggle.value = true
-//     }
-//     emit('location-selected', selectedLocation.value);
-//     if (!selectedLocation.value.length) toggle.value = false
-    
-    
-// };
-
 
 const DisMax = ref(20)
 const DISMAX = 100 
@@ -97,13 +75,11 @@ const minus_dst = () => {
 
 };
 
-// else if (props.elemName === 'Fame') 
 const selectedFame = ref<number>(4.0)
 
 const add_fame = () => {
     if (selectedFame.value < 5) {
         selectedFame.value = parseFloat((selectedFame.value + 0.1).toFixed(1));
-        // selectedFame.value = selectedFame.value + 0.1;
         emit('fame-selected', selectedFame.value);
         if (!toggle.value) toggle.value = true
     }
@@ -112,7 +88,6 @@ const add_fame = () => {
 
 const minus_fame = () => {
     if (selectedFame.value > 0) {
-        // selectedFame.value = selectedFame.value - 0.1;
         selectedFame.value = parseFloat((selectedFame.value - 0.1).toFixed(1));
         emit('fame-selected', selectedFame.value);
         if (!toggle.value) toggle.value = true
@@ -121,7 +96,6 @@ const minus_fame = () => {
 
 };
 
-//  else if (props.elemName === 'Tags') 
 const selectedIntersts = ref<Array<string>>([]);
 
 const tagClick = (tag: string) => {
@@ -143,7 +117,6 @@ const listClick = (lt: String, elemName: string) => {
     if (elemName == "Tags") {
         tagClick(lt as string);
     } else {
-        // selection_location(lt as string);
     }
 }
 
@@ -175,7 +148,6 @@ const valueDisplay = computed(
 
 const handleClick = () => { 
     emit('toggle_1')
-    // isMenuOpen.value = !isMenuOpen.value;
 };
 
 const checkListExists = (lt: String, elemName: string) => {
@@ -191,7 +163,6 @@ const displayCancel = () => {
 
     AgeMin.value = AGEMIN
     AgeMax.value = AGEMAX
-    // selectedLocation.value = []
     selectedFame.value = 4.0
     selectedIntersts.value = []
     selectedIntersts.value = []
@@ -203,7 +174,6 @@ const displayCancel = () => {
     emit('tags-reset');
 }
 
-// const sortOrNot = ref(false)
 const selectSort = () => {
     const action = `${props.elemName?.toLowerCase()}`
     emit('selected_choice', action);

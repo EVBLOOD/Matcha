@@ -39,7 +39,6 @@ const { getPreciseLocation, coords } = usePreciseLocation()
 
 
 const handleSubmit = async () => {
-    // add protections for inputs:
     try {
         const locationResult = await getPreciseLocation();
         const formData = new FormData();
@@ -261,7 +260,6 @@ import Loading from '@/components/Loading.vue';
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-    // height: 6%;
     padding: 6%;
     align-content: center;
     cursor: pointer;
@@ -278,7 +276,6 @@ import Loading from '@/components/Loading.vue';
     .page {
         display: flex;
         flex-direction: column;
-        // margin: 0;
     }
 }
 </style>

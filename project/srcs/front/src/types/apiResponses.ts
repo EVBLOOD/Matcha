@@ -1,4 +1,3 @@
-// export type UserRole = 'admin' | 'user' | 'moderator';
 
 export interface UserRegister {
     username: string;
@@ -153,9 +152,3 @@ export interface UserDatesResponse {
     description: string,
     status: string,
 }
-
-// export interface UserProfile extends User {
-//     bio: string;
-//     interests: string[];
-//     photos: string[];
-// }

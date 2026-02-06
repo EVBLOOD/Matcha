@@ -26,22 +26,10 @@ class ChatService :
         ChatRepository.update_nmessages_all(chat_id,user_id)
         return chat
 
-    # @classmethod
-    # def get_messages(cls, user_id: int, chat_id: int, start: int = 0, number: int = 10) :
-    #     row = ChatRepository.find_conversation_by_id(chat_id)
-    #     if row.user1_id != user_id and row.user2_id != user_id :
-    #         raise Exception("Not Today!")
-
-    #     chat = ChatRepository.get_messages(chat_id, start, number)
-    #     return chat
     @classmethod
     def get_chats(cls, user_id: str) :
         return ChatRepository.get_chats(user_id)
 
-    # @classmethod
-    # def get_chats(cls, user_id: str, start: int, number: int = 10) :
-    #     return ChatRepository.get_chats(user_id, start, number)
-    
     @classmethod
     def get_number_unreaded_messages(cls, user_id: str) :
         return ChatRepository.get_number_unreaded_messages(user_id)

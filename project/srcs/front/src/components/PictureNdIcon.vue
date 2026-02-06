@@ -48,18 +48,6 @@ const showEditor = ref(false);
 const rawImageUrl = ref<string | null>(null);
 const cropperRef = ref();
 
-
-// const onFileChange = (e: Event) => {
-//     const file = ((e.target as HTMLInputElement).files || [])[0];
-
-//     if (!file) return;
-
-//     if (previewUrl.value) URL.revokeObjectURL(previewUrl.value);
-//     previewUrl.value = URL.createObjectURL(file);
-
-//     emit('file-selected', file);
-// };
-
 const onFileChange = (e: Event | DragEvent) => {
     try {
 
@@ -157,7 +145,6 @@ label {
     justify-items: center;
     align-items: center;
     flex-direction: column;
-    // margin-bottom: 5px;
 }
 
 .avatar {
@@ -217,7 +204,6 @@ label {
             
             padding: 0px;
             max-height: 400px;
-            // background: #ddd;
         }
     }
 

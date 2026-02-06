@@ -3,13 +3,6 @@ import { ref, computed, onMounted } from 'vue';
 import { useSocketStore } from '@/stores/socket'
 
 const activeTab = ref('all');
-// const events = ref([
-//     { type: 'sender', from: '@idkart', to: '@gkleier', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'pending' },
-//     { type: 'receiver', from: '@gkleier', to: '@idkart', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'pending' },
-//     { type: 'sender', from: '@idkart', to: '@gkleier', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'accepted' },
-//     { type: 'receiver', from: '@gkleier', to: '@idkart', date: '24 Feb 2026 - 18:00', location: 'Cafe Audelice', message: "Let's meet and talk 😊", status: 'declined' },
-// ])
-// const EventsData = ref<UserDatesResponse[] | null>(null);
 
 import useUserStore from '@/stores/user';
 
@@ -45,7 +38,6 @@ const fetchEvents = async () => {
     try {
         const { data } = await EventService.get_my_dates();
         if (data.data) socketStore.setEventsData([...data.data])
-        // if (data.data) socketStore.getEventsData = [...data.data];
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -219,8 +211,6 @@ nav {
     gap: 1rem;
 
     .event-card {
-        // display: grid;
-        // grid-template-columns: minmax(200px, 250px) auto;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -229,9 +219,7 @@ nav {
         padding: 3rem 2rem;
         border-radius: 8px;
         gap: 30px;
-        // height: auto;
         .users {
-            // flex: 1;
             display: flex;
             gap: 0.5rem;
             align-items: center;
@@ -248,7 +236,6 @@ nav {
         }
 
         .details {
-            // margin-left: 1rem;
             flex: 1 1 auto;
             display: flex;
             flex-wrap: wrap;
@@ -328,35 +315,6 @@ nav {
 }
 
 @media (max-width: $breakpoint-md) {
-    // .events {
-    //     .event-card {
-    //         grid-template-columns: 1fr;
-    //         gap: 1.5rem;
-    //         padding: 2rem 2rem;
-    //         font-size: 13px;
 
-    //         .details {
-    //             flex-direction: column;
-    //             margin-left: 0;
-    //             gap: 10px;
-    //         }
-
-    //         .status {
-    //             width: fit-content;
-    //             justify-content: flex-end;
-    //         }
-
-    //         .confirmation {
-    //             justify-content: flex-end;
-    //         }
-
-    //         .confirmation {
-    //             button {
-    //                 height: 40px;
-    //                 width: 40px;
-    //             }
-    //         }
-    //     }
-    // }
 }
 </style>

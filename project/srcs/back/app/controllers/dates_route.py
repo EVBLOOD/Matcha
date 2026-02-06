@@ -50,7 +50,6 @@ def respond_to_date(date_id):
 def get_my_dates():
     try :
         dates = DatesService.get_user_dates(request.user_id)
-        print(dates, flush=True)
         return jsonify({"data": dates}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 404

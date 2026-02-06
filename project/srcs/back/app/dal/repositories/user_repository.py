@@ -20,7 +20,7 @@ class UserRepository(BaseRepository):
     ]
 
     _columns_insertion_oauth = [
-        "username", "first_name", "last_name", "email", "is_verified"#, "birthdate"
+        "username", "first_name", "last_name", "email", "is_verified"
     ]
 
     @classmethod
@@ -133,11 +133,7 @@ class UserRepository(BaseRepository):
             RETURNING id
         """
         return cls._execute(query, (email, user_id))
-    #     _columns = [
-    #     "id", "username", "first_name", "last_name", 
-    #     "password_hash", "email", "fame_rating",
-    #     "latitude", "longitude", "is_verified"
-    # ]
+
     @classmethod
     def update_user_infos(cls, user_id: int, first_name: str, last_name : str, username: str, birthdate) :
         query = """

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router';
-  // import LandingPage from './views/LandingPage.vue';
+import { RouterView } from 'vue-router';
   import ToastContainer from './components/ToastContainer.vue';
 </script>
 
@@ -15,15 +14,10 @@ import { RouterLink, RouterView } from 'vue-router';
   .container{
     margin: 0 auto;
     max-width: 1920px;
-    // max-width: $breakpoint-lg;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-// @media (max-width: $breakpoint-md) {
-//     .container{
-//     margin: auto;
-//   }
-// }
+
 </style>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-    // import Button from '@/components/Button.vue';
-    // import { RouterLink, RouterView } from 'vue-router';
 import PictureNdIcon from '@/components/PictureNdIcon.vue';
 import NotificationsService from '@/api/services/NotificationsService'
 import type { NotificationsResponse } from '@/types/apiResponses'
@@ -14,8 +12,6 @@ import axios, { AxiosError } from 'axios';
 interface BackendError {
   error: string;
 }
-
-// const previewProfile = ref(null);
 
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
@@ -64,7 +60,7 @@ const avatarStyleFun = (value: NotificationsResponse) => {
         image = "/img/likeNotifIcon.svg"
 
     } else if (value.type == "unmatch") {
-        image = "/img/likeNotifIcon.svg" // TO UPDATE
+        image = "/img/likeNotifIcon.svg"
     }
     return image;
 };
@@ -124,7 +120,6 @@ import Loading from '@/components/Loading.vue';
         padding: 16px;
         display: flex;
         flex-direction: column;
-        // align-items: center;
         gap: 0.5%;
         cursor: pointer;
     }
@@ -155,7 +150,6 @@ import Loading from '@/components/Loading.vue';
         .page{
             display: flex;
             flex-direction: column;
-            // margin: 0;
         }
     }
 </style>

@@ -15,7 +15,6 @@ const suggestionsData = ref<SuggestionsResponse[] | null>(null);
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 const selectedChoice = ref<string | null>(null);
-// const selectedChoice = ref<string | null>(null);
 interface BackendError {
     error: string;
 }

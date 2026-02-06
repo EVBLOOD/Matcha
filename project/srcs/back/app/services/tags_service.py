@@ -1,11 +1,8 @@
 from app.dal.repositories.tags_repository import TagsRepository, Tags
 from app.dal.repositories.user_interests_repository import UserInterests, UserInterestsRepository
 from typing import Set
-
-# from app.services.picture_service import PictureService
-# from app.services.auth_service import AuthService
-# from typing import Optional
 import re
+
 class TagsService:
 
 

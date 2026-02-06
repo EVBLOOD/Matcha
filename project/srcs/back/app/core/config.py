@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-# from flask_marshmallow import Marshmallow
 
 load_dotenv ()
 
@@ -19,7 +18,6 @@ class Config:
     ALLOWED_EXTENSIONS = ""
     UPLOAD_FOLDER = "pictures_storage"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    # ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     ALLOWED_EXTENSIONS = {'PNG', 'JPG', 'JPEG'}
     max_width=5000
     max_height=5000
@@ -32,7 +30,7 @@ class Config:
     MAIL_PASSWORD =  os.getenv('MAIL_PASSWORD', '')
     MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', '')
     VITE_BACKEND_LINK = os.getenv('VITE_BACKEND_LINK', 'localhost/api')
-    FRONT_LINK = os.getenv('FRONT_LINK', 'localhost') # for the origins
+    FRONT_LINK = os.getenv('FRONT_LINK', 'localhost')
     ma_instence = None
     mail = None
     socket_instence = None

@@ -83,7 +83,6 @@ def proxy_to(provider):
         )
 
     except Exception as e:
-        print(e, flush=True)
         return jsonify({"error": "unexpected error!"}), 400
 
 
@@ -158,7 +157,6 @@ def handle_github_callback():
 
         return redirect(f"{Config.FRONT_LINK}/auth-success?token={access_token}&refresh={refresh_token}")
     except Exception as e:
-        print (e, flush=True)
         return jsonify({"error": "unexpected error!"}), 400
 
 @auth_bp.route('/logout', methods=['POST'])

@@ -68,5 +68,3 @@ app.register_blueprint(inteructions_bp)
 
 app.register_blueprint(dates_bp)
 
-# Config.socket_instence.run(app, host="0.0.0.0", port=8080)
-

@@ -77,8 +77,6 @@ class User:
     def isvalid_password(self, password) :
         password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=])(?=\S+$).{8,64}$"
         return re.match(password_regex, password)
-    # def full_name(self) -> str:
-    #     return f"{self.first_name} {self.last_name}"
 
     def to_dict(self) -> dict:
         return {

@@ -38,9 +38,6 @@ import { toast } from '@/composables/useToast';
 interface ValidationErrors {
   [key: string]: string[];
 }
-
-// const isLoading = ref(true);
-
 const isLoading = ref(false);
 
 const OnclickUpdateLocal = async () => {
@@ -133,7 +130,6 @@ import { ref } from 'vue';
     flex-shrink: 0;
     flex-direction: column;
     gap: 20px;
-    // height: 100%;
 }
 
 .link {
@@ -177,13 +173,6 @@ import { ref } from 'vue';
     flex-direction: column;
     gap: 10px;
 }
-
-// .location{
-//     display: flex; 
-//     justify-content: space-between; 
-//     flex-wrap: nowrap; 
-//     align-items: center;
-// }
 
 .location{
     display: flex;

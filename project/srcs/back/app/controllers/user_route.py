@@ -166,7 +166,6 @@ def get_users_in_map():
         return jsonify({"data": users})
     
     except Exception as e :
-        print(e, flush=True)
         return jsonify({"error": e}), 400
 
 
@@ -178,7 +177,6 @@ def get_user_location():
         return jsonify({"data": user})
     
     except Exception as e :
-        print(e, flush=True)
         return jsonify({"error": e}), 400
 
 

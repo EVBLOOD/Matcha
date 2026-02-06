@@ -25,7 +25,7 @@ class PicturesRepository(BaseRepository):
     def find_by_url_nd_user_id(cls, url: str, user_id: str) :
         query = "SELECT * FROM user_pictures WHERE url = %s AND user_id = %s"
         row = cls._fetch_one(query, (url, user_id, ))
-        print(row, flush=True)
+
         return Picture(*row) if row else None
 
     @classmethod

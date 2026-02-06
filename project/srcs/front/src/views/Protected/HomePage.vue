@@ -90,7 +90,7 @@ const setupWebRTC = async () => {
             if (pc && localStream) pc.addTrack(track, localStream);
         });
     } catch (err) {
-        console.error("Access denied for camera/mic:", err);
+        console.log("Access denied for camera/mic");
     }
 };
 
@@ -98,7 +98,6 @@ const setupWebRTC = async () => {
 const startCall = async () => {
     await setupWebRTC();
 
-    console.log(`calling starter: ${pc}`)
     if (!pc) return;
 
     const offer = await pc.createOffer();
@@ -326,17 +325,14 @@ const endCall = (sendSignal: boolean = true) => {
     display: flex;
     flex-direction: column;
     gap: 33px;
-    // height: 100%;
     width: 20%;
     padding: 10px 10px 40px 10px;
-    // margin-right: 1%;
 }
 
 .nav {
     display: flex;
     flex-direction: column;
     position: relative;
-    // gap: 1px;
     gap: 5px;
     height: 100%;
 }
@@ -402,8 +398,6 @@ const endCall = (sendSignal: boolean = true) => {
 
     ._link {
             padding: 3%;
-            // border-style: solid;
-            // border-width: 0px 1px 0px 0px;
             border-color: $border-color;
             flex-direction: row;
             justify-content: center;
@@ -421,7 +415,6 @@ const endCall = (sendSignal: boolean = true) => {
         flex-wrap: wrap;
 
         span {
-            // overflow: hidden; // OR
             display: none;
         }
     }

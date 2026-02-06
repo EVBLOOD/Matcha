@@ -18,7 +18,6 @@ const props = defineProps({
         display: flex;
         flex-direction: column;
         padding: 4%;
-        // min-height: 50%;
         max-width: 55%;
         min-width: 50%;
 

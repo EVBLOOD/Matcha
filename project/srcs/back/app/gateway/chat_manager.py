@@ -19,7 +19,6 @@ from app.services.user_blocks_service import UserBlocksService
 
 class ChatManager :
 
-    # Just helpers
     @staticmethod
     def _get_canonical_room_name(user1: str, user2: str) -> str:
         return f"private_{'_'.join(sorted([str(user1), str(user2)]))}"
@@ -28,7 +27,6 @@ class ChatManager :
     def _get_user_room_name(user_id: str) -> str:
         return f"user_{user_id}_notify"
     
-    # Main functions
     @staticmethod
     def connect_user_socket(user_id: str, socket_id: str):
         redis = Config.redis_instence
@@ -59,8 +57,6 @@ class ChatManager :
 
     @staticmethod
     def leave_private_room(user_id: str, other_id: str, socket_id: str):
-        # if not UserInteractionsService.are_users_connected(other_id, user_id) :
-        #     return {"error": "You aren't allowed to reach this person!"}
         redis = Config.redis_instence
         room_name = ChatManager._get_canonical_room_name(user_id, other_id)
         
@@ -86,9 +82,7 @@ class ChatManager :
         sockets_needing_notif = receiver_sockets - active_viewers
 
         if sockets_needing_notif:
-            # TODO: correct this later
             notify_room = ChatManager._get_user_room_name(receiver)
-            # user = payload.avatar, payload.FromId, payload.username
             try :
                 user = ProfileService.get_user_profile_basic(sender)
             except:
@@ -104,7 +98,6 @@ class ChatManager :
     def get_number_of_messages(user_id: int):
         try :
             out = ChatService.get_number_unreaded_messages(user_id)[0]
-            print(out, flush=True)
             return out
         except :
             return 0

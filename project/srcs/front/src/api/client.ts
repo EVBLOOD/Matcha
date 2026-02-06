@@ -1,6 +1,5 @@
 import axios from 'axios';
 import router from '@/router';
-// import { useSocketStore } from '@/stores/socket';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_LINK,
@@ -35,9 +34,6 @@ apiClient.interceptors.response.use(
         localStorage.setItem('auth_token', data.access_token);
 
         originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
-
-        // const socketStore = useSocketStore();
-        // socketStore.connectAll();
 
         return apiClient(originalRequest);
         

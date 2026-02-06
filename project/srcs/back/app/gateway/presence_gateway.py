@@ -2,10 +2,6 @@ from flask_socketio import Namespace
 from flask import request
 from app.gateway.connection_manager import ConnectionManager
 from flask_socketio import disconnect, emit
-import json
-
-# from app.services.dates_service import DatesService
-
 
 class PresenceGateway(Namespace):
     @ConnectionManager.socket_guard()
@@ -35,9 +31,7 @@ class PresenceGateway(Namespace):
         try :
             status = []
             for id in ids["users"] :
-                # here check friendship status!
                 online = ConnectionManager.is_user_online(int(id), request.user_id)
-                # here I should join the user channel:
                 status.append({id: online})
             return status
         except Exception as _:
@@ -107,7 +101,6 @@ class PresenceGateway(Namespace):
             return 0
 
 
-    # @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
         try :
             ConnectionManager.disconnect_user(sid=request.sid)

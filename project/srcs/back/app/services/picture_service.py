@@ -2,12 +2,10 @@ from app.dal.models.picture import Picture
 from app.dal.repositories.pictures_repository import PicturesRepository
 from typing import Optional
 import re
-# import imghdr
 from PIL import Image
 from app.core.config import Config
 import uuid
 import os
-# import magic
 from werkzeug.utils  import secure_filename
 
 class PictureService:
@@ -22,12 +20,7 @@ class PictureService:
         filename = secure_filename(filename)
         if not cls.allowed_file(filename):
             raise ValueError("File extension not allowed")
-        
-        # file_stream.seek(0)
-        # actual_extension = imghdr.what(file_stream)
-        # if not actual_extension:
-        #     raise ValueError("Not a valid image file")
-        
+
         try:
             file_stream.seek(0)
             img = Image.open(file_stream)
@@ -41,9 +34,7 @@ class PictureService:
             
             if img.width > Config.max_width or img.height > Config.max_height:
                 raise ValueError(f"Image too large ({img.width}x{img.height})")
-            # img.close()
         except Exception as e:
-            print(e, flush=True)
             raise ValueError("Invalid image content")
         file_stream.seek(0)
         return True
@@ -63,7 +54,6 @@ class PictureService:
 
 
     def remove_path(id, url) :
-        print(url, flush=True)
         try :
             if PicturesRepository.delete(id) :
                 file_path = os.path.join(Config.UPLOAD_FOLDER, url)
@@ -109,7 +99,6 @@ class PictureService:
             if file == "profile" :
                 profile_url = tmp_file
                 PicturesRepository.update_picture_profile(tmp_file, user_id, injected_cursor)
-                print("current_pictures", flush=True)
             else :
                 PicturesRepository.insert_picture(tmp, injected_cursor)
             list_tmp.append(tmp_file)
@@ -127,8 +116,3 @@ class PictureService:
     @classmethod
     def find_by_url_nd_user_id(cls, url: str, user_id: str) :
         return PicturesRepository.find_by_url_nd_user_id(url, user_id)
-
-    # def is_malware(file_stream):
-    #     file_stream.seek(0)
-    #     mime = magic.from_buffer(file_stream.read(2048), mime=True)
-    #     return not mime.startswith('image/')

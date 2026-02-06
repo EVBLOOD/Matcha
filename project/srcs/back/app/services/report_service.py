@@ -32,6 +32,5 @@ class ReportService(BaseRepository):
         report_count = cls._fetch_one(query, (reported_id,))[0]
         
         if report_count >= 5:
-            # TO BLOCK USER OR DELETE IT
             print(f"reported_id: {reported_id} report_count: {report_count}", flush=True)
         return True

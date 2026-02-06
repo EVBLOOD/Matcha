@@ -135,10 +135,7 @@ class AuthService :
 
     @classmethod
     def reset_password(cls, user_input) :
-        # if "@" not in user_input :
-        #     user = UserRepository.find_by_username(username=user_input)
-        # else :
-        #     user = UserRepository.find_by_email(email=user_input)
+
         user = UserRepository.find_by_email(email=user_input)
         if user is None :
             raise ValueError("Email or username is incorrect")

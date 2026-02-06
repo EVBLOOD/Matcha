@@ -33,9 +33,6 @@ export const useCallStore = defineStore('call', {
         sendSignal(type: string, args: any) {
             const socketStore = useSocketStore();
             if (this.activePeer) {
-                console.log(this.activePeer.id)
-                console.log("type", type)
-                console.log("args", args)
                 socketStore.CallUser(this.activePeer.id, type, args);
             }
         },

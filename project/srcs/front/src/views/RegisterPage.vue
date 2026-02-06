@@ -83,7 +83,6 @@ const handleRegister = async () => {
 import Loading from '@/components/Loading.vue';
 
 
-// TODO: we should integrate the Loading and error displaying
 </script>
 
 

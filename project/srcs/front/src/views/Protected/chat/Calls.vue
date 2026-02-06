@@ -15,9 +15,6 @@ interface BackendError {
     error: string;
 }
 
-// new_message_notification
-
-
 const route = useRoute();
 const socketStore = useSocketStore()
 const userStore = userUserStore()
@@ -38,7 +35,6 @@ const fetchConversations = async () => {
     isLoading.value = true;
     try {
         const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
-        // conversationData.value = data;
         conversationData.value = [...data.data];
         if (conversationData.value[0].messages_list)
             conversationMessages.value = [...conversationData.value[0].messages_list]
@@ -69,8 +65,6 @@ function sendMessage() {
 
     if (conversationData.value) {
         const id = socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
-        // if (conversationMessages.value)
-        //     conversationMessages.value.push({id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"})
     }
     newMessage.value = ''
 }
@@ -156,12 +150,6 @@ const AddEvents = async () => {
         datetime_str:(new Date(date_str.value + " " + time_str.value)).toISOString(),
         description: description.value
     })
-    // await EventService.propose_date({
-    //     partner_id: conversationData.value[0].peer_id || -1,
-    //     location: location.value,
-    //     datetime_str:(new Date(date_str.value + " " + time_str.value)).toISOString(),
-    //     description: description.value
-    // });
     if (with_success) toast("success", "Date Invite Sent", "Your date invite has been sent successfully!")
     ProposeDateVisible.value = false;
   } catch(err : unknown) {
@@ -197,10 +185,6 @@ const send_invite = async () => {
     }
 
     await AddEvents()
-    // if (add_event){
-    //     toast("success", "Date Invite Sent", "Your date invite has been sent successfully!")
-    //     ProposeDateVisible.value = false;
-    // }
 }
 
 
@@ -317,7 +301,6 @@ const statusUser = computed(() => {
 .footer{
     display: flex;
     justify-content: flex-end;
-    // margin-top: 20px;
     gap: 10px;
     width: 100%;
     .btn-send-invite {
@@ -489,10 +472,6 @@ video {
 .chat {
     display: flex;
     flex-direction: column;
-    // display: grid;
-    // grid-template-rows: auto 1fr auto;
-    // height: 100vh;
-
     width: 100%;
     height: 100%;
 }
@@ -541,7 +520,6 @@ video {
 }
 
 .messages {
-    // flex: 1;
     flex: 1 1 auto;
     overflow-y: auto;
     padding: 20px;
@@ -562,8 +540,6 @@ video {
     font-size: 14px;
     flex-shrink: 0;
     white-space: pre-wrap;
-    // word-wrap: break-word;
-    // overflow-wrap: break-word;
 }
 
 .message.received {

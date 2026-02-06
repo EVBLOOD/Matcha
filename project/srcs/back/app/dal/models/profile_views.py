@@ -12,8 +12,7 @@ class ProfileViews:
         if not create:
             self.id = id
             self.viewed_at = viewed_at
-        # else :
-            # self.id = None
+
         self.viewer_id = viewer_id
         self.viewed_id = viewed_id
         self.viewed_at = viewed_at

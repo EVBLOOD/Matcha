@@ -168,7 +168,6 @@ const showBlockUser = ref(false)
 <style lang="scss" scoped>
 .contentz {
     color: $text-color;
-    // display: flex;
     display: grid;
     grid-template-columns: 25% 75%;
     align-items: center;
@@ -189,7 +188,6 @@ const showBlockUser = ref(false)
 
 .profile_vue {
     height: 100%;
-    // width: 75%;
     padding: 2%;
 }
 
@@ -203,9 +201,6 @@ const showBlockUser = ref(false)
         max-width: 250px;
         max-height: 250px;
         margin-bottom: 22px;
-        // width: clamp(120px, 25vw, 250px);
-        // height: clamp(120px, 25vw, 250px);
-
     }
     .name{
         font-weight: 500;
@@ -235,18 +230,14 @@ const showBlockUser = ref(false)
     gap: 6px;
     min-height: fit-content;
     min-width: fit-content;
-    // flex-shrink: 0;
     width: 100%;
     .btn-block-report{
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 5px;
         .btn-block, .btn-report {
-            // padding: 10px 0;
             max-height: fit-content;
             min-width: fit-content;
-            // font-size: 11px;
-            // height: auto;
         }
     }
     .btn-like-msg{
@@ -254,7 +245,6 @@ const showBlockUser = ref(false)
         grid-template-columns: auto min-content;
         gap: 5px;
         .btn-like, .btn-dislike {
-            // padding: 10px 0;
             min-width: fit-content;
             min-height: fit-content;
         }
@@ -264,9 +254,6 @@ const showBlockUser = ref(false)
 .like_messages {
     display: flex;
     align-items: center;
-    // justify-content: center;
-    // gap: 5px;
-    // flex-shrink: 0;
 }
 
 .stats_holder {
@@ -283,15 +270,10 @@ const showBlockUser = ref(false)
         white-space: nowrap;
         align-items: center;
         gap: 5px;
-        // overflow: hidden; 
-        // text-overflow: ellipsis;
-
-        // flex-wrap: wrap;
     }
 }
 
 .fame{
-    // flex-shrink: 0;
     width: max-content;
     .starts{
         min-height: fit-content;
@@ -309,7 +291,6 @@ const showBlockUser = ref(false)
 
 @media (max-width: $breakpoint-md) {
     .contentz {
-        // flex-direction: column;
         height: fit-content;
         grid-template-columns: 100%;
     }

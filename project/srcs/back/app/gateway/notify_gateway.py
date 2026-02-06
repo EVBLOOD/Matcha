@@ -17,11 +17,6 @@ class NotifyGateway(Namespace):
     def error_handler(e):
         disconnect()
 
-    # def on_message(self, user_message) :
-    #     user
-
-
-    # @ConnectionManager.socket_guard()
     def on_disconnect(self, reason):
         try :
             if request.sid:

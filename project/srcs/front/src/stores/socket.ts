@@ -56,9 +56,6 @@ export const useSocketStore = defineStore('socket', {
       this.startsocket(heartbeatInterval)
 
       socketStatus.on('user_status_change', (response) => {
-        console.log('user_status_change: ')
-        console.log(response)
-
         const id: string = response.user_id;
         const value: string = response.status;
 
@@ -109,7 +106,6 @@ export const useSocketStore = defineStore('socket', {
 
       socketStatus.emit("check_user_connect", id, (response: any) => {
         if (response) {
-          console.log(response)
           this.onlineUsers[id] = (response.status === "Online" || response.status === true) ? "Online" : formatDistanceToNow(new Date(response.status), { addSuffix: true })
         }
       })
@@ -143,7 +139,6 @@ export const useSocketStore = defineStore('socket', {
     sendMessage(id: string, content: string): number {
       let id_message = undefined
       socketChat.emit('send_message', { user_id: id, text: content }, ((resp: any) => {
-        console.log(resp)
         if (typeof (resp) == 'object' && resp.error) {
           toast('error', 'Send Message fail', resp.error);
         }
@@ -165,7 +160,6 @@ export const useSocketStore = defineStore('socket', {
     respond_to_date(event_id: number, status: string) {
 
       socketStatus.emit('respond_to_date', {"event_id": event_id, "status": status }, ((resp: any) => {
-        console.log(resp)
 
       }))
     },
@@ -189,12 +183,6 @@ export const useSocketStore = defineStore('socket', {
     },
     handleSocialEvent(type: string, payload: any) {
       const profileStore = useSocialStore();
-      // const notifStore = useNotificationStore();
-      // notifStore.addNotification(type + payload); // this is for later
-      // notifStore.unreadCount++;
-
-      console.log(type)
-      console.log(payload.conversation_id)
 
       switch (type) {
         case 'match':
@@ -213,7 +201,6 @@ export const useSocketStore = defineStore('socket', {
           profileStore.handleLike(payload.FromId, payload.userId, 0);
           break;
         case 'dislike':
-          console.log("LOLE")
           profileStore.handleDislike(payload.FromId, payload.userId, 0);
           break;
         case 'view':

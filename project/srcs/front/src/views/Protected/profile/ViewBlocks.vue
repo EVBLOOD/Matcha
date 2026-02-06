@@ -13,8 +13,6 @@ interface BackendError {
   error: string;
 }
 
-// const previewProfile = ref(null);
-
 const isLoading = ref(true);
 const isError = ref<string | null>(null);
 
@@ -127,7 +125,6 @@ import Loading from '@/components/Loading.vue';
         .page{
             display: flex;
             flex-direction: column;
-            // margin: 0;
         }
     }
 </style>

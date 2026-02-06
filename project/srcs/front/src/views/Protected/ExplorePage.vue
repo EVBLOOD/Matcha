@@ -99,8 +99,6 @@ const reset_tags = () => {
     delete query_base.tags
 }
 
-// const PageData = ref<any | null>(null);
-
 const handleSubmit = async () => {
     isLoading.value = true;
     try {
@@ -111,7 +109,6 @@ const handleSubmit = async () => {
         const { data } = await SuggestionsService.getSearch(query);
         ExploreData.value = data["data"];
         
-        // PageData.value = data["data"]['page'];
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             isError.value = (err.response?.data as BackendError)?.error;
@@ -220,7 +217,6 @@ const toggleCurrentSort =  (name: any) => {
 
     padding: 6px;
 
-    // gap: 10px;
     min-height: 83px;
 
     background-color: $components-background-color;

@@ -12,7 +12,6 @@
         error: string;
     }
 
-    // new_message_notification
 
 
     const route = useRoute();
@@ -33,7 +32,6 @@
         isLoading.value = true;
         try {
             const { data } = await ChatService.getMessages(parseInt(route.params.id as string));
-            // conversationData.value = data;
             conversationData.value = [...data.data];
             if (conversationData.value[0].messages_list)
                 conversationMessages.value = [...conversationData.value[0].messages_list]
@@ -59,8 +57,6 @@
 
         if (conversationData.value) {
             const id = socketStore.sendMessage(conversationData.value[0].peer_id.toString(), newMessage.value.trim());
-            // if (conversationMessages.value)
-            //     conversationMessages.value.push({id: id, content: newMessage.value.trim(), is_read: false, sender_id: userStore.getUserID as number, sent_at: "Now"})
         }
         newMessage.value = ''
     }
@@ -204,8 +200,6 @@
     font-size: 14px;
     flex-shrink: 0;
     white-space: pre-wrap;
-    // word-wrap: break-word;
-    // overflow-wrap: break-word;
 }
 
 .message.received {
@@ -258,23 +252,6 @@
     align-items: center;
     justify-content: center;
 }
-
-// .messages::-webkit-scrollbar {
-//     width: 6px;
-// }
-
-// .messages::-webkit-scrollbar-track {
-//     background: transparent;
-// }
-
-// .messages::-webkit-scrollbar-thumb {
-//     background-color: rgba(255, 255, 255, 0.25);
-//     border-radius: 10px;
-// }
-
-// .messages::-webkit-scrollbar-thumb:hover {
-//     background-color: rgba(255, 255, 255, 0.45);
-// }
 
 .status {
     display: flex;

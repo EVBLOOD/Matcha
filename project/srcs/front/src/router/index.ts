@@ -23,7 +23,6 @@ import ViewLikes from '@/views/Protected/profile/ViewLikes.vue';
 import ViewSettingsPassword from '@/views/Protected/profile/ViewSettingsPassword.vue';
 import NotFoundPage from '@/views/NotFoundPage.vue';
 
-// import Conversation from '@/views/Protected//chat/Conversation.vue';
 import Conversation from '@/views/Protected/chat/Calls.vue';
 
 import OauthPage from '@/views/OauthPage.vue';
@@ -154,7 +153,7 @@ const router = createRouter({
       meta: { public: true }
     },
     {
-      path: '/confirm-email', // TODO: I should find a solution to integrate this later
+      path: '/confirm-email',
       name: 'email confirmation',
       component: EmailConfirmationPage,
       meta: { requiresVerification: false, requiresAuth: true, requiresCompleteProfile: false }

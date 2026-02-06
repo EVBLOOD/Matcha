@@ -17,7 +17,6 @@ class Database:
     
     def init_app(self, app):
         self.pool = psycopg2.pool.ThreadedConnectionPool(
-            # 2, 10,
             5, 50,
             user=Config.DB_USER,
             password=Config.DB_PASSWORD,
@@ -25,7 +24,6 @@ class Database:
             port=Config.DB_PORT,
             database=Config.DB_NAME
         )
-        # app.cli.command('init-db', self.init_db())
         app.before_request(self.before_request)
         app.teardown_appcontext(self.teardown_appcontext)
         with app.app_context():
@@ -102,12 +100,3 @@ class Database:
                 cursor.close()
             if conn and not hasattr(g, 'db_conn'):
                 self.pool.putconn(conn)
-
-    # @app.cli.command('init-db')
-    # def init_db_command(self):
-    #     """Initialize the database from schema.sql"""
-    #     try:
-    #         db.init_db()
-    #         click.echo("Database initialized successfully!")
-    #     except Exception as e:
-    #         click.echo(f"Error initializing database: {str(e)}")

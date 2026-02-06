@@ -6,7 +6,6 @@ from flask_socketio import disconnect, join_room, ConnectionRefusedError, leave_
 import json
 from flask_jwt_extended import decode_token
 from app.core.security import AuthService, Security
-# from app.services.user_service import get_user_contacts
 from flask_socketio import emit
 from datetime import datetime, timezone
 
@@ -65,12 +64,9 @@ class ConnectionManager :
     
     @staticmethod
     def disconnect_user(sid: str):
-        print("Disconnecting this ~", flush=True)
         redis = Config.redis_instence
-        print("Disconnecting this ~ pass", flush=True)
         
         user_id_bytes = redis.hget("ws:connections", f"sid:{sid}")
-        print(f"what is the response {user_id_bytes}", flush=True)
         if not user_id_bytes:
             return
 
@@ -83,7 +79,6 @@ class ConnectionManager :
             f"ws:user:{user_id}:online",
             sid
         )
-        print(f"remaining_sockets: {remaining_sockets}", flush=True)
 
         if remaining_sockets == 0:
             last_seen = datetime.now(timezone.utc).isoformat()
@@ -107,7 +102,6 @@ class ConnectionManager :
         if block_status :
             return False
         redis = Config.redis_instence
-        print(f"online_user_{user_id}", flush=True)
         join_room(f"online_user_{user_id}")
         is_online = bool(
             redis.exists(f"ws:user:{user_id}:online")
@@ -133,7 +127,6 @@ class ConnectionManager :
                 type_response = "match"
                 conversation_id = ChatService.create_conversation(dst_id, user_id)
         elif not block_status and type == "Dislike" :
-            print("LOL type", flush=True)
             done = UserInteractionsService.remove_user_interactions(dst_id, user_id)
             if done: 
                 conversation_id = -1
@@ -175,8 +168,7 @@ class ConnectionManager :
 
 
         redis = Config.redis_instence
-        # update this
-        # join_room(f"online_user_{user_id}")
+
         return bool(
             redis.exists(f"ws:user:{user_id}:online")
         )
@@ -195,7 +187,6 @@ class ConnectionManager :
             emit('notify', {"date_id": date_id, "source_id": user_id, "dst_id": body['partner_id'], "user": user, "type": "Date Propose"}, room=f"Notifs_user_{user_id}")
             emit('notify', {"date_id": date_id, "source_id": user_id, "dst_id": body['partner_id'], "user": user, "type": "Date Propose"}, room=f"Notifs_user_{body['partner_id']}")
         except Exception as e:
-            print(e, flush=True)
             return False
         return date_id
 

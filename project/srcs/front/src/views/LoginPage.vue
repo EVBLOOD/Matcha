@@ -84,9 +84,7 @@ const startOAuth = () => {
 const authChannel = new BroadcastChannel('auth_status');
 
 authChannel.onmessage = (event) => {
-  // if (event.data.type === 'AUTH_SUCCESS') {
   router.push('/')
-  // }
 };
 
 import Loading from '@/components/Loading.vue';
@@ -222,7 +220,6 @@ import Loading from '@/components/Loading.vue';
   .page {
     display: flex;
     flex-direction: column;
-    // margin: 0;
   }
 }
 </style>

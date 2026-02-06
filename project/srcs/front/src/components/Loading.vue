@@ -39,14 +39,12 @@
 <style scoped lang="scss">
 .loading-wrapper {
   position: relative;
-  // background-color: #2121219c;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  // z-index: 9999;
 }
 
 .spinner {

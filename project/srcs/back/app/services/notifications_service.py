@@ -1,14 +1,7 @@
 from app.dal.models.notifications import Notification
-from app.dal.repositories.profile_repository import ProfileRepository
 from app.dal.repositories.notification_repository import notificationsRepository
 
 
-from app.services.tags_service import TagsService
-# from app.dal.repositories.tags_repository import TagsRepository
-from app.dal.repositories.user_repository import UserRepository
-from app.services.picture_service import PictureService
-from app.services.auth_service import AuthService
-# from typing import Set
 
 class NotificationService:
     @staticmethod

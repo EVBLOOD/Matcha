@@ -3,14 +3,11 @@ from app.dal.repositories.profile_repository import ProfileRepository
 
 
 from app.services.tags_service import TagsService
-# from app.dal.repositories.tags_repository import TagsRepository
 from app.dal.repositories.user_repository import UserRepository
 from app.services.picture_service import PictureService
 from app.services.auth_service import AuthService
 from app.core.config import Config
-# from typing import Set
 
-from flask import jsonify
 import requests
 
 import geoip2.database
@@ -26,7 +23,6 @@ class ProfileService:
     def create_profile(user_id: int, gender: str, sexual_preference: str,\
                         biography: str, location_set_by_user: bool, files_list, tags: str, latitude: float = 0, longitude: float = 0, ip: str = "") :
         
-        # tags_list = set(tags.split(';'))
         tags_list = {tag.strip() for tag in tags.split(';') if tag.strip()}
         if ProfileRepository.find_profile_exists(user_id) :
             raise ValueError("Profile already filled!")        
@@ -40,7 +36,6 @@ class ProfileService:
             injected_cursor = conn.cursor()
 
             TagsService.insert_tags(tags_list, user_id, injected_cursor)
-            # print("alo", flush=True)
             PictureService.proccess_images(files_list, user_id, injected_cursor)
 
             if not location_set_by_user or (not latitude and not longitude) or \
@@ -108,7 +103,7 @@ class ProfileService:
         except AddressNotFoundError:
             print(f"Address {ip} not found in the database.",flush=True)
         except Exception as e:
-            print(f"An error occurred: {e}", flush=True)
+            pass
 
         return None
     
@@ -130,7 +125,6 @@ class ProfileService:
             TagsService.update_tags(tags_list, user_id, injected_cursor)
             if files_list and len(files_list) > 0:
                 result_picures = PictureService.update_images(files_list, user_id, injected_cursor)
-            print("pictures no please", flush=True)
             if not location_set_by_user or (not latitude and not longitude) or \
                 not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
                 result = ProfileService.initial_location(ip)
@@ -144,8 +138,8 @@ class ProfileService:
             conn.commit()
         except Exception as e:
             conn.rollback()
-            if result_picures and result_picures['profile'] :
-                print(f"TO DO DELETE {result_picures['url']}", flush=True)
+            # if result_picures and result_picures['profile'] :
+            #     print(f"TO DO DELETE {result_picures['url']}", flush=True)
             raise
         finally:
             if injected_cursor:
@@ -157,7 +151,6 @@ class ProfileService:
     @staticmethod
     def remove_picture(user_id, filename) :
         picture = PictureService.find_by_url_nd_user_id(filename, user_id)
-        print (picture, flush=True)
         if picture and not picture.is_profile_picture:
             return PictureService.remove_path(picture.id, picture.url)
         return None
@@ -178,7 +171,7 @@ class ProfileService:
             city = address.get('city', address.get('town', address.get('village', 'Unknown')))
             country = address.get('country', 'Unknown')
         except Exception as e:
-            print(e, flush=True)
+            pass
         return city, country
 
     @staticmethod
@@ -207,7 +200,6 @@ class ProfileService:
                     "views_count": profile["views_count"]
                 }
             else :
-                print(profile["user_block_status"], flush=True)
                 if profile["user_block_status"] and profile["user_block_status"] > 0 :
                     raise ValueError("No such a profile")
                 

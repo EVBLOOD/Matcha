@@ -1,4 +1,3 @@
-# from app.core.database import DB_instance as Database
 from app.core.config import Config
 from psycopg2 import sql
 from typing import List, Dict, Any, Tuple, Optional
@@ -68,11 +67,9 @@ class BaseRepository:
         columns: List[str],
         data: Dict[str, Any],
     ) -> Tuple[Optional[sql.Composed], Optional[List[Any]]]:
-        print(f"Starting ?", flush=True)
         
         if not isinstance(data, dict) or set(data.keys()) != set(columns):
             return None, None
-        print(f"Starting ?S", flush=True)
         
         ordered_values = [data[col] for col in columns]
         
@@ -94,9 +91,7 @@ class BaseRepository:
         columns: List[str],
         data: Dict[str, Any],
         returning="id", injected_cursor = None) :
-        print(f"table_name: {table_name},columns: {columns}", flush=True)
         query, _values = cls._build_insert_query(table_name=table_name, columns=columns, data=data)
-        print(f"query: {query},_values: {_values}", flush=True)
 
         if returning :
             query += sql.SQL(" RETURNING {}").format(sql.Identifier(returning))
@@ -108,10 +103,6 @@ class BaseRepository:
     @classmethod
     def find_by_id(cls, id, what: str = "*"):
         return cls.find_by_something(id=id, what=what)
-        # query = sql.SQL("SELECT * FROM {} WHERE id = %s").format(
-        #     sql.Identifier(cls._table_name)
-        # )
-        # return Config.DB_instence.execute(query, (id,), fetch_one=True)
 
     @classmethod
     def delete(cls, id, injected_cursor = None):

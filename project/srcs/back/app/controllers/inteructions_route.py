@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-# from app.services.suggestions_service import SuggestionsService
 from app.services.report_service import ReportService
 from app.services.user_interactions_service import UserInteractionsService
 from app.services.user_blocks_service import UserBlocksService
@@ -30,7 +29,6 @@ def getMyLikes():
 @Security.auth_guard()
 def getMyViews():
     try :
-        # get_all_likes_got
         return jsonify({"data": ProfileViewsService.get_all_likes_got(request.user_id)})
     except Exception as e:
         return jsonify({"error": str(e)}), 404

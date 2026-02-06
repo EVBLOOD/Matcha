@@ -8,7 +8,6 @@ class DatesService:
     def propose_date(proposer_id: int, partner_id: int, location: str, 
                      datetime_str: str, description: str):
         
-        print("propose_date", flush=True)
 
         if not UserInteractionsService.are_users_connected(proposer_id, partner_id):
             raise ValueError("You must be matched to propose a date")        
@@ -21,7 +20,6 @@ class DatesService:
         
         if scheduled_at < datetime.now(timezone.utc):
             raise ValueError("Cannot schedule dates in the past")
-        print("propose_date", flush=True)
         
         query = """
             INSERT INTO dates (proposer_id, partner_id, location, scheduled_at, description)
@@ -32,7 +30,6 @@ class DatesService:
             proposer_id, partner_id, location, scheduled_at, description
         ))
 
-        print("propose_date", flush=True)
         
         return result['id']
     
@@ -43,11 +40,9 @@ class DatesService:
                 
         query = "SELECT partner_id, proposer_id FROM dates WHERE id = %s"
         date_info = BaseRepository._fetch_one(query, (date_id,))
-        print("date_info", flush=True)
         
         if not date_info or date_info[0] != responder_id:
             raise ValueError("Unauthorized")
-        print("date_info", flush=True)
         
         update_query = "UPDATE dates SET status = %s WHERE id = %s RETURNING id"
         BaseRepository._execute(update_query, (status, date_id))
@@ -55,20 +50,6 @@ class DatesService:
     
     @staticmethod
     def get_user_dates(user_id: int):
-        # query = """
-        #     SELECT 
-        #         d.id, d.location, d.scheduled_at, d.description, d.status,
-        #         d.proposer_id, d.partner_id,
-        #         CASE 
-        #             WHEN d.proposer_id = %s THEN u2.username
-        #             ELSE u1.username
-        #         END as partner_username
-        #     FROM dates d
-        #     JOIN users u1 ON d.proposer_id = u1.id
-        #     JOIN users u2 ON d.partner_id = u2.id
-        #     WHERE d.proposer_id = %s OR d.partner_id = %s
-        #     ORDER BY d.scheduled_at DESC
-        # """
 
         query = """
             SELECT 

@@ -88,5 +88,4 @@ def get_seed_data(db, count=500):
                         """, (conv_id, sender_id, text, sent_time, random.choice([True, False])))
 
     except Exception as e:
-        print(f"ERROR Gen dummy users: {e}", flush=True)
         raise

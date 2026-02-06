@@ -147,23 +147,5 @@ class SuggestionsRepository(BaseRepository):
         
         rows = cls._fetch_all(query, params)
         
-        # query = f"""
-        #         WITH currentuser AS (
-        #             SELECT id, latitude, longitude, gender, sexual_preference
-        #             FROM users u 
-        #             JOIN profiles p ON u.id = p.user_id 
-        #             WHERE u.id = %s
-        #         )
-        #         SELECT 
-        #             COUNT(u.id)
-        #         FROM users u
-        #         JOIN profiles p ON u.id = p.user_id
-        #         CROSS JOIN currentuser cud
-        #         WHERE u.id != cud.id
-        #           AND {search_query}
-        #     """
-        # page_data = cls._fetch_one(query, params)
-        
         return {"data": rows, "page": (20/ 20)}
 
-# (SELECT COUNT(*) FROM user_blocks WHERE (blocked_id = u.id AND blocker_id = %s) OR (blocked_id = %s AND blocker_id = u.id)) AS user_block_status,

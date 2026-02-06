@@ -40,7 +40,6 @@ input {
     background: $components-background-color;
     color: $text-color;
     border-radius: 12px;
-    // border: none;
     outline: none;
     font-family: $font-main;
     border: 1px solid $border-color;

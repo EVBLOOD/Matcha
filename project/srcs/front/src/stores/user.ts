@@ -52,7 +52,6 @@ const useUserStore = defineStore('user', {
         }
         else {
           this.user = null;
-          console.error(error);
         }
       } finally {
         this.isLoaded = true;

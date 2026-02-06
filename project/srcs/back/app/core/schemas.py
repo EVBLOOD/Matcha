@@ -7,7 +7,6 @@ from datetime import datetime
 
 class UserRegisterSchema(Config.ma_instence.Schema):
     def validate_date(value):
-        # print(value, flush=True)
         try:
             birthdate = datetime.strptime(str(value), '%Y-%m-%d')
             if birthdate >= datetime.now():

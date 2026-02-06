@@ -158,7 +158,6 @@ const go_to = (id: number | null, type: string) => {
   flex-direction: column;
   gap: 5px;
   width: 100%;
-  // align-items: flex-start;
 }
 
 .toast .icon {

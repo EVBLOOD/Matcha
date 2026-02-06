@@ -182,7 +182,6 @@ import Loading from '@/components/Loading.vue';
   .page {
     display: flex;
     flex-direction: column;
-    // margin: 0;
   }
 }
 </style>
