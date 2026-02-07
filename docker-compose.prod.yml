@@ -27,8 +27,8 @@ services:
       - GEOIP_DB_PATH=/var/www/html/app/data/maxmind/GeoLite2-City.mmdb
     env_file: .env
     restart: on-failure
-    # volumes:
-      # - geoip-data:/app/app/data/maxmind:ro
+    volumes:
+      - geoip-data:/app/app/data/maxmind:ro
     expose:
       - 8080
     networks:
@@ -36,7 +36,7 @@ services:
     depends_on:
       - redis_prod
       - database_prod
-      # - geoip_updater_prod
+      - geoip_updater_prod
 
   database_prod:
     image: postgres
@@ -70,38 +70,38 @@ services:
     networks:
       - matcha_prod
 
-  # geoip_updater_prod:
-  #   image: ghcr.io/maxmind/geoipupdate:latest
-  #   container_name: matcha_prod_geoip_updater
-  #   environment:
-  #     - GEOIPUPDATE_ACCOUNT_ID=$GEOIPUPDATE_ACCOUNT_ID
-  #     - GEOIPUPDATE_LICENSE_KEY=$GEOIPUPDATE_LICENSE_KEY
-  #     - GEOIPUPDATE_EDITION_IDS=$GEOIPUPDATE_EDITION_IDS
-  #     - GEOIPUPDATE_FREQUENCY=72
-  #   restart: on-failure
-  #   volumes:
-  #     - geoip-data:/usr/share/GeoIP
-  #   networks:
-  #     - matcha_prod
-  #   depends_on:
-  #     - database
+  geoip_updater_prod:
+    image: ghcr.io/maxmind/geoipupdate:latest
+    container_name: matcha_prod_geoip_updater
+    environment:
+      - GEOIPUPDATE_ACCOUNT_ID=$GEOIPUPDATE_ACCOUNT_ID
+      - GEOIPUPDATE_LICENSE_KEY=$GEOIPUPDATE_LICENSE_KEY
+      - GEOIPUPDATE_EDITION_IDS=$GEOIPUPDATE_EDITION_IDS
+      - GEOIPUPDATE_FREQUENCY=72
+    restart: on-failure
+    volumes:
+      - geoip-data:/usr/share/GeoIP
+    networks:
+      - matcha_prod
+    depends_on:
+      - database_prod
 
-  # omni_auth_prod:
-  #   build: 
-  #     context: .
-  #     dockerfile: docker/omni_auth/Dockerfile
-  #   image: matcha_prod_omni_auth
-  #   container_name: matcha_prod_omni_auth
-    # env_file: .env
-  #   restart: on-failure
-  #   volumes:
-  #     - ${PWD}/srcs/omni_auth:/var/www/html
-  #   ports:
-  #     - 4567:4567
-  #   networks:
-  #     - matcha_prod
-  #   depends_on:
-  #     - database
+  omni_auth_prod:
+    build: 
+      context: .
+      dockerfile: docker_prod/omni_auth/Dockerfile
+    image: matcha_prod_omni_auth
+    container_name: matcha_prod_omni_auth
+    env_file: .env
+    restart: on-failure
+    volumes:
+      - ${PWD}/srcs/omni_auth:/var/www/html
+    ports:
+      - 4567:4567
+    networks:
+      - matcha_prod
+    depends_on:
+      - database_prod
     
 
   web_prod:
@@ -124,7 +124,8 @@ services:
         fi
         exec nginx -g "daemon off;"
     ports:
-      - 443:443
+      # - 443:443
+      - 1026:443
     networks:
       - matcha_prod
     depends_on:
@@ -142,3 +143,4 @@ volumes:
       o: bind
       device: ${PWD}/database
   redis_data_prod:
+  geoip-data:

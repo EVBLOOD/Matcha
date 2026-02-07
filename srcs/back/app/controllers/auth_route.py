@@ -46,7 +46,7 @@ def login() :
 @auth_bp.route('/oauth/<string:provider>', methods=['GET', 'POST'])
 def proxy_to(provider):
     try :
-        upstream_url = f"http://omni_auth:4567/auth/{provider}"
+        upstream_url = f"http://omni_auth_prod:4567/auth/{provider}"
 
         headers = dict(request.headers)
         headers['Host'] = Config.PUBLIC_HOST
@@ -70,9 +70,9 @@ def proxy_to(provider):
         response_headers = []
         for k, v in upstream_resp.headers.items():
             if k.lower() == 'set-cookie':
-                v = v.replace("omni_auth", Config.PUBLIC_HOST.split(':')[0])
+                v = v.replace("omni_auth_prod", Config.PUBLIC_HOST.split(':')[0])
             elif k.lower() == 'location':
-                v = v.replace("omni_auth:4567", Config.PUBLIC_HOST)
+                v = v.replace("omni_auth_prod:4567", Config.PUBLIC_HOST)
             response_headers.append((k, v))
 
         return Response(
@@ -89,11 +89,11 @@ def proxy_to(provider):
 @auth_bp.route('/oauth/callback', methods=['GET', 'POST'])
 def handle_github_callback():
     try :
-        upstream_url = f"http://omni_auth:4567/api/auth/oauth/callback"
+        upstream_url = f"http://omni_auth_prod:4567/api/auth/oauth/callback"
 
         headers = {k: v for k, v in request.headers if k.lower() != 'host'}
         headers['Host'] = Config.PUBLIC_HOST
-        headers['X-Forwarded-Proto'] = 'http'
+        headers['X-Forwarded-Proto'] = 'https'
 
 
         cookies = request.cookies

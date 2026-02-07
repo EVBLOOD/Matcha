@@ -1,4 +1,4 @@
-ENV ?= dev
+ENV ?= prod
 
 COMPOSE = docker compose -f docker-compose.$(ENV).yml
 

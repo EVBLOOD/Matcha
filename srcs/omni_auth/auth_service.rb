@@ -14,15 +14,16 @@ class AuthApp < Sinatra::Base
             secret: ENV['SESSION_SECRET'],
             httponly: true,
             secure: false,
-            domain: 'localhost'
+            domain: ENV['PUBLIC_HOST']
 
         set :host_authorization, { 
             permitted_hosts: [
-              'omni_auth',
+              ENV['PUBLIC_HOST'],
               'localhost',
               '127.0.0.1'
             ] 
           }
+        OmniAuth.config.full_host = ENV['PUBLIC_BASE_URL']
     end
 
     OmniAuth.config.request_validation_phase = nil
@@ -33,7 +34,7 @@ class AuthApp < Sinatra::Base
         
         {
           authorize_params: {
-            redirect_uri: 'http://localhost:8081/api/auth/oauth/callback',
+            redirect_uri: ENV['PUBLIC_HOST_redirect'],
             callback_path: '/api/auth/oauth/callback'
           },
             scope: "user:email", 
