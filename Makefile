@@ -22,7 +22,3 @@ ps:
 
 history:
 	$(COMPOSE) logs -f
-
-certif:
-	mkdir docker_prod/nginx/ssl
-	mkcert -cert-file docker_prod/nginx/ssl/cert.pem -key-file docker_prod/nginx/ssl/key.pem localhost 127.0.0.1 ::1 your-laptop-ip

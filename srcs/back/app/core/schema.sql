@@ -1,4 +1,3 @@
--- Drop tables if exits / Just for now
 DROP TABLE IF EXISTS "user_interests" CASCADE;
 DROP TABLE IF EXISTS "user_pictures" CASCADE;
 DROP TABLE IF EXISTS "user_interactions" CASCADE;
@@ -12,14 +11,11 @@ DROP TABLE IF EXISTS "tags" CASCADE;
 DROP TABLE IF EXISTS "profiles" CASCADE;
 DROP TABLE IF EXISTS "users" CASCADE;
 
--- Create tables with the propreties I'll need
-
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    -- password_hash CHAR(60) NOT NULL,
     password_hash CHAR(60), -- if null means it's oauth
     birthdate DATE DEFAULT '1999-08-01' NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,

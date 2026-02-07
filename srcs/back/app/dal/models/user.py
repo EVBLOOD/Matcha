@@ -23,10 +23,14 @@ class User:
         insertion_check: bool = False
     ):
         if insertion_check \
-              and not self.isvalid_username(username) \
-              and not self.isvalid_fullname(first_name, last_name) \
-              and not self.isvalid_email(email) and not self.isvalid_password(password_hash):
-            raise ValueError
+              and (not self.isvalid_username(username) \
+              or not self.isvalid_fullname(first_name, last_name) \
+              or not self.isvalid_email(email) or not self.isvalid_password(password_hash)):
+            raise ValueError(f"Make sure you're formats are correct, \
+                             username: {self.isvalid_username(username)} \
+                             fullname: {self.isvalid_fullname(first_name, last_name)} \
+                             email: {self.isvalid_email(email)} \
+                             password: {self.isvalid_password(password_hash)}")
         elif insertion_check is False :
             self.id = id
             self.created_at = created_at

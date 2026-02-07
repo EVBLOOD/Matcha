@@ -12,5 +12,4 @@ WORKDIR /var/www/html
 
 ENV RAILS_ENV=development
 
-# CMD ["ruby", "app.rb", "-o", "0.0.0.0"]
 CMD ["bundle", "exec", "rerun", "--background", "--", "rackup", "-o", "0.0.0.0", "-p", "4567", "config.ru"]
