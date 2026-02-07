@@ -28,6 +28,7 @@ services:
     env_file: .env
     restart: on-failure
     volumes:
+      - ${PWD}/srcs/back/app/pictures_storage:/app/app/pictures_storage
       - geoip-data:/app/app/data/maxmind:ro
     expose:
       - 8080

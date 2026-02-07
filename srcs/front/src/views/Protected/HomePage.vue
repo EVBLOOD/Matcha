@@ -62,6 +62,8 @@ let localStream: MediaStream | null = null;
 const localVideo = ref<HTMLVideoElement | null>(null);
 const remoteVideo = ref<HTMLVideoElement | null>(null);
 
+const iceCandidateQueue: RTCIceCandidateInit[] = [];
+
 
 const createPeerConnection = () => {
     pc = new RTCPeerConnection(rtcConfig);
@@ -112,19 +114,41 @@ watch(() => callStore.isCalling, async (isCalling) => {
     }
 });
 
-
 const acceptCall = async () => {
-
     await setupWebRTC();
     if (callStore.pendingOffer) {
         await pc?.setRemoteDescription(new RTCSessionDescription(callStore.pendingOffer));
+        
+        await processQueuedCandidates();
+
         const answer = await pc?.createAnswer();
         await pc?.setLocalDescription(answer);
-        
         callStore.sendSignal('answer', answer);
         callStore.setConnected();
     }
 };
+
+const processQueuedCandidates = async () => {
+    while (iceCandidateQueue.length > 0) {
+        const candidate = iceCandidateQueue.shift();
+        if (candidate && pc) {
+            await pc.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+    }
+};
+
+// const acceptCall = async () => {
+
+//     await setupWebRTC();
+//     if (callStore.pendingOffer) {
+//         await pc?.setRemoteDescription(new RTCSessionDescription(callStore.pendingOffer));
+//         const answer = await pc?.createAnswer();
+//         await pc?.setLocalDescription(answer);
+        
+//         callStore.sendSignal('answer', answer);
+//         callStore.setConnected();
+//     }
+// };
 
 useSocketListener('video_signal', async (data) => {
     if (data.type === 'offer') {
@@ -137,9 +161,13 @@ useSocketListener('video_signal', async (data) => {
         }
     }
     else if (data.type === 'candidate') {
-        if (pc) {
-            await pc.addIceCandidate(new RTCIceCandidate(data.args));
-        }
+
+
+        if (pc && pc.remoteDescription) {
+        await pc.addIceCandidate(new RTCIceCandidate(data.args));
+    } else {
+        iceCandidateQueue.push(data.args);
+    }
     } else if (data.type === 'hangup') {
         endCall(false);
     } else if (data.type === 'busy') {
