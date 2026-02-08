@@ -29,23 +29,23 @@ The project is built on a containerized micro-service architecture to ensure hig
 
 > Registration and Authentication Flow
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Login.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Login.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Register.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Register.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Email_confirmation.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Email_confirmation.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Profile_Setup.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Profile_Setup.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Forgot_password.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Forgot_password.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Resend_email.png)
-
-
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Reset_your_password.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Resend_email.png)
 
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/password_successfully.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Reset_your_password.png)
+
+
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/password_successfully.png)
 
 
 ### 2. Discovery & Matching
@@ -56,15 +56,15 @@ The project is built on a containerized micro-service architecture to ensure hig
 
 
 > Discovery Dashboard and Search Filters
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Home_Page.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Home_Page.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Home_Page_Map.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Home_Page_Map.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Suggestions.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Suggestions.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Suggestions-filter.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Suggestions-filter.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Suggestions-sort.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Suggestions-sort.png)
 
 ### 3. Interaction Layer
 **Real-time Chat:** Instant messaging enabled between users with a mutual "like".
@@ -73,11 +73,11 @@ The project is built on a containerized micro-service architecture to ensure hig
 
 > Interaction, Notifs and Messages
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Profile_second.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Profile_second.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/chat.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/chat.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Notifications.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Notifications.png)
 
 
 
@@ -97,11 +97,11 @@ The project includes several advanced features beyond the mandatory scope:
 
 > Video Call Interface
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Calling.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Calling.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/Incoming_call.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Incoming_call.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha-project/blob/main/screenshots/accept_call.png)
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/accept_call.png)
 
 ## Deployment
 The project uses a `Makefile` to simplify the project running.
