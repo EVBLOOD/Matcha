@@ -14,7 +14,9 @@ The project is built on a containerized micro-service architecture to ensure hig
 
 ###  Infrastructure
 **Nginx:** Reverse proxy handling SSL termination and request routing.
-* **Redis:** High-speed caching for real-time presence and session management.
+
+**Redis:** High-speed caching for real-time presence and session management.
+
 **GeoIP:** MaxMind GeoLite2 for automated localization.
 
 
