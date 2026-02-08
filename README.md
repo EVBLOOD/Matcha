@@ -81,7 +81,7 @@ The project is built on a containerized micro-service architecture to ensure hig
 
 
 
-> **Note**: To see more of our UI, feel free to check screenshots folder in the root of our reposetory
+> **Note**: To see more of our UI, feel free to check screenshots folder in the root of our repository.
 
 
 
