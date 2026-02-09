@@ -1,7 +1,7 @@
 # Matcha
 Our Matcha is a full-stack web application designed to help people find partners through smart technology. Built with Flask and Vue 3, the application manages the entire process from account verification to the final meeting.
 
-> **Note**: The stable production code is located in the 42-submission branch. The main branch is mainly left for tracking the development process and workflow.
+> **Note**: The stable production code is located in the 42-submit branch. The main branch is mainly left for tracking the development process and workflow.
 
 ## System Architecture
 The project is built on a containerized micro-service architecture to ensure high availability and environment parity.
@@ -123,7 +123,7 @@ The project uses a `Makefile` to simplify the project running.
 The production setup includes SSL (self-signed for local testing), optimized assets, and automatic database health checks.
 
 ```bash
-git checkout 42-submission
+git checkout 42-submit
 # Then create a .env file based on .env.example
 # Then RUN
 make
