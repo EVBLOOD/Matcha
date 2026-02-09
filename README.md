@@ -7,8 +7,11 @@ Our Matcha is a full-stack web application designed to help people find partners
 The project is built on a containerized micro-service architecture to ensure high availability and environment parity.
 ### Core Technology Stack
 **Backend:** Flask (Python) following a Repository Pattern (DAL) for clean database interactions.
+
 **Frontend:** Vue.js 3 with TypeScript and SCSS, optimized for modern browsers (Chrome/Firefox).
-**Database:** PostgreSQL for relational data management with manual query optimization
+
+**Database:** PostgreSQL for relational data management with manual query optimization.
+
 **Real-time:** Socket.IO for instant messaging and live notifications.
 
 
@@ -24,35 +27,37 @@ The project is built on a containerized micro-service architecture to ensure hig
 
 ### 1. Account & Security
 **Secure Registration:** Registration requires unique email verification via a dedicated link.
+
 **Data Protection:** Passwords are cryptographically hashed; plain-text storage was forbidden.
+
 **Input Sanitization:** Robust protection against SQL injection and XSS (HTML/JS injection).
 
 
 
 > Registration and Authentication Flow
 
-![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Login.png)
-
 ![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Register.png)
 
 ![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Email_confirmation.png)
+
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Login.png)
+
+![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Resend_email.png)
 
 ![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Profile_Setup.png)
 
 ![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Forgot_password.png)
 
-![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Resend_email.png)
-
-
 ![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/Reset_your_password.png)
-
 
 ![alt text](https://github.com/EVBLOOD/Matcha/blob/main/screenshots/password_successfully.png)
 
 
 ### 2. Discovery & Matching
 **Smart Suggestions:** Profiles are prioritized based on geographic proximity, shared interests (tags), and "fame rating".
+
 **Advanced Research:** Comprehensive search filtering by age range, fame, location, and multiple tags.
+
 **Profile Management:** Users manage bios, reusable interest tags, and up to 5 pictures.
 
 
@@ -70,7 +75,9 @@ The project is built on a containerized micro-service architecture to ensure hig
 
 ### 3. Interaction Layer
 **Real-time Chat:** Instant messaging enabled between users with a mutual "like".
+
 **Live Notifications:** Real-time alerts for profile views, likes, and messages.
+
 **Safety Controls:** Features to block users or report "fake accounts".
 
 > Interaction, Notifs and Messages
@@ -91,9 +98,13 @@ The project is built on a containerized micro-service architecture to ensure hig
 
 The project includes several advanced features beyond the mandatory scope:
 **OmniAuth:** Social authentication strategies for streamlined login.
+
 **Interactive Map:** Precise user localization via an integrated JavaScript map.
+
 **Advanced Media:** Enhanced photo management and gallery features.
+
 **Audio/Video Chat:** Real-time audio and video calls for connected users.
+
 **Event Planning:** Tools to schedule and organize real-life dates for matches.
 
 
@@ -126,5 +137,5 @@ For active development with hot-reloading and debug tools:
 cd project
 # Then create a .env file based on .env.example
 # Then RUN
-make dev
+make ENV=dev
 ```
